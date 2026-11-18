@@ -1,0 +1,112 @@
+{
+  "pipeline_version": "1.0.0",
+  "mode": "lean_gatekeeper",
+  "target_ecosystems": [
+    "browser-extension",
+    "ide-ai-plugin",
+    "cli-wrapper",
+    "saas-addon"
+  ],
+  "monetization_stack": [
+    "polar",
+    "lemonsqueezy",
+    "gumroad"
+  ],
+  "active_project": "vscode-workspace-profile-config",
+  "current_stage": "COMPLETED",
+  "gates": {
+    "gate_1_idea_and_spec_approved": true,
+    "gate_2_launch_approved": true
+  },
+  "opportunities": [
+    {
+      "id": "notion-linear-prd-sync",
+      "title": "LinearBridge: 1-Click Notion PRD to Linear Sub-Issues & Sync",
+      "ecosystem": "browser-extension",
+      "target_software": "Notion & Linear",
+      "pain": "Linear's native Notion integration is read-only link unfurling; teams manually copy-paste PRD checklists into Linear issues or pay for brittle Zapier polling.",
+      "solution": "Chrome MV3 extension injecting a 'Push PRD to Linear' action bar inside Notion that decomposes headings/checklists into Linear parent + sub-issues and syncs status badges locally via user API keys.",
+      "dimensions": {
+        "pain_severity": 9.0,
+        "willingness_to_pay": 9.0,
+        "solution_effectiveness": 9.0,
+        "build_speed": 8.0,
+        "distribution_clarity": 9.0,
+        "platform_safety": 8.0
+      },
+      "effectiveness_score": 84.0,
+      "commercial_potential_score": 90.0,
+      "score": 87.5,
+      "verdict": "GO",
+      "updated_at": "2026-11-17T17:54:27+00:00"
+    },
+    {
+      "id": "notion-clean-md-exporter",
+      "title": "NotionGitExport: Lossless Notion Tree & Database to Clean Markdown",
+      "ecosystem": "cli-wrapper",
+      "target_software": "Notion",
+      "pain": "Native Notion Markdown export appends 32-char UUID hashes to every file/folder, flattens database properties, and breaks internal relative links and image paths.",
+      "solution": "Zero-dependency CLI wrapper that strips UUID suffixes, converts database properties into clean YAML frontmatter, rewrites relative links, and localizes assets for Git/Obsidian/Astro.",
+      "dimensions": {
+        "pain_severity": 8.0,
+        "willingness_to_pay": 8.0,
+        "solution_effectiveness": 9.0,
+        "build_speed": 9.0,
+        "distribution_clarity": 8.0,
+        "platform_safety": 8.0
+      },
+      "effectiveness_score": 87.5,
+      "commercial_potential_score": 80.0,
+      "score": 83.0,
+      "verdict": "GO",
+      "updated_at": "2026-11-17T17:54:27+00:00"
+    },
+    {
+      "id": "vscode-workspace-profile-config",
+      "title": "ExtProfileLock: Declarative .extensions.json & Env Sync for VS Code",
+      "ecosystem": "ide-ai-plugin",
+      "target_software": "VS Code",
+      "pain": "VS Code lacks declarative repo-level extension toggling (microsoft/vscode#40239, 1180+ upvotes) and caches stale shell env vars when launched from OS GUI.",
+      "solution": "VS Code extension that reads a repo-committed workspace-lock.json + .env to auto-toggle conflicting extensions and refresh extension host env vars without restarting.",
+      "dimensions": {
+        "pain_severity": 8.0,
+        "willingness_to_pay": 7.0,
+        "solution_effectiveness": 8.0,
+        "build_speed": 9.0,
+        "distribution_clarity": 9.0,
+        "platform_safety": 8.0
+      },
+      "effectiveness_score": 83.5,
+      "commercial_potential_score": 77.5,
+      "score": 80.5,
+      "verdict": "GO",
+      "updated_at": "2026-11-17T17:54:27+00:00"
+    }
+  ],
+  "projects": {
+    "notion-linear-prd-sync": {
+      "id": "notion-linear-prd-sync",
+      "title": "LinearBridge: 1-Click Notion PRD to Linear Sub-Issues & Sync",
+      "ecosystem": "browser-extension",
+      "target_software": "Notion & Linear",
+      "status": "COMPLETED",
+      "selected_at": "2026-11-17T17:57:18+00:00"
+    },
+    "notion-clean-md-exporter": {
+      "id": "notion-clean-md-exporter",
+      "title": "NotionGitExport: Lossless Notion Tree & Database to Clean Markdown",
+      "ecosystem": "cli-wrapper",
+      "target_software": "Notion",
+      "status": "COMPLETED",
+      "selected_at": "2026-11-17T18:03:58+00:00"
+    },
+    "vscode-workspace-profile-config": {
+      "id": "vscode-workspace-profile-config",
+      "title": "ExtProfileLock: Declarative .extensions.json & Env Sync for VS Code",
+      "ecosystem": "ide-ai-plugin",
+      "target_software": "VS Code",
+      "status": "COMPLETED",
+      "selected_at": "2026-11-17T18:04:45+00:00"
+    }
+  }
+}

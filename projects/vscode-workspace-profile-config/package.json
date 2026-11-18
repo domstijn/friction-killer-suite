@@ -1,0 +1,36 @@
+{
+  "name": "vscode-workspace-profile-config",
+  "displayName": "ExtProfileLock",
+  "publisher": "friction-killer",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "type": "module",
+  "main": "./src/index.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extProfileLock.auditWorkspace",
+        "title": "ExtProfileLock: Audit Workspace Profile"
+      },
+      {
+        "command": "extProfileLock.syncProWorkspace",
+        "title": "ExtProfileLock: Sync Pro Workspace & Interpolate Env"
+      },
+      {
+        "command": "extProfileLock.activateLicense",
+        "title": "ExtProfileLock: Activate Pro License"
+      }
+    ]
+  },
+  "scripts": {
+    "test": "python3 tests/smoke_test.py"
+  }
+}

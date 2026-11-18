@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>LinearBridge</title>
+  <style>
+    body {
+      width: 340px;
+      margin: 0;
+      padding: 14px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 13px;
+    }
+    h3 { margin: 0 0 10px; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .badge { font-size: 11px; padding: 2px 7px; border-radius: 999px; background: #1e293b; color: #94a3b8; }
+    .badge.pro { background: #312e81; color: #a5b4fc; }
+    label { display: block; margin-top: 8px; font-size: 11px; color: #94a3b8; }
+    input, select, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 4px;
+      padding: 7px 8px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: #f8fafc;
+      font-size: 12px;
+    }
+    textarea { min-height: 78px; resize: vertical; font-family: ui-monospace, monospace; }
+    .row { display: flex; gap: 6px; margin-top: 8px; }
+    button {
+      flex: 1;
+      padding: 8px 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .primary { background: #4f46e5; color: #fff; }
+    .secondary { background: #334155; color: #f8fafc; }
+    #status { margin-top: 10px; font-size: 12px; color: #a5b4fc; min-height: 16px; }
+  </style>
+</head>
+<body>
+  <h3>
+    LinearBridge
+    <span id="tier-badge" class="badge">Free Tier (5/wk)</span>
+  </h3>
+
+  <label for="api-key">Linear Personal API Key</label>
+  <input id="api-key" type="password" placeholder="lin_api_..." />
+
+  <div class="row">
+    <div style="flex:1">
+      <label for="team-id">Linear Team ID</label>
+      <input id="team-id" placeholder="team-uuid" />
+    </div>
+    <div style="width:105px">
+      <label for="priority">Priority (Pro)</label>
+      <select id="priority">
+        <option value="0">None</option>
+        <option value="1">Urgent</option>
+        <option value="2">High</option>
+        <option value="3">Medium</option>
+        <option value="4">Low</option>
+      </select>
+    </div>
+  </div>
+
+  <label for="prd-text">Notion PRD / Markdown Preview</label>
+  <textarea id="prd-text" placeholder="# Checkout Redesign&#10;## Auth&#10;- [ ] Add OAuth callback"></textarea>
+
+  <div class="row">
+    <button id="save-btn" class="secondary">Save Settings</button>
+    <button id="grab-btn" class="secondary">Grab Active Page</button>
+  </div>
+  <div class="row">
+    <button id="push-btn" class="primary">Push PRD to Linear</button>
+    <button id="sync-btn" class="secondary">Sync Statuses</button>
+  </div>
+
+  <label for="license-key">Lemon Squeezy Pro License Key</label>
+  <div class="row" style="margin-top:4px">
+    <input id="license-key" placeholder="Paste license key" style="margin-top:0" />
+    <button id="activate-btn" class="secondary" style="flex:0 0 88px">Activate</button>
+  </div>
+
+  <p id="status"></p>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

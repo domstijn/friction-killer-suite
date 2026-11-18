@@ -1,0 +1,63 @@
+{
+  "kaizen_log": [
+    {
+      "cycle": 1,
+      "date": "2026-11-17",
+      "diagnosed_bottlenecks": [
+        "mine_signals.py returned unrelated GitHub mega-issues because target keywords were not restricted with in:title and Algolia HN queries used unsupported OR groups.",
+        "Reddit public search JSON returned HTTP 403 Blocked.",
+        "Mining multiple targets required separate CLI calls and GitHub reactions crowded out HN results.",
+        "Stages 2-4 lacked a single deterministic verification and packaging command before Gate 2."
+      ],
+      "upgrades_implemented": [
+        "Upgraded scripts/mine_signals.py with --targets batching, in:title + alias filtering, HN split story queries, gzip-aware Stack Exchange API integration replacing Reddit 403, and balanced per-source capping (ceil(limit/2)).",
+        "Created scripts/ship_check.py to validate SPEC.md/landing.html/LAUNCH_KIT.md placeholders, run all project tests, and build clean dist/<slug>-v0.1.0.zip bundles.",
+        "Added 10% Kaizen rule to AGENTS.md."
+      ],
+      "expected_impact": "Fewer LLM turns, zero wasted tokens on noisy signals, reliable 3-source signal diversity, and autonomous Stage 2-4 QA before Gate 2."
+    },
+    {
+      "cycle": 2,
+      "date": "2026-11-17",
+      "diagnosed_bottlenecks": [
+        "Wiring live checkout URLs and product IDs into landing pages and extension/CLI source required manual multi-file edits before re-packaging.",
+        "Single-product launches left Average Order Value (AOV) on the table without a cross-product bundle storefront or unified operator go-live checklist."
+      ],
+      "upgrades_implemented": [
+        "Created scripts/configure_checkout.py to inject live checkout URLs & product IDs and automatically re-run ship_check.py --package.",
+        "Created scripts/build_portfolio.py to generate launch_hub/index.html ($49 All-Access Bundle storefront) and launch_hub/MASTER_LAUNCH_PLAYBOOK.md directly from pipeline/state.json."
+      ],
+      "expected_impact": "One-command checkout wiring and higher AOV via a multi-product bundle storefront with minimal operator effort."
+    },
+    {
+      "cycle": 3,
+      "date": "2026-11-17",
+      "diagnosed_bottlenecks": [
+        "License clients checked a single productId string, blocking $49 All-Access Bundle keys from unlocking individual apps.",
+        "IDE/CLI scaffolds and ship_check.py did not enforce host-ecosystem runtime manifests (engines.vscode + contributes.commands, [project.scripts]).",
+        "mine_signals.py was biased toward developer forums (HN/GitHub/SO) and lacked B2B SaaS power-user pain signals.",
+        "Landing pages and license clients had no zero-backend funnel or paywall telemetry hooks."
+      ],
+      "upgrades_implemented": [
+        "Upgraded templates/license-validator/license_client.js and .py (and synced all 3 projects) to accept array/CSV productIds and added configure_checkout.py --bundle-product-id.",
+        "Added VS Code ExtensionContext manifest/command registration to vscode-workspace-profile-config and scaffold_project.py, [project.scripts] to cli-wrapper projects, and ecosystem manifest checks to ship_check.py.",
+        "Added B2B-WebApps Stack Exchange miner (--source b2b) and expanded B2B SaaS target aliases in scripts/mine_signals.py.",
+        "Added local paywall_hits / activation_attempts / pro_activations telemetry to license clients and data-fk-cta click hooks to landing page templates and launch_hub."
+      ],
+      "expected_impact": "Seamless $49 bundle key unlocking, marketplace-ready VS Code/CLI builds, higher-WTP B2B signal discovery, and zero-backend funnel conversion visibility."
+    },
+    {
+      "cycle": 4,
+      "date": "2026-11-18",
+      "diagnosed_bottlenecks": [
+        "Store onboarding (Lemon Squeezy business-intent) blocked without a live public website URL, downloadable artifacts, and support/refund policies.",
+        "Configuring checkout URLs did not automatically regenerate static GitHub Pages files."
+      ],
+      "upgrades_implemented": [
+        "Upgraded scripts/build_portfolio.py to emit a static GitHub Pages site in docs/ (.nojekyll, index.html, products/<slug>/index.html, downloads/*.zip, and Lemon Squeezy-compliant support/14-day refund/privacy sections).",
+        "Upgraded scripts/configure_checkout.py with --bundle-url and automatic launch_hub/ + docs/ sync after every checkout update."
+      ],
+      "expected_impact": "Instant free GitHub Pages storefront ready for Lemon Squeezy verification and zero-friction updates when live checkout links are added."
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NotionGitExport — Clean Notion Markdown for Git &amp; Obsidian</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
+    <div class="text-lg font-bold tracking-tight text-white">NotionGitExport</div>
+    <nav class="flex items-center gap-6 text-sm text-slate-300">
+      <a href="../../index.html" class="text-indigo-300 hover:text-white">&larr; All Suite Tools</a>
+      <a href="#comparison" class="hover:text-white">Why it works</a>
+      <a href="#pricing" class="hover:text-white">Pricing</a>
+      <a href="#faq" class="hover:text-white">FAQ</a>
+      <a href="#pricing" class="rounded-lg bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-400">Get Pro</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6">
+    <section class="py-16 text-center">
+      <span class="inline-block rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300">
+        Zero-Dependency Python CLI for Notion Power Users
+      </span>
+      <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+        Stop fighting Notion exports.<br />
+        <span class="text-indigo-400">Ship clean, UUID-free Markdown to Git.</span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
+        Notion appends 32-character UUID hashes to every exported file and breaks internal links. NotionGitExport strips UUIDs, rewrites relative paths, and converts Notion metadata into clean YAML frontmatter in one command.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a href="../../downloads/notion-clean-md-exporter-v0.1.0.zip" download data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
+          Use Free Tier (10 files)
+        </a>
+        <a href="#CHECKOUT_URL_HERE" data-fk-cta="pro-checkout" class="lemonsqueezy-button rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
+          Unlock Pro License — $24 once
+        </a>
+      </div>
+    </section>
+
+    <section id="comparison" class="grid gap-6 py-12 md:grid-cols-2">
+      <div class="rounded-2xl border border-rose-500/20 bg-slate-900/60 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-rose-400">Raw Notion Export</h2>
+        <ul class="mt-4 space-y-3 text-slate-300">
+          <li>• Filenames polluted with 32-char hashes like <code>Spec a1b2c3...0123.md</code></li>
+          <li>• Broken relative links and spaces encoded as <code>%20</code></li>
+          <li>• Plain text properties instead of Astro/Hugo/Obsidian YAML frontmatter</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-emerald-500/30 bg-slate-900 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-emerald-400">With NotionGitExport</h2>
+        <ul class="mt-4 space-y-3 text-slate-200">
+          <li>• Deterministic slugified filenames and clean folder trees</li>
+          <li>• Automatic internal Markdown link &amp; image path rewriting</li>
+          <li>• Zero-dependency Python 3 CLI—runs locally or in GitHub Actions</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="install" class="py-12">
+      <h2 class="text-center text-2xl font-bold text-white">Clean your export in 30 seconds</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+          <div class="text-xs font-bold text-indigo-400">STEP 1</div>
+          <h3 class="mt-2 font-semibold text-white">Export from Notion</h3>
+          <p class="mt-2 text-sm text-slate-400">Download your Notion Markdown &amp; CSV export and unzip it locally.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+          <div class="text-xs font-bold text-indigo-400">STEP 2</div>
+          <h3 class="mt-2 font-semibold text-white">Run the CLI</h3>
+          <p class="mt-2 text-sm text-slate-400">Execute <code>python3 src/cli.py --input ./notion --output ./docs</code>.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+          <div class="text-xs font-bold text-indigo-400">STEP 3</div>
+          <h3 class="mt-2 font-semibold text-white">Activate Pro Key</h3>
+          <p class="mt-2 text-sm text-slate-400">Run <code>--activate YOUR_KEY</code> for unlimited recursive trees &amp; YAML frontmatter.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="py-12">
+      <h2 class="text-center text-2xl font-bold text-white">Simple, one-time pricing</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-8">
+          <h3 class="text-lg font-semibold text-white">Free Starter</h3>
+          <p class="mt-2 text-3xl font-bold text-white">$0</p>
+          <p class="mt-2 text-sm text-slate-400">Great for testing small folders and docs.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-300">
+            <li>✓ Clean up to 10 Markdown files per run</li>
+            <li>✓ Strip 32-char UUIDs &amp; rewrite relative links</li>
+          </ul>
+          <a href="../../downloads/notion-clean-md-exporter-v0.1.0.zip" download data-fk-cta="free-install" class="mt-8 block rounded-xl border border-slate-700 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800">
+            Download Free CLI
+          </a>
+        </div>
+        <div class="rounded-2xl border border-indigo-500 bg-slate-900 p-8 shadow-lg shadow-indigo-500/10">
+          <h3 class="text-lg font-semibold text-white">Pro License</h3>
+          <p class="mt-2 text-3xl font-bold text-white">$24 once</p>
+          <p class="mt-2 text-sm text-slate-400">Delivered instantly via Lemon Squeezy license key.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-200">
+            <li>✓ Unlimited recursive Notion workspace trees</li>
+            <li>✓ Automatic YAML frontmatter from Notion metadata</li>
+            <li>✓ Asset/image path cleanup &amp; 7-day offline cache</li>
+          </ul>
+          <a href="#CHECKOUT_URL_HERE" data-fk-cta="pro-checkout" class="lemonsqueezy-button mt-8 block rounded-xl bg-indigo-500 py-3 text-center text-sm font-semibold text-white hover:bg-indigo-400">
+            Buy Pro License Key
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="py-12">
+      <h2 class="text-2xl font-bold text-white">FAQ</h2>
+      <div class="mt-6 space-y-4 text-sm text-slate-300">
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">Does it require pip packages or Node.js?</h3>
+          <p class="mt-1 text-slate-400">No. It uses Python 3 standard library modules only, so it runs anywhere with zero dependency conflicts.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">Does it work offline in CI?</h3>
+          <p class="mt-1 text-slate-400">Yes. Once activated with Lemon Squeezy, your license caches locally with a 7-day offline grace window.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <section id="policies" class="mx-auto max-w-5xl px-6 pb-10">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-xs leading-relaxed text-slate-400">
+      <div class="grid gap-6 md:grid-cols-3">
+        <div>
+          <h3 class="font-semibold text-slate-200">Support &amp; Contact</h3>
+          <p class="mt-1">Operated by Stijn Dom (@domstijn).</p>
+          <p class="mt-1">Email: <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a></p>
+          <p class="mt-1">Issues: <a href="https://github.com/domstijn/friction-killer-suite/issues" class="text-indigo-300 underline">GitHub Support Tracker</a></p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">14-Day Refund Policy</h3>
+          <p class="mt-1">All Pro licenses include a 14-day no-questions-asked refund guarantee. Email <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a> with your order ID for a full refund.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
+          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments and license delivery are processed securely by Lemon Squeezy.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500">
+    NotionGitExport (<code>notion-clean-md-exporter</code>) — Friction-Killer Suite by Stijn Dom (@domstijn) · <a href="https://github.com/domstijn/friction-killer-suite/issues" class="underline">Support</a> · <a href="mailto:dom.stijn99@gmail.com" class="underline">dom.stijn99@gmail.com</a> · 14-day refund policy
+  </footer>
+  <script>
+    document.querySelectorAll("[data-fk-cta]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const cta = el.getAttribute("data-fk-cta");
+        try {
+          const key = "fk_cta_telemetry";
+          const data = JSON.parse(localStorage.getItem(key) || "{}");
+          data[cta] = (Number(data[cta]) || 0) + 1;
+          localStorage.setItem(key, JSON.stringify(data));
+          window.dispatchEvent(new CustomEvent("fk:cta", { detail: { cta, counts: data } }));
+        } catch {}
+      });
+    });
+  </script>
+</body>
+</html>

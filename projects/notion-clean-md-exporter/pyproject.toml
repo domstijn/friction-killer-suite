@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "notion-clean-md-exporter"
+version = "0.1.0"
+description = "NotionGitExport"
+requires-python = ">=3.10"
+
+[project.scripts]
+notion-git-export = "cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["cli", "exporter", "license_client"]

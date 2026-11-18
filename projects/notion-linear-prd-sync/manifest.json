@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "LinearBridge",
+  "version": "0.1.0",
+  "description": "Push Notion PRD headings and checklists into Linear parent epics and sub-issues in one click.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://www.notion.so/*",
+    "https://notion.so/*",
+    "https://api.linear.app/*",
+    "https://api.lemonsqueezy.com/*"
+  ],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "LinearBridge"
+  },
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.notion.so/*",
+        "https://notion.so/*"
+      ],
+      "js": [
+        "src/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
