@@ -13,7 +13,7 @@ from exporter import export_workspace
 from license_client import get_telemetry, require_pro_feature, verify_license
 
 APP_SLUG = "notion-clean-md-exporter"
-PROVIDER = "lemonsqueezy"
+PROVIDER = "stripe"
 DEFAULT_PRODUCT_ID = "prod_VeW69bJBCk3Nbr,prod_VeW6IYwGyYJkPv"
 
 
@@ -21,7 +21,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="NotionGitExport: Clean Notion Markdown exports.")
     parser.add_argument("--input", help="Path to unzipped Notion export directory")
     parser.add_argument("--output", help="Destination directory for cleaned Markdown")
-    parser.add_argument("--activate", help="Activate a Lemon Squeezy Pro license key")
+    parser.add_argument("--activate", help="Activate a Stripe Pro license key")
     parser.add_argument("--pro", action="store_true", help="Check current Pro license status")
     parser.add_argument("--telemetry", action="store_true", help="Print local paywall/activation telemetry counts")
     parser.add_argument("--cache-dir", help="Optional custom license cache directory")
