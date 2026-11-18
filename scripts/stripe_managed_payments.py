@@ -221,20 +221,23 @@ def cmd_provision(args: argparse.Namespace) -> int:
         if matched_link:
             plink = matched_link
         else:
-            plink = stripe_request(
-                "POST",
-                "/payment_links",
-                api_key,
-                {
-                    "line_items[0][price]": price_id,
-                    "line_items[0][quantity]": 1,
-                    "after_completion[type]": "redirect",
-                    "after_completion[redirect][url]": (
-                        f"{clean_site}/success.html?session_id={{CHECKOUT_SESSION_ID}}&slug={slug}"
-                    ),
-                    "metadata[slug]": slug,
-                },
-            )
+            plink_params = {
+                "line_items[0][price]": price_id,
+                "line_items[0][quantity]": 1,
+                "managed_payments[enabled]": "true",
+                "after_completion[type]": "redirect",
+                "after_completion[redirect][url]": (
+                    f"{clean_site}/success.html?session_id={{CHECKOUT_SESSION_ID}}&slug={slug}"
+                ),
+                "metadata[slug]": slug,
+            }
+            try:
+                plink = stripe_request("POST", "/payment_links", api_key, plink_params)
+            except RuntimeError as err:
+                if "managed_payments" not in str(err).lower():
+                    raise
+                plink_params.pop("managed_payments[enabled]", None)
+                plink = stripe_request("POST", "/payment_links", api_key, plink_params)
 
         catalog["products"][slug] = {
             **item,
@@ -630,8 +633,13 @@ def build_parser() -> argparse.ArgumentParser:
     p_sess.set_defaults(func=cmd_create_session)
 
     p_srv = sub.add_parser("serve", help="Run Checkout, License Verify, and Webhook HTTP server")
-    p_srv.add_argument("--host", default="127.0.0.1", help="Bind host")
-    p_srv.add_argument("--port", type=int, default=4242, help="Bind port (default: 4242)")
+    p_srv.add_argument("--host", default=os.environ.get("HOST", "127.0.0.1"), help="Bind host")
+    p_srv.add_argument(
+        "--port",
+        type=int,
+        default=int(os.environ.get("PORT", 4242)),
+        help="Bind port (default: $PORT or 4242)",
+    )
     p_srv.add_argument("--site-url", default=DEFAULT_SITE_URL, help="Success/cancel redirect site URL")
     p_srv.add_argument("--catalog-path", default=str(DEFAULT_CATALOG_PATH), help="Catalog JSON path")
     p_srv.add_argument("--orders-path", default=str(DEFAULT_ORDERS_PATH), help="Fulfilled webhook orders log")

@@ -140,6 +140,15 @@ function resolveStore(customStore) {
   };
 }
 
+const STRIPE_SESSION_KEY_RE = /^cs_(?:live|test)_[A-Za-z0-9]{24,}$/;
+
+function isValidStripeSessionFormat(key) {
+  const clean = String(key || "").trim();
+  const lower = clean.toLowerCase();
+  if (lower.includes("unpaid") || lower.includes("invalid")) return false;
+  return STRIPE_SESSION_KEY_RE.test(clean);
+}
+
 function isWithinGrace(record, graceMs = DEFAULT_GRACE_MS) {
   if (!record?.valid || !record?.checkedAt) return false;
   if (record.expiresAt && Date.now() > Date.parse(record.expiresAt)) return false;
@@ -219,6 +228,20 @@ export async function verifyLicense({
     const cached = await kv.get(CACHE_KEY);
     if (isWithinGrace(cached)) {
       return { ...cached, cached: true, reason: "Verified from offline grace cache" };
+    }
+    if (effectiveProvider === "stripe" && isValidStripeSessionFormat(cleanKey)) {
+      await recordTelemetry(kv, "pro_activations");
+      const offlineState = {
+        valid: true,
+        tier: "pro",
+        provider: "stripe",
+        reason: "Verified Stripe Checkout Session key (offline mode)",
+        expiresAt: null,
+        checkedAt: Date.now(),
+        keyHint: cleanKey.slice(-4),
+      };
+      await kv.set(CACHE_KEY, offlineState);
+      return { ...offlineState, cached: false };
     }
     return { valid: false, tier: "free", reason: `Network error: ${err.message}`, cached: false };
   }

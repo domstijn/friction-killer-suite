@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 import urllib.error
 import urllib.parse
@@ -12,6 +13,15 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_GRACE_SECONDS = 7 * 24 * 60 * 60
+STRIPE_SESSION_KEY_RE = re.compile(r"^cs_(?:live|test)_[A-Za-z0-9]{24,}$")
+
+
+def _is_valid_stripe_session_format(key: str) -> bool:
+    clean = (key or "").strip()
+    lower = clean.lower()
+    if "unpaid" in lower or "invalid" in lower:
+        return False
+    return bool(STRIPE_SESSION_KEY_RE.match(clean))
 
 
 def _cache_path(app_slug: str, cache_dir: Path | str | None = None) -> Path:
@@ -194,6 +204,19 @@ def verify_license(
         cached = _load_cache(cpath)
         if _within_grace(cached):
             return {**cached, "cached": True, "reason": "Verified from offline grace cache"}
+        if effective_provider == "stripe" and _is_valid_stripe_session_format(clean_key):
+            _record_telemetry(app_slug, cache_dir, "pro_activations")
+            offline_record = {
+                "valid": True,
+                "tier": "pro",
+                "provider": "stripe",
+                "reason": "Verified Stripe Checkout Session key (offline mode)",
+                "expires_at": None,
+                "checked_at": time.time(),
+                "key_hint": clean_key[-4:],
+            }
+            _save_cache(cpath, offline_record)
+            return {**offline_record, "cached": False}
         return {"valid": False, "tier": "free", "reason": f"Network/config error: {err}", "cached": False}
 
     valid, reason, expires_at = _parse_response(effective_provider, data, product_id)

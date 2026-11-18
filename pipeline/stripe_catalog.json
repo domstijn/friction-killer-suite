@@ -1,10 +1,13 @@
 {
   "api_version": "2025-03-31.basil",
+  "account_id": "acct_1UdCWDH2AcdDmQyR",
+  "account_name": "Friction Killer Suite",
   "tax_code": "txcd_10103000",
   "site_url": "https://domstijn.github.io/friction-killer-suite",
   "server_url": "http://localhost:4242",
   "dry_run": false,
-  "updated_at": "2026-11-18T17:54:56+00:00",
+  "livemode": true,
+  "updated_at": "2026-11-18T18:10:00+00:00",
   "products": {
     "notion-linear-prd-sync": {
       "slug": "notion-linear-prd-sync",
@@ -14,9 +17,9 @@
       "currency": "eur",
       "mode": "payment",
       "product_id": "prod_VeW6ffGaCfNzue",
-      "price_id": "price_1UdD4PH9yLuviqvB2h1BnsdM",
-      "payment_link_id": "plink_1UdD4QH9yLuviqvBbc2PgPj5",
-      "payment_link_url": "https://buy.stripe.com/test_5kQcN5bsvgzWezEe0H7ok00",
+      "price_id": "price_1UdD76H2AcdDmQyRffNvQkTq",
+      "payment_link_id": "plink_1UdD7CH2AcdDmQyRdQzBl4Ud",
+      "payment_link_url": "https://buy.stripe.com/dRmcN5eDibGA8KYaBC6sw02",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=notion-linear-prd-sync"
     },
     "notion-clean-md-exporter": {
@@ -27,9 +30,9 @@
       "currency": "eur",
       "mode": "payment",
       "product_id": "prod_VeW69bJBCk3Nbr",
-      "price_id": "price_1UdD4RH9yLuviqvBSkk22xTu",
-      "payment_link_id": "plink_1UdD4SH9yLuviqvBsQDBqpQ2",
-      "payment_link_url": "https://buy.stripe.com/test_5kQeVd403aby1MS5ub7ok01",
+      "price_id": "price_1UdD76H2AcdDmQyRk9cyWuxd",
+      "payment_link_id": "plink_1UdD7CH2AcdDmQyRKlStYu3z",
+      "payment_link_url": "https://buy.stripe.com/6oU4gz0Ms8uo1iw6lm6sw00",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=notion-clean-md-exporter"
     },
     "vscode-workspace-profile-config": {
@@ -40,9 +43,9 @@
       "currency": "eur",
       "mode": "payment",
       "product_id": "prod_VeW60IB88zFfQl",
-      "price_id": "price_1UdD4TH9yLuviqvBBKC6MpYZ",
-      "payment_link_id": "plink_1UdD4UH9yLuviqvBqWQ9pC1z",
-      "payment_link_url": "https://buy.stripe.com/test_dRmfZhdAD97ugHMf4L7ok02",
+      "price_id": "price_1UdD78H2AcdDmQyRnk5p0xaw",
+      "payment_link_id": "plink_1UdD7BH2AcdDmQyRtZBU2SIb",
+      "payment_link_url": "https://buy.stripe.com/5kQ3cv52I11Wgdq2566sw01",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=vscode-workspace-profile-config"
     },
     "all-access-bundle": {
@@ -53,9 +56,9 @@
       "currency": "eur",
       "mode": "payment",
       "product_id": "prod_VeW6IYwGyYJkPv",
-      "price_id": "price_1UdD4VH9yLuviqvBrdaJQEzz",
-      "payment_link_id": "plink_1UdD4WH9yLuviqvBQyLjRsUb",
-      "payment_link_url": "https://buy.stripe.com/test_7sY6oH4035Vi0IOaOv7ok03",
+      "price_id": "price_1UdD78H2AcdDmQyRQsYBFTAY",
+      "payment_link_id": "plink_1UdD7FH2AcdDmQyRO0gzUWnc",
+      "payment_link_url": "https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=all-access-bundle"
     }
   }
