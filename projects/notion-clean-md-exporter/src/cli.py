@@ -14,7 +14,7 @@ from license_client import get_telemetry, require_pro_feature, verify_license
 
 APP_SLUG = "notion-clean-md-exporter"
 PROVIDER = "lemonsqueezy"
-DEFAULT_PRODUCT_ID = None
+DEFAULT_PRODUCT_ID = "prod_VeW69bJBCk3Nbr,prod_VeW6IYwGyYJkPv"
 
 
 def main() -> int:

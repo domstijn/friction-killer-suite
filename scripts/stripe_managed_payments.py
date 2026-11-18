@@ -8,6 +8,7 @@ import hashlib
 import hmac
 import json
 import os
+import subprocess
 import sys
 import urllib.error
 import urllib.parse
@@ -21,10 +22,11 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_CATALOG_PATH = REPO_ROOT / "pipeline" / "stripe_catalog.json"
 DEFAULT_ORDERS_PATH = REPO_ROOT / "pipeline" / "stripe_orders.jsonl"
 DEFAULT_DOCS_DIR = REPO_ROOT / "docs"
+CONFIGURE_CHECKOUT_SCRIPT = REPO_ROOT / "scripts" / "configure_checkout.py"
 
 STRIPE_API_BASE = "https://api.stripe.com/v1"
 STRIPE_API_VERSION = "2025-03-31.basil"
-DEFAULT_TAX_CODE = "txcd_10000000"
+DEFAULT_TAX_CODE = "txcd_10103000"
 DEFAULT_SITE_URL = "https://domstijn.github.io/friction-killer-suite"
 
 DEFAULT_CATALOG_ITEMS = [
@@ -33,7 +35,7 @@ DEFAULT_CATALOG_ITEMS = [
         "name": "LinearBridge Pro",
         "description": "1-click Notion PRD to Linear Parent Epic & Sub-Issues Chrome extension (Pro License).",
         "unit_amount": 2900,
-        "currency": "usd",
+        "currency": "eur",
         "mode": "payment",
     },
     {
@@ -41,7 +43,7 @@ DEFAULT_CATALOG_ITEMS = [
         "name": "NotionGitExport Pro",
         "description": "Lossless Notion Markdown cleaner with YAML frontmatter and asset localization CLI (Pro License).",
         "unit_amount": 2400,
-        "currency": "usd",
+        "currency": "eur",
         "mode": "payment",
     },
     {
@@ -49,7 +51,7 @@ DEFAULT_CATALOG_ITEMS = [
         "name": "ExtProfileLock Pro",
         "description": "Declarative VS Code workspace extension locks and .env interpolation (Pro License).",
         "unit_amount": 1900,
-        "currency": "usd",
+        "currency": "eur",
         "mode": "payment",
     },
     {
@@ -57,10 +59,24 @@ DEFAULT_CATALOG_ITEMS = [
         "name": "All-Access Friction-Killer Bundle",
         "description": "Pro licenses for LinearBridge, NotionGitExport, and ExtProfileLock.",
         "unit_amount": 4900,
-        "currency": "usd",
+        "currency": "eur",
         "mode": "payment",
     },
 ]
+
+
+def load_dotenv(env_path: Path = REPO_ROOT / ".env") -> None:
+    if not env_path.is_file():
+        return
+    for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, val = line.split("=", 1)
+        key = key.strip()
+        val = val.strip().strip('"').strip("'")
+        if key:
+            os.environ.setdefault(key, val)
 
 
 def stripe_request(
@@ -106,12 +122,28 @@ def save_catalog(catalog_path: Path, catalog: dict[str, Any]) -> None:
     catalog_path.write_text(json.dumps(catalog, indent=2) + "\n", encoding="utf-8")
 
 
+def create_checkout_session_with_fallback(
+    api_key: str,
+    params: dict[str, Any],
+) -> dict[str, Any]:
+    try:
+        return stripe_request("POST", "/checkout/sessions", api_key, params)
+    except RuntimeError as err:
+        if "managed_payments" not in str(err).lower():
+            raise
+        fallback_params = {k: v for k, v in params.items() if not k.startswith("managed_payments")}
+        session = stripe_request("POST", "/checkout/sessions", api_key, fallback_params)
+        session["managed_payments_fallback"] = True
+        return session
+
+
 def cmd_provision(args: argparse.Namespace) -> int:
     catalog_path = Path(args.catalog_path)
+    clean_site = args.site_url.rstrip("/")
     catalog: dict[str, Any] = {
         "api_version": STRIPE_API_VERSION,
         "tax_code": args.tax_code,
-        "site_url": args.site_url.rstrip("/"),
+        "site_url": clean_site,
         "server_url": args.server_url.rstrip("/"),
         "dry_run": bool(args.dry_run),
         "updated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -125,36 +157,131 @@ def cmd_provision(args: argparse.Namespace) -> int:
                 **item,
                 "product_id": f"prod_dryrun_{idx}_{slug.replace('-', '_')}",
                 "price_id": f"price_dryrun_{idx}_{slug.replace('-', '_')}",
+                "payment_link_id": f"plink_dryrun_{idx}",
+                "payment_link_url": f"https://buy.stripe.com/test_dryrun_{idx}",
                 "checkout_endpoint": f"{catalog['server_url']}/create-checkout-session?slug={slug}",
             }
         save_catalog(catalog_path, catalog)
-        print(f"[DRY-RUN] Wrote {len(DEFAULT_CATALOG_ITEMS)} Managed Payments products -> {catalog_path}")
+        print(f"[DRY-RUN] Wrote {len(DEFAULT_CATALOG_ITEMS)} EUR Stripe products -> {catalog_path}")
         return 0
 
     api_key = resolve_api_key(args.api_key)
+    existing_prods = stripe_request("GET", "/products?active=true&limit=100", api_key).get("data", [])
+    existing_links = stripe_request("GET", "/payment_links?active=true&limit=100", api_key).get("data", [])
+
     for item in DEFAULT_CATALOG_ITEMS:
         slug = item["slug"]
-        payload = {
-            "name": item["name"],
-            "description": item["description"],
-            "tax_code": args.tax_code,
-            "default_price_data[unit_amount]": item["unit_amount"],
-            "default_price_data[currency]": item["currency"],
-            "metadata[slug]": slug,
-        }
-        prod = stripe_request("POST", "/products", api_key, payload)
-        default_price = prod.get("default_price")
-        price_id = default_price.get("id") if isinstance(default_price, dict) else default_price
+        matched_prod = next(
+            (
+                p
+                for p in existing_prods
+                if (p.get("metadata") or {}).get("slug") == slug or p.get("name") == item["name"]
+            ),
+            None,
+        )
+        if matched_prod:
+            prod = matched_prod
+            default_price = prod.get("default_price")
+            price_id = default_price.get("id") if isinstance(default_price, dict) else default_price
+            if not price_id:
+                created_price = stripe_request(
+                    "POST",
+                    "/prices",
+                    api_key,
+                    {
+                        "product": prod["id"],
+                        "unit_amount": item["unit_amount"],
+                        "currency": item["currency"],
+                        "tax_behavior": "inclusive",
+                    },
+                )
+                price_id = created_price["id"]
+        else:
+            payload = {
+                "name": item["name"],
+                "description": item["description"],
+                "tax_code": args.tax_code,
+                "default_price_data[unit_amount]": item["unit_amount"],
+                "default_price_data[currency]": item["currency"],
+                "default_price_data[tax_behavior]": "inclusive",
+                "metadata[slug]": slug,
+            }
+            prod = stripe_request("POST", "/products", api_key, payload)
+            default_price = prod.get("default_price")
+            price_id = default_price.get("id") if isinstance(default_price, dict) else default_price
+
+        matched_link = next(
+            (
+                pl
+                for pl in existing_links
+                if (pl.get("metadata") or {}).get("slug") == slug and pl.get("active")
+            ),
+            None,
+        )
+        if matched_link:
+            plink = matched_link
+        else:
+            plink = stripe_request(
+                "POST",
+                "/payment_links",
+                api_key,
+                {
+                    "line_items[0][price]": price_id,
+                    "line_items[0][quantity]": 1,
+                    "after_completion[type]": "redirect",
+                    "after_completion[redirect][url]": (
+                        f"{clean_site}/success.html?session_id={{CHECKOUT_SESSION_ID}}&slug={slug}"
+                    ),
+                    "metadata[slug]": slug,
+                },
+            )
+
         catalog["products"][slug] = {
             **item,
             "product_id": prod["id"],
             "price_id": price_id,
+            "payment_link_id": plink["id"],
+            "payment_link_url": plink["url"],
             "checkout_endpoint": f"{catalog['server_url']}/create-checkout-session?slug={slug}",
         }
-        print(f"Provisioned {item['name']} -> product={prod['id']}, price={price_id}")
+        print(
+            f"Provisioned {item['name']} -> product={prod['id']}, price={price_id}, link={plink['url']}"
+        )
 
     save_catalog(catalog_path, catalog)
     print(f"Saved Stripe catalog -> {catalog_path}")
+
+    if args.wire_checkout:
+        bundle_entry = catalog["products"]["all-access-bundle"]
+        bundle_pid = bundle_entry["product_id"]
+        for slug in ("notion-linear-prd-sync", "notion-clean-md-exporter", "vscode-workspace-profile-config"):
+            entry = catalog["products"][slug]
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(CONFIGURE_CHECKOUT_SCRIPT),
+                    "--slug",
+                    slug,
+                    "--checkout-url",
+                    entry["payment_link_url"],
+                    "--product-id",
+                    entry["product_id"],
+                    "--bundle-product-id",
+                    bundle_pid,
+                    "--skip-portfolio",
+                ],
+                check=True,
+            )
+        subprocess.run(
+            [
+                sys.executable,
+                str(CONFIGURE_CHECKOUT_SCRIPT),
+                "--bundle-url",
+                bundle_entry["payment_link_url"],
+            ],
+            check=True,
+        )
+
     return 0
 
 
@@ -207,8 +334,17 @@ def cmd_create_session(args: argparse.Namespace) -> int:
         return 0
 
     api_key = resolve_api_key(args.api_key)
-    session = stripe_request("POST", "/checkout/sessions", api_key, params)
-    print(json.dumps({"id": session["id"], "url": session["url"]}, indent=2))
+    session = create_checkout_session_with_fallback(api_key, params)
+    print(
+        json.dumps(
+            {
+                "id": session["id"],
+                "url": session["url"],
+                "managed_payments_fallback": bool(session.get("managed_payments_fallback", False)),
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -392,9 +528,7 @@ def make_handler(
                     return
                 try:
                     key = resolve_api_key(api_key)
-                    session = stripe_request(
-                        "POST",
-                        "/checkout/sessions",
+                    session = create_checkout_session_with_fallback(
                         key,
                         build_session_params(
                             slug=slug,
@@ -481,6 +615,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_prov.add_argument("--site-url", default=DEFAULT_SITE_URL, help="Hosted site base URL")
     p_prov.add_argument("--server-url", default="http://localhost:4242", help="Checkout server base URL")
     p_prov.add_argument("--catalog-path", default=str(DEFAULT_CATALOG_PATH), help="Catalog output JSON")
+    p_prov.add_argument("--wire-checkout", action="store_true", help="Wire Payment Links into landing pages, zips, and docs/")
     p_prov.add_argument("--dry-run", action="store_true", help="Write dry-run catalog without calling Stripe")
     p_prov.set_defaults(func=cmd_provision)
 
@@ -508,6 +643,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> int:
+    load_dotenv()
     parser = build_parser()
     args = parser.parse_args()
     try:

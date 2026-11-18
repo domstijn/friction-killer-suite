@@ -27,7 +27,7 @@ def update_landing_html(landing_path: Path, checkout_url: str) -> int:
         html = html.replace("#CHECKOUT_URL_HERE", checkout_url)
 
     pattern = re.compile(
-        r'(<a\s+[^>]*?href=")([^"]+)("[^>]*?class="[^"]*lemonsqueezy-button[^"]*")',
+        r'(<a\s+[^>]*?href=")([^"]+)("[^>]*?class="[^"]*(?:lemonsqueezy-button|stripe-checkout-button)[^"]*")',
         re.IGNORECASE,
     )
 
@@ -38,6 +38,14 @@ def update_landing_html(landing_path: Path, checkout_url: str) -> int:
         return f"{match.group(1)}{checkout_url}{match.group(3)}"
 
     html = pattern.sub(_repl, html)
+    if "stripe.com" in checkout_url:
+        html = re.sub(
+            r'\s*<script\s+src="https://assets\.lemonsqueezy\.com/lemon\.js"[^>]*>\s*</script>',
+            "",
+            html,
+            flags=re.IGNORECASE,
+        )
+        html = html.replace("lemonsqueezy-button", "stripe-checkout-button")
     landing_path.write_text(html, encoding="utf-8")
     return count
 

@@ -4,19 +4,18 @@
 
 | Product | Ecosystem | Pro Price | Distributable Bundle | Launch Assets |
 | :--- | :--- | :---: | :--- | :--- |
-| **LinearBridge** (`notion-linear-prd-sync`) | browser-extension | $29 once | `projects/notion-linear-prd-sync/dist/notion-linear-prd-sync-v0.1.0.zip` | [Sales Page](../projects/notion-linear-prd-sync/launch/landing.html) / [Kit](../projects/notion-linear-prd-sync/launch/LAUNCH_KIT.md) |
-| **NotionGitExport** (`notion-clean-md-exporter`) | cli-wrapper | $24 once | `projects/notion-clean-md-exporter/dist/notion-clean-md-exporter-v0.1.0.zip` | [Sales Page](../projects/notion-clean-md-exporter/launch/landing.html) / [Kit](../projects/notion-clean-md-exporter/launch/LAUNCH_KIT.md) |
-| **ExtProfileLock** (`vscode-workspace-profile-config`) | ide-ai-plugin | $19 once | `projects/vscode-workspace-profile-config/dist/vscode-workspace-profile-config-v0.1.0.zip` | [Sales Page](../projects/vscode-workspace-profile-config/launch/landing.html) / [Kit](../projects/vscode-workspace-profile-config/launch/LAUNCH_KIT.md) |
-| **All-Access Bundle** | Multi-Product | **\$49 once** (Save 32%) | All 3 Pro Keys | [Storefront](index.html) |
+| **LinearBridge** (`notion-linear-prd-sync`) | browser-extension | €29 once | `projects/notion-linear-prd-sync/dist/notion-linear-prd-sync-v0.1.0.zip` | [Sales Page](../projects/notion-linear-prd-sync/launch/landing.html) / [Kit](../projects/notion-linear-prd-sync/launch/LAUNCH_KIT.md) |
+| **NotionGitExport** (`notion-clean-md-exporter`) | cli-wrapper | €24 once | `projects/notion-clean-md-exporter/dist/notion-clean-md-exporter-v0.1.0.zip` | [Sales Page](../projects/notion-clean-md-exporter/launch/landing.html) / [Kit](../projects/notion-clean-md-exporter/launch/LAUNCH_KIT.md) |
+| **ExtProfileLock** (`vscode-workspace-profile-config`) | ide-ai-plugin | €19 once | `projects/vscode-workspace-profile-config/dist/vscode-workspace-profile-config-v0.1.0.zip` | [Sales Page](../projects/vscode-workspace-profile-config/launch/landing.html) / [Kit](../projects/vscode-workspace-profile-config/launch/LAUNCH_KIT.md) |
+| **All-Access Bundle** | Multi-Product | **€49 once** (Save 32%) | All 3 Pro Keys | [Storefront](index.html) |
 
 ---
 
-## Step 1: Activate & Provision Stripe Managed Payments (~3 mins)
+## Step 1: Provision Stripe Catalog & Payment Links (~1 min)
 1. Enable Managed Payments in your Stripe Dashboard (`https://dashboard.stripe.com/settings/managed-payments`).
-2. Create all 4 Managed Payments products & USD prices (`Stripe-Version: 2025-03-31.basil`, eligible tax code `txcd_10000000`):
+2. Create/sync all 4 EUR products, prices (`txcd_10103000`, `tax_behavior: inclusive`), and hosted Payment Links (`Stripe-Version: 2025-03-31.basil`):
 ```bash
-export STRIPE_SECRET_KEY="sk_test_..."
-python3 scripts/stripe_managed_payments.py provision
+python3 scripts/stripe_managed_payments.py provision --wire-checkout
 ```
 
 ## Step 2: Run Checkout, License Verify & Webhook Server (~1 min)

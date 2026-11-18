@@ -19,9 +19,9 @@ DEFAULT_DOCS_DIR = REPO_ROOT / "docs"
 DEFAULT_BUNDLE_CONFIG = DEFAULT_HUB_DIR / "bundle_config.json"
 
 DEFAULT_PRICES = {
-    "notion-linear-prd-sync": "$29 once",
-    "notion-clean-md-exporter": "$24 once",
-    "vscode-workspace-profile-config": "$19 once",
+    "notion-linear-prd-sync": "€29 once",
+    "notion-clean-md-exporter": "€24 once",
+    "vscode-workspace-profile-config": "€19 once",
 }
 
 LEGAL_FOOTER_HTML = """  <section id="policies" class="mx-auto max-w-5xl px-6 pb-10">
@@ -39,7 +39,7 @@ LEGAL_FOOTER_HTML = """  <section id="policies" class="mx-auto max-w-5xl px-6 pb
         </div>
         <div>
           <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
-          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments and license delivery are processed securely by Lemon Squeezy.</p>
+          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments are processed securely by Stripe.</p>
         </div>
       </div>
     </div>
@@ -50,10 +50,10 @@ def detect_price(proj_dir: Path, slug: str) -> str:
     landing = proj_dir / "launch" / "landing.html"
     if landing.is_file():
         text = landing.read_text(encoding="utf-8", errors="replace")
-        m = re.search(r"(\$\d+\s+once)", text)
+        m = re.search(r"([€$]\d+\s+once)", text)
         if m:
             return m.group(1)
-    return DEFAULT_PRICES.get(slug, "$29 once")
+    return DEFAULT_PRICES.get(slug, "€29 once")
 
 
 def detect_summary(proj_dir: Path, opp: dict[str, Any] | None) -> str:
@@ -141,7 +141,6 @@ def render_hub_html(
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Friction-Killer Suite — All-Access Developer &amp; PM Tools</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
   <header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
@@ -150,7 +149,7 @@ def render_hub_html(
       <a href="#bundle" class="hover:text-white">Bundle</a>
       <a href="#policies" class="hover:text-white">Support &amp; Policies</a>
       <a href="#bundle" class="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400">
-        All-Access Bundle — $49
+        All-Access Bundle — €49
       </a>
     </nav>
   </header>
@@ -179,13 +178,13 @@ def render_hub_html(
           <span class="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300">BEST VALUE · SAVE 32%</span>
           <h2 class="mt-3 text-3xl font-extrabold text-white">All-Access Friction-Killer Bundle</h2>
           <p class="mt-2 max-w-xl text-sm text-slate-300">
-            Unlock Pro licenses for all {len(products)} tools (LinearBridge + NotionGitExport + ExtProfileLock) with one single purchase ($72 combined value).
+            Unlock Pro licenses for all {len(products)} tools (LinearBridge + NotionGitExport + ExtProfileLock) with one single purchase (€72 combined value).
           </p>
         </div>
         <div class="w-full shrink-0 rounded-2xl border border-slate-700 bg-slate-950/70 p-6 text-center md:w-72">
-          <div class="text-xs text-slate-400 line-through">$72 combined</div>
-          <div class="mt-1 text-4xl font-extrabold text-white">$49 <span class="text-sm font-normal text-slate-400">once</span></div>
-          <a href="{html.escape(bundle_checkout_url)}" data-fk-cta="pro-checkout" class="lemonsqueezy-button mt-5 block rounded-xl bg-indigo-500 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
+          <div class="text-xs text-slate-400 line-through">€72 combined</div>
+          <div class="mt-1 text-4xl font-extrabold text-white">€49 <span class="text-sm font-normal text-slate-400">once</span></div>
+          <a href="{html.escape(bundle_checkout_url)}" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-5 block rounded-xl bg-indigo-500 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
             Get All-Access Bundle
           </a>
         </div>
@@ -397,16 +396,15 @@ def render_playbook_md(products: list[dict[str, Any]]) -> str:
 | Product | Ecosystem | Pro Price | Distributable Bundle | Launch Assets |
 | :--- | :--- | :---: | :--- | :--- |
 {rows}
-| **All-Access Bundle** | Multi-Product | **\\$49 once** (Save 32%) | All 3 Pro Keys | [Storefront](index.html) |
+| **All-Access Bundle** | Multi-Product | **€49 once** (Save 32%) | All 3 Pro Keys | [Storefront](index.html) |
 
 ---
 
-## Step 1: Activate & Provision Stripe Managed Payments (~3 mins)
+## Step 1: Provision Stripe Catalog & Payment Links (~1 min)
 1. Enable Managed Payments in your Stripe Dashboard (`https://dashboard.stripe.com/settings/managed-payments`).
-2. Create all 4 Managed Payments products & USD prices (`Stripe-Version: 2025-03-31.basil`, eligible tax code `txcd_10000000`):
+2. Create/sync all 4 EUR products, prices (`txcd_10103000`, `tax_behavior: inclusive`), and hosted Payment Links (`Stripe-Version: 2025-03-31.basil`):
 ```bash
-export STRIPE_SECRET_KEY="sk_test_..."
-python3 scripts/stripe_managed_payments.py provision
+python3 scripts/stripe_managed_payments.py provision --wire-checkout
 ```
 
 ## Step 2: Run Checkout, License Verify & Webhook Server (~1 min)

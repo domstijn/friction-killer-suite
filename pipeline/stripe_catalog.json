@@ -1,0 +1,62 @@
+{
+  "api_version": "2025-03-31.basil",
+  "tax_code": "txcd_10103000",
+  "site_url": "https://domstijn.github.io/friction-killer-suite",
+  "server_url": "http://localhost:4242",
+  "dry_run": false,
+  "updated_at": "2026-11-18T17:54:56+00:00",
+  "products": {
+    "notion-linear-prd-sync": {
+      "slug": "notion-linear-prd-sync",
+      "name": "LinearBridge Pro",
+      "description": "1-click Notion PRD to Linear Parent Epic & Sub-Issues Chrome extension (Pro License).",
+      "unit_amount": 2900,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_VeW6ffGaCfNzue",
+      "price_id": "price_1UdD4PH9yLuviqvB2h1BnsdM",
+      "payment_link_id": "plink_1UdD4QH9yLuviqvBbc2PgPj5",
+      "payment_link_url": "https://buy.stripe.com/test_5kQcN5bsvgzWezEe0H7ok00",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=notion-linear-prd-sync"
+    },
+    "notion-clean-md-exporter": {
+      "slug": "notion-clean-md-exporter",
+      "name": "NotionGitExport Pro",
+      "description": "Lossless Notion Markdown cleaner with YAML frontmatter and asset localization CLI (Pro License).",
+      "unit_amount": 2400,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_VeW69bJBCk3Nbr",
+      "price_id": "price_1UdD4RH9yLuviqvBSkk22xTu",
+      "payment_link_id": "plink_1UdD4SH9yLuviqvBsQDBqpQ2",
+      "payment_link_url": "https://buy.stripe.com/test_5kQeVd403aby1MS5ub7ok01",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=notion-clean-md-exporter"
+    },
+    "vscode-workspace-profile-config": {
+      "slug": "vscode-workspace-profile-config",
+      "name": "ExtProfileLock Pro",
+      "description": "Declarative VS Code workspace extension locks and .env interpolation (Pro License).",
+      "unit_amount": 1900,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_VeW60IB88zFfQl",
+      "price_id": "price_1UdD4TH9yLuviqvBBKC6MpYZ",
+      "payment_link_id": "plink_1UdD4UH9yLuviqvBqWQ9pC1z",
+      "payment_link_url": "https://buy.stripe.com/test_dRmfZhdAD97ugHMf4L7ok02",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=vscode-workspace-profile-config"
+    },
+    "all-access-bundle": {
+      "slug": "all-access-bundle",
+      "name": "All-Access Friction-Killer Bundle",
+      "description": "Pro licenses for LinearBridge, NotionGitExport, and ExtProfileLock.",
+      "unit_amount": 4900,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_VeW6IYwGyYJkPv",
+      "price_id": "price_1UdD4VH9yLuviqvBrdaJQEzz",
+      "payment_link_id": "plink_1UdD4WH9yLuviqvBQyLjRsUb",
+      "payment_link_url": "https://buy.stripe.com/test_7sY6oH4035Vi0IOaOv7ok03",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=all-access-bundle"
+    }
+  }
+}

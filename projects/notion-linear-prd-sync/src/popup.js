@@ -98,8 +98,8 @@ document.getElementById("sync-btn")?.addEventListener("click", async () => {
 
 document.getElementById("activate-btn")?.addEventListener("click", async () => {
   const key = licenseKeyEl.value.trim();
-  setStatus("Validating Lemon Squeezy license...");
-  const res = await verifyLicense({ key, provider: "lemonsqueezy" });
+  setStatus("Validating Pro license...");
+  const res = await verifyLicense({ key, provider: "stripe", productId: "prod_VeW6ffGaCfNzue,prod_VeW6IYwGyYJkPv" });
   await refreshTierBadge();
   setStatus(res.valid ? "Pro license activated!" : res.reason);
 });

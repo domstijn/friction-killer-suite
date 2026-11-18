@@ -11,7 +11,7 @@ import {
   parseDotEnv,
 } from "./profile_engine.js";
 
-const DEFAULT_PRODUCT_ID = null;
+const DEFAULT_PRODUCT_ID = "prod_VeW60IB88zFfQl,prod_VeW6IYwGyYJkPv";
 
 export { getTelemetry };
 
