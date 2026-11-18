@@ -158,7 +158,7 @@ def render_hub_html(
   <main class="mx-auto max-w-6xl px-6 pb-12">
     <section class="py-12 text-center">
       <span class="inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
-        Zero-Subscription · Local-First · Instant Lemon Squeezy Keys
+        Zero-Subscription · Local-First · Powered by Stripe Managed Payments
       </span>
       <h1 class="mt-5 text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
         Eliminate Notion, Linear &amp; VS Code friction<br />
@@ -273,6 +273,115 @@ def publish_docs_site(
         render_hub_html(products, for_pages=True, bundle_checkout_url=bundle_checkout_url),
         encoding="utf-8",
     )
+    (docs_dir / "success.html").write_text(
+        render_success_html(products, for_pages=True), encoding="utf-8"
+    )
+    (docs_dir / "cancel.html").write_text(render_cancel_html(), encoding="utf-8")
+
+
+def render_success_html(products: list[dict[str, Any]], *, for_pages: bool = True) -> str:
+    dl_items = []
+    for p in products:
+        zip_href = p["site_zip_rel"] if for_pages else p["zip_rel"]
+        dl_items.append(
+            f'<a href="{html.escape(zip_href)}" download class="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">Download {html.escape(p["short_title"])} (.zip)</a>'
+        )
+    downloads_html = "\n        ".join(dl_items)
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thanks for purchasing! — Friction-Killer Suite</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased">
+  <main class="mx-auto max-w-2xl px-6 py-16">
+    <a href="./index.html" class="text-xs font-medium text-indigo-300 hover:text-white">&larr; Back to Friction-Killer Suite</a>
+    <div class="mt-6 rounded-3xl border border-emerald-500/40 bg-slate-900/80 p-8">
+      <span class="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300">PAYMENT CONFIRMED</span>
+      <h1 class="mt-4 text-3xl font-extrabold text-white">Thanks for purchasing!</h1>
+      <p class="mt-2 text-sm text-slate-300">
+        Your Stripe Checkout Session ID below acts as your Pro License Key for LinearBridge, NotionGitExport, and ExtProfileLock.
+      </p>
+
+      <div class="mt-6 rounded-2xl border border-slate-700 bg-slate-950 p-5">
+        <div class="text-xs font-semibold uppercase tracking-wider text-slate-400">Your Pro License Key</div>
+        <div class="mt-2 flex items-center justify-between gap-3">
+          <code id="license-key" class="truncate font-mono text-sm text-emerald-300">Check URL ?session_id=...</code>
+          <button id="copy-btn" type="button" class="shrink-0 rounded-lg bg-indigo-500 px-3.5 py-2 text-xs font-semibold text-white hover:bg-indigo-400">
+            Copy License Key
+          </button>
+        </div>
+        <p id="copy-status" class="mt-2 text-xs text-slate-400"></p>
+      </div>
+
+      <div class="mt-6 space-y-2 text-xs text-slate-300">
+        <p class="font-semibold text-white">How to activate:</p>
+        <p>• <strong>LinearBridge</strong>: Open extension popup &rarr; paste key &rarr; click <em>Activate</em>.</p>
+        <p>• <strong>NotionGitExport</strong>: Run <code>python3 src/cli.py --activate YOUR_KEY</code>.</p>
+        <p>• <strong>ExtProfileLock</strong>: Call <code>activate("YOUR_KEY")</code> in your workspace profile config.</p>
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-2">
+        {downloads_html}
+      </div>
+
+      <p class="mt-6 border-t border-slate-800 pt-4 text-xs text-slate-400">
+        Questions about your order? Email <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a>.
+      </p>
+    </div>
+  </main>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const sid = params.get("session_id");
+    const keyEl = document.getElementById("license-key");
+    const statusEl = document.getElementById("copy-status");
+    if (sid) {{
+      keyEl.textContent = sid;
+    }} else {{
+      keyEl.textContent = "No session_id found in URL";
+      statusEl.textContent = "Return here directly from Stripe Checkout to display your license key.";
+    }}
+    document.getElementById("copy-btn")?.addEventListener("click", async () => {{
+      if (!sid) return;
+      try {{
+        await navigator.clipboard.writeText(sid);
+        statusEl.textContent = "Copied license key to clipboard!";
+      }} catch {{
+        statusEl.textContent = "Select and copy the key above.";
+      }}
+    }});
+  </script>
+</body>
+</html>
+"""
+
+
+def render_cancel_html() -> str:
+    return """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout canceled — Friction-Killer Suite</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased">
+  <main class="mx-auto max-w-xl px-6 py-24 text-center">
+    <div class="rounded-3xl border border-slate-800 bg-slate-900/70 p-10">
+      <h1 class="text-2xl font-bold text-white">Checkout canceled</h1>
+      <p class="mt-3 text-sm text-slate-300">
+        Not ready to purchase yet? No problem, we'll be here when you are! You can still download and use the Free Tier of every tool below.
+      </p>
+      <a href="./index.html" class="mt-6 inline-block rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
+        Return to Friction-Killer Suite
+      </a>
+    </div>
+  </main>
+</body>
+</html>
+"""
 
 
 def render_playbook_md(products: list[dict[str, Any]]) -> str:
@@ -281,11 +390,7 @@ def render_playbook_md(products: list[dict[str, Any]]) -> str:
         f"`projects/{p['slug']}/dist/{p['slug']}-v0.1.0.zip` | [Sales Page]({p['landing_rel']}) / [Kit]({p['kit_rel']}) |"
         for p in products
     )
-    cmds = "\n".join(
-        f"python3 scripts/configure_checkout.py --slug {p['slug']} --checkout-url \"https://YOUR_STORE.lemonsqueezy.com/buy/...\" --product-id \"PRODUCT_ID\""
-        for p in products
-    )
-    return f"""# Master Launch Playbook (15-Minute Go-Live Checklist)
+    return f"""# Master Launch Playbook (Stripe Managed Payments)
 
 ## Portfolio Summary ({len(products)} Shipped Products)
 
@@ -296,21 +401,23 @@ def render_playbook_md(products: list[dict[str, Any]]) -> str:
 
 ---
 
-## Step 1: Create Lemon Squeezy Products (~5 mins)
-1. Create 3 single products in Lemon Squeezy with **License Keys enabled** (3 device activations):
-   - **LinearBridge Pro** — \\$29 one-time
-   - **NotionGitExport Pro** — \\$24 one-time
-   - **ExtProfileLock Pro** — \\$19 one-time
-2. Create 1 **All-Access Bundle** product at **\\$49 one-time** and pass `--bundle-url` to `configure_checkout.py`.
-
-## Step 2: Wire Live Checkout URLs & Rebuild Site/Zips (~2 mins)
+## Step 1: Activate & Provision Stripe Managed Payments (~3 mins)
+1. Enable Managed Payments in your Stripe Dashboard (`https://dashboard.stripe.com/settings/managed-payments`).
+2. Create all 4 Managed Payments products & USD prices (`Stripe-Version: 2025-03-31.basil`, eligible tax code `txcd_10000000`):
 ```bash
-{cmds}
-python3 scripts/configure_checkout.py --bundle-url "https://YOUR_STORE.lemonsqueezy.com/buy/BUNDLE_LINK"
+export STRIPE_SECRET_KEY="sk_test_..."
+python3 scripts/stripe_managed_payments.py provision
 ```
 
-## Step 3: Publish & Distribute (~8 mins)
-1. **GitHub Pages Storefront (`docs/`)**: Push `main` so `https://domstijn.github.io/friction-killer-suite/` serves live checkout buttons and direct `.zip` downloads.
+## Step 2: Run Checkout, License Verify & Webhook Server (~1 min)
+```bash
+python3 scripts/stripe_managed_payments.py serve --port 4242
+# Test redirect to Stripe Checkout:
+curl -X POST -is "http://localhost:4242/create-checkout-session" -d ""
+```
+
+## Step 3: Publish & Distribute
+1. **GitHub Pages Storefront (`docs/`)**: Push `main` so `https://domstijn.github.io/friction-killer-suite/` serves live product pages, `success.html` (auto-displays `?session_id=` Pro key), `cancel.html`, and direct `.zip` downloads.
 2. **Marketplace Submissions**:
    - Upload `projects/notion-linear-prd-sync/dist/notion-linear-prd-sync-v0.1.0.zip` to the Chrome Web Store Developer Dashboard.
    - Package `projects/vscode-workspace-profile-config` for the VS Code Marketplace (`vsce package`).
@@ -359,6 +466,10 @@ def main() -> int:
         render_hub_html(products, for_pages=False, bundle_checkout_url=bundle_checkout_url),
         encoding="utf-8",
     )
+    (hub_dir / "success.html").write_text(
+        render_success_html(products, for_pages=False), encoding="utf-8"
+    )
+    (hub_dir / "cancel.html").write_text(render_cancel_html(), encoding="utf-8")
     md_path.write_text(render_playbook_md(products), encoding="utf-8")
 
     docs_dir = Path(args.docs_dir)

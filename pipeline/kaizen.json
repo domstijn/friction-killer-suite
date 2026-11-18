@@ -58,6 +58,20 @@
         "Upgraded scripts/configure_checkout.py with --bundle-url and automatic launch_hub/ + docs/ sync after every checkout update."
       ],
       "expected_impact": "Instant free GitHub Pages storefront ready for Lemon Squeezy verification and zero-friction updates when live checkout links are added."
+    },
+    {
+      "cycle": 5,
+      "date": "2026-11-18",
+      "diagnosed_bottlenecks": [
+        "Lemon Squeezy redirected onboarding to Stripe Managed Payments (2025-03-31.basil), which requires Checkout Sessions (managed_payments[enabled]=true), success/cancel pages, and webhook/session verification.",
+        "Existing license clients lacked Stripe Checkout Session key (cs_test_.../cs_live_...) support."
+      ],
+      "upgrades_implemented": [
+        "Created scripts/stripe_managed_payments.py with provision, create-session, and serve (POST /create-checkout-session 303 redirect, POST /verify-license, POST /webhook).",
+        "Added Stripe provider & cs_test_/cs_live_ auto-detection to templates/license-validator/license_client.js and .py (synced across all 3 projects).",
+        "Upgraded scripts/build_portfolio.py to generate Stripe success.html (?session_id= license display + Copy button) and cancel.html into launch_hub/ and GitHub Pages docs/."
+      ],
+      "expected_impact": "Seamless drop-in migration from Lemon Squeezy to Stripe Managed Payments with Merchant-of-Record tax compliance across 80+ countries."
     }
   ]
 }

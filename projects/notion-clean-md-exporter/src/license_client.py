@@ -1,8 +1,9 @@
-"""Zero-backend license key validator for Lemon Squeezy, Polar.sh, and Gumroad."""
+"""License key validator for Stripe Managed Payments, Lemon Squeezy, Polar.sh, and Gumroad."""
 
 from __future__ import annotations
 
 import json
+import os
 import time
 import urllib.error
 import urllib.parse
@@ -111,6 +112,17 @@ def _build_request(
             headers={"Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json"},
             method="POST",
         )
+    if provider == "stripe":
+        verify_url = os.environ.get("STRIPE_LICENSE_VERIFY_URL", "http://localhost:4242/verify-license")
+        body = json.dumps(
+            {"license_key": key, "product_id": product_id, "instance_name": instance_name}
+        ).encode("utf-8")
+        return urllib.request.Request(
+            verify_url,
+            data=body,
+            headers={"Content-Type": "application/json", "Accept": "application/json"},
+            method="POST",
+        )
     raise ValueError(f"Unsupported license provider: {provider}")
 
 
@@ -135,6 +147,18 @@ def _parse_response(
         valid = bool(data.get("success")) and not purchase.get("refunded") and not purchase.get("chargebacked")
         reason = "ok" if valid else str(data.get("message") or "Invalid or refunded key")
         return valid, reason, purchase.get("subscription_ended_at")
+    if provider == "stripe":
+        valid = bool(data.get("valid")) or data.get("payment_status") == "paid"
+        meta = data.get("metadata") if isinstance(data.get("metadata"), dict) else {}
+        returned_id = str(data.get("product_id") or meta.get("product_id") or meta.get("slug") or "").strip()
+        allowed_ids = _normalize_product_ids(product_id)
+        pid_ok = (not allowed_ids) or (bool(returned_id) and returned_id in allowed_ids)
+        reason = (
+            "ok"
+            if (valid and pid_ok)
+            else str(data.get("error") or data.get("reason") or ("Product mismatch" if valid else "Invalid Stripe session key"))
+        )
+        return valid and pid_ok, reason, data.get("expires_at")
     return False, "Unsupported provider", None
 
 
@@ -153,9 +177,10 @@ def verify_license(
         return {"valid": False, "tier": "free", "reason": "Empty license key", "cached": False}
 
     _record_telemetry(app_slug, cache_dir, "activation_attempts")
+    effective_provider = "stripe" if clean_key.startswith(("cs_test_", "cs_live_")) else provider
     cpath = _cache_path(app_slug, cache_dir)
     try:
-        req = _build_request(provider, clean_key, product_id, instance_name)
+        req = _build_request(effective_provider, clean_key, product_id, instance_name)
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             raw = resp.read().decode("utf-8")
             data = json.loads(raw) if raw else {}
@@ -171,13 +196,13 @@ def verify_license(
             return {**cached, "cached": True, "reason": "Verified from offline grace cache"}
         return {"valid": False, "tier": "free", "reason": f"Network/config error: {err}", "cached": False}
 
-    valid, reason, expires_at = _parse_response(provider, data, product_id)
+    valid, reason, expires_at = _parse_response(effective_provider, data, product_id)
     if valid:
         _record_telemetry(app_slug, cache_dir, "pro_activations")
     record = {
         "valid": valid,
         "tier": "pro" if valid else "free",
-        "provider": provider,
+        "provider": effective_provider,
         "reason": reason,
         "expires_at": expires_at,
         "checked_at": time.time(),

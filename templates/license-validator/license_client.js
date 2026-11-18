@@ -1,5 +1,5 @@
 /**
- * Zero-backend license key validator for Lemon Squeezy, Polar.sh, and Gumroad.
+ * Zero-backend & Stripe Managed Payments license key validator (Stripe, Lemon Squeezy, Polar.sh, Gumroad).
  * Works in Browser / WebExtensions (Chrome MV3) and Node.js 18+ ESM environments.
  */
 
@@ -84,6 +84,34 @@ const PROVIDERS = {
       };
     },
   },
+  stripe: {
+    url: () => globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license",
+    buildRequest: ({ key, productId, instanceName }) => ({
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        license_key: key,
+        product_id: productId,
+        instance_name: instanceName,
+      }),
+    }),
+    parseResponse: (data, productId) => {
+      const valid = Boolean(data?.valid) || data?.payment_status === "paid";
+      const allowedIds = normalizeProductIds(productId);
+      const returnedId = String(
+        data?.product_id || data?.metadata?.product_id || data?.metadata?.slug || ""
+      ).trim();
+      const pidMatch = allowedIds.length === 0 || (Boolean(returnedId) && allowedIds.includes(returnedId));
+      return {
+        valid: valid && pidMatch,
+        reason: !valid
+          ? data?.error || data?.reason || "Invalid Stripe session key"
+          : pidMatch
+            ? "ok"
+            : "Product mismatch",
+        expiresAt: data?.expires_at || null,
+      };
+    },
+  },
 };
 
 function resolveStore(customStore) {
@@ -159,15 +187,18 @@ export async function verifyLicense({
   fetchImpl = globalThis.fetch,
 } = {}) {
   const cleanKey = String(key || "").trim();
-  const adapter = PROVIDERS[provider];
+  const effectiveProvider =
+    cleanKey.startsWith("cs_test_") || cleanKey.startsWith("cs_live_") ? "stripe" : provider;
+  const adapter = PROVIDERS[effectiveProvider];
   if (!cleanKey) return { valid: false, tier: "free", reason: "Empty license key", cached: false };
-  if (!adapter) return { valid: false, tier: "free", reason: `Unsupported provider: ${provider}`, cached: false };
+  if (!adapter) return { valid: false, tier: "free", reason: `Unsupported provider: ${effectiveProvider}`, cached: false };
 
   const kv = resolveStore(store);
   await recordTelemetry(kv, "activation_attempts");
   try {
     const req = adapter.buildRequest({ key: cleanKey, productId, instanceName });
-    const res = await fetchImpl(adapter.url, { method: "POST", headers: req.headers, body: req.body });
+    const endpointUrl = typeof adapter.url === "function" ? adapter.url() : adapter.url;
+    const res = await fetchImpl(endpointUrl, { method: "POST", headers: req.headers, body: req.body });
     const data = await res.json().catch(() => ({}));
     const parsed = adapter.parseResponse(data, productId);
     if (parsed.valid) {
@@ -176,7 +207,7 @@ export async function verifyLicense({
     const state = {
       valid: parsed.valid,
       tier: parsed.valid ? "pro" : "free",
-      provider,
+      provider: effectiveProvider,
       reason: parsed.reason,
       expiresAt: parsed.expiresAt,
       checkedAt: Date.now(),

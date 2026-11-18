@@ -1,4 +1,4 @@
-# Master Launch Playbook (15-Minute Go-Live Checklist)
+# Master Launch Playbook (Stripe Managed Payments)
 
 ## Portfolio Summary (3 Shipped Products)
 
@@ -11,23 +11,23 @@
 
 ---
 
-## Step 1: Create Lemon Squeezy Products (~5 mins)
-1. Create 3 single products in Lemon Squeezy with **License Keys enabled** (3 device activations):
-   - **LinearBridge Pro** — \$29 one-time
-   - **NotionGitExport Pro** — \$24 one-time
-   - **ExtProfileLock Pro** — \$19 one-time
-2. Create 1 **All-Access Bundle** product at **\$49 one-time** and pass `--bundle-url` to `configure_checkout.py`.
-
-## Step 2: Wire Live Checkout URLs & Rebuild Site/Zips (~2 mins)
+## Step 1: Activate & Provision Stripe Managed Payments (~3 mins)
+1. Enable Managed Payments in your Stripe Dashboard (`https://dashboard.stripe.com/settings/managed-payments`).
+2. Create all 4 Managed Payments products & USD prices (`Stripe-Version: 2025-03-31.basil`, eligible tax code `txcd_10000000`):
 ```bash
-python3 scripts/configure_checkout.py --slug notion-linear-prd-sync --checkout-url "https://YOUR_STORE.lemonsqueezy.com/buy/..." --product-id "PRODUCT_ID"
-python3 scripts/configure_checkout.py --slug notion-clean-md-exporter --checkout-url "https://YOUR_STORE.lemonsqueezy.com/buy/..." --product-id "PRODUCT_ID"
-python3 scripts/configure_checkout.py --slug vscode-workspace-profile-config --checkout-url "https://YOUR_STORE.lemonsqueezy.com/buy/..." --product-id "PRODUCT_ID"
-python3 scripts/configure_checkout.py --bundle-url "https://YOUR_STORE.lemonsqueezy.com/buy/BUNDLE_LINK"
+export STRIPE_SECRET_KEY="sk_test_..."
+python3 scripts/stripe_managed_payments.py provision
 ```
 
-## Step 3: Publish & Distribute (~8 mins)
-1. **GitHub Pages Storefront (`docs/`)**: Push `main` so `https://domstijn.github.io/friction-killer-suite/` serves live checkout buttons and direct `.zip` downloads.
+## Step 2: Run Checkout, License Verify & Webhook Server (~1 min)
+```bash
+python3 scripts/stripe_managed_payments.py serve --port 4242
+# Test redirect to Stripe Checkout:
+curl -X POST -is "http://localhost:4242/create-checkout-session" -d ""
+```
+
+## Step 3: Publish & Distribute
+1. **GitHub Pages Storefront (`docs/`)**: Push `main` so `https://domstijn.github.io/friction-killer-suite/` serves live product pages, `success.html` (auto-displays `?session_id=` Pro key), `cancel.html`, and direct `.zip` downloads.
 2. **Marketplace Submissions**:
    - Upload `projects/notion-linear-prd-sync/dist/notion-linear-prd-sync-v0.1.0.zip` to the Chrome Web Store Developer Dashboard.
    - Package `projects/vscode-workspace-profile-config` for the VS Code Marketplace (`vsce package`).
