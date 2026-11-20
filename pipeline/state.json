@@ -12,13 +12,55 @@
     "lemonsqueezy",
     "gumroad"
   ],
-  "active_project": "vscode-workspace-profile-config",
+  "active_project": "claude-profile-switcher",
   "current_stage": "COMPLETED",
   "gates": {
     "gate_1_idea_and_spec_approved": true,
     "gate_2_launch_approved": true
   },
   "opportunities": [
+    {
+      "id": "claude-profile-switcher",
+      "title": "ClaudeProfileSwitch: Multi-Account, MCP Profile & Quota Guard for Claude Code",
+      "ecosystem": "cli-wrapper",
+      "target_software": "Claude Code / Claude Desktop",
+      "pain": "No built-in multi-account/MCP profile switcher across work and personal projects (#18435: 1,425 upvotes; #27302: 698 upvotes) and abrupt 5-hour session limit exhaustion (#38335: 545 upvotes)",
+      "solution": "Zero-dependency CLI that snapshots/swaps isolated Claude auth + MCP profiles per repo (.claude-profile) and audits local JSONL session token burn against 5-hour quota windows",
+      "dimensions": {
+        "pain_severity": 9.5,
+        "willingness_to_pay": 8.5,
+        "solution_effectiveness": 9.0,
+        "build_speed": 9.0,
+        "distribution_clarity": 9.5,
+        "platform_safety": 9.0
+      },
+      "effectiveness_score": 90.0,
+      "commercial_potential_score": 90.5,
+      "score": 90.5,
+      "verdict": "GO",
+      "updated_at": "2026-11-20T22:04:31+00:00"
+    },
+    {
+      "id": "obsidian-plugin-auditor",
+      "title": "VaultShield: Static Exfiltration Scanner & SHA-256 Lockfile for Obsidian Plugins",
+      "ecosystem": "cli-wrapper",
+      "target_software": "Obsidian",
+      "pain": "Obsidian community plugins run unsandboxed with full Node/Electron fs, child_process, and network access, abused in real-world RAT campaigns (366 HN pts / 229 comments)",
+      "solution": "Local CLI scanner that audits .obsidian/plugins/*/main.js for child_process/eval/exfiltration domains, enforces SHA-256 plugin-lock.json integrity, and diffs updates",
+      "dimensions": {
+        "pain_severity": 9.0,
+        "willingness_to_pay": 8.0,
+        "solution_effectiveness": 9.0,
+        "build_speed": 9.0,
+        "distribution_clarity": 9.0,
+        "platform_safety": 9.5
+      },
+      "effectiveness_score": 91.25,
+      "commercial_potential_score": 85.5,
+      "score": 88.0,
+      "verdict": "GO",
+      "updated_at": "2026-11-20T22:04:31+00:00"
+    },
     {
       "id": "notion-linear-prd-sync",
       "title": "LinearBridge: 1-Click Notion PRD to Linear Sub-Issues & Sync",
@@ -39,6 +81,27 @@
       "score": 87.5,
       "verdict": "GO",
       "updated_at": "2026-11-17T17:54:27+00:00"
+    },
+    {
+      "id": "figma-token-tailwind-sync",
+      "title": "FigmaTokenBridge: 1-Click Figma Variables & Styles to Tailwind v4 / MUI Theme",
+      "ecosystem": "browser-extension",
+      "target_software": "Figma",
+      "pain": "Figma gates native Variables REST API behind Enterprise ($75/seat/mo), forcing manual copy-paste of tokens into tailwind.config and theme.js (mui/mui-design-kits#10: 99 upvotes)",
+      "solution": "Local-first Chrome MV3 extension that extracts Figma variables/styles into Tailwind v3/v4 @theme CSS, shadcn variables, and MUI theme.js with dark/light mode support",
+      "dimensions": {
+        "pain_severity": 8.5,
+        "willingness_to_pay": 8.5,
+        "solution_effectiveness": 8.5,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.5,
+        "platform_safety": 8.5
+      },
+      "effectiveness_score": 85.0,
+      "commercial_potential_score": 85.0,
+      "score": 85.0,
+      "verdict": "GO",
+      "updated_at": "2026-11-20T22:04:31+00:00"
     },
     {
       "id": "notion-clean-md-exporter",
@@ -105,8 +168,16 @@
       "title": "ExtProfileLock: Declarative .extensions.json & Env Sync for VS Code",
       "ecosystem": "ide-ai-plugin",
       "target_software": "VS Code",
-      "status": "COMPLETED",
+      "status": "STAGE_1_DISCOVERY",
       "selected_at": "2026-11-17T18:04:45+00:00"
+    },
+    "claude-profile-switcher": {
+      "id": "claude-profile-switcher",
+      "title": "ClaudeProfileSwitch: Multi-Account, MCP Profile & Quota Guard for Claude Code",
+      "ecosystem": "cli-wrapper",
+      "target_software": "Claude Code / Claude Desktop",
+      "status": "COMPLETED",
+      "selected_at": "2026-11-20T22:06:22+00:00"
     }
   }
 }

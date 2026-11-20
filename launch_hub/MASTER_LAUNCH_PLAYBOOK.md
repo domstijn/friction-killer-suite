@@ -1,12 +1,13 @@
 # Master Launch Playbook (Stripe Managed Payments)
 
-## Portfolio Summary (3 Shipped Products)
+## Portfolio Summary (4 Shipped Products)
 
 | Product | Ecosystem | Pro Price | Distributable Bundle | Launch Assets |
 | :--- | :--- | :---: | :--- | :--- |
 | **LinearBridge** (`notion-linear-prd-sync`) | browser-extension | €29 once | `projects/notion-linear-prd-sync/dist/notion-linear-prd-sync-v0.1.0.zip` | [Sales Page](../projects/notion-linear-prd-sync/launch/landing.html) / [Kit](../projects/notion-linear-prd-sync/launch/LAUNCH_KIT.md) |
 | **NotionGitExport** (`notion-clean-md-exporter`) | cli-wrapper | €24 once | `projects/notion-clean-md-exporter/dist/notion-clean-md-exporter-v0.1.0.zip` | [Sales Page](../projects/notion-clean-md-exporter/launch/landing.html) / [Kit](../projects/notion-clean-md-exporter/launch/LAUNCH_KIT.md) |
 | **ExtProfileLock** (`vscode-workspace-profile-config`) | ide-ai-plugin | €19 once | `projects/vscode-workspace-profile-config/dist/vscode-workspace-profile-config-v0.1.0.zip` | [Sales Page](../projects/vscode-workspace-profile-config/launch/landing.html) / [Kit](../projects/vscode-workspace-profile-config/launch/LAUNCH_KIT.md) |
+| **ClaudeProfileSwitch** (`claude-profile-switcher`) | cli-wrapper | €24 once | `projects/claude-profile-switcher/dist/claude-profile-switcher-v0.1.0.zip` | [Sales Page](../projects/claude-profile-switcher/launch/landing.html) / [Kit](../projects/claude-profile-switcher/launch/LAUNCH_KIT.md) |
 | **All-Access Bundle** | Multi-Product | **€49 once** (Save 32%) | All 3 Pro Keys | [Storefront](index.html) |
 
 ---

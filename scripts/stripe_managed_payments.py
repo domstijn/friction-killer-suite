@@ -55,6 +55,14 @@ DEFAULT_CATALOG_ITEMS = [
         "mode": "payment",
     },
     {
+        "slug": "claude-profile-switcher",
+        "name": "ClaudeProfileSwitch Pro",
+        "description": "Multi-account & MCP profile switcher with .claude-profile env injection and 5-hour JSONL quota guard (Pro License).",
+        "unit_amount": 2400,
+        "currency": "eur",
+        "mode": "payment",
+    },
+    {
         "slug": "all-access-bundle",
         "name": "All-Access Friction-Killer Bundle",
         "description": "Pro licenses for LinearBridge, NotionGitExport, and ExtProfileLock.",

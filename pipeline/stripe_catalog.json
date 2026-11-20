@@ -48,6 +48,19 @@
       "payment_link_url": "https://buy.stripe.com/5kQ3cv52I11Wgdq2566sw01",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=vscode-workspace-profile-config"
     },
+    "claude-profile-switcher": {
+      "slug": "claude-profile-switcher",
+      "name": "ClaudeProfileSwitch Pro",
+      "description": "Multi-account & MCP profile switcher with .claude-profile env injection and 5-hour JSONL quota guard (Pro License).",
+      "unit_amount": 2400,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_VfKeANX0phOIoi",
+      "price_id": "price_1UdzznH2AcdDmQyRNCKkNoWa",
+      "payment_link_id": "plink_1Ue006H2AcdDmQyRdQspnxtD",
+      "payment_link_url": "https://buy.stripe.com/aFafZh2UA9ysf9mh006sw04",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=claude-profile-switcher"
+    },
     "all-access-bundle": {
       "slug": "all-access-bundle",
       "name": "All-Access Friction-Killer Bundle",

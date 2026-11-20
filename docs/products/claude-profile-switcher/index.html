@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClaudeProfileSwitch — Multi-Account, MCP Profile &amp; Quota Guard for Claude Code</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
+    <div class="text-lg font-bold tracking-tight text-white">ClaudeProfileSwitch</div>
+    <nav class="flex items-center gap-6 text-sm text-slate-300">
+      <a href="../../index.html" class="text-indigo-300 hover:text-white">&larr; All Suite Tools</a>
+      <a href="#comparison" class="hover:text-white">Why it works</a>
+      <a href="#pricing" class="hover:text-white">Pricing</a>
+      <a href="#faq" class="hover:text-white">FAQ</a>
+      <a href="#pricing" class="rounded-lg bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-400">Get Pro</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6">
+    <!-- Hero -->
+    <section class="py-16 text-center">
+      <span class="inline-block rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300">
+        Zero-Dependency Python CLI for Claude Code &amp; Claude Desktop
+      </span>
+      <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+        Stop fighting Claude Code profiles.<br />
+        <span class="text-indigo-400">Switch accounts, MCP configs &amp; track quota burn in 1 command.</span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
+        Claude Code lacks multi-account/MCP profile switching across work and personal projects and gives no local warning before 5-hour session limits hit. ClaudeProfileSwitch snapshots isolated configs, auto-switches via <code>.claude-profile</code>, and monitors JSONL token burn locally.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a href="../../downloads/claude-profile-switcher-v0.1.0.zip" download data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
+          Use Free Tier (2 Profiles)
+        </a>
+        <a href="https://buy.stripe.com/aFafZh2UA9ysf9mh006sw04" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
+          Unlock Pro License — €24 once
+        </a>
+      </div>
+    </section>
+
+    <!-- Old vs New Comparison -->
+    <section id="comparison" class="grid gap-6 py-12 md:grid-cols-2">
+      <div class="rounded-2xl border border-rose-500/20 bg-slate-900/60 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-rose-400">The Old Painful Way</h2>
+        <ul class="mt-4 space-y-3 text-slate-300">
+          <li>• Logging out and re-authenticating every time you swap work vs. personal Claude accounts</li>
+          <li>• Hand-editing <code>claude_desktop_config.json</code> or hardcoding client MCP API secrets per repo</li>
+          <li>• Getting hit mid-refactor by an unexpected 5-hour Claude Max/Pro session limit</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-emerald-500/30 bg-slate-900 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-emerald-400">With ClaudeProfileSwitch</h2>
+        <ul class="mt-4 space-y-3 text-slate-200">
+          <li>• Snapshot &amp; switch isolated <code>~/.claude.json</code> + MCP server bundles in one CLI call</li>
+          <li>• Repo-bound <code>.claude-profile</code> auto-switching with <code>${ENV_VAR}</code> MCP secret injection</li>
+          <li>• Instant 5-hour JSONL token burn audit with exhaustion ETA &amp; CSV reporting</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 60-Second Install -->
+    <section id="install" class="py-12">
+      <h2 class="text-center text-2xl font-bold text-white">Up and running in 60 seconds</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+          <div class="text-xs font-bold text-indigo-400">STEP 1</div>
+          <h3 class="mt-2 font-semibold text-white">Snapshot Profiles</h3>
+          <p class="mt-2 text-sm text-slate-400">Run <code>claude-profile-switch save --name work</code> and <code>save --name personal</code>.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+          <div class="text-xs font-bold text-indigo-400">STEP 2</div>
+          <h3 class="mt-2 font-semibold text-white">Swap &amp; Inspect Burn</h3>
+          <p class="mt-2 text-sm text-slate-400">Run <code>claude-profile-switch switch --name work</code> and <code>quota</code> anytime.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+          <div class="text-xs font-bold text-indigo-400">STEP 3</div>
+          <h3 class="mt-2 font-semibold text-white">Unlock Pro Automation</h3>
+          <p class="mt-2 text-sm text-slate-400">Run <code>--activate YOUR_KEY</code> for unlimited client profiles, <code>.claude-profile</code> env injection, &amp; CSV exports.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-12">
+      <h2 class="text-center text-2xl font-bold text-white">Simple, one-time pricing</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-8">
+          <h3 class="text-lg font-semibold text-white">Free Starter</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€0</p>
+          <p class="mt-2 text-sm text-slate-400">Ideal for switching between work and personal accounts.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-300">
+            <li>✓ Save &amp; switch up to 2 named profiles</li>
+            <li>✓ Basic 5-hour session token count check</li>
+            <li>✓ Zero external dependencies, runs 100% locally</li>
+          </ul>
+          <a href="../../downloads/claude-profile-switcher-v0.1.0.zip" download data-fk-cta="free-install" class="mt-8 block rounded-xl border border-slate-700 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800">
+            Download Free CLI
+          </a>
+        </div>
+        <div class="rounded-2xl border border-indigo-500 bg-slate-900 p-8 shadow-lg shadow-indigo-500/10">
+          <h3 class="text-lg font-semibold text-white">Pro License</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€24 once</p>
+          <p class="mt-2 text-sm text-slate-400">Delivered instantly via Stripe Managed Payments license key.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-200">
+            <li>✓ Unlimited client, staging &amp; personal profiles</li>
+            <li>✓ Per-repo <code>.claude-profile</code> auto-switch &amp; <code>${ENV_VAR}</code> MCP injection</li>
+            <li>✓ 5-hour burn-rate exhaustion ETA + CSV export &amp; 7-day offline cache</li>
+          </ul>
+          <a href="https://buy.stripe.com/aFafZh2UA9ysf9mh006sw04" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-indigo-500 py-3 text-center text-sm font-semibold text-white hover:bg-indigo-400">
+            Buy Pro License Key
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-12">
+      <h2 class="text-2xl font-bold text-white">FAQ</h2>
+      <div class="mt-6 space-y-4 text-sm text-slate-300">
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">Does ClaudeProfileSwitch upload my auth tokens or transcripts?</h3>
+          <p class="mt-1 text-slate-400">Never. Profile snapshots, MCP configs, and JSONL log scanning happen strictly on your local filesystem. Only Pro license activation talks to the verification endpoint.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">How does license activation work?</h3>
+          <p class="mt-1 text-slate-400">After Stripe Checkout, copy your Checkout Session key (<code>cs_live_...</code>) from the confirmation page and run <code>claude-profile-switch --activate YOUR_KEY</code>. Verified keys stay cached offline for 7 days.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <section id="policies" class="mx-auto max-w-5xl px-6 pb-10">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-xs leading-relaxed text-slate-400">
+      <div class="grid gap-6 md:grid-cols-3">
+        <div>
+          <h3 class="font-semibold text-slate-200">Support &amp; Contact</h3>
+          <p class="mt-1">Operated by Stijn Dom (@domstijn).</p>
+          <p class="mt-1">Email: <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a></p>
+          <p class="mt-1">Issues: <a href="https://github.com/domstijn/friction-killer-suite/issues" class="text-indigo-300 underline">GitHub Support Tracker</a></p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">14-Day Refund Policy</h3>
+          <p class="mt-1">All Pro licenses include a 14-day no-questions-asked refund guarantee. Email <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a> with your order ID for a full refund.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
+          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments are processed securely by Stripe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500">
+    ClaudeProfileSwitch (<code>claude-profile-switcher</code>) — Friction-Killer Suite by Stijn Dom (@domstijn) · <a href="https://github.com/domstijn/friction-killer-suite/issues" class="underline">Support</a> · <a href="mailto:dom.stijn99@gmail.com" class="underline">dom.stijn99@gmail.com</a> · 14-day refund policy
+  </footer>
+  <script>
+    document.querySelectorAll("[data-fk-cta]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const cta = el.getAttribute("data-fk-cta");
+        try {
+          const key = "fk_cta_telemetry";
+          const data = JSON.parse(localStorage.getItem(key) || "{}");
+          data[cta] = (Number(data[cta]) || 0) + 1;
+          localStorage.setItem(key, JSON.stringify(data));
+          window.dispatchEvent(new CustomEvent("fk:cta", { detail: { cta, counts: data } }));
+        } catch {}
+      });
+    });
+  </script>
+</body>
+</html>
