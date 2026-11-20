@@ -44,6 +44,16 @@ def check_ecosystem_manifest(proj_dir: Path) -> list[str]:
                 errors.append("manifest.json must declare manifest_version == 3")
             if not isinstance(manifest.get("permissions"), list):
                 errors.append("manifest.json must declare a permissions list")
+            elif "scripting" in manifest.get("permissions", []):
+                src_dir = proj_dir / "src"
+                uses_scripting = src_dir.is_dir() and any(
+                    "chrome.scripting" in p.read_text(encoding="utf-8", errors="replace")
+                    for p in src_dir.rglob("*.js")
+                )
+                if not uses_scripting:
+                    errors.append(
+                        "manifest.json declares 'scripting' permission without chrome.scripting usage in src/ (CWS Purple Potassium)"
+                    )
         except json.JSONDecodeError as exc:
             errors.append(f"Invalid manifest.json: {exc}")
 

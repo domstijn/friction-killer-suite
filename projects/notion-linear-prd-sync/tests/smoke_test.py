@@ -9,8 +9,8 @@ def test_manifest_and_files():
     assert manifest["manifest_version"] == 3
     assert manifest["name"] == "LinearBridge"
     assert "storage" in manifest["permissions"]
+    assert "scripting" not in manifest["permissions"]
     assert "https://api.linear.app/*" in manifest["host_permissions"]
-    assert "https://api.lemonsqueezy.com/*" in manifest["host_permissions"]
     for rel in (
         "src/license_client.js",
         "src/prd_parser.js",
