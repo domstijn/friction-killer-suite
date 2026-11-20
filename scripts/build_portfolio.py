@@ -370,6 +370,10 @@ def render_hub_html(
             dl_links.append(
                 f'<a href="{html.escape(vsix_href)}" download data-fk-cta="free-install" class="text-xs text-emerald-300 hover:text-emerald-200 underline">.vsix</a>'
             )
+        if p["slug"] == "vscode-workspace-profile-config":
+            dl_links.append(
+                '<a href="https://marketplace.visualstudio.com/items?itemName=friction-killer.vscode-workspace-profile-config" target="_blank" rel="noopener noreferrer" data-fk-cta="free-install" class="text-xs text-sky-300 hover:text-sky-200 underline">Marketplace</a>'
+            )
         if p["whl_exists"]:
             dl_links.append(
                 f'<a href="{html.escape(whl_href)}" download data-fk-cta="free-install" class="text-xs text-emerald-300 hover:text-emerald-200 underline">.whl (pip)</a>'
