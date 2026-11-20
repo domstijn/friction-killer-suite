@@ -21,13 +21,13 @@ Prepare everything needed to market, distribute, and sell the verified MVP, then
 2. **Customize Sales Landing Page & Launch Kit**:
    - Edit `projects/<slug>/launch/landing.html`: replace remaining placeholders (`<TAGLINE>`, `<PAIN_SUMMARY>`, `<PRO_PRICE>`, `<HOST_SOFTWARE>`, and feature bullets) with sharp, benefit-driven copy grounded in Stage 1 pain signals.
    - Edit `projects/<slug>/launch/LAUNCH_KIT.md`: fill out:
-     - Exact Polar.sh / Lemon Squeezy / Gumroad product & license key setup steps
+     - Exact Stripe Managed Payments / Polar.sh / Gumroad checkout & license key setup steps
      - Marketplace listing fields (title, <=132-char description, keywords, permission justification)
      - Non-spammy "Reply-to-Pain" outreach drafts pointing to the exact Stage 1 complaint URLs
-     - Show HN / Reddit / X launch copy
+     - Launch copy (only suggest Show HN if the storefront provides an interactive zero-signup playground users can run live in the browser; otherwise target native marketplaces, Reddit, and GitHub issues)
 
-3. **Package Distributable Build (if applicable)**:
-   - E.g. create a clean `.zip` bundle in `projects/<slug>/dist/` for browser extensions (excluding `tests/` and `launch/`), or verify Python CLI/package entry points run cleanly.
+3. **Package Native Distributable Builds**:
+   - Run `python3 scripts/ship_check.py --slug <slug> --package` to generate `.zip` plus native marketplace artifacts (`.vsix` for VS Code plugins, PEP 427 `.whl` for Python CLI wrappers).
 
 4. **Present Results & Stop at Gate 2**:
    Provide a concise summary linking to:

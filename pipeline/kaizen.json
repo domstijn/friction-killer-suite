@@ -72,6 +72,20 @@
         "Upgraded scripts/build_portfolio.py to generate Stripe success.html (?session_id= license display + Copy button) and cancel.html into launch_hub/ and GitHub Pages docs/."
       ],
       "expected_impact": "Seamless drop-in migration from Lemon Squeezy to Stripe Managed Payments with Merchant-of-Record tax compliance across 80+ countries."
+    },
+    {
+      "cycle": 6,
+      "date": "2026-11-20",
+      "diagnosed_bottlenecks": [
+        "Static landing pages without a live try-before-install tool hurt conversion and fail Show HN 'interactive thing you can play with' guidelines.",
+        "VS Code and Python CLI projects only shipped raw .zip files instead of native .vsix and PEP 427 .whl packages."
+      ],
+      "upgrades_implemented": [
+        "Upgraded scripts/ship_check.py to build VS Code .vsix archives and PEP 427 .whl wheels alongside .zip bundles.",
+        "Added a 3-tab zero-install Interactive Live Playground (#playground) plus .vsix and pip install .whl links to scripts/build_portfolio.py.",
+        "Updated .agents/skills/stage-4-launch-and-monetize/SKILL.md to gate Show HN on interactive playgrounds and enforce native packaging."
+      ],
+      "expected_impact": "Higher visitor-to-buyer conversion via live browser demos and frictionless 1-command installs via .vsix / pip install."
     }
   ]
 }

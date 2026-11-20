@@ -10,6 +10,7 @@
   <header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
     <div class="text-lg font-bold tracking-tight text-white">Friction-Killer Suite</div>
     <nav class="flex items-center gap-6 text-sm text-slate-300">
+      <a href="#playground" class="hover:text-white">Live Playground</a>
       <a href="#bundle" class="hover:text-white">Bundle</a>
       <a href="#policies" class="hover:text-white">Support &amp; Policies</a>
       <a href="#bundle" class="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400">
@@ -30,6 +31,10 @@
       <p class="mx-auto mt-4 max-w-2xl text-base text-slate-300">
         Three purpose-built utilities that automate PRD-to-Linear epics, clean Notion Markdown Git exports, and declarative VS Code workspace profiles.
       </p>
+      <div class="mt-7 flex flex-wrap justify-center gap-3">
+        <a href="#playground" class="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-slate-200">Try Live in Browser</a>
+        <a href="#bundle" class="rounded-xl border border-slate-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">Get All-Access Bundle — €49</a>
+      </div>
     </section>
 
     <section class="grid gap-6 md:grid-cols-3">
@@ -45,7 +50,7 @@
         </div>
         <div class="mt-6 flex items-center justify-between border-t border-slate-800 pt-4">
           <a href="./products/notion-linear-prd-sync/index.html" class="rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-700">Open Product Page</a>
-          <a href="./downloads/notion-linear-prd-sync-v0.1.0.zip" download data-fk-cta="free-install" class="text-xs text-indigo-300 hover:text-indigo-200 underline">Download .zip</a>
+          <div class="flex items-center gap-2.5"><a href="./downloads/notion-linear-prd-sync-v0.1.0.zip" download data-fk-cta="free-install" class="text-xs text-indigo-300 hover:text-indigo-200 underline">.zip</a></div>
         </div>
       </article>
       <article class="flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
@@ -60,7 +65,7 @@
         </div>
         <div class="mt-6 flex items-center justify-between border-t border-slate-800 pt-4">
           <a href="./products/notion-clean-md-exporter/index.html" class="rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-700">Open Product Page</a>
-          <a href="./downloads/notion-clean-md-exporter-v0.1.0.zip" download data-fk-cta="free-install" class="text-xs text-indigo-300 hover:text-indigo-200 underline">Download .zip</a>
+          <div class="flex items-center gap-2.5"><a href="./downloads/notion-clean-md-exporter-v0.1.0.zip" download data-fk-cta="free-install" class="text-xs text-indigo-300 hover:text-indigo-200 underline">.zip</a> <a href="./downloads/notion_clean_md_exporter-0.1.0-py3-none-any.whl" download data-fk-cta="free-install" class="text-xs text-emerald-300 hover:text-emerald-200 underline">.whl (pip)</a></div>
         </div>
       </article>
       <article class="flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
@@ -75,9 +80,95 @@
         </div>
         <div class="mt-6 flex items-center justify-between border-t border-slate-800 pt-4">
           <a href="./products/vscode-workspace-profile-config/index.html" class="rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-700">Open Product Page</a>
-          <a href="./downloads/vscode-workspace-profile-config-v0.1.0.zip" download data-fk-cta="free-install" class="text-xs text-indigo-300 hover:text-indigo-200 underline">Download .zip</a>
+          <div class="flex items-center gap-2.5"><a href="./downloads/vscode-workspace-profile-config-v0.1.0.zip" download data-fk-cta="free-install" class="text-xs text-indigo-300 hover:text-indigo-200 underline">.zip</a> <a href="./downloads/vscode-workspace-profile-config-0.1.0.vsix" download data-fk-cta="free-install" class="text-xs text-emerald-300 hover:text-emerald-200 underline">.vsix</a></div>
         </div>
       </article>
+    </section>
+
+    <section id="playground" class="mt-14 rounded-3xl border border-slate-800 bg-slate-900/70 p-6 sm:p-8">
+      <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
+        <div>
+          <span class="rounded-full bg-indigo-500/20 px-2.5 py-0.5 text-xs font-semibold text-indigo-300">ZERO-INSTALL INTERACTIVE DEMO</span>
+          <h2 class="mt-2 text-2xl font-bold text-white">Try All 3 Tools Live in Your Browser</h2>
+          <p class="mt-1 text-xs text-slate-400">Runs 100% locally in JavaScript — nothing leaves your browser.</p>
+        </div>
+        <div class="flex flex-wrap gap-2" role="tablist">
+          <button type="button" data-pg-tab="linear" class="pg-tab rounded-lg bg-indigo-500 px-3.5 py-2 text-xs font-semibold text-white">1. LinearBridge</button>
+          <button type="button" data-pg-tab="notion" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">2. NotionGitExport</button>
+          <button type="button" data-pg-tab="vscode" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">3. ExtProfileLock</button>
+        </div>
+      </div>
+
+      <!-- Tab 1: LinearBridge -->
+      <div id="pg-panel-linear" class="pg-panel mt-6 grid gap-6 md:grid-cols-2">
+        <div>
+          <label class="text-xs font-semibold text-slate-300" for="pg-linear-input">Paste Notion PRD Markdown</label>
+          <textarea id="pg-linear-input" rows="10" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200 focus:border-indigo-500 focus:outline-none"># Mobile Billing V2
+Streamline checkout retries and receipt exports.
+
+## API Layer
+- [ ] Implement webhook signature guard
+- [ ] Add idempotency keys [ENG-10]
+- [x] Already shipped item
+
+## Frontend
+* [ ] Build retry banner
+- [ ] Export CSV receipts</textarea>
+        </div>
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-emerald-300">Linear Parent Epic + GraphQL Mutations Preview</span>
+            <span id="pg-linear-stats" class="text-xs text-slate-400"></span>
+          </div>
+          <pre id="pg-linear-output" class="mt-2 h-60 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+        </div>
+      </div>
+
+      <!-- Tab 2: NotionGitExport -->
+      <div id="pg-panel-notion" class="pg-panel mt-6 hidden grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-300" for="pg-notion-file">Messy Notion Filename</label>
+            <input id="pg-notion-file" value="Engineering Docs a1b2c3d4e5f60123456789abcdef0123/Product Spec 0123456789abcdef0123456789abcdef.md" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-xs text-slate-200 focus:border-indigo-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-300" for="pg-notion-md">Messy Notion Export Markdown</label>
+            <textarea id="pg-notion-md" rows="8" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200 focus:border-indigo-500 focus:outline-none"># API Guide
+
+Status: Ready
+Tags: docs, api
+
+See [Overview](Overview%200123456789abcdef0123456789abcdef.md) and [External](https://example.com).</textarea>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-semibold text-emerald-300">Clean Path: <code id="pg-notion-cleanfile" class="text-indigo-300"></code></span>
+            <button id="pg-notion-copy" type="button" class="rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-white hover:bg-slate-700">Copy Clean MD</button>
+          </div>
+          <pre id="pg-notion-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+        </div>
+      </div>
+
+      <!-- Tab 3: ExtProfileLock -->
+      <div id="pg-panel-vscode" class="pg-panel mt-6 hidden grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-300" for="pg-vs-lock">workspace-lock.json + Installed (comma-sep)</label>
+            <textarea id="pg-vs-lock" rows="4" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">{"required":["esbenp.prettier-vscode","dbaeumer.vscode-eslint"],"disabled":["tabnine.tabnine-vscode"]}</textarea>
+            <input id="pg-vs-installed" value="dbaeumer.vscode-eslint, tabnine.tabnine-vscode" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
+          </div>
+          <div class="grid gap-2 sm:grid-cols-2">
+            <textarea id="pg-vs-env" rows="3" class="w-full rounded-xl border border-slate-700 bg-slate-950 p-2 font-mono text-xs text-slate-200">SDK_ROOT="/Users/dev/sdk"
+API_URL="https://staging.api"</textarea>
+            <textarea id="pg-vs-ws" rows="3" class="w-full rounded-xl border border-slate-700 bg-slate-950 p-2 font-mono text-xs text-slate-200">{"folders":[{"path":"${env:SDK_ROOT}/core"}],"settings":{"api":"${env:API_URL}"}}</textarea>
+          </div>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-emerald-300">CLI Toggle Commands + Interpolated .code-workspace</span>
+          <pre id="pg-vs-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+        </div>
+      </div>
     </section>
 
     <section id="bundle" class="mt-14 rounded-3xl border border-indigo-500/50 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/60 p-8 sm:p-10">
@@ -138,6 +229,154 @@
         } catch {}
       });
     });
+  </script>
+  <script>
+    (function () {
+      const tabs = document.querySelectorAll(".pg-tab");
+      const panels = {
+        linear: document.getElementById("pg-panel-linear"),
+        notion: document.getElementById("pg-panel-notion"),
+        vscode: document.getElementById("pg-panel-vscode"),
+      };
+      tabs.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const target = btn.getAttribute("data-pg-tab");
+          tabs.forEach((b) => {
+            const active = b.getAttribute("data-pg-tab") === target;
+            b.className = active
+              ? "pg-tab rounded-lg bg-indigo-500 px-3.5 py-2 text-xs font-semibold text-white"
+              : "pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700";
+          });
+          Object.entries(panels).forEach(([k, el]) => {
+            if (!el) return;
+            el.classList.toggle("hidden", k !== target);
+          });
+        });
+      });
+
+      // 1. LinearBridge live parser
+      const lIn = document.getElementById("pg-linear-input");
+      const lOut = document.getElementById("pg-linear-output");
+      const lStats = document.getElementById("pg-linear-stats");
+      function runLinear() {
+        if (!lIn || !lOut) return;
+        let title = "Untitled PRD", section = "General", skipped = 0;
+        const tasks = [];
+        for (const raw of lIn.value.split(/\r?\n/)) {
+          const line = raw.trim();
+          const hm = line.match(/^(#{1,3})\s+(.+)$/);
+          if (hm) {
+            if (hm[1].length === 1 && title === "Untitled PRD") title = hm[2].trim();
+            else section = hm[2].trim();
+            continue;
+          }
+          const cm = line.match(/^(?:[-*]\s*)?\[([ xX]?)\]\s+(.+)$/);
+          if (cm) {
+            const done = cm[1].toLowerCase() === "x";
+            const body = cm[2].trim();
+            const keyMatch = body.match(/\[([A-Z][A-Z0-9]+-\d+)(?::[^\]]+)?\]/);
+            if (done || keyMatch) { skipped += 1; continue; }
+            tasks.push({ title: body, section, parentTitle: "[PRD] " + title });
+          }
+        }
+        if (lStats) lStats.textContent = tasks.length + " to create · " + skipped + " skipped";
+        lOut.textContent = JSON.stringify({
+          parentEpic: { title: "[PRD] " + title },
+          subIssues: tasks.map((t) => ({ title: t.title, description: "**Section:** " + t.section, parentId: "<PARENT_EPIC_ID>" }))
+        }, null, 2);
+      }
+      lIn?.addEventListener("input", runLinear);
+      runLinear();
+
+      // 2. NotionGitExport live cleaner
+      const nFile = document.getElementById("pg-notion-file");
+      const nMd = document.getElementById("pg-notion-md");
+      const nCleanFile = document.getElementById("pg-notion-cleanfile");
+      const nOut = document.getElementById("pg-notion-output");
+      function cleanSegment(seg) {
+        return seg.replace(/(?:\s+|%20)[0-9a-fA-F]{32}$/, "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "untitled";
+      }
+      function stripUuidPath(p) {
+        const parts = decodeURIComponent(p.trim()).split("/").filter(Boolean);
+        return parts.map((part, idx) => {
+          if (idx === parts.length - 1 && part.includes(".")) {
+            const i = part.lastIndexOf(".");
+            return cleanSegment(part.slice(0, i)) + "." + part.slice(i + 1).toLowerCase();
+          }
+          return cleanSegment(part);
+        }).join("/");
+      }
+      function runNotion() {
+        if (!nFile || !nMd || !nOut) return;
+        if (nCleanFile) nCleanFile.textContent = stripUuidPath(nFile.value);
+        const lines = nMd.value.split(/\r?\n/);
+        let idx = 0, title = null, meta = {};
+        while (idx < lines.length && !lines[idx].trim()) idx++;
+        if (idx < lines.length && lines[idx].startsWith("# ")) {
+          title = lines[idx].slice(2).trim(); idx++;
+          while (idx < lines.length && !lines[idx].trim()) idx++;
+          while (idx < lines.length) {
+            const m = lines[idx].trim().match(/^([A-Za-z][A-Za-z0-9 _-]{0,30}):\s+(.+)$/);
+            if (!m) break;
+            meta[m[1].toLowerCase().replace(/[^a-z0-9]+/g, "_")] = m[2].trim();
+            idx++;
+          }
+        }
+        const body = (title ? lines.slice(idx).join("\n") : nMd.value)
+          .replace(/(!?\[[^\]]*\])\(([^)]+)\)/g, (full, lbl, target) => {
+            if (/^(https?:|mailto:|#)/i.test(target)) return full;
+            return lbl + "(" + stripUuidPath(target) + ")";
+          }).trim();
+        let fm = "";
+        if (title) {
+          const fmLines = ["---", 'title: "' + title + '"'];
+          for (const [k, v] of Object.entries(meta)) {
+            fmLines.push(k === "tags" && v.includes(",") ? k + ": [" + v.split(",").map((s) => '"' + s.trim() + '"').join(", ") + "]" : k + ': "' + v + '"');
+          }
+          fm = fmLines.join("\n") + "\n---\n\n";
+        }
+        nOut.textContent = fm + body;
+      }
+      nFile?.addEventListener("input", runNotion);
+      nMd?.addEventListener("input", runNotion);
+      document.getElementById("pg-notion-copy")?.addEventListener("click", async () => {
+        try { await navigator.clipboard.writeText(nOut?.textContent || ""); } catch {}
+      });
+      runNotion();
+
+      // 3. ExtProfileLock live interpolator
+      const vLock = document.getElementById("pg-vs-lock");
+      const vInst = document.getElementById("pg-vs-installed");
+      const vEnv = document.getElementById("pg-vs-env");
+      const vWs = document.getElementById("pg-vs-ws");
+      const vOut = document.getElementById("pg-vs-output");
+      function runVscode() {
+        if (!vLock || !vOut) return;
+        try {
+          const lock = JSON.parse(vLock.value || "{}");
+          const installed = new Set((vInst?.value || "").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean));
+          const cmds = [];
+          for (const req of (lock.required || [])) {
+            if (!installed.has(req.toLowerCase())) cmds.push("code --install-extension " + req);
+          }
+          for (const dis of (lock.disabled || [])) {
+            if (installed.has(dis.toLowerCase())) cmds.push("code --disable-extension " + dis);
+          }
+          const envMap = {};
+          for (const raw of (vEnv?.value || "").split(/\r?\n/)) {
+            const line = raw.trim().replace(/^export\s+/, "");
+            const eq = line.indexOf("=");
+            if (eq > 0) envMap[line.slice(0, eq).trim()] = line.slice(eq + 1).trim().replace(/^["']|["']$/g, "");
+          }
+          const ws = (vWs?.value || "{}").replace(/\$\{env:([A-Za-z_][A-Za-z0-9_]*)\}/g, (f, k) => envMap[k] ?? f);
+          vOut.textContent = "# Generated CLI Batch:\n" + (cmds.length ? cmds.join("\n") : "# Workspace compliant") + "\n\n# Interpolated .code-workspace:\n" + ws;
+        } catch (err) {
+          vOut.textContent = "JSON parse error: " + err.message;
+        }
+      }
+      [vLock, vInst, vEnv, vWs].forEach((el) => el?.addEventListener("input", runVscode));
+      runVscode();
+    })();
   </script>
 </body>
 </html>
