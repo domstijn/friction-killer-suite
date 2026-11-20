@@ -2,7 +2,13 @@
   "name": "vscode-workspace-profile-config",
   "displayName": "ExtProfileLock",
   "publisher": "friction-killer",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "description": "Enforce repo-level VS Code extension locks, interpolate .env variables into .code-workspace files, and eliminate profile drift.",
+  "homepage": "https://domstijn.github.io/friction-killer-suite/products/vscode-workspace-profile-config/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/domstijn/friction-killer-suite.git"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },

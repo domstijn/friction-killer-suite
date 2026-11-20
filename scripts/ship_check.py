@@ -189,6 +189,17 @@ def build_vsix_package(
     display_name = html.escape(str(pkg.get("displayName") or slug))
     description = html.escape(str(pkg.get("description") or display_name))
     ver = html.escape(str(pkg.get("version") or version))
+    categories = html.escape(",".join(pkg.get("categories") or ["Other"]))
+    vscode_engine = html.escape(str((pkg.get("engines") or {}).get("vscode") or "^1.85.0"))
+
+    assets = [
+        '    <Asset Type="Microsoft.VisualStudio.Code.Manifest" Path="extension/package.json" Addressable="true"/>'
+    ]
+    if (proj_dir / "README.md").is_file():
+        assets.append(
+            '    <Asset Type="Microsoft.VisualStudio.Services.Content.Details" Path="extension/README.md" Addressable="true"/>'
+        )
+    assets_xml = "\n".join(assets)
 
     content_types = (
         '<?xml version="1.0" encoding="utf-8"?>\n'
@@ -207,13 +218,18 @@ def build_vsix_package(
         f'    <Identity Language="en-US" Id="{ext_id}" Version="{ver}" Publisher="{publisher}"/>\n'
         f"    <DisplayName>{display_name}</DisplayName>\n"
         f'    <Description xml:space="preserve">{description}</Description>\n'
+        f"    <Categories>{categories}</Categories>\n"
+        "    <GalleryFlags>Public</GalleryFlags>\n"
+        "    <Properties>\n"
+        f'      <Property Id="Microsoft.VisualStudio.Code.Engine" Value="{vscode_engine}" />\n'
+        "    </Properties>\n"
         "  </Metadata>\n"
         "  <Installation>\n"
         '    <InstallationTarget Id="Microsoft.VisualStudio.Code"/>\n'
         "  </Installation>\n"
         "  <Dependencies/>\n"
         "  <Assets>\n"
-        '    <Asset Type="Microsoft.VisualStudio.Code.Manifest" Path="extension/package.json" Addressable="true"/>\n'
+        f"{assets_xml}\n"
         "  </Assets>\n"
         "</PackageManifest>\n"
     )
