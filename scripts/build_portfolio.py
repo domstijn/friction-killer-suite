@@ -116,7 +116,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
       <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
         <div>
           <span class="rounded-full bg-indigo-500/20 px-2.5 py-0.5 text-xs font-semibold text-indigo-300">ZERO-INSTALL INTERACTIVE DEMO</span>
-          <h2 class="mt-2 text-2xl font-bold text-white">Try All 4 Tools Live in Your Browser</h2>
+          <h2 class="mt-2 text-2xl font-bold text-white">Try All 5 Tools Live in Your Browser</h2>
           <p class="mt-1 text-xs text-slate-400">Runs 100% locally in JavaScript — nothing leaves your browser.</p>
         </div>
         <div class="flex flex-wrap gap-2" role="tablist">
@@ -124,6 +124,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
           <button type="button" data-pg-tab="notion" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">2. NotionGitExport</button>
           <button type="button" data-pg-tab="vscode" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">3. ExtProfileLock</button>
           <button type="button" data-pg-tab="claude" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">4. ClaudeProfileSwitch</button>
+          <button type="button" data-pg-tab="docker" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">5. DockerVolumeForge</button>
         </div>
       </div>
 
@@ -217,6 +218,25 @@ API_URL="https://staging.api"</textarea>
           <pre id="pg-cl-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
         </div>
       </div>
+
+      <!-- Tab 5: DockerVolumeForge -->
+      <div id="pg-panel-docker" class="pg-panel mt-6 hidden grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div class="grid gap-2 sm:grid-cols-3">
+            <input id="pg-dk-old" value="27722c3065e2f0" placeholder="Old volume" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
+            <input id="pg-dk-new" value="pgdata_prod" placeholder="New volume" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
+            <input id="pg-dk-tags" value="v1.4.2,latest" placeholder="Tags (csv)" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-300" for="pg-dk-compose">Compose Services JSON w/ <code>extends</code> (flattened to v3.8)</label>
+            <textarea id="pg-dk-compose" rows="6" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">{"version":"2.4","services":{"base":{"image":"ghcr.io/acme/api:1.4","environment":{"LOG_LEVEL":"info","PORT":"8080"}},"web":{"extends":"base","environment":{"LOG_LEVEL":"debug"},"ports":["8080:8080"]}}}</textarea>
+          </div>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-emerald-300">Volume Rename Plan + Flattened v3 Stack + Multi-Tag Batch</span>
+          <pre id="pg-dk-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+        </div>
+      </div>
     </section>"""
 
 
@@ -228,6 +248,7 @@ PLAYGROUND_SCRIPT = r"""  <script>
         notion: document.getElementById("pg-panel-notion"),
         vscode: document.getElementById("pg-panel-vscode"),
         claude: document.getElementById("pg-panel-claude"),
+        docker: document.getElementById("pg-panel-docker"),
       };
       tabs.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -406,6 +427,48 @@ PLAYGROUND_SCRIPT = r"""  <script>
       }
       [cProf, cMcp, cJsonl].forEach((el) => el?.addEventListener("input", runClaude));
       runClaude();
+
+      // 5. DockerVolumeForge live planner + extends flattener
+      const dOld = document.getElementById("pg-dk-old");
+      const dNew = document.getElementById("pg-dk-new");
+      const dTags = document.getElementById("pg-dk-tags");
+      const dCmp = document.getElementById("pg-dk-compose");
+      const dOut = document.getElementById("pg-dk-output");
+      function runDocker() {
+        if (!dCmp || !dOut) return;
+        try {
+          const oldV = (dOld?.value || "old_vol").trim();
+          const newV = (dNew?.value || "new_vol").trim();
+          const tags = (dTags?.value || "latest").split(",").map((s) => s.trim()).filter(Boolean);
+          const doc = JSON.parse(dCmp.value || "{}");
+          const svcs = doc.services || {};
+          const resolved = {};
+          for (const [name, cfg] of Object.entries(svcs)) {
+            if (cfg && cfg.extends && typeof cfg.extends === "string" && svcs[cfg.extends]) {
+              const parent = svcs[cfg.extends];
+              const merged = Object.assign({}, parent, cfg);
+              delete merged.extends;
+              if (parent.environment || cfg.environment) {
+                merged.environment = Object.assign({}, parent.environment || {}, cfg.environment || {});
+              }
+              resolved[name] = merged;
+            } else {
+              resolved[name] = cfg;
+            }
+          }
+          const volCmds = [
+            "docker volume create " + newV,
+            "docker run --rm -v " + oldV + ":/from:ro -v " + newV + ":/to alpine:3.20 sh -c 'cd /from && cp -a . /to'",
+            "docker volume rm " + oldV
+          ];
+          const pushCmds = tags.map((t) => (t === "latest" ? "" : "docker tag ghcr.io/acme/api:latest ghcr.io/acme/api:" + t + " && ") + "docker push ghcr.io/acme/api:" + t);
+          dOut.textContent = "# Volume Migration Plan:\n" + volCmds.join("\n") + "\n\n# Flattened Compose v3.8:\n" + JSON.stringify({ version: "3.8", services: resolved }, null, 2) + "\n\n# Multi-Tag Batch:\n" + pushCmds.join("\n");
+        } catch (err) {
+          dOut.textContent = "JSON parse error: " + err.message;
+        }
+      }
+      [dOld, dNew, dTags, dCmp].forEach((el) => el?.addEventListener("input", runDocker));
+      runDocker();
     })();
   </script>"""
 

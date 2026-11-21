@@ -63,6 +63,14 @@ DEFAULT_CATALOG_ITEMS = [
         "mode": "payment",
     },
     {
+        "slug": "docker-volume-compose-tool",
+        "name": "DockerVolumeForge Pro",
+        "description": "Atomic Docker volume rename/clone, Compose v3 extends flattener & multi-tag batch pusher (Pro License).",
+        "unit_amount": 2400,
+        "currency": "eur",
+        "mode": "payment",
+    },
+    {
         "slug": "all-access-bundle",
         "name": "All-Access Friction-Killer Bundle",
         "description": "Pro licenses for LinearBridge, NotionGitExport, and ExtProfileLock.",

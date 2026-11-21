@@ -61,6 +61,19 @@
       "payment_link_url": "https://buy.stripe.com/aFafZh2UA9ysf9mh006sw04",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=claude-profile-switcher"
     },
+    "docker-volume-compose-tool": {
+      "slug": "docker-volume-compose-tool",
+      "name": "DockerVolumeForge Pro",
+      "description": "Atomic Docker volume rename/clone, Compose v3 extends flattener & multi-tag batch pusher (Pro License).",
+      "unit_amount": 2400,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_VfWC3UQKBawhsd",
+      "price_id": "price_1UeBAjH2AcdDmQyRsPm3Dd3K",
+      "payment_link_id": "plink_1UeBAzH2AcdDmQyRJPcvCbrT",
+      "payment_link_url": "https://buy.stripe.com/9B63cvan29ys1iwbFG6sw05",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=docker-volume-compose-tool"
+    },
     "all-access-bundle": {
       "slug": "all-access-bundle",
       "name": "All-Access Friction-Killer Bundle",

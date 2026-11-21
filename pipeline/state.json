@@ -12,13 +12,34 @@
     "lemonsqueezy",
     "gumroad"
   ],
-  "active_project": "claude-profile-switcher",
+  "active_project": "docker-volume-compose-tool",
   "current_stage": "COMPLETED",
   "gates": {
     "gate_1_idea_and_spec_approved": true,
     "gate_2_launch_approved": true
   },
   "opportunities": [
+    {
+      "id": "docker-volume-compose-tool",
+      "title": "DockerVolumeForge: 1-Command Docker Volume Rename, Clone & Compose v3 Extends Flattener",
+      "ecosystem": "cli-wrapper",
+      "target_software": "Docker / Docker Compose",
+      "pain": "Docker lacks native volume rename/clone (moby/moby#31154: 594 upvotes), Compose v3 stack deploy rejects extends (moby/moby#31101: 718 upvotes), and docker push lacks multi-tag batching (docker/cli#267: 533 upvotes)",
+      "solution": "Zero-dependency CLI that generates/runs atomic container-safe docker volume rename/clone migrations, flattens multi-file Compose extends into deployable v3 stack YAML, and batches multi-tag pushes",
+      "dimensions": {
+        "pain_severity": 9.5,
+        "willingness_to_pay": 8.5,
+        "solution_effectiveness": 9.5,
+        "build_speed": 9.0,
+        "distribution_clarity": 9.5,
+        "platform_safety": 9.5
+      },
+      "effectiveness_score": 93.25,
+      "commercial_potential_score": 90.5,
+      "score": 91.75,
+      "verdict": "GO",
+      "updated_at": "2026-11-20T22:20:16+00:00"
+    },
     {
       "id": "claude-profile-switcher",
       "title": "ClaudeProfileSwitch: Multi-Account, MCP Profile & Quota Guard for Claude Code",
@@ -39,6 +60,48 @@
       "score": 90.5,
       "verdict": "GO",
       "updated_at": "2026-11-20T22:04:31+00:00"
+    },
+    {
+      "id": "claude-diff-review-vscode",
+      "title": "ClaudeDiffReview: Copilot-Style Multi-File Diff Review & Hunk Accept/Reject for Claude Code",
+      "ecosystem": "ide-ai-plugin",
+      "target_software": "VS Code / Claude Code",
+      "pain": "Claude Code CLI modifies multiple files without an interactive hunk-by-hunk Accept/Reject review UI in VS Code like Copilot Edits Review (anthropics/claude-code#33932: 318 upvotes)",
+      "solution": "VS Code .vsix extension that captures pre/post Claude Code file snapshots, renders hunk-by-hunk Accept/Reject/Revert controls, and exports PR diff summaries",
+      "dimensions": {
+        "pain_severity": 9.0,
+        "willingness_to_pay": 8.5,
+        "solution_effectiveness": 9.0,
+        "build_speed": 9.0,
+        "distribution_clarity": 9.5,
+        "platform_safety": 9.0
+      },
+      "effectiveness_score": 90.0,
+      "commercial_potential_score": 88.75,
+      "score": 89.5,
+      "verdict": "GO",
+      "updated_at": "2026-11-20T22:20:16+00:00"
+    },
+    {
+      "id": "prisma-sql-drift-inspector",
+      "title": "PrismaSqlLens: Offline Prisma-to-SQL Compiler & Non-Destructive Supabase Drift Repair",
+      "ecosystem": "cli-wrapper",
+      "target_software": "Prisma / Supabase",
+      "pain": "Prisma migrate forces destructive database resets on Supabase schema drift (#19100), lacks offline .getRawQuery() SQL compilation (#5052: 204 upvotes), and lacks serverless VPC migration bundles (#4703: 512 upvotes)",
+      "solution": "Zero-dependency CLI that compiles schema.prisma & query blocks into raw PostgreSQL DDL/SQL offline, generates non-destructive _prisma_migrations SHA-256 drift repair SQL, and bundles serverless migrations",
+      "dimensions": {
+        "pain_severity": 9.0,
+        "willingness_to_pay": 9.0,
+        "solution_effectiveness": 8.5,
+        "build_speed": 8.5,
+        "distribution_clarity": 9.0,
+        "platform_safety": 9.0
+      },
+      "effectiveness_score": 86.25,
+      "commercial_potential_score": 90.0,
+      "score": 88.5,
+      "verdict": "GO",
+      "updated_at": "2026-11-20T22:20:16+00:00"
     },
     {
       "id": "obsidian-plugin-auditor",
@@ -176,8 +239,16 @@
       "title": "ClaudeProfileSwitch: Multi-Account, MCP Profile & Quota Guard for Claude Code",
       "ecosystem": "cli-wrapper",
       "target_software": "Claude Code / Claude Desktop",
-      "status": "COMPLETED",
+      "status": "STAGE_1_DISCOVERY",
       "selected_at": "2026-11-20T22:06:22+00:00"
+    },
+    "docker-volume-compose-tool": {
+      "id": "docker-volume-compose-tool",
+      "title": "DockerVolumeForge: 1-Command Docker Volume Rename, Clone & Compose v3 Extends Flattener",
+      "ecosystem": "cli-wrapper",
+      "target_software": "Docker / Docker Compose",
+      "status": "COMPLETED",
+      "selected_at": "2026-11-21T10:03:29+00:00"
     }
   }
 }

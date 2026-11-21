@@ -86,6 +86,20 @@
         "Updated .agents/skills/stage-4-launch-and-monetize/SKILL.md to gate Show HN on interactive playgrounds and enforce native packaging."
       ],
       "expected_impact": "Higher visitor-to-buyer conversion via live browser demos and frictionless 1-command installs via .vsix / pip install."
+    },
+    {
+      "cycle": 7,
+      "date": "2026-11-21",
+      "diagnosed_bottlenecks": [
+        "Chrome Web Store rejected LinearBridge v0.1.0 with Purple Potassium because manifest.json declared unused 'scripting' permission without chrome.scripting usage.",
+        "Visual Studio Marketplace kept ExtProfileLock Private with no UI toggle because ship_check.py built .vsix manifests without <GalleryFlags>Public</GalleryFlags> or README details assets."
+      ],
+      "upgrades_implemented": [
+        "Added automated CWS Purple Potassium static permission guard to scripts/ship_check.py verifying chrome.scripting usage before packaging Chrome extensions.",
+        "Upgraded build_vsix_package() in scripts/ship_check.py to stamp <GalleryFlags>Public</GalleryFlags>, VS Code engine properties, and README.md content assets into .vsix archives.",
+        "Expanded scripts/build_portfolio.py with live VS Code Marketplace links, 4th interactive browser demo tab, and automated Stripe MCP livemode provisioning for new products."
+      ],
+      "expected_impact": "Zero-rejection CWS & VS Code Marketplace builds on first submission and rapid end-to-end launch loops for new CLI and extension products."
     }
   ]
 }

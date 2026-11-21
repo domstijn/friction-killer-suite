@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DockerVolumeForge — Volume Rename, Clone &amp; Compose v3 Extends Flattener</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
+    <div class="text-lg font-bold tracking-tight text-white">DockerVolumeForge</div>
+    <nav class="flex items-center gap-6 text-sm text-slate-300">
+      <a href="../../index.html" class="text-indigo-300 hover:text-white">&larr; All Suite Tools</a>
+      <a href="#comparison" class="hover:text-white">Why it works</a>
+      <a href="#pricing" class="hover:text-white">Pricing</a>
+      <a href="#faq" class="hover:text-white">FAQ</a>
+      <a href="#pricing" class="rounded-lg bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-400">Get Pro</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6">
+    <!-- Hero -->
+    <section class="py-16 text-center">
+      <span class="inline-block rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300">
+        Zero-Dependency Python CLI for Docker &amp; Docker Compose
+      </span>
+      <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+        Stop fighting Docker volumes &amp; Compose.<br />
+        <span class="text-indigo-400">Rename volumes &amp; flatten v3 stacks in 1 command.</span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
+        Docker still lacks <code>docker volume mv</code>, <code>docker stack deploy</code> rejects <code>extends:</code> inheritance, and <code>docker push</code> lacks multi-tag batches. DockerVolumeForge solves all three locally with zero external dependencies.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a href="../../downloads/docker-volume-compose-tool-v0.1.0.zip" download data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
+          Use Free Tier (Dry-Run + 2 Services)
+        </a>
+        <a href="https://buy.stripe.com/9B63cvan29ys1iwbFG6sw05" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
+          Unlock Pro License — €24 once
+        </a>
+      </div>
+    </section>
+
+    <!-- Old vs New Comparison -->
+    <section id="comparison" class="grid gap-6 py-12 md:grid-cols-2">
+      <div class="rounded-2xl border border-rose-500/20 bg-slate-900/60 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-rose-400">The Old Painful Way</h2>
+        <ul class="mt-4 space-y-3 text-slate-300">
+          <li>• Hand-typing <code>docker volume create</code> + temporary alpine <code>cp -a</code> pipelines</li>
+          <li>• Manually duplicating YAML blocks because Compose v3 Swarm stack deploy fails on <code>extends:</code></li>
+          <li>• Writing brittle bash loops just to push <code>v1.4.2</code>, <code>v1.4</code>, and <code>latest</code> tags</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-emerald-500/30 bg-slate-900 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-emerald-400">With DockerVolumeForge</h2>
+        <ul class="mt-4 space-y-3 text-slate-200">
+          <li>• Container-safe atomic volume rename/clone with stop/restart container guards</li>
+          <li>• Deterministic multi-file Compose <code>extends</code> deep-merger outputting deployable v3 YAML</li>
+          <li>• Single-command multi-tag re-tag &amp; push batch generation with zero dependencies</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 60-Second Install -->
+    <section id="install" class="py-12">
+      <h2 class="text-center text-2xl font-bold text-white">Up and running in 60 seconds</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+          <div class="text-xs font-bold text-indigo-400">STEP 1</div>
+          <h3 class="mt-2 font-semibold text-white">Dry-Run Volume Rename</h3>
+          <p class="mt-2 text-sm text-slate-400">Run <code>docker-volume-forge rename-volume --old hash_id --new pgdata</code>.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+          <div class="text-xs font-bold text-indigo-400">STEP 2</div>
+          <h3 class="mt-2 font-semibold text-white">Flatten Compose v3</h3>
+          <p class="mt-2 text-sm text-slate-400">Run <code>docker-volume-forge flatten-compose --input compose.yml --yaml</code>.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+          <div class="text-xs font-bold text-indigo-400">STEP 3</div>
+          <h3 class="mt-2 font-semibold text-white">Unlock Pro Execution</h3>
+          <p class="mt-2 text-sm text-slate-400">Run <code>--activate YOUR_KEY</code> for live container-safe execution, unlimited services &amp; <code>push-tags</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-12">
+      <h2 class="text-center text-2xl font-bold text-white">Simple, one-time pricing</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-8">
+          <h3 class="text-lg font-semibold text-white">Free Starter</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€0</p>
+          <p class="mt-2 text-sm text-slate-400">Great for safe dry-runs and 2-service Compose stacks.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-300">
+            <li>✓ Deterministic dry-run volume rename/clone commands</li>
+            <li>✓ Compose <code>extends</code> flattener up to 2 services</li>
+            <li>✓ Zero external dependencies, runs 100% locally</li>
+          </ul>
+          <a href="../../downloads/docker-volume-compose-tool-v0.1.0.zip" download data-fk-cta="free-install" class="mt-8 block rounded-xl border border-slate-700 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800">
+            Download Free CLI
+          </a>
+        </div>
+        <div class="rounded-2xl border border-indigo-500 bg-slate-900 p-8 shadow-lg shadow-indigo-500/10">
+          <h3 class="text-lg font-semibold text-white">Pro License</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€24 once</p>
+          <p class="mt-2 text-sm text-slate-400">Delivered instantly via Stripe Managed Payments license key.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-200">
+            <li>✓ Live container stop/copy/start volume migration execution</li>
+            <li>✓ Unlimited multi-service &amp; cross-file Compose v3 flattening</li>
+            <li>✓ Multi-tag <code>docker tag</code> + <code>push</code> batching &amp; 7-day offline cache</li>
+          </ul>
+          <a href="https://buy.stripe.com/9B63cvan29ys1iwbFG6sw05" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-indigo-500 py-3 text-center text-sm font-semibold text-white hover:bg-indigo-400">
+            Buy Pro License Key
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-12">
+      <h2 class="text-2xl font-bold text-white">FAQ</h2>
+      <div class="mt-6 space-y-4 text-sm text-slate-300">
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">Does DockerVolumeForge send my Compose files or secrets anywhere?</h3>
+          <p class="mt-1 text-slate-400">Never. YAML parsing, deep merging, and Docker command execution happen strictly on your machine. Only Pro license activation calls the verification endpoint.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">How does license activation work?</h3>
+          <p class="mt-1 text-slate-400">After Stripe Checkout, copy your Checkout Session key (<code>cs_live_...</code>) and run <code>docker-volume-forge --activate YOUR_KEY</code>. Verified keys stay cached offline for 7 days.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <section id="policies" class="mx-auto max-w-5xl px-6 pb-10">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-xs leading-relaxed text-slate-400">
+      <div class="grid gap-6 md:grid-cols-3">
+        <div>
+          <h3 class="font-semibold text-slate-200">Support &amp; Contact</h3>
+          <p class="mt-1">Operated by Stijn Dom (@domstijn).</p>
+          <p class="mt-1">Email: <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a></p>
+          <p class="mt-1">Issues: <a href="https://github.com/domstijn/friction-killer-suite/issues" class="text-indigo-300 underline">GitHub Support Tracker</a></p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">14-Day Refund Policy</h3>
+          <p class="mt-1">All Pro licenses include a 14-day no-questions-asked refund guarantee. Email <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a> with your order ID for a full refund.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
+          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments are processed securely by Stripe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500">
+    DockerVolumeForge (<code>docker-volume-compose-tool</code>) — Friction-Killer Suite by Stijn Dom (@domstijn) · <a href="https://github.com/domstijn/friction-killer-suite/issues" class="underline">Support</a> · <a href="mailto:dom.stijn99@gmail.com" class="underline">dom.stijn99@gmail.com</a> · 14-day refund policy
+  </footer>
+  <script>
+    document.querySelectorAll("[data-fk-cta]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const cta = el.getAttribute("data-fk-cta");
+        try {
+          const key = "fk_cta_telemetry";
+          const data = JSON.parse(localStorage.getItem(key) || "{}");
+          data[cta] = (Number(data[cta]) || 0) + 1;
+          localStorage.setItem(key, JSON.stringify(data));
+          window.dispatchEvent(new CustomEvent("fk:cta", { detail: { cta, counts: data } }));
+        } catch {}
+      });
+    });
+  </script>
+</body>
+</html>

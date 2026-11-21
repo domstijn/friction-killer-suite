@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docker-volume-compose-tool"
+version = "0.1.0"
+description = "DockerVolumeForge: 1-Command Docker Volume Rename, Clone & Compose v3 Extends Flattener"
+requires-python = ">=3.10"
+
+[project.scripts]
+docker-volume-forge = "cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["cli", "forge_engine", "license_client"]
