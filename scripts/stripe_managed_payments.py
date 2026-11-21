@@ -71,6 +71,14 @@ DEFAULT_CATALOG_ITEMS = [
         "mode": "payment",
     },
     {
+        "slug": "notion-guest-mcp-bridge",
+        "name": "NotionGuestBridge Pro",
+        "description": "1-click client Notion Guest page & database extractor to Claude/Cursor Markdown and .mcp-context.json packs with PII redaction (Pro License).",
+        "unit_amount": 2900,
+        "currency": "eur",
+        "mode": "payment",
+    },
+    {
         "slug": "all-access-bundle",
         "name": "All-Access Friction-Killer Bundle",
         "description": "Pro licenses for LinearBridge, NotionGitExport, and ExtProfileLock.",

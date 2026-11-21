@@ -100,6 +100,20 @@
         "Expanded scripts/build_portfolio.py with live VS Code Marketplace links, 4th interactive browser demo tab, and automated Stripe MCP livemode provisioning for new products."
       ],
       "expected_impact": "Zero-rejection CWS & VS Code Marketplace builds on first submission and rapid end-to-end launch loops for new CLI and extension products."
+    },
+    {
+      "cycle": 8,
+      "date": "2026-11-21",
+      "diagnosed_bottlenecks": [
+        "Stage 1 mined all-time upvoted GitHub issues without recency filters, surfacing 2017-2019 issues (like Docker Volume/Compose) already mostly solved by native flags (`docker compose config`) or 3-line shell scripts.",
+        "score_opportunity.py lacked explicit kill switches for existing free/native alternative saturation and low DIY resistance (<15-line bash script wrappers)."
+      ],
+      "upgrades_implemented": [
+        "Upgraded scripts/mine_signals.py with --since-year (default 2024), authenticated GitHub token support, recency multipliers, and --check-existing comment-thread + OSS repo supply scanning.",
+        "Upgraded scripts/score_opportunity.py with mandatory existing_alternative_saturation (<5 NO-GO) and diy_resistance (<5 NO-GO) dimensions/kill switches plus --existing-alternatives tracking.",
+        "Updated .agents/skills/stage-1-pain-discovery/SKILL.md to enforce live competitor checks and a mandatory 'Existing Alternatives & Why They Fail' Gate 1 table column."
+      ],
+      "expected_impact": "Eliminates low-moat CLI wrapper ideas early and focuses every build cycle on UI/browser/IDE extensions with proven B2B/prosumer willingness to pay."
     }
   ]
 }

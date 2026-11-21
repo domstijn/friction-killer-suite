@@ -12,34 +12,13 @@
     "lemonsqueezy",
     "gumroad"
   ],
-  "active_project": "docker-volume-compose-tool",
+  "active_project": "notion-guest-mcp-bridge",
   "current_stage": "COMPLETED",
   "gates": {
     "gate_1_idea_and_spec_approved": true,
     "gate_2_launch_approved": true
   },
   "opportunities": [
-    {
-      "id": "docker-volume-compose-tool",
-      "title": "DockerVolumeForge: 1-Command Docker Volume Rename, Clone & Compose v3 Extends Flattener",
-      "ecosystem": "cli-wrapper",
-      "target_software": "Docker / Docker Compose",
-      "pain": "Docker lacks native volume rename/clone (moby/moby#31154: 594 upvotes), Compose v3 stack deploy rejects extends (moby/moby#31101: 718 upvotes), and docker push lacks multi-tag batching (docker/cli#267: 533 upvotes)",
-      "solution": "Zero-dependency CLI that generates/runs atomic container-safe docker volume rename/clone migrations, flattens multi-file Compose extends into deployable v3 stack YAML, and batches multi-tag pushes",
-      "dimensions": {
-        "pain_severity": 9.5,
-        "willingness_to_pay": 8.5,
-        "solution_effectiveness": 9.5,
-        "build_speed": 9.0,
-        "distribution_clarity": 9.5,
-        "platform_safety": 9.5
-      },
-      "effectiveness_score": 93.25,
-      "commercial_potential_score": 90.5,
-      "score": 91.75,
-      "verdict": "GO",
-      "updated_at": "2026-11-20T22:20:16+00:00"
-    },
     {
       "id": "claude-profile-switcher",
       "title": "ClaudeProfileSwitch: Multi-Account, MCP Profile & Quota Guard for Claude Code",
@@ -146,6 +125,30 @@
       "updated_at": "2026-11-17T17:54:27+00:00"
     },
     {
+      "id": "notion-guest-mcp-bridge",
+      "title": "NotionGuestBridge: 1-Click Client Notion Guest Workspace to Claude/Cursor Context & MCP Pack",
+      "ecosystem": "browser-extension",
+      "target_software": "Notion / Claude & Cursor",
+      "pain": "Notion official MCP & OAuth API block Guest users/freelancers completely (makenotion/notion-mcp-server#227: 99 rx, 2026-03) and Claude connector fails to search client Notion links (claude-ai-mcp#356: 29 rx)",
+      "solution": "Chrome MV3 extension operating on the guest's open Notion tab to extract database tables, callouts & nested pages into structured JSON/Markdown MCP context packs with zero Member seat upgrade or cookie theft",
+      "existing_alternatives": "Official Notion MCP rejects guest OAuth; upgrading costs clients paid Member seats; private token_v2 scripts violate Notion ToS and break on auth changes; no official guest extension exists",
+      "dimensions": {
+        "pain_severity": 9.0,
+        "willingness_to_pay": 8.5,
+        "existing_alternative_saturation": 8.5,
+        "diy_resistance": 9.0,
+        "solution_effectiveness": 8.5,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.5,
+        "platform_safety": 8.5
+      },
+      "effectiveness_score": 86.25,
+      "commercial_potential_score": 86.25,
+      "score": 86.5,
+      "verdict": "GO",
+      "updated_at": "2026-11-21T10:43:54+00:00"
+    },
+    {
       "id": "figma-token-tailwind-sync",
       "title": "FigmaTokenBridge: 1-Click Figma Variables & Styles to Tailwind v4 / MUI Theme",
       "ecosystem": "browser-extension",
@@ -165,6 +168,30 @@
       "score": 85.0,
       "verdict": "GO",
       "updated_at": "2026-11-20T22:04:31+00:00"
+    },
+    {
+      "id": "ai-agent-undo-shield",
+      "title": "AgentUndoShield: Auto-Checkpoint & 1-Click Undo for Untracked/Dirty Files in VS Code for Codex & Claude",
+      "ecosystem": "ide-ai-plugin",
+      "target_software": "VS Code / Codex & Claude Code",
+      "pain": "Codex CLI/IDE removed /undo and leaks/modifies untracked files cleanly untouched by git restore (openai/codex#9203: 556 rx, 2026-01; #2998: 246 rx)",
+      "solution": "VS Code .vsix extension (live friction-killer publisher) that auto-snapshots dirty & untracked files via FileSystemWatcher before agent runs and offers 1-click multi-file restore without git clean -fd risk",
+      "existing_alternatives": "Codex revert errors on drifted files; git checkout/restore ignores untracked files; git clean -fd permanently deletes untracked work; native VS Code Timeline is single-file only",
+      "dimensions": {
+        "pain_severity": 9.0,
+        "willingness_to_pay": 8.0,
+        "existing_alternative_saturation": 7.5,
+        "diy_resistance": 8.0,
+        "solution_effectiveness": 9.0,
+        "build_speed": 8.5,
+        "distribution_clarity": 9.0,
+        "platform_safety": 9.0
+      },
+      "effectiveness_score": 86.25,
+      "commercial_potential_score": 82.75,
+      "score": 83.75,
+      "verdict": "GO",
+      "updated_at": "2026-11-21T10:43:54+00:00"
     },
     {
       "id": "notion-clean-md-exporter",
@@ -188,6 +215,30 @@
       "updated_at": "2026-11-17T17:54:27+00:00"
     },
     {
+      "id": "claude-project-sync",
+      "title": "ClaudeProjectBridge: 1-Click Claude.ai Web Projects Knowledge & Instructions to Repo CLAUDE.md Sync",
+      "ecosystem": "browser-extension",
+      "target_software": "Claude.ai / Claude Code",
+      "pain": "No native bridge to sync Claude.ai Web Project instructions & knowledge docs with local CLAUDE.md/repo context (#2511: 673 rx; #28791: 192 rx; #20697: 173 rx)",
+      "solution": "Chrome MV3 extension capturing Claude.ai Project instructions & docs from the active tab into diffable CLAUDE.md + .claude/context/ packs with bidirectional copy-back",
+      "existing_alternatives": "No native sync exists; community extensions like Claude Project Downloader only dump raw static ZIPs without CLAUDE.md formatting, path mapping, or incremental context diffs",
+      "dimensions": {
+        "pain_severity": 8.5,
+        "willingness_to_pay": 8.0,
+        "existing_alternative_saturation": 7.5,
+        "diy_resistance": 8.5,
+        "solution_effectiveness": 8.5,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.5,
+        "platform_safety": 8.5
+      },
+      "effectiveness_score": 85.0,
+      "commercial_potential_score": 80.75,
+      "score": 82.5,
+      "verdict": "GO",
+      "updated_at": "2026-11-21T10:43:54+00:00"
+    },
+    {
       "id": "vscode-workspace-profile-config",
       "title": "ExtProfileLock: Declarative .extensions.json & Env Sync for VS Code",
       "ecosystem": "ide-ai-plugin",
@@ -207,6 +258,30 @@
       "score": 80.5,
       "verdict": "GO",
       "updated_at": "2026-11-17T17:54:27+00:00"
+    },
+    {
+      "id": "docker-volume-compose-tool",
+      "title": "DockerVolumeForge: 1-Command Docker Volume Rename, Clone & Compose v3 Extends Flattener",
+      "ecosystem": "cli-wrapper",
+      "target_software": "Docker / Docker Compose",
+      "pain": "Docker lacks native docker volume mv and stack deploy extends",
+      "solution": "Python CLI wrapping docker volume clone and compose YAML flattening",
+      "existing_alternatives": "Native docker compose config already resolves extends; 3-line alpine cp -a container snippet handles volume clone",
+      "dimensions": {
+        "pain_severity": 8.0,
+        "willingness_to_pay": 5.0,
+        "existing_alternative_saturation": 3.0,
+        "diy_resistance": 3.0,
+        "solution_effectiveness": 7.5,
+        "build_speed": 9.0,
+        "distribution_clarity": 8.0,
+        "platform_safety": 9.5
+      },
+      "effectiveness_score": 70.5,
+      "commercial_potential_score": 57.0,
+      "score": 60.25,
+      "verdict": "NO-GO (Kill Switch Triggered: existing_alternative_saturation < 5 (existing native/free tool solves >=80%), diy_resistance < 5 (replaceable by <15-line script/alias))",
+      "updated_at": "2026-11-21T10:43:11+00:00"
     }
   ],
   "projects": {
@@ -247,8 +322,16 @@
       "title": "DockerVolumeForge: 1-Command Docker Volume Rename, Clone & Compose v3 Extends Flattener",
       "ecosystem": "cli-wrapper",
       "target_software": "Docker / Docker Compose",
-      "status": "COMPLETED",
+      "status": "STAGE_1_DISCOVERY",
       "selected_at": "2026-11-21T10:03:29+00:00"
+    },
+    "notion-guest-mcp-bridge": {
+      "id": "notion-guest-mcp-bridge",
+      "title": "NotionGuestBridge: 1-Click Client Notion Guest Workspace to Claude/Cursor Context & MCP Pack",
+      "ecosystem": "browser-extension",
+      "target_software": "Notion / Claude & Cursor",
+      "status": "COMPLETED",
+      "selected_at": "2026-11-21T10:52:43+00:00"
     }
   }
 }

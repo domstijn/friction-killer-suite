@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministic effectiveness & commercial potential evaluator for plugin/software ideas."""
+"""Deterministic effectiveness, commercial potential & supply-saturation evaluator."""
 
 from __future__ import annotations
 
@@ -17,12 +17,14 @@ if str(SCRIPT_DIR) not in sys.path:
 import pipeline_ctl  # noqa: E402
 
 WEIGHTS = {
-    "pain_severity": 0.20,
-    "willingness_to_pay": 0.25,
-    "solution_effectiveness": 0.15,
-    "build_speed": 0.15,
-    "distribution_clarity": 0.15,
-    "platform_safety": 0.10,
+    "pain_severity": 0.15,
+    "willingness_to_pay": 0.20,
+    "existing_alternative_saturation": 0.15,
+    "diy_resistance": 0.15,
+    "solution_effectiveness": 0.10,
+    "build_speed": 0.10,
+    "distribution_clarity": 0.10,
+    "platform_safety": 0.05,
 }
 
 
@@ -37,14 +39,24 @@ def evaluate_idea(raw: dict[str, Any]) -> dict[str, Any]:
     dims = {k: validate_score(k, raw[k]) for k in WEIGHTS}
 
     composite = round(10.0 * sum(dims[k] * w for k, w in WEIGHTS.items()), 2)
-    # Effectiveness & Feasibility (0-100): solution_effectiveness (40%), build_speed (35%), platform_safety (25%)
     effectiveness = round(
-        10.0 * (0.40 * dims["solution_effectiveness"] + 0.35 * dims["build_speed"] + 0.25 * dims["platform_safety"]),
+        10.0
+        * (
+            0.35 * dims["solution_effectiveness"]
+            + 0.25 * dims["build_speed"]
+            + 0.25 * dims["diy_resistance"]
+            + 0.15 * dims["platform_safety"]
+        ),
         2,
     )
-    # Commercial Potential / Pie (0-100): willingness_to_pay (45%), pain_severity (35%), distribution_clarity (20%)
     commercial = round(
-        10.0 * (0.45 * dims["willingness_to_pay"] + 0.35 * dims["pain_severity"] + 0.20 * dims["distribution_clarity"]),
+        10.0
+        * (
+            0.35 * dims["willingness_to_pay"]
+            + 0.25 * dims["existing_alternative_saturation"]
+            + 0.25 * dims["pain_severity"]
+            + 0.15 * dims["distribution_clarity"]
+        ),
         2,
     )
 
@@ -55,6 +67,10 @@ def evaluate_idea(raw: dict[str, Any]) -> dict[str, Any]:
         kill_reasons.append("platform_safety < 4")
     if dims["solution_effectiveness"] < 5:
         kill_reasons.append("solution_effectiveness < 5")
+    if dims["existing_alternative_saturation"] < 5:
+        kill_reasons.append("existing_alternative_saturation < 5 (existing native/free tool solves >=80%)")
+    if dims["diy_resistance"] < 5:
+        kill_reasons.append("diy_resistance < 5 (replaceable by <15-line script/alias)")
 
     if kill_reasons:
         verdict = f"NO-GO (Kill Switch Triggered: {', '.join(kill_reasons)})"
@@ -72,6 +88,7 @@ def evaluate_idea(raw: dict[str, Any]) -> dict[str, Any]:
         "target_software": raw.get("target_software") or "unknown",
         "pain": raw.get("pain") or "",
         "solution": raw.get("solution") or "",
+        "existing_alternatives": raw.get("existing_alternatives") or "",
         "dimensions": dims,
         "effectiveness_score": effectiveness,
         "commercial_potential_score": commercial,
@@ -82,13 +99,15 @@ def evaluate_idea(raw: dict[str, Any]) -> dict[str, Any]:
 
 def format_markdown(results: list[dict[str, Any]]) -> str:
     lines = [
-        "| ID | Title | Ecosystem | Effectiveness | Commercial | Composite | Verdict |",
-        "| :--- | :--- | :--- | :---: | :---: | :---: | :--- |",
+        "| ID | Title | Ecosystem | Effectiveness | Commercial | Saturation | DIY-Res | Composite | Verdict |",
+        "| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- |",
     ]
     for r in results:
+        d = r["dimensions"]
         lines.append(
             f"| `{r['id']}` | {r['title']} | {r['ecosystem']} | "
-            f"{r['effectiveness_score']} | {r['commercial_potential_score']} | **{r['score']}** | {r['verdict']} |"
+            f"{r['effectiveness_score']} | {r['commercial_potential_score']} | "
+            f"{d['existing_alternative_saturation']} | {d['diy_resistance']} | **{r['score']}** | {r['verdict']} |"
         )
     return "\n".join(lines)
 
@@ -102,12 +121,23 @@ def main() -> int:
     parser.add_argument("--target-software", default="Unknown", help="Host software")
     parser.add_argument("--pain", default="", help="Pain description")
     parser.add_argument("--solution", default="", help="Solution description")
-    parser.add_argument("--pain-severity", type=float, help="1-10 score (weight 20%%)")
-    parser.add_argument("--willingness-to-pay", type=float, help="1-10 score (weight 25%%)")
-    parser.add_argument("--solution-effectiveness", type=float, help="1-10 score (weight 15%%)")
-    parser.add_argument("--build-speed", type=float, help="1-10 score (weight 15%%)")
-    parser.add_argument("--distribution-clarity", type=float, help="1-10 score (weight 15%%)")
-    parser.add_argument("--platform-safety", type=float, help="1-10 score (weight 10%%)")
+    parser.add_argument("--existing-alternatives", default="", help="Existing tools/flags & why they fail")
+    parser.add_argument("--pain-severity", type=float, help="1-10 score (weight 15%%)")
+    parser.add_argument("--willingness-to-pay", type=float, help="1-10 score (weight 20%%)")
+    parser.add_argument(
+        "--existing-alternative-saturation",
+        type=float,
+        help="1-10 un-saturated moat score (10=no free/native alternative, <5 triggers NO-GO)",
+    )
+    parser.add_argument(
+        "--diy-resistance",
+        type=float,
+        help="1-10 DIY resistance score (10=needs browser DOM/OAuth/IDE runtime, <5 triggers NO-GO)",
+    )
+    parser.add_argument("--solution-effectiveness", type=float, help="1-10 score (weight 10%%)")
+    parser.add_argument("--build-speed", type=float, help="1-10 score (weight 10%%)")
+    parser.add_argument("--distribution-clarity", type=float, help="1-10 score (weight 10%%)")
+    parser.add_argument("--platform-safety", type=float, help="1-10 score (weight 5%%)")
     parser.add_argument("--save", action="store_true", help="Save scored idea(s) into pipeline/state.json")
     parser.add_argument("--state-file", default=str(pipeline_ctl.DEFAULT_STATE_PATH), help="Path to state.json")
     parser.add_argument("--format", choices=["md", "json"], default="md", help="Output format")
@@ -121,13 +151,19 @@ def main() -> int:
         required_dims = [
             args.pain_severity,
             args.willingness_to_pay,
+            args.existing_alternative_saturation,
+            args.diy_resistance,
             args.solution_effectiveness,
             args.build_speed,
             args.distribution_clarity,
             args.platform_safety,
         ]
         if any(v is None for v in required_dims):
-            parser.error("Provide --json-file OR all 6 dimension flags (--pain-severity, --willingness-to-pay, etc.)")
+            parser.error(
+                "Provide --json-file OR all 8 dimension flags (--pain-severity, --willingness-to-pay, "
+                "--existing-alternative-saturation, --diy-resistance, --solution-effectiveness, "
+                "--build-speed, --distribution-clarity, --platform-safety)"
+            )
         raw_items = [
             {
                 "id": args.id or "candidate-idea",
@@ -136,8 +172,11 @@ def main() -> int:
                 "target_software": args.target_software,
                 "pain": args.pain,
                 "solution": args.solution,
+                "existing_alternatives": args.existing_alternatives,
                 "pain_severity": args.pain_severity,
                 "willingness_to_pay": args.willingness_to_pay,
+                "existing_alternative_saturation": args.existing_alternative_saturation,
+                "diy_resistance": args.diy_resistance,
                 "solution_effectiveness": args.solution_effectiveness,
                 "build_speed": args.build_speed,
                 "distribution_clarity": args.distribution_clarity,

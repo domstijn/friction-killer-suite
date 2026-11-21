@@ -512,9 +512,15 @@ def _verify_chrome_mv3_artifact(proj_dir: Path, zip_path: Path) -> list[str]:
                 capture_output=True,
                 text=True,
             )
-            if dom_proc.returncode != 0 or 'id="linearbridge-bar"' not in (dom_proc.stdout or ""):
+            dom_out = dom_proc.stdout or ""
+            has_bar = (
+                'id="linearbridge-bar"' in dom_out
+                or 'id="notionguestbridge-bar"' in dom_out
+                or 'data-fk-bar=' in dom_out
+            )
+            if dom_proc.returncode != 0 or not has_bar:
                 errors.append(
-                    f"{zip_path.name}: headless Chromium DOM test failed to inject #linearbridge-bar on Notion fixture"
+                    f"{zip_path.name}: headless Chromium DOM test failed to inject extension bar on Notion fixture"
                 )
     return errors
 

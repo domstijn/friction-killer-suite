@@ -74,6 +74,19 @@
       "payment_link_url": "https://buy.stripe.com/9B63cvan29ys1iwbFG6sw05",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=docker-volume-compose-tool"
     },
+    "notion-guest-mcp-bridge": {
+      "slug": "notion-guest-mcp-bridge",
+      "name": "NotionGuestBridge Pro",
+      "description": "1-click client Notion Guest page & database extractor to Claude/Cursor Markdown and .mcp-context.json packs with PII redaction (Pro License).",
+      "unit_amount": 2900,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_VfX0l5vMdU7VO6",
+      "price_id": "price_1UeBwaH2AcdDmQyRWUw3Amvj",
+      "payment_link_id": "plink_1UeBwmH2AcdDmQyRWhS4Tnr2",
+      "payment_link_url": "https://buy.stripe.com/4gMfZhcva7qk1iw6lm6sw06",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=notion-guest-mcp-bridge"
+    },
     "all-access-bundle": {
       "slug": "all-access-bundle",
       "name": "All-Access Friction-Killer Bundle",

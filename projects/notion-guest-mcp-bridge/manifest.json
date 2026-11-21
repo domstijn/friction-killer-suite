@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "NotionGuestBridge",
+  "version": "0.1.0",
+  "description": "Turn guest-accessible client Notion pages and tables into clean Claude and Cursor context packs in one click.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.notion.so/*",
+    "https://notion.so/*"
+  ],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "NotionGuestBridge"
+  },
+  "icons": {
+    "128": "src/icon128.png"
+  },
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.notion.so/*",
+        "https://notion.so/*"
+      ],
+      "js": [
+        "src/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

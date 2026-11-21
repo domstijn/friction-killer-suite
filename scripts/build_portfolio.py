@@ -75,6 +75,8 @@ def collect_products(state: dict[str, Any], projects_dir: Path) -> list[dict[str
         if not proj_dir.is_dir():
             continue
         opp = opps_by_id.get(slug, {})
+        if str(opp.get("verdict", "")).startswith("NO-GO"):
+            continue
         zip_path = proj_dir / "dist" / f"{slug}-v0.1.0.zip"
         vsix_path = proj_dir / "dist" / f"{slug}-0.1.0.vsix"
         whl_name = f"{re.sub(r'[-_.]+', '_', slug)}-0.1.0-py3-none-any.whl"
@@ -124,7 +126,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
           <button type="button" data-pg-tab="notion" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">2. NotionGitExport</button>
           <button type="button" data-pg-tab="vscode" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">3. ExtProfileLock</button>
           <button type="button" data-pg-tab="claude" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">4. ClaudeProfileSwitch</button>
-          <button type="button" data-pg-tab="docker" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">5. DockerVolumeForge</button>
+          <button type="button" data-pg-tab="guest" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">5. NotionGuestBridge</button>
         </div>
       </div>
 
@@ -219,22 +221,29 @@ API_URL="https://staging.api"</textarea>
         </div>
       </div>
 
-      <!-- Tab 5: DockerVolumeForge -->
-      <div id="pg-panel-docker" class="pg-panel mt-6 hidden grid gap-6 md:grid-cols-2">
+      <!-- Tab 5: NotionGuestBridge -->
+      <div id="pg-panel-guest" class="pg-panel mt-6 hidden grid gap-6 md:grid-cols-2">
         <div class="space-y-3">
-          <div class="grid gap-2 sm:grid-cols-3">
-            <input id="pg-dk-old" value="27722c3065e2f0" placeholder="Old volume" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
-            <input id="pg-dk-new" value="pgdata_prod" placeholder="New volume" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
-            <input id="pg-dk-tags" value="v1.4.2,latest" placeholder="Tags (csv)" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
+          <div class="flex items-center justify-between gap-2">
+            <input id="pg-gb-title" value="Acme Corp — Q4 SOC2 Architecture" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
+            <label class="flex items-center gap-1.5 whitespace-nowrap text-xs text-slate-300">
+              <input id="pg-gb-redact" type="checkbox" checked class="rounded border-slate-700 bg-slate-950" /> Redact PII
+            </label>
           </div>
           <div>
-            <label class="text-xs font-semibold text-slate-300" for="pg-dk-compose">Compose Services JSON w/ <code>extends</code> (flattened to v3.8)</label>
-            <textarea id="pg-dk-compose" rows="6" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">{"version":"2.4","services":{"base":{"image":"ghcr.io/acme/api:1.4","environment":{"LOG_LEVEL":"info","PORT":"8080"}},"web":{"extends":"base","environment":{"LOG_LEVEL":"debug"},"ports":["8080:8080"]}}}</textarea>
+            <label class="text-xs font-semibold text-slate-300" for="pg-gb-blocks">Guest Notion Page Blocks + Inline Database Rows</label>
+            <textarea id="pg-gb-blocks" rows="7" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">## Scope &amp; Contacts
+Lead contact: cto@acme-client.io | Token: ntn_secret9876543210abcdef
+- [ ] Audit S3 KMS rotation policy
+- [x] Verify VPC flow logs
+| Milestone | Owner | Status |
+| IAM Role Review | sec@acme-client.io | In Progress |
+| Pen-Test Signoff | Jane Doe | Blocked |</textarea>
           </div>
         </div>
         <div>
-          <span class="text-xs font-semibold text-emerald-300">Volume Rename Plan + Flattened v3 Stack + Multi-Tag Batch</span>
-          <pre id="pg-dk-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+          <span class="text-xs font-semibold text-emerald-300">Clean Markdown + Claude/Cursor .mcp-context.json Pack</span>
+          <pre id="pg-gb-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
         </div>
       </div>
     </section>"""
@@ -248,7 +257,7 @@ PLAYGROUND_SCRIPT = r"""  <script>
         notion: document.getElementById("pg-panel-notion"),
         vscode: document.getElementById("pg-panel-vscode"),
         claude: document.getElementById("pg-panel-claude"),
-        docker: document.getElementById("pg-panel-docker"),
+        guest: document.getElementById("pg-panel-guest"),
       };
       tabs.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -428,47 +437,49 @@ PLAYGROUND_SCRIPT = r"""  <script>
       [cProf, cMcp, cJsonl].forEach((el) => el?.addEventListener("input", runClaude));
       runClaude();
 
-      // 5. DockerVolumeForge live planner + extends flattener
-      const dOld = document.getElementById("pg-dk-old");
-      const dNew = document.getElementById("pg-dk-new");
-      const dTags = document.getElementById("pg-dk-tags");
-      const dCmp = document.getElementById("pg-dk-compose");
-      const dOut = document.getElementById("pg-dk-output");
-      function runDocker() {
-        if (!dCmp || !dOut) return;
-        try {
-          const oldV = (dOld?.value || "old_vol").trim();
-          const newV = (dNew?.value || "new_vol").trim();
-          const tags = (dTags?.value || "latest").split(",").map((s) => s.trim()).filter(Boolean);
-          const doc = JSON.parse(dCmp.value || "{}");
-          const svcs = doc.services || {};
-          const resolved = {};
-          for (const [name, cfg] of Object.entries(svcs)) {
-            if (cfg && cfg.extends && typeof cfg.extends === "string" && svcs[cfg.extends]) {
-              const parent = svcs[cfg.extends];
-              const merged = Object.assign({}, parent, cfg);
-              delete merged.extends;
-              if (parent.environment || cfg.environment) {
-                merged.environment = Object.assign({}, parent.environment || {}, cfg.environment || {});
-              }
-              resolved[name] = merged;
-            } else {
-              resolved[name] = cfg;
-            }
-          }
-          const volCmds = [
-            "docker volume create " + newV,
-            "docker run --rm -v " + oldV + ":/from:ro -v " + newV + ":/to alpine:3.20 sh -c 'cd /from && cp -a . /to'",
-            "docker volume rm " + oldV
-          ];
-          const pushCmds = tags.map((t) => (t === "latest" ? "" : "docker tag ghcr.io/acme/api:latest ghcr.io/acme/api:" + t + " && ") + "docker push ghcr.io/acme/api:" + t);
-          dOut.textContent = "# Volume Migration Plan:\n" + volCmds.join("\n") + "\n\n# Flattened Compose v3.8:\n" + JSON.stringify({ version: "3.8", services: resolved }, null, 2) + "\n\n# Multi-Tag Batch:\n" + pushCmds.join("\n");
-        } catch (err) {
-          dOut.textContent = "JSON parse error: " + err.message;
-        }
+      // 5. NotionGuestBridge live guest DOM + database table & PII redactor
+      const gTitle = document.getElementById("pg-gb-title");
+      const gRedact = document.getElementById("pg-gb-redact");
+      const gBlocks = document.getElementById("pg-gb-blocks");
+      const gOut = document.getElementById("pg-gb-output");
+      function redactGuestText(text, enabled) {
+        if (!enabled) return text;
+        return text
+          .replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, "[EMAIL_REDACTED]")
+          .replace(/\b(ntn_[A-Za-z0-9]{10,}|secret_[A-Za-z0-9]{10,}|sk-[A-Za-z0-9_-]{12,})\b/g, "[SECRET_REDACTED]");
       }
-      [dOld, dNew, dTags, dCmp].forEach((el) => el?.addEventListener("input", runDocker));
-      runDocker();
+      function runGuestBridge() {
+        if (!gBlocks || !gOut) return;
+        const doRedact = Boolean(gRedact && gRedact.checked);
+        const title = redactGuestText((gTitle?.value || "Guest Page").trim(), doRedact);
+        const rawLines = (gBlocks.value || "").split("\n").map((l) => redactGuestText(l.trim(), doRedact)).filter(Boolean);
+        const mdLines = ["---", 'title: "' + title + '"', 'access_mode: "notion_guest_session"', "---", "", "# " + title, ""];
+        let inTable = false;
+        rawLines.forEach((line) => {
+          if (line.startsWith("|")) {
+            mdLines.push(line);
+            if (!inTable) {
+              const cols = line.split("|").filter((c) => c.trim().length > 0).length;
+              mdLines.push("| " + Array(Math.max(1, cols)).fill("---").join(" | ") + " |");
+              inTable = true;
+            }
+          } else {
+            inTable = false;
+            mdLines.push(line);
+          }
+        });
+        const pack = {
+          schema: "mcp.guest_context.v1",
+          source: "notion-guest-mcp-bridge",
+          title: title,
+          pii_redacted: doRedact,
+          block_count: rawLines.length,
+        };
+        gOut.textContent = mdLines.join("\n") + "\n\n// .mcp-context.json envelope:\n" + JSON.stringify(pack, null, 2);
+      }
+      [gTitle, gRedact, gBlocks].forEach((el) => el?.addEventListener("input", runGuestBridge));
+      gRedact?.addEventListener("change", runGuestBridge);
+      runGuestBridge();
     })();
   </script>"""
 
