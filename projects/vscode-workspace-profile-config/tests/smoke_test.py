@@ -6,9 +6,10 @@ from pathlib import Path
 def test_plugin_structure():
     root = Path(__file__).resolve().parent.parent
     pkg = json.loads((root / "package.json").read_text(encoding="utf-8"))
-    assert pkg["main"] == "./src/index.js"
+    assert pkg["main"] == "./src/extension.cjs"
     assert pkg.get("engines", {}).get("vscode")
     assert len(pkg.get("contributes", {}).get("commands", [])) >= 3
+    assert (root / "src" / "extension.cjs").exists()
     assert (root / "src" / "license_client.js").exists()
     assert (root / "src" / "profile_engine.js").exists()
 
@@ -65,7 +66,7 @@ const blocked = await runProSync({
 assert.equal(blocked.ok, false);
 assert.equal(blocked.blockedByTier, true);
 
-// 3. Activate valid mocked Lemon Squeezy license
+// 3. Activate valid mocked Stripe /verify-license response
 const mockFetch = async (_url, opts) => {
   const valid = String(opts?.body || "").includes("EXT-PRO-123");
   return {
@@ -74,8 +75,7 @@ const mockFetch = async (_url, opts) => {
     json: async () => ({
       valid,
       error: valid ? null : "Invalid",
-      meta: { product_id: "999" },
-      license_key: { expires_at: null },
+      product_id: "999",
     }),
   };
 };
@@ -135,8 +135,7 @@ const bundleFetch = async () => ({
   json: async () => ({
     valid: true,
     error: null,
-    meta: { product_id: "BUNDLE-999" },
-    license_key: { expires_at: null },
+    product_id: "BUNDLE-999",
   }),
 });
 const bundleLic = await activate("BUNDLE-EXT-KEY", {

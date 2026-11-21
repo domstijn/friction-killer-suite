@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LinearBridge",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Push Notion PRD headings and checklists into Linear parent epics and sub-issues in one click.",
   "permissions": [
     "storage"

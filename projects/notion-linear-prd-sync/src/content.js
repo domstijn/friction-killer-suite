@@ -15,20 +15,27 @@
     const blocks = document.querySelectorAll("[data-block-id]");
 
     for (const block of blocks) {
-      const heading = block.querySelector("h1, h2, h3");
-      if (heading) {
+      const heading = block.querySelector("h1, h2, h3, [role='heading']");
+      if (heading && heading.closest("[data-block-id]") === block) {
         const tag = heading.tagName.toLowerCase();
-        const prefix = tag === "h1" ? "#" : tag === "h2" ? "##" : "###";
-        const text = heading.innerText.trim();
+        let prefix = tag === "h1" ? "#" : tag === "h2" ? "##" : "###";
+        if (block.classList.contains("notion-header-block")) prefix = "#";
+        else if (block.classList.contains("notion-sub_header-block")) prefix = "##";
+        else if (block.classList.contains("notion-sub_sub_header-block")) prefix = "###";
+        const text = (heading.innerText || heading.textContent || "").trim();
         if (text && text !== pageTitle) lines.push(`${prefix} ${text}`);
         continue;
       }
 
-      const checkbox = block.querySelector('input[type="checkbox"]');
-      if (checkbox) {
-        const text = block.innerText.replace(/\s+/g, " ").trim();
+      const checkbox = block.querySelector('input[type="checkbox"], [role="checkbox"]');
+      if (checkbox && checkbox.closest("[data-block-id]") === block) {
+        const text = (block.innerText || block.textContent || "").replace(/\s+/g, " ").trim();
         if (text) {
-          lines.push(`- [${checkbox.checked ? "x" : " "}] ${text}`);
+          const isChecked =
+            checkbox.matches('input[type="checkbox"]')
+              ? Boolean(checkbox.checked)
+              : checkbox.getAttribute("aria-checked") === "true";
+          lines.push(`- [${isChecked ? "x" : " "}] ${text}`);
         }
       }
     }

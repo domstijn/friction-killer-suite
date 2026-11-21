@@ -104,6 +104,19 @@ export async function handlePushPrd({
     };
   }
 
+  if (!apiKey || !String(apiKey).trim() || !teamId || !String(teamId).trim()) {
+    return {
+      ok: false,
+      blockedByTier: false,
+      isPro,
+      tierPlan,
+      createdParent: null,
+      createdIssues: [],
+      error: "Missing Linear API Key or Team ID",
+      message: "Open LinearBridge popup to save your Linear API Key & Team ID first.",
+    };
+  }
+
   const pushed = await pushPrdToLinear({
     apiKey,
     teamId,
@@ -147,6 +160,13 @@ export async function handleSyncStatuses({
       message: "Status badge sync requires an active Pro license key.",
     };
   }
+  if (!apiKey || !String(apiKey).trim()) {
+    return {
+      ok: false,
+      blockedByTier: false,
+      message: "Open LinearBridge popup to save your Linear API Key & Team ID first.",
+    };
+  }
   const keys = extractIssueKeys(rawText);
   if (keys.length === 0) {
     return { ok: true, updatedText: rawText, statusByKey: {}, message: "No [KEY-123] tags found" };
@@ -186,8 +206,8 @@ if (typeof chrome !== "undefined" && chrome?.runtime?.onMessage) {
       if (msg?.type === "ACTIVATE_LICENSE") {
         const res = await verifyLicense({
           key: msg.key,
-          provider: "lemonsqueezy",
-          productId: msg.productId || settings.productId || null,
+          provider: "stripe",
+          productId: msg.productId || settings.productId || "prod_VeW6ffGaCfNzue,prod_VeW6IYwGyYJkPv",
           store: kv,
         });
         return { ok: res.valid, ...res };

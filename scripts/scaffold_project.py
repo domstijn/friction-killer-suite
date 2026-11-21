@@ -94,7 +94,7 @@ def scaffold_ide_plugin(proj_dir: Path, slug: str, title: str, provider: str) ->
         "categories": ["Other"],
         "activationEvents": ["onStartupFinished"],
         "type": "module",
-        "main": "./src/index.js",
+        "main": "./src/extension.cjs",
         "contributes": {
             "commands": [
                 {"command": f"{cmd_prefix}.runAction", "title": f"{title}: Run Pro Action"},
@@ -104,6 +104,23 @@ def scaffold_ide_plugin(proj_dir: Path, slug: str, title: str, provider: str) ->
         "scripts": {"test": "python3 tests/smoke_test.py"},
     }
     (proj_dir / "package.json").write_text(json.dumps(pkg, indent=2) + "\n", encoding="utf-8")
+    (proj_dir / "src" / "extension.cjs").write_text(
+        '"use strict";\n\n'
+        'let modPromise = null;\n'
+        'exports.activate = async function activate(context) {\n'
+        '  let vscodeApi = null;\n'
+        '  try { vscodeApi = require("vscode"); } catch { vscodeApi = null; }\n'
+        '  modPromise = modPromise || import("./index.js");\n'
+        '  const mod = await modPromise;\n'
+        '  return await mod.activate(context, vscodeApi);\n'
+        '};\n'
+        'exports.deactivate = async function deactivate() {\n'
+        '  if (!modPromise) return;\n'
+        '  const mod = await modPromise;\n'
+        '  if (typeof mod.deactivate === "function") return await mod.deactivate();\n'
+        '};\n',
+        encoding="utf-8",
+    )
     (proj_dir / "src" / "index.js").write_text(
         f'import {{ getTelemetry, verifyLicense, requireProFeature }} from "./license_client.js";\n\n'
         f'export {{ getTelemetry }};\n\n'
@@ -126,8 +143,19 @@ def scaffold_ide_plugin(proj_dir: Path, slug: str, title: str, provider: str) ->
         f'    ? (id, fn) => vscodeApi.commands.registerCommand(id, fn)\n'
         f'    : (id, fn) => ({{ command: id, handler: fn, dispose() {{}} }});\n'
         f'  const disposables = [\n'
-        f'    register("{cmd_prefix}.runAction", () => runProAction()),\n'
-        f'    register("{cmd_prefix}.activateLicense", (k) => activateLicense(k)),\n'
+        f'    register("{cmd_prefix}.runAction", async () => {{\n'
+        f'      const res = await runProAction();\n'
+        f'      if (res.allowed) vscodeApi?.window?.showInformationMessage?.("{title}: Pro ready");\n'
+        f'      else vscodeApi?.window?.showWarningMessage?.("{title}: Pro license required");\n'
+        f'      return res;\n'
+        f'    }}),\n'
+        f'    register("{cmd_prefix}.activateLicense", async (k) => {{\n'
+        f'      const key = typeof k === "string" ? k : await vscodeApi?.window?.showInputBox?.({{ prompt: "Enter Pro license key" }});\n'
+        f'      const res = await activateLicense(key);\n'
+        f'      if (res.valid) vscodeApi?.window?.showInformationMessage?.("{title}: Pro activated!");\n'
+        f'      else vscodeApi?.window?.showWarningMessage?.(res.reason || "Invalid license key");\n'
+        f'      return res;\n'
+        f'    }}),\n'
         f'  ];\n'
         f'  if (Array.isArray(context?.subscriptions)) context.subscriptions.push(...disposables);\n'
         f'  return {{ disposables }};\n'
@@ -140,9 +168,10 @@ def scaffold_ide_plugin(proj_dir: Path, slug: str, title: str, provider: str) ->
         'def test_plugin_structure():\n'
         '    root = Path(__file__).resolve().parent.parent\n'
         '    pkg = json.loads((root / "package.json").read_text())\n'
-        '    assert pkg["main"] == "./src/index.js"\n'
+        '    assert pkg["main"] in ("./src/extension.cjs", "./src/index.js")\n'
         '    assert pkg.get("engines", {}).get("vscode")\n'
         '    assert len(pkg.get("contributes", {}).get("commands", [])) >= 1\n'
+        '    assert (root / "src" / "extension.cjs").exists()\n'
         '    assert (root / "src" / "license_client.js").exists()\n\n'
         'if __name__ == "__main__":\n'
         '    test_plugin_structure()\n'
