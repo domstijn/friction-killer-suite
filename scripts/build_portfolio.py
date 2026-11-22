@@ -119,7 +119,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
       <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
         <div>
           <span class="rounded-full bg-indigo-500/20 px-2.5 py-0.5 text-xs font-semibold text-indigo-300">ZERO-INSTALL INTERACTIVE DEMO</span>
-          <h2 class="mt-2 text-2xl font-bold text-white">Try All 9 Tools Live in Your Browser</h2>
+          <h2 class="mt-2 text-2xl font-bold text-white">Try All 10 Tools Live in Your Browser</h2>
           <p class="mt-1 text-xs text-slate-400">Runs 100% locally in JavaScript — nothing leaves your browser.</p>
         </div>
         <div class="flex flex-wrap gap-2" role="tablist">
@@ -132,6 +132,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
           <button type="button" data-pg-tab="payout" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">7. StripePayoutBridge</button>
           <button type="button" data-pg-tab="lemon" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">8. LemonExitBridge</button>
           <button type="button" data-pg-tab="ossvat" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">9. OssVatBridge</button>
+          <button type="button" data-pg-tab="amz" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">10. AmzSettlementBridge</button>
         </div>
       </div>
 
@@ -328,6 +329,27 @@ stripe_tax,NL,EUR,300.00,0.00,0.0,charge,NL123456789B01</textarea>
           <pre id="pg-ossvat-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
         </div>
       </div>
+
+      <!-- Tab 10: AmzSettlementBridge -->
+      <div id="pg-panel-amz" class="pg-panel mt-6 hidden grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-300" for="pg-amz-csv">Amazon Flat-File V2 Settlement Rows (.TXT / .TSV / .CSV)</label>
+            <textarea id="pg-amz-csv" rows="8" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">settlement-id,deposit-date,currency,transaction-type,amount-type,amount-description,amount
+2184990101,2026-11-16,EUR,Order,ItemPrice,Principal,320.00
+2184990101,2026-11-16,EUR,Order,ItemPrice,Tax,60.80
+2184990101,2026-11-16,EUR,Order,ItemWithheldTax,MarketplaceFacilitatorTax-Principal,-38.00
+2184990101,2026-11-16,EUR,Order,ItemFees,Commission,-48.00
+2184990101,2026-11-16,EUR,ServiceFee,Cost of Advertising,TransactionTotalAmount,-24.00
+2184990101,2026-11-16,EUR,other-transaction,Previous Reserve Amount Balance,Previous Reserve Amount Balance,95.00
+2184990101,2026-11-16,EUR,other-transaction,Current Reserve Amount,Current Reserve Amount,-40.00</textarea>
+          </div>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-emerald-300">Zero-Drift Double-Entry Journal (Xero + QBO + DATEV EXTF)</span>
+          <pre id="pg-amz-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+        </div>
+      </div>
     </section>"""
 
 
@@ -344,6 +366,7 @@ PLAYGROUND_SCRIPT = r"""  <script>
         payout: document.getElementById("pg-panel-payout"),
         lemon: document.getElementById("pg-panel-lemon"),
         ossvat: document.getElementById("pg-panel-ossvat"),
+        amz: document.getElementById("pg-panel-amz"),
       };
       tabs.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -749,6 +772,48 @@ PLAYGROUND_SCRIPT = r"""  <script>
       }
       ossCsv?.addEventListener("input", runOssVat);
       runOssVat();
+
+      // 10. AmzSettlementBridge live Flat-File V2 clearing journal compiler
+      const amzCsv = document.getElementById("pg-amz-csv");
+      const amzOut = document.getElementById("pg-amz-output");
+      function runAmzSettlement() {
+        if (!amzCsv || !amzOut) return;
+        const raw = (amzCsv.value || "").split("\n").map((l) => l.trim()).filter(Boolean);
+        if (raw.length < 2) {
+          amzOut.textContent = "Add header + at least 1 settlement line.";
+          return;
+        }
+        const delim = raw[0].includes("\t") ? "\t" : ",";
+        const b = { Sales: 0, Tax: 0, FacilitatorTax: 0, Fees: 0, Ads: 0, Reserves: 0 };
+        raw.slice(1).forEach((l) => {
+          const c = l.split(delim);
+          const all = ((c[3] || "") + " " + (c[4] || "") + " " + (c[5] || "")).toLowerCase();
+          const cents = Math.round((parseFloat(c[6]) || 0) * 100);
+          if (all.includes("advertising") || all.includes("ppc")) b.Ads += cents;
+          else if (all.includes("reserve")) b.Reserves += cents;
+          else if (all.includes("facilitator") || all.includes("itemwithheldtax")) b.FacilitatorTax += cents;
+          else if (all.includes("fee") || all.includes("commission") || all.includes("fba")) b.Fees += cents;
+          else if (all.includes("tax") || all.includes("vat")) b.Tax += cents;
+          else b.Sales += cents;
+        });
+        const net = Object.values(b).reduce((a, v) => a + v, 0);
+        const f = (cents) => (cents / 100).toFixed(2);
+        const lines = [
+          "*Narration,*Date,*Description,*AccountCode,*Amount",
+          "Amazon Settlement 2184990101,2026-11-16,Sales Principal,200," + f(-b.Sales),
+          "Amazon Settlement 2184990101,2026-11-16,VAT Collected,220," + f(-b.Tax),
+          "Amazon Settlement 2184990101,2026-11-16,Facilitator Tax Withheld,221," + f(-b.FacilitatorTax),
+          "Amazon Settlement 2184990101,2026-11-16,FBA & Referral Fees,404," + f(-b.Fees),
+          "Amazon Settlement 2184990101,2026-11-16,Sponsored Ads PPC,406," + f(-b.Ads),
+          "Amazon Settlement 2184990101,2026-11-16,Reserve Carry-Forward,125," + f(-b.Reserves),
+          "Amazon Settlement 2184990101,2026-11-16,Net Bank Deposit Clearing,120," + f(net),
+        ];
+        amzOut.textContent =
+          "# Double-Entry Verification: Debits == Credits | Net Deposit: €" + f(net) + " (Drift: €0.00)\n\n" +
+          "# Xero Manual Journal CSV:\n" + lines.join("\n");
+      }
+      amzCsv?.addEventListener("input", runAmzSettlement);
+      runAmzSettlement();
     })();
   </script>"""
 
@@ -862,8 +927,8 @@ def render_hub_html(
     cards_html = "\n".join(cards)
     hub_title = f"Friction-Killer Suite — {len(products)} Zero-Backend Micro-Utilities & Web Apps"
     hub_desc = (
-        "Client-side micro-tools and zero-install web apps for EU VAT OSS quarterly CSV/XML filing, "
-        "Lemon Squeezy to Stripe/Polar migration, Stripe/PayPal payout journal splitting, Webflow CMS asset backup, Notion, Linear, Claude, and VS Code."
+        "Client-side micro-tools and zero-install web apps for Amazon Flat-File V2 settlement journals, "
+        "EU VAT OSS quarterly CSV/XML filing, Lemon Squeezy to Stripe/Polar migration, Stripe/PayPal payout journal splitting, Webflow CMS backup, Notion, Linear, Claude, and VS Code."
     )
     hub_seo_tags = build_seo_head_tags(
         title=hub_title,
@@ -904,7 +969,7 @@ def render_hub_html(
         <span class="text-indigo-400">without paying monthly SaaS taxes.</span>
       </h1>
       <p class="mx-auto mt-4 max-w-2xl text-base text-slate-300">
-        {len(products)} local-first tools &amp; zero-install web apps including OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch, and NotionGuestBridge.
+        {len(products)} local-first tools &amp; zero-install web apps including AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch, and NotionGuestBridge.
       </p>
       <div class="mt-7 flex flex-wrap justify-center gap-3">
         <a href="#playground" class="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-slate-200">Try Live in Browser</a>
@@ -921,14 +986,14 @@ def render_hub_html(
     <section id="bundle" class="mt-14 rounded-3xl border border-indigo-500/50 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/60 p-8 sm:p-10">
       <div class="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
         <div>
-          <span class="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300">BEST VALUE · SAVE 32%</span>
+          <span class="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300">BEST VALUE · SAVE 80%+</span>
           <h2 class="mt-3 text-3xl font-extrabold text-white">All-Access Friction-Killer Bundle</h2>
           <p class="mt-2 max-w-xl text-sm text-slate-300">
-            Unlock Pro licenses for all {len(products)} tools (LinearBridge + NotionGitExport + ExtProfileLock) with one single purchase (€72 combined value).
+            Unlock Pro licenses across all {len(products)} tools (AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch &amp; NotionGuestBridge) with one single purchase (€260+ combined value).
           </p>
         </div>
         <div class="w-full shrink-0 rounded-2xl border border-slate-700 bg-slate-950/70 p-6 text-center md:w-72">
-          <div class="text-xs text-slate-400 line-through">€72 combined</div>
+          <div class="text-xs text-slate-400 line-through">€260+ combined</div>
           <div class="mt-1 text-4xl font-extrabold text-white">€49 <span class="text-sm font-normal text-slate-400">once</span></div>
           <a href="{html.escape(bundle_checkout_url)}" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-5 block rounded-xl bg-indigo-500 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
             Get All-Access Bundle

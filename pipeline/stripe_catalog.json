@@ -139,6 +139,19 @@
       "payment_link_url": "https://buy.stripe.com/00w6oH52I7qk2mA6lm6sw0a",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=eu-oss-vat-return-compiler"
     },
+    "amazon-settlement-xero-qbo-splitter": {
+      "slug": "amazon-settlement-xero-qbo-splitter",
+      "name": "AmzSettlementBridge Pro",
+      "description": "Zero-install Amazon Seller Central Flat-File V2 (.TXT/.TSV) to Xero, QuickBooks & DATEV clearing journal compiler Web App + CLI (Pro License).",
+      "unit_amount": 2900,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_Vg2d5RyhHCcgKb",
+      "price_id": "price_1UegYDH2AcdDmQyR3BtJxnPh",
+      "payment_link_id": "plink_1UegYQH2AcdDmQyRvfHDd0kD",
+      "payment_link_url": "https://buy.stripe.com/bJefZh66M2601iw6lm6sw0b",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=amazon-settlement-xero-qbo-splitter"
+    },
     "all-access-bundle": {
       "slug": "all-access-bundle",
       "name": "All-Access Friction-Killer Bundle",

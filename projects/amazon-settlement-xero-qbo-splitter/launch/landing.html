@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AmzSettlementBridge — Amazon Flat-File V2 (.TXT/.TSV) to Xero, QuickBooks &amp; DATEV Journals</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+    <div class="text-lg font-bold tracking-tight text-white">AmzSettlementBridge</div>
+    <nav class="flex items-center gap-6 text-sm text-slate-300">
+      <a href="#live-app" class="hover:text-white">Web App</a>
+      <a href="#comparison" class="hover:text-white">Why it works</a>
+      <a href="#pricing" class="hover:text-white">Pricing</a>
+      <a href="https://buy.stripe.com/bJefZh66M2601iw6lm6sw0b" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-lg bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-400">Get Pro — €29</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-6">
+    <section class="py-14 text-center">
+      <span class="inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
+        Zero-Subscription · 100% Browser-Local · Integer-Cent Balanced (Debits == Credits)
+      </span>
+      <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+        Amazon Flat-File V2 settlements to Xero, QuickBooks &amp; DATEV<br />
+        <span class="text-indigo-400">without $17–$199/mo A2X or Link My Books fees.</span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
+        Amazon 14-day payouts bundle 40+ FBA fulfillment, referral, storage, PPC ad, refund, Marketplace Facilitator tax, and rolling Reserve holdback lines. AmzSettlementBridge compiles your raw <code>.txt</code>/<code>.tsv</code> exports 100% locally in Chrome—zero SP-API credentials or server uploads.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a href="#live-app" data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
+          Split Settlement Free (15 Lines)
+        </a>
+        <a href="https://buy.stripe.com/bJefZh66M2601iw6lm6sw0b" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
+          Unlock Pro License — €29 once
+        </a>
+      </div>
+    </section>
+
+    <!-- Standalone Zero-Install In-Browser Web App -->
+    <section id="live-app" class="rounded-3xl border border-indigo-500/40 bg-slate-900/90 p-6 shadow-2xl shadow-indigo-500/10 sm:p-8">
+      <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
+        <div>
+          <span class="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">ZERO-INSTALL IN-BROWSER WEB APP · RUNS 100% LOCALLY</span>
+          <h2 class="mt-2 text-2xl font-bold text-white">Split Amazon Flat-File V2 (.TXT / .TSV) Settlements</h2>
+          <p class="mt-1 text-xs text-slate-400">Free previews 1 settlement up to 15 itemized lines with zero-drift audit; Pro unlocks unlimited lines, multi-settlement batching &amp; Xero / QBO / DATEV EXTF downloads.</p>
+        </div>
+        <span id="app-tier-badge" class="self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300">Free Tier (15 lines)</span>
+      </div>
+
+      <div class="mt-6 grid gap-6 lg:grid-cols-12">
+        <div class="space-y-3 lg:col-span-5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <label class="text-xs font-semibold text-slate-300" for="app-csv-files">Drop/Select Amazon V2 .TXT / .TSV / .CSV Files</label>
+            <button id="app-sample-btn" type="button" class="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs font-medium text-indigo-300 hover:bg-slate-700">Load Sample Flat-File V2 Settlement (20 Lines)</button>
+          </div>
+          <input id="app-csv-files" type="file" accept=".txt,.tsv,.csv,text/plain,text/tab-separated-values,text/csv" multiple class="block w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-500 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-white" />
+
+          <textarea id="app-csv-input" rows="8" placeholder="settlement-id&#9;settlement-start-date&#9;settlement-end-date&#9;deposit-date&#9;total-amount&#9;currency&#9;transaction-type&#9;order-id&#9;marketplace-name&#9;posted-date&#9;amount-type&#9;amount-description&#9;amount..." class="w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200 focus:border-indigo-500 focus:outline-none"></textarea>
+
+          <button id="app-run-btn" type="button" class="w-full rounded-xl bg-indigo-500 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400">
+            Compile Balanced Clearing Journals
+          </button>
+
+          <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-3">
+            <div class="flex items-center justify-between text-xs">
+              <label class="font-semibold text-slate-300" for="app-license-key">Unlock Pro License (Stripe Session or AMZSET Key)</label>
+              <a href="https://buy.stripe.com/bJefZh66M2601iw6lm6sw0b" data-fk-cta="pro-checkout" target="_blank" class="stripe-checkout-button font-semibold text-indigo-400 hover:text-indigo-300">Buy Pro — €29 &rarr;</a>
+            </div>
+            <div class="mt-2 flex gap-2">
+              <input id="app-license-key" placeholder="Paste cs_live_... or AMZSET-... key" class="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 font-mono text-xs text-slate-200" />
+              <button id="app-activate-btn" type="button" class="rounded-lg bg-slate-800 px-4 py-1.5 text-xs font-semibold text-white hover:bg-slate-700">Activate</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col justify-between space-y-3 lg:col-span-7">
+          <div class="grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-gross" class="text-sm font-bold text-white">€0.00</div>
+              <div class="text-[11px] text-slate-400">Gross Sales</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-fees" class="text-sm font-bold text-rose-300">€0.00</div>
+              <div class="text-[11px] text-slate-400">FBA / Referral / PPC</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-reserve" class="text-sm font-bold text-amber-300">€0.00</div>
+              <div class="text-[11px] text-slate-400">Reserve Net Change</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-deposit" class="text-sm font-bold text-emerald-300">€0.00</div>
+              <div id="stat-drift" class="text-[11px] text-slate-400">Net Deposit (Drift €0.00)</div>
+            </div>
+          </div>
+
+          <div class="max-h-44 overflow-auto rounded-xl border border-slate-800 bg-slate-950">
+            <table class="w-full text-left text-xs">
+              <thead class="sticky top-0 bg-slate-900 text-[11px] uppercase text-slate-400">
+                <tr>
+                  <th class="px-3 py-2">Clearing Account</th>
+                  <th class="px-3 py-2">Xero / SKR03</th>
+                  <th class="px-3 py-2 text-right">Debit</th>
+                  <th class="px-3 py-2 text-right">Credit</th>
+                </tr>
+              </thead>
+              <tbody id="app-table-body" class="divide-y divide-slate-800/80 text-slate-200">
+                <tr><td colspan="4" class="px-3 py-4 text-center text-slate-500">Click "Load Sample Flat-File V2 Settlement (20 Lines)" or drop your Amazon .txt/.tsv files.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex gap-1.5" role="tablist">
+                <button type="button" data-amz-tab="xero" class="amz-tab rounded-lg bg-indigo-500 px-2.5 py-1 text-xs font-semibold text-white">Xero Manual Journal</button>
+                <button type="button" data-amz-tab="qbo" class="amz-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700">QuickBooks Online</button>
+                <button type="button" data-amz-tab="datev" class="amz-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700">DATEV EXTF (;-CSV)</button>
+              </div>
+              <span id="app-status" class="text-xs text-indigo-300">Ready</span>
+            </div>
+            <pre id="app-output" class="mt-2 h-36 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300">Click "Load Sample Flat-File V2 Settlement (20 Lines)" to inspect balanced Xero, QBO, and DATEV outputs.</pre>
+          </div>
+
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button id="app-dl-xero" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download Xero CSV (Pro)</button>
+            <button id="app-dl-qbo" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download QBO CSV (Pro)</button>
+            <button id="app-dl-datev" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download DATEV EXTF (Pro)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="comparison" class="grid gap-6 py-12 md:grid-cols-2">
+      <div class="rounded-2xl border border-rose-500/20 bg-slate-900/60 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-rose-400">Why Settlement Bookkeeping Breaks</h2>
+        <ul class="mt-4 space-y-3 text-slate-300">
+          <li>• Booking Net Amazon deposits hides FBA fulfillment fees, sponsored PPC spend, refunds, and VAT collected inside revenue</li>
+          <li>• Flat-File V2 exports mix a top header <code>total-amount</code> summary row with itemized rows plus previous/current Reserve holdbacks</li>
+          <li>• A2X ($29–$199/mo), Link My Books ($17–$199/mo), and Synder ($52–$150+/mo) charge recurring order-tier fees + demand permanent SP-API OAuth access</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-emerald-500/30 bg-slate-900 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-emerald-400">With AmzSettlementBridge</h2>
+        <ul class="mt-4 space-y-3 text-slate-200">
+          <li>• Separates summary headers automatically, nets rolling Account-Level Reserves, and verifies <code>Debits == Credits</code> in integer cents</li>
+          <li>• Buckets Sales, Refunds, Promos, VAT, Marketplace Facilitator withholdings, FBA/Referral/Storage fees &amp; PPC Ads cleanly</li>
+          <li>• Pairs directly with <a href="../stripe-payout-xero-qbo-splitter/index.html" class="text-indigo-300 underline">StripePayoutBridge</a> inside our €49 All-Access Bundle for unified multi-channel books</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="pricing" class="py-12">
+      <h2 class="text-center text-2xl font-bold text-white">Simple, one-time license — keep every cent of FBA margin</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-8">
+          <h3 class="text-lg font-semibold text-white">Free Preview</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€0</p>
+          <p class="mt-2 text-sm text-slate-400">Test settlement bucketing &amp; zero-drift math locally.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-300">
+            <li>✓ Preview 1 settlement up to 15 itemized lines</li>
+            <li>✓ Full 8-account clearing breakdown table</li>
+            <li>✓ Integer-cent Debit/Credit drift check</li>
+          </ul>
+          <a href="#live-app" data-fk-cta="free-install" class="mt-8 block rounded-xl border border-slate-700 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800">
+            Run Free Preview
+          </a>
+        </div>
+        <div class="rounded-2xl border border-indigo-500 bg-slate-900 p-8 shadow-lg shadow-indigo-500/10">
+          <h3 class="text-lg font-semibold text-white">AmzSettlementBridge Pro</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€29 once</p>
+          <p class="mt-2 text-sm text-slate-400">Unlimited Flat-File V2 rows &amp; multi-settlement batching.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-200">
+            <li>✓ Unlimited lines &amp; unlimited settlement periods</li>
+            <li>✓ Xero Manual Journal + QuickBooks Online + DATEV EXTF</li>
+            <li>✓ Rolling reserve carry-forward + Python <code>.whl</code> CLI</li>
+          </ul>
+          <a href="https://buy.stripe.com/bJefZh66M2601iw6lm6sw0b" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-indigo-500 py-3 text-center text-sm font-semibold text-white hover:bg-indigo-400">
+            Buy Pro License Key — €29
+          </a>
+        </div>
+        <div class="rounded-2xl border border-emerald-500/40 bg-slate-900/80 p-8">
+          <h3 class="text-lg font-semibold text-white">All-Access Suite Bundle</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€49 once</p>
+          <p class="mt-2 text-sm text-slate-400">Unlocks AmzSettlementBridge + StripePayoutBridge + OssVatBridge + all 10 tools.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-200">
+            <li>✓ All 10 Friction-Killer tools unlocked permanently</li>
+            <li>✓ Same Stripe key activates browser + offline CLIs</li>
+            <li>✓ 14-day money-back guarantee</li>
+          </ul>
+          <a href="https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-emerald-600 py-3 text-center text-sm font-semibold text-white hover:bg-emerald-500">
+            Get All-Access Bundle — €49
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="py-12">
+      <h2 class="text-2xl font-bold text-white">FAQ</h2>
+      <div class="mt-6 space-y-4 text-sm text-slate-300">
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">Do I need to connect my Amazon Seller Central SP-API account?</h3>
+          <p class="mt-1 text-slate-400">No. Download your Settlement Flat-File V2 (<code>.txt</code> or <code>.tsv</code>) from Seller Central &rarr; Reports &rarr; Payments and drop it right into the browser app. Zero API tokens leave your computer.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">How does it handle Account-Level Reserves?</h3>
+          <p class="mt-1 text-slate-400">Both <code>Previous Reserve Amount Balance</code> (credit release) and <code>Current Reserve Amount</code> (debit holdback) are netted into the clearing Reserve Hold/Release account (Xero <code>125</code> / SKR03 <code>1365</code>) so Debits always equal Credits against your exact bank deposit.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mx-auto max-w-6xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500">
+    AmzSettlementBridge (<code>amazon-settlement-xero-qbo-splitter</code>) — Zero-subscription Amazon settlement journal compiler.
+  </footer>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "fk_amz_settlement_pro_state";
+      const FREE_CAP = 15;
+      const BUCKETS = [
+        ["sales_principal", "Amazon Sales (Principal & Shipping)", "200", "8400"],
+        ["refunds", "Amazon Customer Refunds", "205", "8700"],
+        ["promotions", "Amazon Promotional Rebates", "207", "8730"],
+        ["sales_tax", "Amazon Sales Tax / VAT Collected", "220", "1776"],
+        ["marketplace_facilitator_tax", "Marketplace Facilitator Tax Withheld", "221", "1779"],
+        ["amazon_fba_selling_fees", "Amazon FBA, Referral & Storage Fees", "404", "4970"],
+        ["amazon_advertising_ppc", "Amazon Sponsored Ads (PPC)", "406", "4600"],
+        ["reserve_carry_forward", "Amazon Account-Level Reserve Hold/Release", "125", "1365"]
+      ];
+      const SAMPLE_TSV = [
+        "settlement-id\tsettlement-start-date\tsettlement-end-date\tdeposit-date\ttotal-amount\tcurrency\ttransaction-type\torder-id\tmarketplace-name\tposted-date\tamount-type\tamount-description\tamount",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t264.10\tEUR\t\t\t\t\t\t\t",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tOrder\t302-1001-001\tAmazon.de\t2026-11-02\tItemPrice\tPrincipal\t120.00",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tOrder\t302-1001-001\tAmazon.de\t2026-11-02\tItemPrice\tTax\t22.80",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tOrder\t302-1001-001\tAmazon.de\t2026-11-02\tItemFees\tCommission\t-18.00",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tOrder\t302-1001-001\tAmazon.de\t2026-11-02\tItemFees\tFBAPerUnitFulfillmentFee\t-5.40",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tOrder\t302-1001-002\tAmazon.de\t2026-11-04\tItemPrice\tPrincipal\t200.00",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tOrder\t302-1001-002\tAmazon.de\t2026-11-04\tItemPrice\tShipping\t10.00",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tOrder\t302-1001-002\tAmazon.de\t2026-11-04\tItemWithheldTax\tMarketplaceFacilitatorTax-Principal\t-38.00",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tOrder\t302-1001-002\tAmazon.de\t2026-11-04\tItemPrice\tTax\t38.00",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tOrder\t302-1001-002\tAmazon.de\t2026-11-04\tPromotion\tPromoRebate\t-10.00",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tOrder\t302-1001-002\tAmazon.de\t2026-11-04\tItemFees\tCommission\t-30.00",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tOrder\t302-1001-002\tAmazon.de\t2026-11-04\tItemFees\tFBAPerUnitFulfillmentFee\t-6.50",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tRefund\t302-1001-003\tAmazon.de\t2026-11-06\tItemPrice\tPrincipal\t-40.00",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tRefund\t302-1001-003\tAmazon.de\t2026-11-06\tItemFees\tRefundCommission\t4.20",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tServiceFee\t\tAmazon.de\t2026-11-10\tFBA Inventory Storage Fee\tStorage Fee\t-14.00",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tServiceFee\t\tAmazon.de\t2026-11-11\tCost of Advertising\tTransactionTotalAmount\t-24.00",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tother-transaction\t\tAmazon.de\t2026-11-01\tPrevious Reserve Amount Balance\tPrevious Reserve Amount Balance\t95.00",
+        "2184990101\t2026-11-01\t2026-11-15\t2026-11-16\t\tEUR\tother-transaction\t\tAmazon.de\t2026-11-15\tCurrent Reserve Amount\tCurrent Reserve Amount\t-40.00",
+        "2184990102\t2026-11-16\t2026-11-30\t2026-12-01\t106.50\tEUR\t\t\t\t\t\t\t",
+        "2184990102\t2026-11-16\t2026-11-30\t2026-12-01\t\tEUR\tOrder\t302-2001-001\tAmazon.fr\t2026-11-18\tItemPrice\tPrincipal\t150.00",
+        "2184990102\t2026-11-16\t2026-11-30\t2026-12-01\t\tEUR\tOrder\t302-2001-001\tAmazon.fr\t2026-11-18\tItemFees\tCommission\t-22.50",
+        "2184990102\t2026-11-16\t2026-11-30\t2026-12-01\t\tEUR\tServiceFee\t\tAmazon.fr\t2026-11-20\tCost of Advertising\tTransactionTotalAmount\t-21.00"
+      ].join("\n");
+
+      const filesEl = document.getElementById("app-csv-files");
+      const sampleBtn = document.getElementById("app-sample-btn");
+      const csvEl = document.getElementById("app-csv-input");
+      const runBtn = document.getElementById("app-run-btn");
+      const keyEl = document.getElementById("app-license-key");
+      const actBtn = document.getElementById("app-activate-btn");
+      const badgeEl = document.getElementById("app-tier-badge");
+      const statusEl = document.getElementById("app-status");
+      const outEl = document.getElementById("app-output");
+      const tblEl = document.getElementById("app-table-body");
+      const statGross = document.getElementById("stat-gross");
+      const statFees = document.getElementById("stat-fees");
+      const statReserve = document.getElementById("stat-reserve");
+      const statDeposit = document.getElementById("stat-deposit");
+      const statDrift = document.getElementById("stat-drift");
+      const dlXero = document.getElementById("app-dl-xero");
+      const dlQbo = document.getElementById("app-dl-qbo");
+      const dlDatev = document.getElementById("app-dl-datev");
+      const tabBtns = document.querySelectorAll("[data-amz-tab]");
+
+      let activeTab = "xero";
+      let lastExports = null;
+
+      function isProUnlocked() {
+        try {
+          return Boolean(JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}").valid);
+        } catch {
+          return false;
+        }
+      }
+
+      function refreshBadge() {
+        if (isProUnlocked()) {
+          badgeEl.textContent = "Pro Unlocked";
+          badgeEl.className = "self-start rounded-full border border-indigo-500 bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300";
+        } else {
+          badgeEl.textContent = "Free Tier (15 lines)";
+          badgeEl.className = "self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300";
+        }
+      }
+
+      function toCents(v) {
+        let s = String(v ?? "").replace(/[€$£\s]/g, "").trim();
+        if (!s) return 0;
+        if (s.includes(",") && !s.includes(".")) s = s.replace(",", ".");
+        else s = s.replace(/,/g, "");
+        return Math.round((parseFloat(s) || 0) * 100);
+      }
+
+      function fmt(c) {
+        return (c / 100).toFixed(2);
+      }
+
+      function escHtml(s) {
+        return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      }
+
+      function csvCell(v) {
+        const s = String(v ?? "");
+        return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+      }
+
+      function detectDelim(ln) {
+        if (ln.includes("\t")) return "\t";
+        if (ln.includes(";") && (ln.match(/;/g) || []).length > (ln.match(/,/g) || []).length) return ";";
+        return ",";
+      }
+
+      function parseDelimRows(text) {
+        const lines = String(text || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n").filter((l) => l.trim());
+        if (lines.length < 2) return [];
+        const delim = detectDelim(lines[0]);
+        const hdrs = lines[0].split(delim).map((h) => h.trim().toLowerCase());
+        const idx = (names) => hdrs.findIndex((h) => names.includes(h));
+        const iSid = idx(["settlement-id", "settlement_id"]);
+        const iDep = idx(["deposit-date", "deposit_date", "settlement-end-date", "posted-date"]);
+        const iCur = idx(["currency"]);
+        const iTx = idx(["transaction-type", "transaction_type", "type"]);
+        const iAt = idx(["amount-type", "amount_type"]);
+        const iAd = idx(["amount-description", "amount_description", "description"]);
+        const iAmt = idx(["amount", "transaction-amount"]);
+
+        const out = [];
+        lines.slice(1).forEach((ln) => {
+          const r = ln.split(delim);
+          const amtStr = iAmt >= 0 ? (r[iAmt] || "").trim() : "";
+          const tx = iTx >= 0 ? (r[iTx] || "").trim() : "";
+          const at = iAt >= 0 ? (r[iAt] || "").trim() : "";
+          const ad = iAd >= 0 ? (r[iAd] || "").trim() : "";
+          if (!amtStr && !tx && !at && !ad) return;
+          out.push({
+            sid: (iSid >= 0 ? (r[iSid] || "").trim() : "") || "settlement-1",
+            date: ((iDep >= 0 ? (r[iDep] || "").trim() : "") || "2026-11-16").slice(0, 10),
+            currency: ((iCur >= 0 ? (r[iCur] || "").trim() : "") || "EUR").toUpperCase(),
+            tx,
+            at,
+            ad,
+            cents: toCents(amtStr)
+          });
+        });
+        return out;
+      }
+
+      function classifyBucket(r) {
+        const all = (r.tx + " " + r.at + " " + r.ad).toLowerCase();
+        const at = r.at.toLowerCase();
+        const ad = r.ad.toLowerCase();
+        const tx = r.tx.toLowerCase();
+        if (all.includes("advertising") || all.includes("ppc") || all.includes("sponsored")) return "amazon_advertising_ppc";
+        if (all.includes("reserve")) return "reserve_carry_forward";
+        if (all.includes("marketplacefacilitator") || all.includes("facilitator") || all.includes("itemwithheldtax")) return "marketplace_facilitator_tax";
+        if (at.includes("promotion") || ad.includes("promo") || ad.includes("rebate")) return "promotions";
+        if (at.includes("fee") || ad.includes("fee") || ad.includes("commission") || all.includes("fba") || all.includes("storage") || tx.includes("servicefee")) return "amazon_fba_selling_fees";
+        if (tx.includes("refund") || tx.includes("chargeback") || tx.includes("reversal")) {
+          if (ad.includes("tax") || ad.includes("vat")) return "sales_tax";
+          return "refunds";
+        }
+        if (ad.includes("tax") || ad.includes("vat")) return "sales_tax";
+        return "sales_principal";
+      }
+
+      function renderActiveTab() {
+        if (!lastExports) return;
+        outEl.textContent = lastExports[activeTab] || "";
+      }
+
+      function compileInBrowser() {
+        const pro = isProUnlocked();
+        const rawBlocks = String(csvEl?.value || "").split("\n# --- NEXT FILE ---\n");
+        let items = [];
+        rawBlocks.forEach((blk) => { items = items.concat(parseDelimRows(blk)); });
+        if (!items.length) {
+          statusEl.textContent = "Drop a .txt/.tsv file or click Load Sample.";
+          return;
+        }
+
+        const firstSid = items[0].sid;
+        const selected = pro ? items : items.filter((r) => r.sid === firstSid).slice(0, FREE_CAP);
+        const lockedRows = Math.max(0, items.length - selected.length);
+
+        const groups = new Map();
+        selected.forEach((r) => {
+          if (!groups.has(r.sid)) groups.set(r.sid, []);
+          groups.get(r.sid).push(r);
+        });
+
+        let totGross = 0, totFees = 0, totReserve = 0, totDeposit = 0, totDeb = 0, totCred = 0;
+        const xero = ["*Narration,*Date,*Description,*AccountCode,*TaxRate,*Amount"];
+        const qbo = ["JournalNo,JournalDate,AccountName,Debits,Credits,Description,Currency"];
+        const datev = ["Umsatz (ohne Soll/Haben-Kz);Soll/Haben-Kennzeichen;WKZ Umsatz;Konto;Gegenkonto;Belegdatum;Belegfeld 1;Buchungstext"];
+        tblEl.innerHTML = "";
+
+        groups.forEach((rows, sid) => {
+          const bCents = Object.fromEntries(BUCKETS.map((b) => [b[0], 0]));
+          rows.forEach((r) => { bCents[classifyBucket(r)] += r.cents; });
+          const netDep = Object.values(bCents).reduce((a, b) => a + b, 0);
+          const date = rows[0].date;
+          const cur = rows[0].currency;
+          const parts = date.split("-");
+          const ddmm = parts.length === 3 ? parts[2] + parts[1] : "1611";
+
+          totGross += bCents.sales_principal;
+          totFees += bCents.amazon_fba_selling_fees + bCents.amazon_advertising_ppc;
+          totReserve += bCents.reserve_carry_forward;
+          totDeposit += netDep;
+
+          const appendLine = (bucket, label, xeroCode, skrCode, debit, credit) => {
+            totDeb += debit;
+            totCred += credit;
+            const tr = document.createElement("tr");
+            tr.innerHTML =
+              '<td class="px-3 py-1.5">' + escHtml(label + " (" + sid + ")") + "</td>" +
+              '<td class="px-3 py-1.5 font-mono text-indigo-300">' + escHtml(xeroCode + " / " + skrCode) + "</td>" +
+              '<td class="px-3 py-1.5 text-right font-mono">' + (debit ? "€" + fmt(debit) : "—") + "</td>" +
+              '<td class="px-3 py-1.5 text-right font-mono text-emerald-300">' + (credit ? "€" + fmt(credit) : "—") + "</td>";
+            tblEl.appendChild(tr);
+
+            const signedXero = fmt(debit - credit);
+            const taxRate = bucket === "sales_principal" ? "Tax on Sales" : "BAS Excluded";
+            xero.push(["Amazon Settlement " + sid, date, label + " (" + sid + ")", xeroCode, taxRate, signedXero].map(csvCell).join(","));
+            qbo.push(["AMZ-" + sid, date, label, debit ? fmt(debit) : "", credit ? fmt(credit) : "", label + " (" + sid + ")", cur].map(csvCell).join(","));
+            const sh = debit > 0 ? "S" : "H";
+            const amtDe = fmt(debit > 0 ? debit : credit).replace(".", ",");
+            datev.push([amtDe, sh, cur, skrCode, "1369", ddmm, sid, label + " (" + sid + ")"].join(";"));
+          };
+
+          BUCKETS.forEach(([key, label, xCode, sCode]) => {
+            const c = bCents[key];
+            if (c === 0) return;
+            appendLine(key, label, xCode, sCode, c < 0 ? -c : 0, c > 0 ? c : 0);
+          });
+          if (netDep !== 0) {
+            appendLine("net_bank_deposit", "Amazon Net Bank Deposit Clearing", "120", "1360", netDep > 0 ? netDep : 0, netDep < 0 ? -netDep : 0);
+          }
+        });
+
+        lastExports = { xero: xero.join("\n"), qbo: qbo.join("\n"), datev: datev.join("\n") };
+        statGross.textContent = "€" + fmt(totGross);
+        statFees.textContent = "€" + fmt(totFees);
+        statReserve.textContent = "€" + fmt(totReserve);
+        statDeposit.textContent = "€" + fmt(totDeposit);
+        statDrift.textContent = "Net Deposit (Drift €" + fmt(totDeb - totCred) + ")";
+        statusEl.textContent = "Compiled " + selected.length + "/" + items.length + " lines (" + groups.size + " settlement" + (groups.size > 1 ? "s" : "") + ")" + (lockedRows ? " · " + lockedRows + " lines Pro-locked" : " · Full Pro Export Ready");
+        renderActiveTab();
+      }
+
+      function downloadPro(filename, content) {
+        if (!isProUnlocked()) {
+          statusEl.textContent = "Downloads require Pro (€29 once). Enter your Stripe cs_live_... key to unlock.";
+          return;
+        }
+        if (!content) {
+          statusEl.textContent = "Compile a settlement first.";
+          return;
+        }
+        const blob = new Blob([content], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      filesEl?.addEventListener("change", async (e) => {
+        const list = Array.from(e.target.files || []);
+        if (!list.length) return;
+        const texts = await Promise.all(list.map((f) => f.text()));
+        csvEl.value = texts.join("\n# --- NEXT FILE ---\n");
+        compileInBrowser();
+      });
+
+      sampleBtn?.addEventListener("click", () => {
+        csvEl.value = SAMPLE_TSV;
+        compileInBrowser();
+      });
+
+      runBtn?.addEventListener("click", compileInBrowser);
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeTab = btn.getAttribute("data-amz-tab") || "xero";
+          tabBtns.forEach((b) => {
+            const on = b.getAttribute("data-amz-tab") === activeTab;
+            b.className = on
+              ? "amz-tab rounded-lg bg-indigo-500 px-2.5 py-1 text-xs font-semibold text-white"
+              : "amz-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700";
+          });
+          renderActiveTab();
+        });
+      });
+
+      dlXero?.addEventListener("click", () => downloadPro("xero-amazon-journals.csv", lastExports?.xero));
+      dlQbo?.addEventListener("click", () => downloadPro("qbo-amazon-journals.csv", lastExports?.qbo));
+      dlDatev?.addEventListener("click", () => downloadPro("datev-amazon-extf.csv", lastExports?.datev));
+
+      actBtn?.addEventListener("click", async () => {
+        const key = String(keyEl?.value || "").trim();
+        const isStripeKey = key.startsWith("cs_live_") && key.length >= 24 && !key.toLowerCase().includes("unpaid");
+        const isAmzKey = key.startsWith("AMZSET-") && key.length >= 12;
+        if (!isStripeKey && !isAmzKey) {
+          statusEl.textContent = "Enter a valid Stripe cs_live_... session ID or AMZSET-... key.";
+          return;
+        }
+        statusEl.textContent = "Validating Pro license...";
+        let valid = false;
+        try {
+          const resp = await fetch(globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ license_key: key, product_id: "prod_Vg2d5RyhHCcgKb,prod_VeW6IYwGyYJkPv" })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            valid = Boolean(data?.valid || data?.payment_status === "paid");
+          }
+        } catch {
+          valid = true;
+        }
+        if (valid) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ valid: true, key, verifiedAt: Date.now() }));
+          refreshBadge();
+          statusEl.textContent = "Pro License unlocked!";
+          compileInBrowser();
+        } else {
+          statusEl.textContent = "Key could not be verified — check your Stripe checkout key.";
+        }
+      });
+
+      refreshBadge();
+
+      document.querySelectorAll("[data-fk-cta]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const cta = el.getAttribute("data-fk-cta");
+          try {
+            const key = "fk_cta_telemetry";
+            const data = JSON.parse(localStorage.getItem(key) || "{}");
+            data[cta] = (Number(data[cta]) || 0) + 1;
+            localStorage.setItem(key, JSON.stringify(data));
+            window.dispatchEvent(new CustomEvent("fk:cta", { detail: { cta, counts: data } }));
+          } catch {}
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

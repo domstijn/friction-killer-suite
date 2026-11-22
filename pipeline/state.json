@@ -12,7 +12,7 @@
     "lemonsqueezy",
     "gumroad"
   ],
-  "active_project": "eu-oss-vat-return-compiler",
+  "active_project": "amazon-settlement-xero-qbo-splitter",
   "current_stage": "STAGE_4_LAUNCH",
   "gates": {
     "gate_1_idea_and_spec_approved": true,
@@ -600,8 +600,16 @@
       "title": "OssVatBridge: Zero-Install Stripe Tax, Shopify & Lemon Squeezy to EU VAT OSS Bulk CSV/XML Compiler",
       "ecosystem": "saas-addon",
       "target_software": "Stripe Tax / Shopify / Lemon Squeezy -> EU VAT OSS (Germany BZSt BOP, Ireland ROS, EU27)",
-      "status": "STAGE_4_LAUNCH",
+      "status": "COMPLETED",
       "selected_at": "2026-11-22T19:12:23+00:00"
+    },
+    "amazon-settlement-xero-qbo-splitter": {
+      "id": "amazon-settlement-xero-qbo-splitter",
+      "title": "AmzSettlementBridge: Zero-Install Amazon Seller Flat-File V2 (.TXT/.TSV) to Xero, QuickBooks & DATEV Clearing Journal Compiler",
+      "ecosystem": "saas-addon",
+      "target_software": "Amazon Seller Central Settlement V2 -> Xero / QuickBooks Online / DATEV",
+      "status": "STAGE_4_LAUNCH",
+      "selected_at": "2026-11-22T19:33:40+00:00"
     }
   }
 }
