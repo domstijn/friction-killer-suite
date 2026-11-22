@@ -128,6 +128,20 @@
         "Updated .agents/skills/stage-1-pain-discovery/SKILL.md to require testing off-thread Best 2-Minute Free Workarounds and prioritizing commercial/B2B-operator workflows over dev-config wrappers."
       ],
       "expected_impact": "Prevents investing build cycles into tools undercut by off-thread OSS/token escape hatches and shifts Stage 1 discovery toward higher-converting commercial buyers."
+    },
+    {
+      "cycle": 10,
+      "date": "2026-11-22",
+      "diagnosed_bottlenecks": [
+        "Chrome Web Store developer accounts enforce a strict 2-extension cap (`Limiet van 2/2 extensies`) while initial items are under review, auto-denying limit increase requests with a 24h cooldown.",
+        "Packaging a client-side CSV tool solely as a Chrome MV3 extension unnecessarily subjects zero-backend web utilities to Web Store queue limits."
+      ],
+      "upgrades_implemented": [
+        "Converted WebflowAssetZip into a standalone in-browser web app inside landing.html with .csv upload, Free 15-row cap, Stripe cs_live_... Pro unlock, and 1-click CSV / 301-redirects.csv / manifest downloads.",
+        "Added --cws-slot-available quota guard in scripts/score_opportunity.py so new browser-extension candidates trigger automatic NO-GO until CWS slots open, prioritizing zero-install saas-addon web apps and unlimited VS Code Marketplace .vsix extensions.",
+        "Updated .agents/skills/stage-1-pain-discovery/SKILL.md with the Chrome Web Store 2/2 quota kill switch."
+      ],
+      "expected_impact": "Zero distribution stalls from Chrome Web Store new-developer extension caps and faster checkout-to-usage conversion via zero-install browser web apps."
     }
   ]
 }

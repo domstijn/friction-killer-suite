@@ -62,8 +62,14 @@ def evaluate_idea(raw: dict[str, Any]) -> dict[str, Any]:
 
     free_escape_hatch = str(raw.get("free_escape_hatch") or "").strip()
     buyer_persona = str(raw.get("buyer_persona") or "commercial").strip().lower()
+    cws_slot_available = bool(raw.get("cws_slot_available", False))
 
     kill_reasons: list[str] = []
+    if str(raw.get("ecosystem") or "").strip() == "browser-extension" and not cws_slot_available:
+        kill_reasons.append(
+            "ecosystem='browser-extension' blocked while Chrome Web Store is at 2/2 extension quota "
+            "(pitch as zero-install 'saas-addon' web app or 'ide-ai-plugin' .vsix instead)"
+        )
     if dims["willingness_to_pay"] < 4:
         kill_reasons.append("willingness_to_pay < 4")
     if buyer_persona in {"dev-config", "developer-cli", "mcp-config"} and dims["willingness_to_pay"] < 6.5:
@@ -145,6 +151,12 @@ def main() -> int:
         choices=["commercial", "b2b-operator", "prosumer", "dev-config"],
         help="Target buyer persona ('dev-config' requires willingness_to_pay >= 6.5 or triggers NO-GO)",
     )
+    parser.add_argument(
+        "--cws-slot-available",
+        action="store_true",
+        default=False,
+        help="Pass only when Chrome Web Store has an open extension slot (<2/2 or limit increase approved)",
+    )
     parser.add_argument("--pain-severity", type=float, help="1-10 score (weight 15%%)")
     parser.add_argument("--willingness-to-pay", type=float, help="1-10 score (weight 20%%)")
     parser.add_argument(
@@ -198,6 +210,7 @@ def main() -> int:
                 "existing_alternatives": args.existing_alternatives,
                 "free_escape_hatch": args.free_escape_hatch,
                 "buyer_persona": args.buyer_persona,
+                "cws_slot_available": args.cws_slot_available,
                 "pain_severity": args.pain_severity,
                 "willingness_to_pay": args.willingness_to_pay,
                 "existing_alternative_saturation": args.existing_alternative_saturation,

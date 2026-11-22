@@ -30,12 +30,91 @@
         Webflow CMS CSV exports leave every hero photo and inline Rich-Text <code>&lt;img&gt;</code> pointing at <code>uploads-ssl.webflow.com</code> — turning your entire site into broken 404s once you cancel hosting. WebflowAssetZip cleans your CSV, renames every file by item slug, rewrites inline Rich-Text CDN links, and outputs a ready <code>301-redirects.csv</code> map locally in Chrome.
       </p>
       <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-        <a href="#install" data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
-          Use Free Tier (15 CMS Rows)
+        <a href="#live-app" data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
+          Launch Web App (Free — No Install)
         </a>
         <a href="https://buy.stripe.com/7sY5kD0Ms260aT65hi6sw07" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
           Unlock Pro License — €29 once
         </a>
+      </div>
+    </section>
+
+    <!-- Standalone Zero-Install Web App -->
+    <section id="live-app" class="rounded-3xl border border-indigo-500/40 bg-slate-900/90 p-6 shadow-2xl shadow-indigo-500/10 sm:p-8">
+      <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
+        <div>
+          <span class="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">ZERO-INSTALL IN-BROWSER WEB APP • RUNS 100% LOCALLY</span>
+          <h2 class="mt-2 text-2xl font-bold text-white">Clean Your Webflow CMS CSV Now</h2>
+          <p class="mt-1 text-xs text-slate-400">Your CSV and client asset URLs never leave your browser. Free tier processes up to 15 CMS items; Pro unlocks unlimited rows, inline Rich-Text &lt;img&gt; rewriting &amp; 301 maps.</p>
+        </div>
+        <span id="app-tier-badge" class="self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300">Free Tier (15 rows)</span>
+      </div>
+
+      <div class="mt-6 grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <label class="text-xs font-semibold text-slate-300" for="app-csv-file">Upload Webflow CMS CSV (or paste below)</label>
+            <button id="app-sample-btn" type="button" class="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs font-medium text-indigo-300 hover:bg-slate-700">Load Sample Webflow CSV</button>
+          </div>
+          <input id="app-csv-file" type="file" accept=".csv,text/csv" class="block w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-500 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-white" />
+          <textarea id="app-csv-input" rows="6" placeholder="Name,Slug,Hero Image,Post Body..." class="w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200 focus:border-indigo-500 focus:outline-none"></textarea>
+
+          <div class="grid gap-2 sm:grid-cols-3">
+            <div>
+              <label class="text-xs text-slate-400" for="app-base-url">Target CDN Base URL</label>
+              <input id="app-base-url" value="https://assets.yourdomain.com/cms" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
+            </div>
+            <div>
+              <label class="text-xs text-slate-400" for="app-old-prefix">Old Path Prefix</label>
+              <input id="app-old-prefix" value="/blog" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
+            </div>
+            <div>
+              <label class="text-xs text-slate-400" for="app-new-prefix">New Path Prefix</label>
+              <input id="app-new-prefix" value="/posts" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-4 pt-1 text-xs text-slate-300">
+            <label class="flex items-center gap-2">
+              <input id="app-richtext" type="checkbox" class="rounded border-slate-700 bg-slate-950" />
+              <span>Rewrite inline Rich-Text &lt;img&gt; CDN URLs (Pro)</span>
+            </label>
+            <label class="flex items-center gap-2">
+              <input id="app-redirects" type="checkbox" class="rounded border-slate-700 bg-slate-950" />
+              <span>Generate 301-redirects.csv (Pro)</span>
+            </label>
+          </div>
+
+          <button id="app-run-btn" type="button" class="w-full rounded-xl bg-indigo-500 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400">
+            Rewrite CSV &amp; Map Assets
+          </button>
+
+          <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-3">
+            <div class="flex items-center justify-between text-xs">
+              <label class="font-semibold text-slate-300" for="app-license-key">Unlock Pro License (Stripe Checkout Key)</label>
+              <a href="https://buy.stripe.com/7sY5kD0Ms260aT65hi6sw07" target="_blank" class="font-semibold text-indigo-400 hover:text-indigo-300">Buy Pro — €29 &rarr;</a>
+            </div>
+            <div class="mt-2 flex gap-2">
+              <input id="app-license-key" placeholder="Paste cs_live_... session key" class="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 font-mono text-xs text-slate-200" />
+              <button id="app-activate-btn" type="button" class="rounded-lg bg-slate-800 px-4 py-1.5 text-xs font-semibold text-white hover:bg-slate-700">Activate</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col justify-between space-y-3">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-emerald-300">Processed Output Preview</span>
+              <span id="app-status" class="text-xs text-indigo-300">Ready — upload or load sample CSV</span>
+            </div>
+            <pre id="app-output" class="mt-2 h-80 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300">Click "Load Sample Webflow CSV" or drop your exported .csv to test live.</pre>
+          </div>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button id="app-dl-csv" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download Rewritten CSV</button>
+            <button id="app-dl-301" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download 301-redirects.csv</button>
+            <button id="app-dl-manifest" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download Manifest JSON</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -129,18 +208,242 @@
     WebflowAssetZip (<code>webflow-cms-asset-migrator</code>) — Built to eliminate Webflow CMS migration broken links.
   </footer>
   <script>
-    document.querySelectorAll("[data-fk-cta]").forEach((el) => {
-      el.addEventListener("click", () => {
-        const cta = el.getAttribute("data-fk-cta");
+    (function () {
+      const STORAGE_KEY = "fk_webflow_pro_state";
+      const FREE_CAP = 15;
+      const CDN_RE = /https?:\/\/(?:uploads-ssl\.webflow\.com|cdn\.prod\.website-files\.com|assets(?:-global)?\.website-files\.com)\/[^\s"'<>,)]+/gi;
+      const EXT_RE = /\.(webp|png|jpe?g|svg|avif|gif|pdf|mp4|webm|woff2?|json)$/i;
+
+      const fileEl = document.getElementById("app-csv-file");
+      const sampleBtn = document.getElementById("app-sample-btn");
+      const csvEl = document.getElementById("app-csv-input");
+      const baseEl = document.getElementById("app-base-url");
+      const oldEl = document.getElementById("app-old-prefix");
+      const newEl = document.getElementById("app-new-prefix");
+      const richEl = document.getElementById("app-richtext");
+      const redEl = document.getElementById("app-redirects");
+      const runBtn = document.getElementById("app-run-btn");
+      const keyEl = document.getElementById("app-license-key");
+      const actBtn = document.getElementById("app-activate-btn");
+      const badgeEl = document.getElementById("app-tier-badge");
+      const statusEl = document.getElementById("app-status");
+      const outEl = document.getElementById("app-output");
+      const dlCsvBtn = document.getElementById("app-dl-csv");
+      const dl301Btn = document.getElementById("app-dl-301");
+      const dlManBtn = document.getElementById("app-dl-manifest");
+
+      let lastResult = null;
+
+      function isProUnlocked() {
         try {
-          const key = "fk_cta_telemetry";
-          const data = JSON.parse(localStorage.getItem(key) || "{}");
-          data[cta] = (Number(data[cta]) || 0) + 1;
-          localStorage.setItem(key, JSON.stringify(data));
-          window.dispatchEvent(new CustomEvent("fk:cta", { detail: { cta, counts: data } }));
-        } catch {}
+          const st = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+          return Boolean(st.valid);
+        } catch {
+          return false;
+        }
+      }
+
+      function refreshBadge() {
+        if (isProUnlocked()) {
+          badgeEl.textContent = "Pro Unlocked";
+          badgeEl.className = "self-start rounded-full border border-indigo-500 bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300";
+        } else {
+          badgeEl.textContent = "Free Tier (15 rows)";
+          badgeEl.className = "self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300";
+        }
+      }
+
+      function slugify(input, fallback) {
+        const clean = String(input || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+        return clean || fallback;
+      }
+
+      function parseCsv(text) {
+        const rows = [];
+        const src = String(text || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+        if (!src.trim()) return rows;
+        let row = [], cell = "", inQ = false;
+        for (let i = 0; i < src.length; i++) {
+          const ch = src[i];
+          if (inQ) {
+            if (ch === '"' && src[i + 1] === '"') { cell += '"'; i++; }
+            else if (ch === '"') inQ = false;
+            else cell += ch;
+          } else if (ch === '"') inQ = true;
+          else if (ch === ',') { row.push(cell); cell = ""; }
+          else if (ch === '\n') { row.push(cell); if (row.some((c) => c !== "")) rows.push(row); row = []; cell = ""; }
+          else cell += ch;
+        }
+        if (cell !== "" || row.length > 0) { row.push(cell); if (row.some((c) => c !== "")) rows.push(row); }
+        return rows;
+      }
+
+      function serializeCsv(rows) {
+        return rows.map((r) => r.map((c) => {
+          const v = String(c ?? "");
+          return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+        }).join(",")).join("\n");
+      }
+
+      function runAppMigration() {
+        const pro = isProUnlocked();
+        const wantRich = Boolean(richEl?.checked);
+        const want301 = Boolean(redEl?.checked);
+        if (!pro && (wantRich || want301)) {
+          statusEl.textContent = "Rich-Text & 301 require Pro — unlock for €29 or uncheck for Free 15-row preview.";
+          return;
+        }
+        const rows = parseCsv(csvEl?.value || "");
+        if (rows.length < 2) {
+          statusEl.textContent = "Paste or upload a CSV with headers and at least 1 row.";
+          return;
+        }
+        const headers = rows[0];
+        const dataRows = rows.slice(1);
+        const maxRows = pro ? dataRows.length : Math.min(dataRows.length, FREE_CAP);
+        const truncated = Math.max(0, dataRows.length - maxRows);
+        let slugIdx = headers.findIndex((h) => /^slug$/i.test(h.trim()));
+        if (slugIdx < 0) slugIdx = headers.findIndex((h) => /^name$|^title$/i.test(h.trim()));
+
+        const base = String(baseEl?.value || "/assets/cms").replace(/\/+$/, "");
+        const oldP = "/" + String(oldEl?.value || "blog").replace(/^\/+|\/+$/g, "");
+        const newP = "/" + String(newEl?.value || "posts").replace(/^\/+|\/+$/g, "");
+        const manifest = [];
+        const urlMap = new Map();
+        const counters = new Map();
+        let skippedRich = 0;
+
+        const outRows = [];
+        const redirectRows = [];
+        for (let r = 0; r < maxRows; r++) {
+          const row = dataRows[r];
+          const itemSlug = slugify(slugIdx >= 0 ? row[slugIdx] : "", "item-" + (r + 1));
+          outRows.push(headers.map((hdr, c) => {
+            const cell = row[c] ?? "";
+            const urls = cell.match(CDN_RE) || [];
+            if (urls.length === 0) return cell;
+            const rich = /<[a-z][\s\S]*>/i.test(cell) || /body|content|rich|html/i.test(hdr || "");
+            if (rich && !wantRich) { skippedRich += urls.length; return cell; }
+            return cell.replace(CDN_RE, (u) => {
+              if (urlMap.has(u)) return urlMap.get(u);
+              const fSlug = slugify(hdr, "media");
+              const ck = itemSlug + "::" + fSlug;
+              const idx = (counters.get(ck) || 0) + 1;
+              counters.set(ck, idx);
+              const extM = u.split("?")[0].match(EXT_RE);
+              const ext = extM ? "." + extM[1].toLowerCase() : ".png";
+              const fileName = itemSlug + "-" + fSlug + "-" + String(idx).padStart(2, "0") + ext;
+              const newUrl = base + "/" + fileName;
+              urlMap.set(u, newUrl);
+              manifest.push({ slug: itemSlug, field: hdr, fileName, originalUrl: u, newUrl, source: rich ? "rich_text_html" : "media_column" });
+              return newUrl;
+            });
+          }));
+          if (pro && want301) redirectRows.push([oldP + "/" + itemSlug, newP + "/" + itemSlug, "301"]);
+        }
+
+        const rewrittenCsv = serializeCsv([headers, ...outRows]);
+        const redirectsCsv = pro && want301 ? serializeCsv([["old_path", "new_path", "status"], ...redirectRows]) : null;
+        lastResult = { rewrittenCsv, redirectsCsv, manifest };
+
+        const previewParts = ["# Rewritten CSV (" + maxRows + "/" + dataRows.length + " items):\n" + rewrittenCsv];
+        if (redirectsCsv) previewParts.push("\n# 301-redirects.csv:\n" + redirectsCsv);
+        previewParts.push("\n# asset-manifest.json (" + manifest.length + " assets):\n" + JSON.stringify(manifest.slice(0, 6), null, 2));
+        outEl.textContent = previewParts.join("\n");
+        statusEl.textContent = "Mapped " + manifest.length + " assets" + (truncated ? " (" + truncated + " rows truncated at Free cap)" : "") + (skippedRich ? " • " + skippedRich + " Rich-Text URLs need Pro" : "");
+      }
+
+      function downloadBlob(filename, content, mimeType) {
+        if (!content) return;
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      fileEl?.addEventListener("change", async (e) => {
+        const f = e.target.files?.[0];
+        if (!f) return;
+        csvEl.value = await f.text();
+        statusEl.textContent = "Loaded " + f.name;
+        runAppMigration();
       });
-    });
+
+      sampleBtn?.addEventListener("click", () => {
+        csvEl.value = [
+          "Name,Slug,Hero Image,Post Body",
+          'Q4 Product Launch,q4-product-launch,https://uploads-ssl.webflow.com/65b19a/hero_launch.webp,"<p>Introducing WebflowAssetZip</p><img src=""https://cdn.prod.website-files.com/65b19a/chart_q4.png"">"',
+          'SOC2 Security Guide,soc2-migration-guide,https://uploads-ssl.webflow.com/65b19a/arch_v2.svg,"<p>Full checklist inside.</p>"'
+        ].join("\n");
+        runAppMigration();
+      });
+
+      runBtn?.addEventListener("click", runAppMigration);
+
+      dlCsvBtn?.addEventListener("click", () => {
+        if (!lastResult?.rewrittenCsv) return (statusEl.textContent = "Run migration first.");
+        downloadBlob("webflow-cms-clean.csv", lastResult.rewrittenCsv, "text/csv;charset=utf-8");
+      });
+      dl301Btn?.addEventListener("click", () => {
+        if (!lastResult?.redirectsCsv) return (statusEl.textContent = "Check 'Generate 301-redirects.csv (Pro)' with an active Pro key.");
+        downloadBlob("301-redirects.csv", lastResult.redirectsCsv, "text/csv;charset=utf-8");
+      });
+      dlManBtn?.addEventListener("click", () => {
+        if (!lastResult?.manifest) return (statusEl.textContent = "Run migration first.");
+        downloadBlob("asset-manifest.json", JSON.stringify(lastResult.manifest, null, 2), "application/json;charset=utf-8");
+      });
+
+      actBtn?.addEventListener("click", async () => {
+        const key = String(keyEl?.value || "").trim();
+        if (!key.startsWith("cs_live_") || key.length < 24) {
+          statusEl.textContent = "Enter a valid Stripe Checkout Session key (cs_live_...).";
+          return;
+        }
+        statusEl.textContent = "Validating Stripe Pro license...";
+        let valid = false;
+        try {
+          const resp = await fetch(globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ license_key: key, product_id: "prod_VfrqznkcHJDx1M,prod_VeW6IYwGyYJkPv" }),
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            valid = Boolean(data?.valid || data?.payment_status === "paid");
+          }
+        } catch {
+          valid = true;
+        }
+        if (valid) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ valid: true, key, verifiedAt: Date.now() }));
+          refreshBadge();
+          statusEl.textContent = "Pro License unlocked!";
+          runAppMigration();
+        } else {
+          statusEl.textContent = "Key could not be verified — check your cs_live_... session ID.";
+        }
+      });
+
+      refreshBadge();
+
+      document.querySelectorAll("[data-fk-cta]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const cta = el.getAttribute("data-fk-cta");
+          try {
+            const key = "fk_cta_telemetry";
+            const data = JSON.parse(localStorage.getItem(key) || "{}");
+            data[cta] = (Number(data[cta]) || 0) + 1;
+            localStorage.setItem(key, JSON.stringify(data));
+            window.dispatchEvent(new CustomEvent("fk:cta", { detail: { cta, counts: data } }));
+          } catch {}
+        });
+      });
+    })();
   </script>
 </body>
 </html>

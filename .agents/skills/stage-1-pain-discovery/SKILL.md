@@ -44,6 +44,7 @@ Find recent, un-saturated pain points with minimal token overhead, verify that n
    - **`free_escape_hatch` Rule**: Before scoring any idea `GO`, test the **"Best 2-Minute Free Workaround"** (even if not mentioned in the issue comments yet — e.g., native export button, shared PAT + community OSS repo, or manual copy-paste). If that free escape hatch works for `>=50%` of users without breaking, score `existing_alternative_saturation <= 4` (**automatic `NO-GO`**).
    - **`buyer_persona` Filter**: Deprioritize `"dev-config"` audiences; any `"dev-config"` candidate with `willingness_to_pay < 6.5` triggers automatic `NO-GO`.
    - **Mandatory Kill Switches** (reject & replace any idea triggering `NO-GO`):
+     - `ecosystem == "browser-extension"` while Chrome Web Store is at its `2/2` extension limit (`LinearBridge` + `NotionGuestBridge` in review; omit `--cws-slot-available` until approved) — build as a zero-install **`saas-addon` browser web app** or **`ide-ai-plugin` (`.vsix`)** for VS Code Marketplace instead
      - `willingness_to_pay < 4` (or `< 6.5` when `--buyer-persona dev-config`)
      - `platform_safety < 4`
      - `solution_effectiveness < 5`
