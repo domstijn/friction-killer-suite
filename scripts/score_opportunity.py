@@ -60,15 +60,25 @@ def evaluate_idea(raw: dict[str, Any]) -> dict[str, Any]:
         2,
     )
 
+    free_escape_hatch = str(raw.get("free_escape_hatch") or "").strip()
+    buyer_persona = str(raw.get("buyer_persona") or "commercial").strip().lower()
+
     kill_reasons: list[str] = []
     if dims["willingness_to_pay"] < 4:
         kill_reasons.append("willingness_to_pay < 4")
+    if buyer_persona in {"dev-config", "developer-cli", "mcp-config"} and dims["willingness_to_pay"] < 6.5:
+        kill_reasons.append(
+            f"buyer_persona='{buyer_persona}' with willingness_to_pay < 6.5 "
+            "(dev-config audiences prefer free OSS + token workarounds)"
+        )
     if dims["platform_safety"] < 4:
         kill_reasons.append("platform_safety < 4")
     if dims["solution_effectiveness"] < 5:
         kill_reasons.append("solution_effectiveness < 5")
     if dims["existing_alternative_saturation"] < 5:
-        kill_reasons.append("existing_alternative_saturation < 5 (existing native/free tool solves >=80%)")
+        kill_reasons.append(
+            "existing_alternative_saturation < 5 (native export, shared PAT + OSS repo, or 2-min free escape hatch solves >=50%)"
+        )
     if dims["diy_resistance"] < 5:
         kill_reasons.append("diy_resistance < 5 (replaceable by <15-line script/alias)")
 
@@ -89,6 +99,8 @@ def evaluate_idea(raw: dict[str, Any]) -> dict[str, Any]:
         "pain": raw.get("pain") or "",
         "solution": raw.get("solution") or "",
         "existing_alternatives": raw.get("existing_alternatives") or "",
+        "free_escape_hatch": free_escape_hatch,
+        "buyer_persona": buyer_persona,
         "dimensions": dims,
         "effectiveness_score": effectiveness,
         "commercial_potential_score": commercial,
@@ -122,6 +134,17 @@ def main() -> int:
     parser.add_argument("--pain", default="", help="Pain description")
     parser.add_argument("--solution", default="", help="Solution description")
     parser.add_argument("--existing-alternatives", default="", help="Existing tools/flags & why they fail")
+    parser.add_argument(
+        "--free-escape-hatch",
+        default="",
+        help="Best 2-minute free workaround (native export, shared PAT + OSS repo, copy-paste) and why it fails for >=50%% of users",
+    )
+    parser.add_argument(
+        "--buyer-persona",
+        default="commercial",
+        choices=["commercial", "b2b-operator", "prosumer", "dev-config"],
+        help="Target buyer persona ('dev-config' requires willingness_to_pay >= 6.5 or triggers NO-GO)",
+    )
     parser.add_argument("--pain-severity", type=float, help="1-10 score (weight 15%%)")
     parser.add_argument("--willingness-to-pay", type=float, help="1-10 score (weight 20%%)")
     parser.add_argument(
@@ -173,6 +196,8 @@ def main() -> int:
                 "pain": args.pain,
                 "solution": args.solution,
                 "existing_alternatives": args.existing_alternatives,
+                "free_escape_hatch": args.free_escape_hatch,
+                "buyer_persona": args.buyer_persona,
                 "pain_severity": args.pain_severity,
                 "willingness_to_pay": args.willingness_to_pay,
                 "existing_alternative_saturation": args.existing_alternative_saturation,

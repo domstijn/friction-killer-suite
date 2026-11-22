@@ -87,6 +87,19 @@
       "payment_link_url": "https://buy.stripe.com/4gMfZhcva7qk1iw6lm6sw06",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=notion-guest-mcp-bridge"
     },
+    "webflow-cms-asset-migrator": {
+      "slug": "webflow-cms-asset-migrator",
+      "name": "WebflowAssetZip Pro",
+      "description": "1-click Webflow CMS CSV & Rich-Text CDN asset downloader, slug renamer, URL rewriter & 301 redirect pack Chrome extension (Pro License).",
+      "unit_amount": 2900,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_VfrqznkcHJDx1M",
+      "price_id": "price_1UeW6bH2AcdDmQyRGVHg3TxQ",
+      "payment_link_id": "plink_1UeW6qH2AcdDmQyRemgYPJ35",
+      "payment_link_url": "https://buy.stripe.com/7sY5kD0Ms260aT65hi6sw07",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=webflow-cms-asset-migrator"
+    },
     "all-access-bundle": {
       "slug": "all-access-bundle",
       "name": "All-Access Friction-Killer Bundle",

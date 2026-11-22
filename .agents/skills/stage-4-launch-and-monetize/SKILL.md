@@ -24,7 +24,7 @@ Prepare everything needed to market, distribute, and sell the verified MVP, then
      - Exact Stripe Managed Payments / Polar.sh / Gumroad checkout & license key setup steps
      - Marketplace listing fields (title, <=132-char description, keywords, permission justification)
      - Non-spammy "Reply-to-Pain" outreach drafts pointing to the exact Stage 1 complaint URLs
-     - Launch copy (only suggest Show HN if the storefront provides an interactive zero-signup playground users can run live in the browser; otherwise target native marketplaces, Reddit, and GitHub issues)
+     - Launch copy (never suggest top-level showcase/self-promo posts on product subreddits like `r/Notion` or `r/vscode` that ban self-promotion; prioritize official marketplaces like Chrome Web Store / VS Code Marketplace and direct replies to active complaint threads)
 
 3. **Package Native Distributable Builds**:
    - Run `python3 scripts/ship_check.py --slug <slug> --package` to generate `.zip` plus native marketplace artifacts (`.vsix` for VS Code plugins, PEP 427 `.whl` for Python CLI wrappers).

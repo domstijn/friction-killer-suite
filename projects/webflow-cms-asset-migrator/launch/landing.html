@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebflowAssetZip — Clean Webflow CMS CSV Asset Renamer, CDN Rewriter &amp; 301 Pack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
+    <div class="text-lg font-bold tracking-tight text-white">WebflowAssetZip</div>
+    <nav class="flex items-center gap-6 text-sm text-slate-300">
+      <a href="#comparison" class="hover:text-white">Why it works</a>
+      <a href="#pricing" class="hover:text-white">Pricing</a>
+      <a href="#faq" class="hover:text-white">FAQ</a>
+      <a href="#pricing" class="rounded-lg bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-400">Get Pro</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6">
+    <section class="py-16 text-center">
+      <span class="inline-block rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300">
+        Chrome MV3 Extension for Webflow Agencies, Designers &amp; Migration Teams
+      </span>
+      <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+        Stop breaking CMS images when leaving Webflow.<br />
+        <span class="text-indigo-400">Rewrite CDN hotlinks, rename assets by slug &amp; build 301 maps in 1 click.</span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
+        Webflow CMS CSV exports leave every hero photo and inline Rich-Text <code>&lt;img&gt;</code> pointing at <code>uploads-ssl.webflow.com</code> — turning your entire site into broken 404s once you cancel hosting. WebflowAssetZip cleans your CSV, renames every file by item slug, rewrites inline Rich-Text CDN links, and outputs a ready <code>301-redirects.csv</code> map locally in Chrome.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a href="#install" data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
+          Use Free Tier (15 CMS Rows)
+        </a>
+        <a href="https://buy.stripe.com/7sY5kD0Ms260aT65hi6sw07" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
+          Unlock Pro License — €29 once
+        </a>
+      </div>
+    </section>
+
+    <section id="comparison" class="grid gap-6 py-12 md:grid-cols-2">
+      <div class="rounded-2xl border border-rose-500/20 bg-slate-900/60 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-rose-400">The Old Painful Way</h2>
+        <ul class="mt-4 space-y-3 text-slate-300">
+          <li>• Native Webflow CSV exports keep every image hotlinked to <code>uploads-ssl.webflow.com</code> and break after cancellation</li>
+          <li>• Bulk asset dumpers give raw hashed filenames with zero slug mapping back to CSV rows or Rich-Text HTML</li>
+          <li>• Writing custom Python/Node regex scripts across multi-image columns, inline HTML <code>&lt;img&gt;</code> tags &amp; 301 maps takes hours</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-emerald-500/30 bg-slate-900 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-emerald-400">With WebflowAssetZip</h2>
+        <ul class="mt-4 space-y-3 text-slate-200">
+          <li>• Parses Webflow CMS CSVs or open Designer DOM tables 100% locally in Chrome with zero data leaving your machine</li>
+          <li>• Renames every asset deterministically (<code>{slug}-{field}-01.webp</code>) and rewrites CSV + Rich-Text CDN URLs</li>
+          <li>• Generates clean <code>301-redirects.csv</code> maps (<code>/blog/{slug}</code> &rarr; <code>/posts/{slug}</code>) for Framer, WordPress, or Next.js</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="install" class="py-12">
+      <h2 class="text-center text-2xl font-bold text-white">Up and running in 60 seconds</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+          <div class="text-xs font-bold text-indigo-400">STEP 1</div>
+          <h3 class="mt-2 font-semibold text-white">Drop Your Webflow CSV</h3>
+          <p class="mt-2 text-sm text-slate-400">Upload any exported Webflow CMS CSV or click Scan CMS Assets inside your open Webflow collection view.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+          <div class="text-xs font-bold text-indigo-400">STEP 2</div>
+          <h3 class="mt-2 font-semibold text-white">Set Target Host URL</h3>
+          <p class="mt-2 text-sm text-slate-400">Enter your destination CDN or folder base URL (Framer, R2, S3, or WordPress) and inspect the mapped filenames.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+          <div class="text-xs font-bold text-indigo-400">STEP 3</div>
+          <h3 class="mt-2 font-semibold text-white">Export Clean CSV + 301 Pack</h3>
+          <p class="mt-2 text-sm text-slate-400">Activate your Stripe Pro key for unlimited items, inline Rich-Text <code>&lt;img&gt;</code> rewriting &amp; <code>301-redirects.csv</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="py-12">
+      <h2 class="text-center text-2xl font-bold text-white">Simple, one-time pricing</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-8">
+          <h3 class="text-lg font-semibold text-white">Free Starter</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€0</p>
+          <p class="mt-2 text-sm text-slate-400">Audit collections &amp; test media column rewriting.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-300">
+            <li>✓ Full CSV audit (row counts &amp; inline Rich-Text hotlink scan)</li>
+            <li>✓ Rewrite direct media columns for up to 15 CMS items</li>
+          </ul>
+          <a href="#install" data-fk-cta="free-install" class="mt-8 block rounded-xl border border-slate-700 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800">
+            Download Extension
+          </a>
+        </div>
+        <div class="rounded-2xl border border-indigo-500 bg-slate-900 p-8 shadow-lg shadow-indigo-500/10">
+          <h3 class="text-lg font-semibold text-white">Pro License</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€29 once</p>
+          <p class="mt-2 text-sm text-slate-400">Delivered instantly via Stripe Managed Payments license key.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-200">
+            <li>✓ Unlimited CMS rows &amp; multi-collection migrations</li>
+            <li>✓ Deep Rich-Text HTML <code>&lt;img&gt;</code> &amp; <code>srcset</code> CDN URL rewriter</li>
+            <li>✓ Slug-renamed asset manifest + <code>301-redirects.csv</code> generator</li>
+          </ul>
+          <a href="https://buy.stripe.com/7sY5kD0Ms260aT65hi6sw07" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-indigo-500 py-3 text-center text-sm font-semibold text-white hover:bg-indigo-400">
+            Buy Pro License Key
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="py-12">
+      <h2 class="text-2xl font-bold text-white">FAQ</h2>
+      <div class="mt-6 space-y-4 text-sm text-slate-300">
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">How does license activation work?</h3>
+          <p class="mt-1 text-slate-400">After checkout via Stripe Managed Payments, you receive your Checkout Session key immediately on our confirmation page. Paste it inside the WebflowAssetZip popup to unlock Pro locally with a 7-day offline grace window.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">Does my Webflow client CSV leave my browser?</h3>
+          <p class="mt-1 text-slate-400">Never. CSV parsing, Rich-Text HTML CDN rewriting, asset slug mapping, and 301 CSV generation run 100% client-side inside Chrome.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500">
+    WebflowAssetZip (<code>webflow-cms-asset-migrator</code>) — Built to eliminate Webflow CMS migration broken links.
+  </footer>
+  <script>
+    document.querySelectorAll("[data-fk-cta]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const cta = el.getAttribute("data-fk-cta");
+        try {
+          const key = "fk_cta_telemetry";
+          const data = JSON.parse(localStorage.getItem(key) || "{}");
+          data[cta] = (Number(data[cta]) || 0) + 1;
+          localStorage.setItem(key, JSON.stringify(data));
+          window.dispatchEvent(new CustomEvent("fk:cta", { detail: { cta, counts: data } }));
+        } catch {}
+      });
+    });
+  </script>
+</body>
+</html>

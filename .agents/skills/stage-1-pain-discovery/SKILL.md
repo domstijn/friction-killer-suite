@@ -26,31 +26,35 @@ Find recent, un-saturated pain points with minimal token overhead, verify that n
    ```
    - Before pitching ANY idea, verify live competition via `search_web` / Marketplace / Chrome Web Store / GitHub so you know what native flags, official free plugins, or OSS tools exist.
 
-3. **Propose & Score 3 Non-CLI / High-Moat Candidates**:
-   Prioritize UI-layer browser extensions, IDE extensions, or B2B/SaaS bridges that non-CLI buyers pay for rather than quick bash wrappers. Score each via `scripts/score_opportunity.py --save`:
+3. **Propose & Score 3 Non-CLI / Commercial-Buyer Candidates**:
+   Deprioritize `"dev-config"` audiences (MCP JSON tweakers, CLI/SDK config wrappers) whose reflex is to combine a free GitHub repo with a token; prioritize `"commercial"` / `"b2b-operator"` workflows (agency operations, e-commerce sellers, finance/invoicing, CRM/recruiting) where users pay for 1-click UI reliability. Score each via `scripts/score_opportunity.py --save`:
    ```bash
    python3 scripts/score_opportunity.py \
      --id "<slug>" --title "<Title>" --ecosystem "<ecosystem>" \
      --target-software "<Host>" --pain "<1-line pain>" --solution "<1-line fix>" \
      --existing-alternatives "<Verified alternatives & why they fail>" \
+     --free-escape-hatch "<Best 2-min free workaround & why it fails >=50%>" \
+     --buyer-persona "<commercial|b2b-operator|prosumer|dev-config>" \
      --pain-severity <1-10> --willingness-to-pay <1-10> \
      --existing-alternative-saturation <1-10> --diy-resistance <1-10> \
      --solution-effectiveness <1-10> --build-speed <1-10> \
      --distribution-clarity <1-10> --platform-safety <1-10> \
      --save
    ```
+   - **`free_escape_hatch` Rule**: Before scoring any idea `GO`, test the **"Best 2-Minute Free Workaround"** (even if not mentioned in the issue comments yet — e.g., native export button, shared PAT + community OSS repo, or manual copy-paste). If that free escape hatch works for `>=50%` of users without breaking, score `existing_alternative_saturation <= 4` (**automatic `NO-GO`**).
+   - **`buyer_persona` Filter**: Deprioritize `"dev-config"` audiences; any `"dev-config"` candidate with `willingness_to_pay < 6.5` triggers automatic `NO-GO`.
    - **Mandatory Kill Switches** (reject & replace any idea triggering `NO-GO`):
-     - `willingness_to_pay < 4`
+     - `willingness_to_pay < 4` (or `< 6.5` when `--buyer-persona dev-config`)
      - `platform_safety < 4`
      - `solution_effectiveness < 5`
-     - `existing_alternative_saturation < 5` (official free plugin, built-in CLI flag, or free OSS tool already solves >=80%)
+     - `existing_alternative_saturation < 5` (native export, shared PAT + OSS repo, or 2-min free escape hatch solves `>=50%`)
      - `diy_resistance < 5` (replaceable by a <15-line shell script or alias)
 
 4. **Pitch Top 3 & Stop at Gate 1**:
    Present a compact Markdown table containing:
    - Slug, Title & Ecosystem
    - Host Software & Recent Evidence URL(s)
-   - **Existing Alternatives & Why They Fail** *(verified via live search)*
+   - **Existing Alternatives & Best Free Escape Hatch** *(verified via live search, including off-thread workarounds)*
    - 1-paragraph solution + Free vs. Pro license split
    - Effectiveness, Commercial, Saturation, DIY-Res & Composite Score + Verdict
 

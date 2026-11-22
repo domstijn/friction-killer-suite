@@ -79,6 +79,14 @@ DEFAULT_CATALOG_ITEMS = [
         "mode": "payment",
     },
     {
+        "slug": "webflow-cms-asset-migrator",
+        "name": "WebflowAssetZip Pro",
+        "description": "1-click Webflow CMS CSV & Rich-Text CDN asset downloader, slug renamer, URL rewriter & 301 redirect pack Chrome extension (Pro License).",
+        "unit_amount": 2900,
+        "currency": "eur",
+        "mode": "payment",
+    },
+    {
         "slug": "all-access-bundle",
         "name": "All-Access Friction-Killer Bundle",
         "description": "Pro licenses for LinearBridge, NotionGitExport, and ExtProfileLock.",

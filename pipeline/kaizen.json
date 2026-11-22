@@ -114,6 +114,20 @@
         "Updated .agents/skills/stage-1-pain-discovery/SKILL.md to enforce live competitor checks and a mandatory 'Existing Alternatives & Why They Fail' Gate 1 table column."
       ],
       "expected_impact": "Eliminates low-moat CLI wrapper ideas early and focuses every build cycle on UI/browser/IDE extensions with proven B2B/prosumer willingness to pay."
+    },
+    {
+      "cycle": 9,
+      "date": "2026-11-22",
+      "diagnosed_bottlenecks": [
+        "Even when GitHub issue comments lack workarounds (as seen on makenotion/notion-mcp-server#227 where a responder later shared PAT + awkoy/notion-mcp-server), off-thread 2-minute free escape hatches can still satisfy >=50% of developer/prosumer users.",
+        "Subscribers in MCP/CLI developer threads default to combining free OSS repos with tokens rather than purchasing commercial UI plugins."
+      ],
+      "upgrades_implemented": [
+        "Added --free-escape-hatch and --buyer-persona flags plus an automatic NO-GO kill switch in scripts/score_opportunity.py when buyer_persona is 'dev-config' with willingness_to_pay < 6.5.",
+        "Tightened existing_alternative_saturation (<5 NO-GO) in score_opportunity.py and SKILL.md to fail ideas whenever a 2-minute free escape hatch (native export, shared PAT + OSS repo, or copy-paste) solves >=50% of users.",
+        "Updated .agents/skills/stage-1-pain-discovery/SKILL.md to require testing off-thread Best 2-Minute Free Workarounds and prioritizing commercial/B2B-operator workflows over dev-config wrappers."
+      ],
+      "expected_impact": "Prevents investing build cycles into tools undercut by off-thread OSS/token escape hatches and shifts Stage 1 discovery toward higher-converting commercial buyers."
     }
   ]
 }

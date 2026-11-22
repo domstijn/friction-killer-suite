@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>WebflowAssetZip</title>
+  <style>
+    body {
+      width: 370px;
+      margin: 0;
+      padding: 14px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 13px;
+    }
+    h3 { margin: 0 0 10px; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .badge { font-size: 11px; padding: 2px 7px; border-radius: 999px; background: #1e293b; color: #94a3b8; }
+    .badge.pro { background: #312e81; color: #a5b4fc; }
+    label { display: block; margin-top: 8px; font-size: 11px; color: #94a3b8; }
+    input, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 4px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: #f8fafc;
+      font-size: 12px;
+    }
+    textarea { min-height: 74px; resize: vertical; font-family: ui-monospace, monospace; }
+    .toggle { display: flex; align-items: center; gap: 8px; margin-top: 7px; font-size: 12px; color: #cbd5e1; }
+    .toggle input { width: auto; margin: 0; }
+    .row { display: flex; gap: 6px; margin-top: 8px; }
+    button {
+      flex: 1;
+      padding: 8px 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .primary { background: #4f46e5; color: #fff; }
+    .secondary { background: #334155; color: #f8fafc; }
+    #status { margin-top: 8px; font-size: 12px; color: #a5b4fc; min-height: 16px; }
+  </style>
+</head>
+<body>
+  <h3>
+    WebflowAssetZip
+    <span id="tier-badge" class="badge">Free Tier (15 rows)</span>
+  </h3>
+
+  <label for="csv-file">Upload Webflow CMS CSV (or paste below)</label>
+  <input id="csv-file" type="file" accept=".csv,text/csv" />
+  <textarea id="csv-input" placeholder="Paste exported Webflow CMS CSV..."></textarea>
+
+  <label for="target-base">New Target CDN / Folder Base URL</label>
+  <input id="target-base" value="https://assets.yourdomain.com/cms" />
+
+  <div class="row">
+    <div style="flex:1">
+      <label for="old-prefix">Old Path Prefix</label>
+      <input id="old-prefix" value="/blog" />
+    </div>
+    <div style="flex:1">
+      <label for="new-prefix">New Path Prefix</label>
+      <input id="new-prefix" value="/posts" />
+    </div>
+  </div>
+
+  <label class="toggle">
+    <input id="rewrite-richtext" type="checkbox" />
+    <span>Rewrite inline Rich-Text &lt;img&gt; CDN URLs (Pro)</span>
+  </label>
+  <label class="toggle">
+    <input id="generate-redirects" type="checkbox" />
+    <span>Generate 301-redirects.csv map (Pro)</span>
+  </label>
+
+  <div class="row">
+    <button id="migrate-btn" class="primary">Rewrite &amp; Map Assets</button>
+    <button id="scan-tab-btn" class="secondary">Read Active Tab</button>
+  </div>
+
+  <label for="output-preview">Rewritten CSV / Manifest / 301 Redirects Preview</label>
+  <textarea id="output-preview" placeholder="Output appears here..."></textarea>
+  <div class="row">
+    <button id="copy-csv-btn" class="secondary">Copy Rewritten CSV</button>
+    <button id="copy-extra-btn" class="secondary">Copy Manifest + 301s</button>
+  </div>
+
+  <label for="license-key">Stripe Pro License Key (<a id="buy-pro-link" href="https://buy.stripe.com/7sY5kD0Ms260aT65hi6sw07" target="_blank" style="color:#a5b4fc">Buy Pro €29</a>)</label>
+  <div class="row" style="margin-top:4px">
+    <input id="license-key" placeholder="Paste cs_live_... session key" style="margin-top:0" />
+    <button id="activate-btn" class="secondary" style="flex:0 0 84px">Activate</button>
+  </div>
+
+  <p id="status"></p>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

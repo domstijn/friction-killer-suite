@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "WebflowAssetZip",
+  "version": "0.1.0",
+  "description": "Download Webflow CMS CSV & Rich-Text CDN assets by slug, rewrite URLs for Framer/WP/S3, and generate 301 redirect maps.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://*.webflow.com/*",
+    "https://webflow.com/*"
+  ],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "WebflowAssetZip"
+  },
+  "icons": {
+    "128": "src/icon128.png"
+  },
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.webflow.com/*",
+        "https://webflow.com/*"
+      ],
+      "js": [
+        "src/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

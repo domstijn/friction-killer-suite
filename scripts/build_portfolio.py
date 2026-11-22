@@ -118,7 +118,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
       <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
         <div>
           <span class="rounded-full bg-indigo-500/20 px-2.5 py-0.5 text-xs font-semibold text-indigo-300">ZERO-INSTALL INTERACTIVE DEMO</span>
-          <h2 class="mt-2 text-2xl font-bold text-white">Try All 5 Tools Live in Your Browser</h2>
+          <h2 class="mt-2 text-2xl font-bold text-white">Try All 6 Tools Live in Your Browser</h2>
           <p class="mt-1 text-xs text-slate-400">Runs 100% locally in JavaScript — nothing leaves your browser.</p>
         </div>
         <div class="flex flex-wrap gap-2" role="tablist">
@@ -127,6 +127,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
           <button type="button" data-pg-tab="vscode" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">3. ExtProfileLock</button>
           <button type="button" data-pg-tab="claude" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">4. ClaudeProfileSwitch</button>
           <button type="button" data-pg-tab="guest" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">5. NotionGuestBridge</button>
+          <button type="button" data-pg-tab="webflow" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">6. WebflowAssetZip</button>
         </div>
       </div>
 
@@ -246,6 +247,27 @@ Lead contact: cto@acme-client.io | Token: ntn_secret9876543210abcdef
           <pre id="pg-gb-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
         </div>
       </div>
+
+      <!-- Tab 6: WebflowAssetZip -->
+      <div id="pg-panel-webflow" class="pg-panel mt-6 hidden grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div class="grid gap-2 sm:grid-cols-3">
+            <input id="pg-wf-base" value="https://assets.acme.co/cms" placeholder="Target Base URL" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
+            <input id="pg-wf-old" value="/blog" placeholder="Old prefix" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
+            <input id="pg-wf-new" value="/posts" placeholder="New prefix" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-300" for="pg-wf-csv">Webflow CMS CSV (Media Columns + Inline Rich-Text &lt;img&gt;)</label>
+            <textarea id="pg-wf-csv" rows="6" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">Name,Slug,Hero Image,Post Body
+Q4 Launch,q4-launch,https://uploads-ssl.webflow.com/65b1/hero.webp,"&lt;p&gt;Intro&lt;/p&gt;&lt;img src=""https://cdn.prod.website-files.com/65b1/chart.png""&gt;"
+SOC2 Guide,soc2-guide,https://uploads-ssl.webflow.com/65b1/arch.svg,"&lt;p&gt;Read more&lt;/p&gt;"</textarea>
+          </div>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-emerald-300">Rewritten CSV + Slug Asset Manifest + 301-redirects.csv</span>
+          <pre id="pg-wf-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+        </div>
+      </div>
     </section>"""
 
 
@@ -258,6 +280,7 @@ PLAYGROUND_SCRIPT = r"""  <script>
         vscode: document.getElementById("pg-panel-vscode"),
         claude: document.getElementById("pg-panel-claude"),
         guest: document.getElementById("pg-panel-guest"),
+        webflow: document.getElementById("pg-panel-webflow"),
       };
       tabs.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -480,6 +503,55 @@ PLAYGROUND_SCRIPT = r"""  <script>
       [gTitle, gRedact, gBlocks].forEach((el) => el?.addEventListener("input", runGuestBridge));
       gRedact?.addEventListener("change", runGuestBridge);
       runGuestBridge();
+
+      // 6. WebflowAssetZip live CSV + Rich-Text CDN rewriter & 301 generator
+      const wBase = document.getElementById("pg-wf-base");
+      const wOld = document.getElementById("pg-wf-old");
+      const wNew = document.getElementById("pg-wf-new");
+      const wCsv = document.getElementById("pg-wf-csv");
+      const wOut = document.getElementById("pg-wf-output");
+      function runWebflowZip() {
+        if (!wCsv || !wOut) return;
+        const base = (wBase?.value || "/assets/cms").replace(/\/+$/, "");
+        const oldP = "/" + (wOld?.value || "blog").replace(/^\/+|\/+$/g, "");
+        const newP = "/" + (wNew?.value || "posts").replace(/^\/+|\/+$/g, "");
+        const lines = (wCsv.value || "").split("\n").filter((l) => l.trim().length > 0);
+        if (lines.length < 2) {
+          wOut.textContent = "Add header + at least 1 CMS row.";
+          return;
+        }
+        const manifest = [];
+        const redirects = ["old_path,new_path,status"];
+        const cdnRe = /https?:\/\/(?:uploads-ssl\.webflow\.com|cdn\.prod\.website-files\.com|assets(?:-global)?\.website-files\.com)\/[^\s"'<>,)]+/gi;
+        const outLines = [lines[0]];
+        lines.slice(1).forEach((line, idx) => {
+          const slugMatch = line.split(",")[1] || ("item-" + (idx + 1));
+          const slug = slugMatch.trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-");
+          let count = 0;
+          const rewritten = line.replace(cdnRe, (url) => {
+            count += 1;
+            const extMatch = url.match(/\.(webp|png|jpe?g|svg|avif|gif)$/i);
+            const ext = extMatch ? "." + extMatch[1].toLowerCase() : ".png";
+            const fileName = slug + "-asset-0" + count + ext;
+            const newUrl = base + "/" + fileName;
+            manifest.push({ slug, fileName, originalUrl: url, newUrl });
+            return newUrl;
+          });
+          outLines.push(rewritten);
+          redirects.push(oldP + "/" + slug + "," + newP + "/" + slug + ",301");
+        });
+        wOut.textContent =
+          "# Rewritten CSV:\n" +
+          outLines.join("\n") +
+          "\n\n# 301-redirects.csv:\n" +
+          redirects.join("\n") +
+          "\n\n# Slug Asset Manifest (" +
+          manifest.length +
+          " files):\n" +
+          JSON.stringify(manifest, null, 2);
+      }
+      [wBase, wOld, wNew, wCsv].forEach((el) => el?.addEventListener("input", runWebflowZip));
+      runWebflowZip();
     })();
   </script>"""
 

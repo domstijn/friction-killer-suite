@@ -12,7 +12,7 @@
     "lemonsqueezy",
     "gumroad"
   ],
-  "active_project": "notion-guest-mcp-bridge",
+  "active_project": "webflow-cms-asset-migrator",
   "current_stage": "COMPLETED",
   "gates": {
     "gate_1_idea_and_spec_approved": true,
@@ -149,6 +149,32 @@
       "updated_at": "2026-11-21T10:43:54+00:00"
     },
     {
+      "id": "webflow-cms-asset-migrator",
+      "title": "WebflowAssetZip: 1-Click Webflow CMS CSV Asset Downloader, Rich-Text CDN Rewriter & 301 Redirect Pack",
+      "ecosystem": "browser-extension",
+      "target_software": "Webflow CMS (to Framer / WordPress / Next.js)",
+      "pain": "Webflow CMS CSV exports leave all image/file columns and inline Rich-Text HTML <img> tags hotlinked to uploads-ssl.webflow.com, so every image breaks into a 404 when Webflow hosting is canceled.",
+      "solution": "Chrome MV3 extension that parses Webflow CMS CSVs or open CMS collections, downloads and renames every image/asset by item slug, rewrites CSV + Rich-Text HTML CDN URLs to your new host (Framer/S3/R2/WP), and outputs a 301-redirects.csv map.",
+      "existing_alternatives": "Webflow Asset Exporter only dumps raw unnamed assets without mapping to CMS slugs or rewriting CSV and Rich-Text HTML <img> tags; generic image scrapers only grab 1 rendered page.",
+      "free_escape_hatch": "Webflow native 'Export CSV' fails 100% on asset ownership because it only exports hotlinked uploads-ssl.webflow.com URLs that die when the Webflow plan is canceled.",
+      "buyer_persona": "commercial",
+      "dimensions": {
+        "pain_severity": 9.0,
+        "willingness_to_pay": 8.5,
+        "existing_alternative_saturation": 8.0,
+        "diy_resistance": 8.5,
+        "solution_effectiveness": 9.0,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.5,
+        "platform_safety": 9.0
+      },
+      "effectiveness_score": 87.5,
+      "commercial_potential_score": 85.0,
+      "score": 85.75,
+      "verdict": "GO",
+      "updated_at": "2026-11-22T08:13:24+00:00"
+    },
+    {
       "id": "figma-token-tailwind-sync",
       "title": "FigmaTokenBridge: 1-Click Figma Variables & Styles to Tailwind v4 / MUI Theme",
       "ecosystem": "browser-extension",
@@ -170,28 +196,30 @@
       "updated_at": "2026-11-20T22:04:31+00:00"
     },
     {
-      "id": "ai-agent-undo-shield",
-      "title": "AgentUndoShield: Auto-Checkpoint & 1-Click Undo for Untracked/Dirty Files in VS Code for Codex & Claude",
-      "ecosystem": "ide-ai-plugin",
-      "target_software": "VS Code / Codex & Claude Code",
-      "pain": "Codex CLI/IDE removed /undo and leaks/modifies untracked files cleanly untouched by git restore (openai/codex#9203: 556 rx, 2026-01; #2998: 246 rx)",
-      "solution": "VS Code .vsix extension (live friction-killer publisher) that auto-snapshots dirty & untracked files via FileSystemWatcher before agent runs and offers 1-click multi-file restore without git clean -fd risk",
-      "existing_alternatives": "Codex revert errors on drifted files; git checkout/restore ignores untracked files; git clean -fd permanently deletes untracked work; native VS Code Timeline is single-file only",
+      "id": "linear-client-report-exporter",
+      "title": "LinearClientReport: 1-Click White-Label Sprint & Project Status Report Exporter for Linear",
+      "ecosystem": "browser-extension",
+      "target_software": "Linear (linear.app)",
+      "pain": "Agencies and product teams cannot share clean weekly client reports from Linear: Guest users are blocked from exporting, native CSV exports are capped at 250 issues and dump raw internal engineering fields/estimates, and third-party Linear client portals cost -/mo.",
+      "solution": "Chrome MV3 extension injecting a 'Client Report' action into Linear Project/Cycle views that groups issues by status (Shipped, In Progress, Up Next), strips internal engineering labels/estimates/handles, and outputs a white-label HTML/PDF executive report or Markdown changelog.",
+      "existing_alternatives": "Breeze.pm, Lindie, and SteelSync cost -/mo recurring and require full workspace OAuth; Linear Business plan costs -/user/mo and still blocks Guest exports.",
+      "free_escape_hatch": "Linear native 'Cmd+K -> Export issues as CSV' dumps raw internal columns/estimates, caps members at 250 rows, omits attachments (expiring links), and is completely blocked for Guests.",
+      "buyer_persona": "b2b-operator",
       "dimensions": {
-        "pain_severity": 9.0,
-        "willingness_to_pay": 8.0,
-        "existing_alternative_saturation": 7.5,
+        "pain_severity": 8.5,
+        "willingness_to_pay": 8.5,
+        "existing_alternative_saturation": 8.0,
         "diy_resistance": 8.0,
-        "solution_effectiveness": 9.0,
-        "build_speed": 8.5,
-        "distribution_clarity": 9.0,
+        "solution_effectiveness": 8.5,
+        "build_speed": 9.0,
+        "distribution_clarity": 8.5,
         "platform_safety": 9.0
       },
-      "effectiveness_score": 86.25,
-      "commercial_potential_score": 82.75,
-      "score": 83.75,
+      "effectiveness_score": 85.75,
+      "commercial_potential_score": 83.75,
+      "score": 84.25,
       "verdict": "GO",
-      "updated_at": "2026-11-21T10:43:54+00:00"
+      "updated_at": "2026-11-22T08:13:24+00:00"
     },
     {
       "id": "notion-clean-md-exporter",
@@ -215,28 +243,30 @@
       "updated_at": "2026-11-17T17:54:27+00:00"
     },
     {
-      "id": "claude-project-sync",
-      "title": "ClaudeProjectBridge: 1-Click Claude.ai Web Projects Knowledge & Instructions to Repo CLAUDE.md Sync",
+      "id": "looker-studio-table-pdf-exporter",
+      "title": "LookerTableExport: Full-Scroll Multi-Page Table & White-Label PDF/CSV Report Packager for Looker Studio",
       "ecosystem": "browser-extension",
-      "target_software": "Claude.ai / Claude Code",
-      "pain": "No native bridge to sync Claude.ai Web Project instructions & knowledge docs with local CLAUDE.md/repo context (#2511: 673 rx; #28791: 192 rx; #20697: 173 rx)",
-      "solution": "Chrome MV3 extension capturing Claude.ai Project instructions & docs from the active tab into diffable CLAUDE.md + .claude/context/ packs with bidirectional copy-back",
-      "existing_alternatives": "No native sync exists; community extensions like Claude Project Downloader only dump raw static ZIPs without CLAUDE.md formatting, path mapping, or incremental context diffs",
+      "target_software": "Google Looker Studio (lookerstudio.google.com)",
+      "pain": "Looker Studio's native PDF export truncates scrollable data tables to only the top ~15 visible rows (rendering a useless scrollbar screenshot for rows 16-500) and stamps Looker Studio footer branding on client reports.",
+      "solution": "Chrome MV3 extension on lookerstudio.google.com that dynamically unrolls scrollable DOM tables before capture, strips Looker footer chrome, injects an agency white-label header, and exports full-row print-ready PDF views + multi-table CSV/Markdown summary packs.",
+      "existing_alternatives": "Looker Studio Pro (/user/project/mo) still truncates scrollable tables in PDF exports; Supermetrics/Swydo cost -/mo; Looker Studio Companion focuses on field editing rather than unrolling scrollable tables for PDF/CSV client packs.",
+      "free_escape_hatch": "Looker Studio native 'Share -> Download Report (PDF)' cuts off every scrollable table below the fold and includes Google/Looker footer branding.",
+      "buyer_persona": "b2b-operator",
       "dimensions": {
         "pain_severity": 8.5,
         "willingness_to_pay": 8.0,
-        "existing_alternative_saturation": 7.5,
+        "existing_alternative_saturation": 8.0,
         "diy_resistance": 8.5,
         "solution_effectiveness": 8.5,
         "build_speed": 8.5,
-        "distribution_clarity": 8.5,
+        "distribution_clarity": 8.0,
         "platform_safety": 8.5
       },
       "effectiveness_score": 85.0,
-      "commercial_potential_score": 80.75,
-      "score": 82.5,
+      "commercial_potential_score": 81.25,
+      "score": 82.75,
       "verdict": "GO",
-      "updated_at": "2026-11-21T10:43:54+00:00"
+      "updated_at": "2026-11-22T08:13:24+00:00"
     },
     {
       "id": "vscode-workspace-profile-config",
@@ -258,6 +288,58 @@
       "score": 80.5,
       "verdict": "GO",
       "updated_at": "2026-11-17T17:54:27+00:00"
+    },
+    {
+      "id": "claude-project-sync",
+      "title": "ClaudeProjectBridge: 1-Click Claude.ai Web Projects Knowledge & Instructions to Repo CLAUDE.md Sync",
+      "ecosystem": "browser-extension",
+      "target_software": "Claude.ai & Claude Code",
+      "pain": "Claude.ai Web Projects do not sync custom instructions or uploaded knowledge files to local repo CLAUDE.md.",
+      "solution": "Chrome MV3 extension exporting Claude.ai Project files to local repo.",
+      "existing_alternatives": "Claude Project Downloader (claudeprojectdownloader.com) & Claude Exporter free Chrome extensions already export entire Claude.ai Projects into ZIPs.",
+      "free_escape_hatch": "Free Chrome extension Claude Project Downloader already exports all Project files and instructions to a local ZIP in 1 click (solves >=80%).",
+      "buyer_persona": "dev-config",
+      "dimensions": {
+        "pain_severity": 8.0,
+        "willingness_to_pay": 6.0,
+        "existing_alternative_saturation": 3.5,
+        "diy_resistance": 7.5,
+        "solution_effectiveness": 8.0,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.0,
+        "platform_safety": 8.5
+      },
+      "effectiveness_score": 80.75,
+      "commercial_potential_score": 61.75,
+      "score": 69.25,
+      "verdict": "NO-GO (Kill Switch Triggered: buyer_persona='dev-config' with willingness_to_pay < 6.5 (dev-config audiences prefer free OSS + token workarounds), existing_alternative_saturation < 5 (native export, shared PAT + OSS repo, or 2-min free escape hatch solves >=50%))",
+      "updated_at": "2026-11-22T08:13:15+00:00"
+    },
+    {
+      "id": "ai-agent-undo-shield",
+      "title": "AgentUndoShield: Auto-Checkpoint & 1-Click Undo for Untracked/Dirty Files in VS Code for Codex & Claude",
+      "ecosystem": "ide-ai-plugin",
+      "target_software": "VS Code (Codex & Claude Code)",
+      "pain": "AI coding agents run git checkout/clean and wipe untracked or dirty files not yet in Git.",
+      "solution": "VS Code extension snapshotting dirty/untracked files before agent turns.",
+      "existing_alternatives": "AgentCheck (@agentcheck/cli + VS Code extension), claude-code-safety-net, and native .claude/settings.local.json permissions.deny rules already block destructive git commands.",
+      "free_escape_hatch": "Native .claude/settings.local.json permissions.deny rules + free OSS claude-code-safety-net hook block git checkout/clean in 2 minutes.",
+      "buyer_persona": "dev-config",
+      "dimensions": {
+        "pain_severity": 8.5,
+        "willingness_to_pay": 5.5,
+        "existing_alternative_saturation": 4.0,
+        "diy_resistance": 6.5,
+        "solution_effectiveness": 8.5,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.0,
+        "platform_safety": 9.0
+      },
+      "effectiveness_score": 80.75,
+      "commercial_potential_score": 62.5,
+      "score": 69.0,
+      "verdict": "NO-GO (Kill Switch Triggered: buyer_persona='dev-config' with willingness_to_pay < 6.5 (dev-config audiences prefer free OSS + token workarounds), existing_alternative_saturation < 5 (native export, shared PAT + OSS repo, or 2-min free escape hatch solves >=50%))",
+      "updated_at": "2026-11-22T08:13:15+00:00"
     },
     {
       "id": "docker-volume-compose-tool",
@@ -330,8 +412,16 @@
       "title": "NotionGuestBridge: 1-Click Client Notion Guest Workspace to Claude/Cursor Context & MCP Pack",
       "ecosystem": "browser-extension",
       "target_software": "Notion / Claude & Cursor",
-      "status": "COMPLETED",
+      "status": "STAGE_1_DISCOVERY",
       "selected_at": "2026-11-21T10:52:43+00:00"
+    },
+    "webflow-cms-asset-migrator": {
+      "id": "webflow-cms-asset-migrator",
+      "title": "WebflowAssetZip: 1-Click Webflow CMS CSV Asset Downloader, Rich-Text CDN Rewriter & 301 Redirect Pack",
+      "ecosystem": "browser-extension",
+      "target_software": "Webflow CMS (to Framer / WordPress / Next.js)",
+      "status": "COMPLETED",
+      "selected_at": "2026-11-22T08:23:46+00:00"
     }
   }
 }
