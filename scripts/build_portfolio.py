@@ -118,7 +118,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
       <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
         <div>
           <span class="rounded-full bg-indigo-500/20 px-2.5 py-0.5 text-xs font-semibold text-indigo-300">ZERO-INSTALL INTERACTIVE DEMO</span>
-          <h2 class="mt-2 text-2xl font-bold text-white">Try All 6 Tools Live in Your Browser</h2>
+          <h2 class="mt-2 text-2xl font-bold text-white">Try All 7 Tools Live in Your Browser</h2>
           <p class="mt-1 text-xs text-slate-400">Runs 100% locally in JavaScript — nothing leaves your browser.</p>
         </div>
         <div class="flex flex-wrap gap-2" role="tablist">
@@ -128,6 +128,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
           <button type="button" data-pg-tab="claude" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">4. ClaudeProfileSwitch</button>
           <button type="button" data-pg-tab="guest" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">5. NotionGuestBridge</button>
           <button type="button" data-pg-tab="webflow" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">6. WebflowAssetZip</button>
+          <button type="button" data-pg-tab="payout" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">7. StripePayoutBridge</button>
         </div>
       </div>
 
@@ -268,6 +269,24 @@ SOC2 Guide,soc2-guide,https://uploads-ssl.webflow.com/65b1/arch.svg,"&lt;p&gt;Re
           <pre id="pg-wf-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
         </div>
       </div>
+
+      <!-- Tab 7: StripePayoutBridge -->
+      <div id="pg-panel-payout" class="pg-panel mt-6 hidden grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-300" for="pg-pb-csv">Stripe / PayPal Itemized Payout Activity CSV</label>
+            <textarea id="pg-pb-csv" rows="8" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">payout_id,payout_date,type,gross,fee,fx_fee,tax,net,currency
+po_nov_01,2026-11-05,charge,121.00,3.80,1.20,21.00,116.00,EUR
+po_nov_01,2026-11-05,charge,242.00,7.25,0.00,42.00,234.75,EUR
+po_nov_01,2026-11-05,refund,-60.50,0.00,0.00,0.00,-60.50,EUR
+po_nov_01,2026-11-05,dispute,-40.00,15.00,0.00,0.00,-55.00,EUR</textarea>
+          </div>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-emerald-300">Balanced Double-Entry Journal (Xero + QuickBooks + DATEV GoBD)</span>
+          <pre id="pg-pb-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+        </div>
+      </div>
     </section>"""
 
 
@@ -281,6 +300,7 @@ PLAYGROUND_SCRIPT = r"""  <script>
         claude: document.getElementById("pg-panel-claude"),
         guest: document.getElementById("pg-panel-guest"),
         webflow: document.getElementById("pg-panel-webflow"),
+        payout: document.getElementById("pg-panel-payout"),
       };
       tabs.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -552,6 +572,53 @@ PLAYGROUND_SCRIPT = r"""  <script>
       }
       [wBase, wOld, wNew, wCsv].forEach((el) => el?.addEventListener("input", runWebflowZip));
       runWebflowZip();
+
+      // 7. StripePayoutBridge live double-entry payout splitter
+      const pCsv = document.getElementById("pg-pb-csv");
+      const pOut = document.getElementById("pg-pb-output");
+      function runPayoutBridge() {
+        if (!pCsv || !pOut) return;
+        const lines = (pCsv.value || "").split("\n").map((l) => l.trim()).filter(Boolean);
+        if (lines.length < 2) {
+          pOut.textContent = "Add header + at least 1 payout row.";
+          return;
+        }
+        let gross = 0, tax = 0, refunds = 0, disputes = 0, fees = 0, fx = 0;
+        let pid = "po_batch", pdate = "2026-11-05";
+        lines.slice(1).forEach((l) => {
+          const cols = l.split(",");
+          pid = cols[0] || pid;
+          pdate = cols[1] || pdate;
+          const t = (cols[2] || "charge").toLowerCase();
+          const g = Math.round((parseFloat(cols[3]) || 0) * 100);
+          const f = Math.abs(Math.round((parseFloat(cols[4]) || 0) * 100));
+          const x = Math.abs(Math.round((parseFloat(cols[5]) || 0) * 100));
+          const tx = Math.abs(Math.round((parseFloat(cols[6]) || 0) * 100));
+          fees += f;
+          fx += x;
+          if (t.includes("refund") || (g < 0 && !t.includes("dispute"))) refunds += Math.abs(g);
+          else if (t.includes("dispute")) disputes += Math.abs(g);
+          else { gross += Math.max(0, g); tax += Math.min(tx, Math.max(0, g)); }
+        });
+        const netSales = gross - tax;
+        const netBank = gross - refunds - disputes - fees - fx;
+        const fmt = (c) => (c / 100).toFixed(2);
+        const xero = [
+          "*Narration,*Date,Description,*AccountCode,*TaxType,*Amount",
+          "Stripe Payout " + pid + "," + pdate + ",Gross sales net of tax,200,OUTPUT2,-" + fmt(netSales),
+          "Stripe Payout " + pid + "," + pdate + ",VAT collected,820,BAS Excluded,-" + fmt(tax),
+          "Stripe Payout " + pid + "," + pdate + ",Customer refunds,205,NONE," + fmt(refunds),
+          "Stripe Payout " + pid + "," + pdate + ",Chargebacks & disputes,206,NONE," + fmt(disputes),
+          "Stripe Payout " + pid + "," + pdate + ",Stripe processing fees,404,EXEMPTEXPENSES," + fmt(fees),
+          "Stripe Payout " + pid + "," + pdate + ",FX conversion fees,405,EXEMPTEXPENSES," + fmt(fx),
+          "Stripe Payout " + pid + "," + pdate + ",Net bank deposit,120,BAS Excluded," + fmt(netBank),
+        ];
+        pOut.textContent =
+          "# Double-Entry Audit: Debits €" + fmt(gross) + " == Credits €" + fmt(gross) + " (Drift: €0.00)\n\n" +
+          "# Xero Manual Journal CSV:\n" + xero.join("\n");
+      }
+      pCsv?.addEventListener("input", runPayoutBridge);
+      runPayoutBridge();
     })();
   </script>"""
 

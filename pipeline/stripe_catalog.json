@@ -100,6 +100,19 @@
       "payment_link_url": "https://buy.stripe.com/7sY5kD0Ms260aT65hi6sw07",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=webflow-cms-asset-migrator"
     },
+    "stripe-payout-xero-qbo-splitter": {
+      "slug": "stripe-payout-xero-qbo-splitter",
+      "name": "StripePayoutBridge Pro",
+      "description": "Zero-install Stripe & PayPal Payout CSV to Xero, QuickBooks & DATEV double-entry clearing journal splitter Web App + CLI (Pro License).",
+      "unit_amount": 2900,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_VfyImk6C1cdbcU",
+      "price_id": "price_1UecM1H2AcdDmQyRk7COB7ah",
+      "payment_link_id": "plink_1UecMjH2AcdDmQyRKddLVTBf",
+      "payment_link_url": "https://buy.stripe.com/7sY9AT9iYh0U8KY39a6sw08",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=stripe-payout-xero-qbo-splitter"
+    },
     "all-access-bundle": {
       "slug": "all-access-bundle",
       "name": "All-Access Friction-Killer Bundle",

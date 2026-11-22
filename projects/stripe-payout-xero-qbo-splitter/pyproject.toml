@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stripe-payout-xero-qbo-splitter"
+version = "0.1.0"
+description = "StripePayoutBridge: Zero-Install Stripe & PayPal Payout CSV to Xero, QuickBooks & DATEV Clearing Journal Splitter"
+requires-python = ">=3.10"
+
+[project.scripts]
+stripe-payout-xero-qbo-splitter = "cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["cli", "addon", "license_client"]

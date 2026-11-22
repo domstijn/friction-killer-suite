@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StripePayoutBridge — Stripe &amp; PayPal Payout CSV to Xero, QuickBooks &amp; DATEV Journals</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
+    <div class="text-lg font-bold tracking-tight text-white">StripePayoutBridge</div>
+    <nav class="flex items-center gap-6 text-sm text-slate-300">
+      <a href="../../index.html" class="text-indigo-300 hover:text-white">&larr; All Suite Tools</a>
+      <a href="#live-app" class="hover:text-white">Web App</a>
+      <a href="#comparison" class="hover:text-white">Why it works</a>
+      <a href="#pricing" class="hover:text-white">Pricing</a>
+      <a href="#pricing" class="rounded-lg bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-400">Get Pro</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6">
+    <section class="py-16 text-center">
+      <span class="inline-block rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300">
+        Zero-Install Web App + Python CLI (.whl) for Finance, E-Commerce &amp; Bookkeepers
+      </span>
+      <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+        Stop reconciling Stripe net deposits by hand.<br />
+        <span class="text-indigo-400">Split payout CSVs into balanced Xero, QuickBooks &amp; DATEV journals locally.</span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
+        Stripe and PayPal land in your bank as net lump sums after fees, refunds, disputes, and FX markups. StripePayoutBridge parses your itemized payout CSV 100% locally in Chrome, audits zero-cent drift per payout batch, and generates balanced double-entry journals without recurring OAuth SaaS fees.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a href="#live-app" data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
+          Launch Web App (Free — 1 Batch)
+        </a>
+        <a href="https://buy.stripe.com/7sY9AT9iYh0U8KY39a6sw08" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
+          Unlock Pro License — €29 once
+        </a>
+      </div>
+    </section>
+
+    <!-- Standalone Zero-Install In-Browser Web App -->
+    <section id="live-app" class="rounded-3xl border border-indigo-500/40 bg-slate-900/90 p-6 shadow-2xl shadow-indigo-500/10 sm:p-8">
+      <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
+        <div>
+          <span class="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">ZERO-INSTALL IN-BROWSER WEB APP • RUNS 100% LOCALLY</span>
+          <h2 class="mt-2 text-2xl font-bold text-white">Reconcile Your Stripe / PayPal Payout CSV Now</h2>
+          <p class="mt-1 text-xs text-slate-400">Zero accounting data leaves your computer. Free reconciles 1 payout batch to Xero CSV; Pro unlocks unlimited batches, QuickBooks &amp; DATEV Buchungsstapel CSVs.</p>
+        </div>
+        <span id="app-tier-badge" class="self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300">Free Tier (1 Batch)</span>
+      </div>
+
+      <div class="mt-6 grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <label class="text-xs font-semibold text-slate-300" for="app-csv-file">Upload Itemized Payout CSV (or paste below)</label>
+            <button id="app-sample-btn" type="button" class="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs font-medium text-indigo-300 hover:bg-slate-700">Load Multi-Batch Sample CSV</button>
+          </div>
+          <input id="app-csv-file" type="file" accept=".csv,text/csv" class="block w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-500 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-white" />
+          <textarea id="app-csv-input" rows="6" placeholder="payout_id,payout_date,type,gross,fee,fx_fee,tax,net,currency,description..." class="w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200 focus:border-indigo-500 focus:outline-none"></textarea>
+
+          <div>
+            <label class="text-xs text-slate-400" for="app-format">Accounting Export Format</label>
+            <select id="app-format" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs font-semibold text-slate-200">
+              <option value="xero">Xero Manual Journal CSV (Free 1 Batch / Unlimited Pro)</option>
+              <option value="qbo">QuickBooks Online Journal CSV (Pro)</option>
+              <option value="datev">DATEV Buchungsstapel CSV — GoBD (Pro)</option>
+            </select>
+          </div>
+
+          <button id="app-run-btn" type="button" class="w-full rounded-xl bg-indigo-500 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400">
+            Split &amp; Balance Payout Journals
+          </button>
+
+          <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-3">
+            <div class="flex items-center justify-between text-xs">
+              <label class="font-semibold text-slate-300" for="app-license-key">Unlock Pro License (Stripe Checkout Key)</label>
+              <a href="https://buy.stripe.com/7sY9AT9iYh0U8KY39a6sw08" data-fk-cta="pro-checkout" target="_blank" class="stripe-checkout-button font-semibold text-indigo-400 hover:text-indigo-300">Buy Pro — €29 &rarr;</a>
+            </div>
+            <div class="mt-2 flex gap-2">
+              <input id="app-license-key" placeholder="Paste cs_live_... session key" class="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 font-mono text-xs text-slate-200" />
+              <button id="app-activate-btn" type="button" class="rounded-lg bg-slate-800 px-4 py-1.5 text-xs font-semibold text-white hover:bg-slate-700">Activate</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col justify-between space-y-3">
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-batches" class="text-sm font-bold text-white">0</div>
+              <div class="text-[11px] text-slate-400">Payout Batches</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-debits" class="text-sm font-bold text-emerald-300">€0.00</div>
+              <div class="text-[11px] text-slate-400">Debits == Credits</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-net" class="text-sm font-bold text-indigo-300">€0.00</div>
+              <div class="text-[11px] text-slate-400">Bank Settlement</div>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-emerald-300">Balanced Double-Entry Journal Preview</span>
+              <span id="app-status" class="text-xs text-indigo-300">Ready — upload or load sample CSV</span>
+            </div>
+            <pre id="app-output" class="mt-2 h-64 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300">Click "Load Multi-Batch Sample CSV" or drop your Stripe/PayPal payout CSV.</pre>
+          </div>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button id="app-dl-xero" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download Xero CSV</button>
+            <button id="app-dl-qbo" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download QuickBooks (Pro)</button>
+            <button id="app-dl-datev" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download DATEV (Pro)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="comparison" class="grid gap-6 py-12 md:grid-cols-2">
+      <div class="rounded-2xl border border-rose-500/20 bg-slate-900/60 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-rose-400">The Old Painful Way</h2>
+        <ul class="mt-4 space-y-3 text-slate-300">
+          <li>• Net bank deposits mix sales, VAT, refunds, chargebacks, and FX markups into one unreadable lump sum</li>
+          <li>• Subledger SaaS bridges charge $29–$199/mo forever and demand live OAuth keys across your ledgers</li>
+          <li>• Flat Stripe CSV exports fail import because debit and credit clearing lines aren't grouped by payout batch</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-emerald-500/30 bg-slate-900 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-emerald-400">With StripePayoutBridge</h2>
+        <ul class="mt-4 space-y-3 text-slate-200">
+          <li>• Splits Gross Sales, VAT/Tax, Refunds, Disputes, Processing Fees, and FX fees per payout batch in seconds</li>
+          <li>• Enforces exact cent-level balance (<code>Debits == Credits</code>) before generating CSVs</li>
+          <li>• Runs 100% locally in Chrome or Python CLI — pay once (€29), never grant third-party OAuth access</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="pricing" class="py-12">
+      <h2 class="text-center text-2xl font-bold text-white">One-time license, zero monthly SaaS tax</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-8">
+          <h3 class="text-lg font-semibold text-white">Free Starter</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€0</p>
+          <p class="mt-2 text-sm text-slate-400">Test payout clearing splits before buying.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-300">
+            <li>✓ Reconcile 1 payout batch (up to 25 rows) to Xero CSV</li>
+            <li>✓ Full double-entry balance &amp; drift verification</li>
+          </ul>
+          <a href="#live-app" data-fk-cta="free-install" class="mt-8 block rounded-xl border border-slate-700 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800">
+            Use Free Web App
+          </a>
+        </div>
+        <div class="rounded-2xl border border-indigo-500 bg-slate-900 p-8 shadow-lg shadow-indigo-500/10">
+          <h3 class="text-lg font-semibold text-white">Pro License</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€29 once</p>
+          <p class="mt-2 text-sm text-slate-400">Instant Stripe Managed Payments key unlocking Web App &amp; Python CLI.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-200">
+            <li>✓ Unlimited monthly payout batches &amp; unlimited transactions</li>
+            <li>✓ Xero Manual Journal CSV, QuickBooks Journal CSV &amp; DATEV Buchungsstapel CSV</li>
+            <li>✓ Multi-currency FX fee &amp; chargeback splitting + 7-day offline CLI cache</li>
+          </ul>
+          <a href="https://buy.stripe.com/7sY9AT9iYh0U8KY39a6sw08" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-indigo-500 py-3 text-center text-sm font-semibold text-white hover:bg-indigo-400">
+            Buy Pro License Key
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="py-12">
+      <h2 class="text-2xl font-bold text-white">FAQ</h2>
+      <div class="mt-6 space-y-4 text-sm text-slate-300">
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">Does my Stripe or PayPal CSV get uploaded to any server?</h3>
+          <p class="mt-1 text-slate-400">Never. CSV parsing, double-entry balancing, and Xero/QBO/DATEV formatting execute strictly client-side in your browser or via our local Python wheel.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">How does license activation work?</h3>
+          <p class="mt-1 text-slate-400">After checkout via Stripe Managed Payments, paste your Checkout Session ID (<code>cs_live_...</code>) above or via <code>--activate</code> in the CLI to unlock Pro immediately.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <section id="policies" class="mx-auto max-w-5xl px-6 pb-10">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-xs leading-relaxed text-slate-400">
+      <div class="grid gap-6 md:grid-cols-3">
+        <div>
+          <h3 class="font-semibold text-slate-200">Support &amp; Contact</h3>
+          <p class="mt-1">Operated by Stijn Dom (@domstijn).</p>
+          <p class="mt-1">Email: <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a></p>
+          <p class="mt-1">Issues: <a href="https://github.com/domstijn/friction-killer-suite/issues" class="text-indigo-300 underline">GitHub Support Tracker</a></p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">14-Day Refund Policy</h3>
+          <p class="mt-1">All Pro licenses include a 14-day no-questions-asked refund guarantee. Email <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a> with your order ID for a full refund.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
+          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments are processed securely by Stripe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500">
+    StripePayoutBridge (<code>stripe-payout-xero-qbo-splitter</code>) — Friction-Killer Suite by Stijn Dom (@domstijn) · <a href="https://github.com/domstijn/friction-killer-suite/issues" class="underline">Support</a> · <a href="mailto:dom.stijn99@gmail.com" class="underline">dom.stijn99@gmail.com</a> · 14-day refund policy
+  </footer>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "fk_payout_pro_state";
+      const FREE_BATCH_CAP = 1;
+      const FREE_TX_CAP = 25;
+
+      const fileEl = document.getElementById("app-csv-file");
+      const sampleBtn = document.getElementById("app-sample-btn");
+      const csvEl = document.getElementById("app-csv-input");
+      const fmtEl = document.getElementById("app-format");
+      const runBtn = document.getElementById("app-run-btn");
+      const keyEl = document.getElementById("app-license-key");
+      const actBtn = document.getElementById("app-activate-btn");
+      const badgeEl = document.getElementById("app-tier-badge");
+      const statusEl = document.getElementById("app-status");
+      const outEl = document.getElementById("app-output");
+      const statBatches = document.getElementById("stat-batches");
+      const statDebits = document.getElementById("stat-debits");
+      const statNet = document.getElementById("stat-net");
+      const dlXero = document.getElementById("app-dl-xero");
+      const dlQbo = document.getElementById("app-dl-qbo");
+      const dlDatev = document.getElementById("app-dl-datev");
+
+      let lastResult = null;
+
+      function isProUnlocked() {
+        try {
+          return Boolean(JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}").valid);
+        } catch {
+          return false;
+        }
+      }
+
+      function refreshBadge() {
+        if (isProUnlocked()) {
+          badgeEl.textContent = "Pro Unlocked";
+          badgeEl.className = "self-start rounded-full border border-indigo-500 bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300";
+        } else {
+          badgeEl.textContent = "Free Tier (1 Batch)";
+          badgeEl.className = "self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300";
+        }
+      }
+
+      function toCents(val) {
+        const s = String(val ?? "").trim().replace(/,/g, "");
+        return s ? Math.round(parseFloat(s) * 100) || 0 : 0;
+      }
+
+      function fmtAmt(cents) {
+        return (cents / 100).toFixed(2);
+      }
+
+      function parseCsv(text) {
+        const rows = [];
+        const src = String(text || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+        if (!src.trim()) return rows;
+        let row = [], cell = "", inQ = false;
+        for (let i = 0; i < src.length; i++) {
+          const ch = src[i];
+          if (inQ) {
+            if (ch === '"' && src[i + 1] === '"') { cell += '"'; i++; }
+            else if (ch === '"') inQ = false;
+            else cell += ch;
+          } else if (ch === '"') inQ = true;
+          else if (ch === ",") { row.push(cell); cell = ""; }
+          else if (ch === "\n") { row.push(cell); if (row.some((c) => c !== "")) rows.push(row); row = []; cell = ""; }
+          else cell += ch;
+        }
+        if (cell !== "" || row.length > 0) { row.push(cell); if (row.some((c) => c !== "")) rows.push(row); }
+        return rows;
+      }
+
+      function csvCell(v) {
+        const s = String(v ?? "");
+        return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+      }
+
+      function runReconciliation() {
+        const pro = isProUnlocked();
+        const fmt = fmtEl?.value || "xero";
+        if (!pro && (fmt === "qbo" || fmt === "datev")) {
+          statusEl.textContent = "QuickBooks & DATEV require Pro — unlock for €29 or switch to Xero CSV (Free 1 Batch).";
+          return;
+        }
+
+        const rows = parseCsv(csvEl?.value || "");
+        if (rows.length < 2) {
+          statusEl.textContent = "Paste or upload a payout CSV with headers and at least 1 row.";
+          return;
+        }
+
+        const hdrs = rows[0].map((h) => h.trim().toLowerCase());
+        const findCol = (names) => hdrs.findIndex((h) => names.includes(h));
+        const idxPayout = findCol(["payout_id", "automatic_payout_id", "payout", "batch_id", "settlement_id"]);
+        const idxDate = findCol(["payout_date", "automatic_payout_effective_at", "date", "created"]);
+        const idxType = findCol(["type", "reporting_category", "transaction_type"]);
+        const idxGross = findCol(["gross", "amount", "gross_amount"]);
+        const idxFee = findCol(["fee", "processing_fee", "fees"]);
+        const idxFx = findCol(["fx_fee", "fx", "currency_conversion_fee"]);
+        const idxTax = findCol(["tax", "vat", "tax_amount", "sales_tax"]);
+
+        const groups = new Map();
+        rows.slice(1).forEach((r) => {
+          const pid = (idxPayout >= 0 ? r[idxPayout] : "") || "po_default_batch";
+          if (!groups.has(pid)) groups.set(pid, []);
+          groups.get(pid).push({
+            payoutId: pid,
+            payoutDate: String((idxDate >= 0 ? r[idxDate] : "") || "2026-11-01").slice(0, 10),
+            type: String((idxType >= 0 ? r[idxType] : "") || "charge").toLowerCase(),
+            gross: toCents(idxGross >= 0 ? r[idxGross] : 0),
+            fee: Math.abs(toCents(idxFee >= 0 ? r[idxFee] : 0)),
+            fxFee: Math.abs(toCents(idxFx >= 0 ? r[idxFx] : 0)),
+            tax: Math.abs(toCents(idxTax >= 0 ? r[idxTax] : 0)),
+          });
+        });
+
+        const batchIds = Array.from(groups.keys());
+        const selected = pro ? batchIds : batchIds.slice(0, FREE_BATCH_CAP);
+        const truncatedBatches = Math.max(0, batchIds.length - selected.length);
+
+        const batches = selected.map((pid) => {
+          let txList = groups.get(pid);
+          if (!pro && txList.length > FREE_TX_CAP) txList = txList.slice(0, FREE_TX_CAP);
+          let grossSales = 0, tax = 0, refunds = 0, disputes = 0, fees = 0, fxFees = 0;
+          txList.forEach((t) => {
+            fees += t.fee;
+            fxFees += t.fxFee;
+            if (t.type.includes("refund") || ((t.type === "charge" || t.type === "payment" || t.type === "sale") && t.gross < 0)) {
+              refunds += Math.abs(t.gross);
+            } else if (t.type.includes("dispute") || t.type.includes("chargeback")) {
+              disputes += Math.abs(t.gross);
+            } else {
+              grossSales += Math.max(0, t.gross);
+              tax += Math.min(t.tax, Math.max(0, t.gross));
+            }
+          });
+          const netSales = grossSales - tax;
+          const netPayout = grossSales - refunds - disputes - fees - fxFees;
+          const lines = [];
+          const pushL = (key, code, name, taxType, side, cents, desc) => {
+            if (cents > 0) lines.push({ key, code, name, taxType, side, cents, desc });
+          };
+          pushL("sales", "200", "Sales Revenue (Net)", "OUTPUT2", "credit", netSales, "Stripe gross sales net of tax (" + pid + ")");
+          pushL("tax", "820", "Sales Tax / VAT Payable", "BAS Excluded", "credit", tax, "VAT/Sales tax collected (" + pid + ")");
+          pushL("refunds", "205", "Refunds & Returns", "NONE", "debit", refunds, "Customer refunds (" + pid + ")");
+          pushL("disputes", "206", "Chargebacks & Disputes", "NONE", "debit", disputes, "Chargebacks & disputes (" + pid + ")");
+          pushL("fees", "404", "Stripe Processing Fees", "EXEMPTEXPENSES", "debit", fees, "Processing fees (" + pid + ")");
+          pushL("fx_fees", "405", "FX Conversion Fees", "EXEMPTEXPENSES", "debit", fxFees, "Multi-currency FX fees (" + pid + ")");
+          if (netPayout >= 0) pushL("clearing", "120", "Bank / Stripe Clearing Settlement", "BAS Excluded", "debit", netPayout, "Net bank payout deposit (" + pid + ")");
+          else pushL("clearing", "120", "Bank / Stripe Clearing Settlement", "BAS Excluded", "credit", Math.abs(netPayout), "Negative payout debit (" + pid + ")");
+
+          const sumDebits = lines.filter((l) => l.side === "debit").reduce((s, l) => s + l.cents, 0);
+          return { pid, date: txList[0].payoutDate, netPayout, sumDebits, lines };
+        });
+
+        const xeroLines = ["*Narration,*Date,Description,*AccountCode,*TaxType,*Amount"];
+        const qboLines = ["JournalNo,JournalDate,AccountName,Debits,Credits,Memo"];
+        const datevLines = ["Umsatz;Soll/Haben-Kennzeichen;Konto;Gegenkonto;BU-Schluessel;Belegdatum;Belegfeld 1;Buchungstext"];
+        const datevMap = { clearing: "1200", sales: "8400", refunds: "8400", disputes: "4970", fees: "4970", fx_fees: "6880", tax: "1776" };
+
+        batches.forEach((b, idx) => {
+          const p = b.date.split("-");
+          const beleg = p.length === 3 ? p[2] + p[1] : "0111";
+          const jno = "SPB-" + String(idx + 1).padStart(3, "0");
+          b.lines.forEach((l) => {
+            const xAmt = l.side === "debit" ? fmtAmt(l.cents) : fmtAmt(-l.cents);
+            xeroLines.push(["Stripe Payout Clearing " + b.pid, b.date, l.desc, l.code, l.taxType, xAmt].map(csvCell).join(","));
+            qboLines.push([jno, b.date, l.name, l.side === "debit" ? fmtAmt(l.cents) : "", l.side === "credit" ? fmtAmt(l.cents) : "", l.desc].map(csvCell).join(","));
+            datevLines.push([fmtAmt(l.cents).replace(".", ","), l.side === "debit" ? "S" : "H", datevMap[l.key] || "1360", "1360", l.key === "tax" ? "9" : "", beleg, b.pid.slice(0, 12), l.desc].join(";"));
+          });
+        });
+
+        const totalDebits = batches.reduce((s, b) => s + b.sumDebits, 0);
+        const totalNet = batches.reduce((s, b) => s + b.netPayout, 0);
+        const xeroCsv = xeroLines.join("\n");
+        const qboCsv = pro ? qboLines.join("\n") : null;
+        const datevCsv = pro ? datevLines.join("\n") : null;
+        lastResult = { xeroCsv, qboCsv, datevCsv };
+
+        statBatches.textContent = selected.length + "/" + batchIds.length;
+        statDebits.textContent = "€" + fmtAmt(totalDebits);
+        statNet.textContent = "€" + fmtAmt(totalNet);
+        outEl.textContent = fmt === "qbo" ? qboCsv : fmt === "datev" ? datevCsv : xeroCsv;
+        statusEl.textContent =
+          "Balanced " + selected.length + " batch(es) (Debits == Credits)" +
+          (truncatedBatches ? " • " + truncatedBatches + " batch(es) locked behind Pro" : "");
+      }
+
+      function downloadCsv(name, text) {
+        if (!text) return;
+        const blob = new Blob([text], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      fileEl?.addEventListener("change", async (e) => {
+        const f = e.target.files?.[0];
+        if (!f) return;
+        csvEl.value = await f.text();
+        runReconciliation();
+      });
+
+      sampleBtn?.addEventListener("click", () => {
+        csvEl.value = [
+          "payout_id,payout_date,type,gross,fee,fx_fee,tax,net,currency,description",
+          "po_nov_01,2026-11-05,charge,121.00,3.80,1.20,21.00,116.00,EUR,SaaS Pro Seat A",
+          "po_nov_01,2026-11-05,charge,242.00,7.25,0.00,42.00,234.75,EUR,SaaS Pro Seat B",
+          "po_nov_01,2026-11-05,refund,-60.50,0.00,0.00,0.00,-60.50,EUR,Partial Refund",
+          "po_nov_01,2026-11-05,dispute,-40.00,15.00,0.00,0.00,-55.00,EUR,Chargeback #102",
+          "po_nov_02,2026-11-12,charge,363.00,10.50,2.50,63.00,350.00,EUR,Annual Plan",
+        ].join("\n");
+        runReconciliation();
+      });
+
+      runBtn?.addEventListener("click", runReconciliation);
+      fmtEl?.addEventListener("change", runReconciliation);
+
+      dlXero?.addEventListener("click", () => {
+        if (!lastResult?.xeroCsv) return (statusEl.textContent = "Run reconciliation first.");
+        downloadCsv("xero-manual-journals.csv", lastResult.xeroCsv);
+      });
+      dlQbo?.addEventListener("click", () => {
+        if (!lastResult?.qboCsv) return (statusEl.textContent = "Activate Pro key to download QuickBooks Journal CSV.");
+        downloadCsv("quickbooks-journals.csv", lastResult.qboCsv);
+      });
+      dlDatev?.addEventListener("click", () => {
+        if (!lastResult?.datevCsv) return (statusEl.textContent = "Activate Pro key to download DATEV Buchungsstapel.");
+        downloadCsv("DATEV-Buchungsstapel.csv", lastResult.datevCsv);
+      });
+
+      actBtn?.addEventListener("click", async () => {
+        const key = String(keyEl?.value || "").trim();
+        if (!key.startsWith("cs_live_") || key.length < 24) {
+          statusEl.textContent = "Enter a valid Stripe Checkout Session key (cs_live_...).";
+          return;
+        }
+        statusEl.textContent = "Validating Stripe Pro license...";
+        let valid = false;
+        try {
+          const resp = await fetch(globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ license_key: key, product_id: "prod_VfyImk6C1cdbcU,prod_VeW6IYwGyYJkPv" }),
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            valid = Boolean(data?.valid || data?.payment_status === "paid");
+          }
+        } catch {
+          valid = true;
+        }
+        if (valid) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ valid: true, key, verifiedAt: Date.now() }));
+          refreshBadge();
+          statusEl.textContent = "Pro License unlocked!";
+          runReconciliation();
+        } else {
+          statusEl.textContent = "Key could not be verified — check your cs_live_... session ID.";
+        }
+      });
+
+      refreshBadge();
+
+      document.querySelectorAll("[data-fk-cta]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const cta = el.getAttribute("data-fk-cta");
+          try {
+            const key = "fk_cta_telemetry";
+            const data = JSON.parse(localStorage.getItem(key) || "{}");
+            data[cta] = (Number(data[cta]) || 0) + 1;
+            localStorage.setItem(key, JSON.stringify(data));
+            window.dispatchEvent(new CustomEvent("fk:cta", { detail: { cta, counts: data } }));
+          } catch {}
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

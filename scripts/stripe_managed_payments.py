@@ -87,6 +87,14 @@ DEFAULT_CATALOG_ITEMS = [
         "mode": "payment",
     },
     {
+        "slug": "stripe-payout-xero-qbo-splitter",
+        "name": "StripePayoutBridge Pro",
+        "description": "Zero-install Stripe & PayPal Payout CSV to Xero, QuickBooks & DATEV double-entry clearing journal splitter Web App + CLI (Pro License).",
+        "unit_amount": 2900,
+        "currency": "eur",
+        "mode": "payment",
+    },
+    {
         "slug": "all-access-bundle",
         "name": "All-Access Friction-Killer Bundle",
         "description": "Pro licenses for LinearBridge, NotionGitExport, and ExtProfileLock.",

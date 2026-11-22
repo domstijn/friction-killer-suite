@@ -1,6 +1,6 @@
 # Master Launch Playbook (Stripe Managed Payments)
 
-## Portfolio Summary (6 Shipped Products)
+## Portfolio Summary (7 Shipped Products)
 
 | Product | Ecosystem | Pro Price | Distributable Bundle | Launch Assets |
 | :--- | :--- | :---: | :--- | :--- |
@@ -10,6 +10,7 @@
 | **ClaudeProfileSwitch** (`claude-profile-switcher`) | cli-wrapper | €24 once | `projects/claude-profile-switcher/dist/claude-profile-switcher-v0.1.0.zip` | [Sales Page](../projects/claude-profile-switcher/launch/landing.html) / [Kit](../projects/claude-profile-switcher/launch/LAUNCH_KIT.md) |
 | **NotionGuestBridge** (`notion-guest-mcp-bridge`) | browser-extension | €29 once | `projects/notion-guest-mcp-bridge/dist/notion-guest-mcp-bridge-v0.1.0.zip` | [Sales Page](../projects/notion-guest-mcp-bridge/launch/landing.html) / [Kit](../projects/notion-guest-mcp-bridge/launch/LAUNCH_KIT.md) |
 | **WebflowAssetZip** (`webflow-cms-asset-migrator`) | browser-extension | €29 once | `projects/webflow-cms-asset-migrator/dist/webflow-cms-asset-migrator-v0.1.0.zip` | [Sales Page](../projects/webflow-cms-asset-migrator/launch/landing.html) / [Kit](../projects/webflow-cms-asset-migrator/launch/LAUNCH_KIT.md) |
+| **StripePayoutBridge** (`stripe-payout-xero-qbo-splitter`) | saas-addon | €29 once | `projects/stripe-payout-xero-qbo-splitter/dist/stripe-payout-xero-qbo-splitter-v0.1.0.zip` | [Sales Page](../projects/stripe-payout-xero-qbo-splitter/launch/landing.html) / [Kit](../projects/stripe-payout-xero-qbo-splitter/launch/LAUNCH_KIT.md) |
 | **All-Access Bundle** | Multi-Product | **€49 once** (Save 32%) | All 3 Pro Keys | [Storefront](index.html) |
 
 ---
