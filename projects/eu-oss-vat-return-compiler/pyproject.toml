@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eu-oss-vat-return-compiler"
+version = "0.1.0"
+description = "OssVatBridge: Zero-Install Stripe Tax, Shopify & Lemon Squeezy to EU VAT OSS Bulk CSV/XML Compiler"
+requires-python = ">=3.10"
+
+[project.scripts]
+eu-oss-vat-return-compiler = "cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["cli", "addon", "license_client"]

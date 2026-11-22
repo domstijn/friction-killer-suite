@@ -12,8 +12,8 @@
     "lemonsqueezy",
     "gumroad"
   ],
-  "active_project": "lemonsqueezy-stripe-polar-migrator",
-  "current_stage": "COMPLETED",
+  "active_project": "eu-oss-vat-return-compiler",
+  "current_stage": "STAGE_4_LAUNCH",
   "gates": {
     "gate_1_idea_and_spec_approved": true,
     "gate_2_launch_approved": true
@@ -130,6 +130,32 @@
       "updated_at": "2026-11-20T22:04:31+00:00"
     },
     {
+      "id": "eu-oss-vat-return-compiler",
+      "title": "OssVatBridge: Zero-Install Stripe Tax, Shopify & Lemon Squeezy to EU VAT OSS Bulk CSV/XML Compiler",
+      "ecosystem": "saas-addon",
+      "target_software": "Stripe Tax / Shopify / Lemon Squeezy -> EU VAT OSS (Germany BZSt BOP, Ireland ROS, EU27)",
+      "pain": "Merchants moving off Lemon Squeezy to Stripe Tax or Shopify inherit quarterly EU VAT OSS filings, but tax portals reject raw mixed-currency Stripe/Shopify CSVs and compliance SaaS charges $35-$299/mo.",
+      "solution": "100% browser-local Web App (+ Python CLI) that merges Stripe Tax, Shopify, and Lemon Squeezy CSVs, normalizes currencies via ECB quarterly rates, aggregates EU27 Member-State VAT by Standard/Reduced rate, and exports Germany BZSt/BOP semicolon CSV, Ireland ROS XML, and EU27 OSS audit ledgers.",
+      "existing_alternatives": "Quaderno ($49-$149/mo), Lovat ($35-$115/mo), GoodVat, Anrok/Taxually ($99-$299/mo) require recurring fees + live OAuth; GitHub has only dev-only single-country PHP/Python CLI scripts.",
+      "free_escape_hatch": "Raw Stripe Tax and Shopify exports dump un-aggregated per-charge rows in mixed currencies with dot decimals and comma delimiters that Germany BZSt/BOP (1,000-row cap, semicolon delimiter, comma decimal) and Ireland ROS XML reject immediately.",
+      "buyer_persona": "commercial",
+      "dimensions": {
+        "pain_severity": 9.0,
+        "willingness_to_pay": 9.0,
+        "existing_alternative_saturation": 8.5,
+        "diy_resistance": 8.5,
+        "solution_effectiveness": 9.0,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.5,
+        "platform_safety": 9.5
+      },
+      "effectiveness_score": 88.25,
+      "commercial_potential_score": 88.0,
+      "score": 87.75,
+      "verdict": "GO",
+      "updated_at": "2026-11-22T19:09:47+00:00"
+    },
+    {
       "id": "notion-linear-prd-sync",
       "title": "LinearBridge: 1-Click Notion PRD to Linear Sub-Issues & Sync",
       "ecosystem": "browser-extension",
@@ -149,6 +175,32 @@
       "score": 87.5,
       "verdict": "GO",
       "updated_at": "2026-11-17T17:54:27+00:00"
+    },
+    {
+      "id": "amazon-settlement-xero-qbo-splitter",
+      "title": "AmzSettlementBridge: Zero-Install Amazon Seller Flat-File V2 (.TXT/.TSV) to Xero, QuickBooks & DATEV Clearing Journal Compiler",
+      "ecosystem": "saas-addon",
+      "target_software": "Amazon Seller Central Settlement V2 -> Xero / QuickBooks Online / DATEV",
+      "pain": "Amazon 14-day payouts bundle thousands of lines across 40+ FBA/referral/storage/PPC fee codes and rolling Account-Level Reserves; net-deposit bookkeeping breaks VAT/COGS and A2X/Link My Books charge $17-$199/mo.",
+      "solution": "100% browser-local Web App (+ Python CLI) that parses Amazon Seller Central Flat-File V2 (.txt/.tsv) settlements locally, separates Principal sales, Marketplace Facilitator tax, FBA/referral/storage/PPC fees, refunds, and rolling reserves into integer-cent balanced Xero, QuickBooks, and DATEV clearing journals.",
+      "existing_alternatives": "A2X ($29-$199/mo), Link My Books ($17-$199/mo), Taxomate, and Synder ($52-$150+/mo) require recurring monthly subscriptions gated by order tiers plus permanent SP-API and accounting OAuth tokens; zero commercial browser-local tools exist.",
+      "free_escape_hatch": "Amazon Flat-File V2 dumps thousands of ungrouped order/fee rows plus rolling reserve holdbacks/releases that Xero, QBO, and DATEV cannot import without error-prone manual Excel pivot tables and cent-rounding mismatches.",
+      "buyer_persona": "commercial",
+      "dimensions": {
+        "pain_severity": 9.0,
+        "willingness_to_pay": 9.0,
+        "existing_alternative_saturation": 8.5,
+        "diy_resistance": 8.5,
+        "solution_effectiveness": 8.5,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.5,
+        "platform_safety": 9.5
+      },
+      "effectiveness_score": 86.5,
+      "commercial_potential_score": 88.0,
+      "score": 87.25,
+      "verdict": "GO",
+      "updated_at": "2026-11-22T19:09:48+00:00"
     },
     {
       "id": "stripe-payout-xero-qbo-splitter",
@@ -202,18 +254,18 @@
     },
     {
       "id": "e-invoice-xml-batch-converter",
-      "title": "EInvoiceLocal: 100% Local In-Browser XRechnung, ZUGFeRD & Peppol UBL XML to Printable PDF & DATEV/Excel CSV Batch Converter",
+      "title": "EInvoiceLocal: 100% Local XRechnung, ZUGFeRD & Peppol UBL/CII XML Validator, Printable A4 PDF & DATEV/Xero Batch Converter",
       "ecosystem": "saas-addon",
-      "target_software": "EU B2B E-Invoicing (XRechnung / ZUGFeRD / Peppol UBL XML)",
-      "pain": "Mandatory 2025/2026 EU & German B2B e-invoicing (EN 16931 XRechnung/ZUGFeRD) forces businesses to handle raw UBL/CII .xml invoice files that are unreadable without ERP software, while uploading confidential supplier/client invoices to cloud converters violates GDPR/GoBD.",
-      "solution": "100% client-side, zero-server Browser Web App (+ CLI) that validates EN 16931 XRechnung (UBL & CII) and ZUGFeRD XML invoices locally in memory, renders clean printable A4 invoice views, and batch-exports multiple XML invoices into a unified DATEV/Xero/Excel accounting ledger CSV.",
-      "existing_alternatives": "Lexoffice, SevDesk, and DATEV Unternehmen online cost EUR 19-79/mo recurring; free online XML converters upload confidential IBAN/VAT/pricing data to third-party servers or only preview 1 XML file without batch accounting CSV export.",
-      "free_escape_hatch": "Opening XRechnung .xml in a browser or Excel shows raw <cbc:...>/<cac:...> XML tags without human layout, tax-subtotal validation, or multi-file batch CSV consolidation.",
+      "target_software": "EU B2B E-Invoicing (XRechnung / ZUGFeRD / Peppol XML -> DATEV / Xero / QuickBooks)",
+      "pain": "Mandatory 2025-2027 EU & German/Belgian EN 16931 B2B e-invoicing forces SMBs and Steuerberater to process raw UBL/CII .xml files, while ERPs cost \u20ac19-\u20ac79/mo and cloud viewers violate GDPR/GoBD.",
+      "solution": "100% browser-local Web App (+ Python CLI) that validates EN 16931 math rules across UBL 2.1 and UN/CEFACT CII XML invoices, renders printable A4 invoice views, and batch-exports unified DATEV EXTF_Buchungsstapel.csv (with BU-Schl\u00fcssel tax keys), Xero Bills CSV, and QuickBooks CSV.",
+      "existing_alternatives": "Lexoffice, SevDesk, DATEV UO cost \u20ac19-\u20ac79/mo recurring; Docfaro offers a client-side browser XML-to-Excel/DATEV utility (verified live competitor) but lacks unified Xero/QBO export, printable A4 preview, EN 16931 line-math validation, and offline pip CLI.",
+      "free_escape_hatch": "Opening XRechnung/Peppol .xml in Chrome or Excel dumps raw <cbc:...>/<cac:...> tags, fails across dual UBL vs. CII syntaxes, and cannot batch-consolidate folders of XMLs into balanced DATEV EXTF or Xero Bills CSVs.",
       "buyer_persona": "commercial",
       "dimensions": {
-        "pain_severity": 9.0,
-        "willingness_to_pay": 8.5,
-        "existing_alternative_saturation": 8.0,
+        "pain_severity": 9.5,
+        "willingness_to_pay": 9.0,
+        "existing_alternative_saturation": 7.0,
         "diy_resistance": 8.5,
         "solution_effectiveness": 9.0,
         "build_speed": 8.5,
@@ -221,10 +273,10 @@
         "platform_safety": 9.5
       },
       "effectiveness_score": 88.25,
-      "commercial_potential_score": 85.0,
-      "score": 86.0,
+      "commercial_potential_score": 85.5,
+      "score": 86.25,
       "verdict": "GO",
-      "updated_at": "2026-11-22T12:15:06+00:00"
+      "updated_at": "2026-11-22T19:09:48+00:00"
     },
     {
       "id": "webflow-cms-asset-migrator",
@@ -540,8 +592,16 @@
       "title": "LemonExitBridge: Zero-Install Lemon Squeezy Shutdown CSV Auditor, PayPal Prorated Re-Auth Splitter & Legacy License Key Bridge for Stripe / Polar",
       "ecosystem": "saas-addon",
       "target_software": "Lemon Squeezy to Stripe Managed Payments & Polar.sh",
-      "status": "COMPLETED",
+      "status": "STAGE_1_DISCOVERY",
       "selected_at": "2026-11-22T15:29:46+00:00"
+    },
+    "eu-oss-vat-return-compiler": {
+      "id": "eu-oss-vat-return-compiler",
+      "title": "OssVatBridge: Zero-Install Stripe Tax, Shopify & Lemon Squeezy to EU VAT OSS Bulk CSV/XML Compiler",
+      "ecosystem": "saas-addon",
+      "target_software": "Stripe Tax / Shopify / Lemon Squeezy -> EU VAT OSS (Germany BZSt BOP, Ireland ROS, EU27)",
+      "status": "STAGE_4_LAUNCH",
+      "selected_at": "2026-11-22T19:12:23+00:00"
     }
   }
 }

@@ -119,7 +119,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
       <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
         <div>
           <span class="rounded-full bg-indigo-500/20 px-2.5 py-0.5 text-xs font-semibold text-indigo-300">ZERO-INSTALL INTERACTIVE DEMO</span>
-          <h2 class="mt-2 text-2xl font-bold text-white">Try All 8 Tools Live in Your Browser</h2>
+          <h2 class="mt-2 text-2xl font-bold text-white">Try All 9 Tools Live in Your Browser</h2>
           <p class="mt-1 text-xs text-slate-400">Runs 100% locally in JavaScript — nothing leaves your browser.</p>
         </div>
         <div class="flex flex-wrap gap-2" role="tablist">
@@ -131,6 +131,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
           <button type="button" data-pg-tab="webflow" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">6. WebflowAssetZip</button>
           <button type="button" data-pg-tab="payout" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">7. StripePayoutBridge</button>
           <button type="button" data-pg-tab="lemon" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">8. LemonExitBridge</button>
+          <button type="button" data-pg-tab="ossvat" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">9. OssVatBridge</button>
         </div>
       </div>
 
@@ -306,6 +307,27 @@ ops3@studio.dev,Carol,active,paypal,29.00,USD,Pro Monthly,2026-12-22T12:00:00Z,L
           <pre id="pg-lm-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
         </div>
       </div>
+
+      <!-- Tab 9: OssVatBridge -->
+      <div id="pg-panel-ossvat" class="pg-panel mt-6 hidden grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-300" for="pg-ossvat-csv">Stripe Tax / Shopify / Lemon Squeezy Transactions CSV (Home: DE)</label>
+            <textarea id="pg-ossvat-csv" rows="8" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">source,country,currency,subtotal,tax_amount,tax_rate,transaction_type,customer_vat_id
+stripe_tax,FR,EUR,100.00,20.00,20.0,charge,
+stripe_tax,GR,USD,100.00,24.00,24.0,charge,
+shopify,ES,GBP,100.00,21.00,21.0,order,
+stripe_tax,FR,EUR,25.00,5.00,20.0,refund,
+stripe_tax,DE,EUR,120.00,22.80,19.0,charge,
+shopify,US,USD,200.00,0.00,0.0,order,
+stripe_tax,NL,EUR,300.00,0.00,0.0,charge,NL123456789B01</textarea>
+          </div>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-emerald-300">EU27 Member-State Totals + Germany BZSt BOP Semicolon CSV</span>
+          <pre id="pg-ossvat-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+        </div>
+      </div>
     </section>"""
 
 
@@ -321,6 +343,7 @@ PLAYGROUND_SCRIPT = r"""  <script>
         webflow: document.getElementById("pg-panel-webflow"),
         payout: document.getElementById("pg-panel-payout"),
         lemon: document.getElementById("pg-panel-lemon"),
+        ossvat: document.getElementById("pg-panel-ossvat"),
       };
       tabs.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -679,6 +702,53 @@ PLAYGROUND_SCRIPT = r"""  <script>
       }
       lmCsv?.addEventListener("input", runLemonExit);
       runLemonExit();
+
+      // 9. OssVatBridge live EU27 OSS & Germany BZSt BOP semicolon compiler
+      const ossCsv = document.getElementById("pg-ossvat-csv");
+      const ossOut = document.getElementById("pg-ossvat-output");
+      function runOssVat() {
+        if (!ossCsv || !ossOut) return;
+        const lines = (ossCsv.value || "").split("\n").map((l) => l.trim()).filter(Boolean);
+        if (lines.length < 2) {
+          ossOut.textContent = "Add header + at least 1 transaction row.";
+          return;
+        }
+        const fx = { EUR: 1.0, USD: 0.92, GBP: 1.19, SEK: 0.088, DKK: 0.134, PLN: 0.233 };
+        const eu = new Set(["AT","BE","BG","CY","CZ","DE","DK","EE","EL","ES","FI","FR","HR","HU","IE","IT","LT","LU","LV","MT","NL","PL","PT","RO","SE","SI","SK"]);
+        const buckets = new Map();
+        let excluded = 0;
+        lines.slice(1).forEach((l) => {
+          const cols = l.split(",");
+          let ms = (cols[1] || "").trim().toUpperCase();
+          if (ms === "GR") ms = "EL";
+          const cur = (cols[2] || "EUR").trim().toUpperCase();
+          const sub = parseFloat(cols[3]) || 0;
+          const tax = parseFloat(cols[4]) || 0;
+          const rate = parseFloat(cols[5]) || 0;
+          const kind = (cols[6] || "charge").toLowerCase();
+          const vatId = (cols[7] || "").trim();
+          if (!eu.has(ms) || ms === "DE" || (vatId && tax === 0)) { excluded += 1; return; }
+          const mult = (kind.includes("refund") && sub > 0 ? -1 : 1) * (fx[cur] ?? 1.0);
+          const netEur = sub * mult;
+          const vatEur = tax * mult;
+          const key = ms + "|" + rate.toFixed(2);
+          const curB = buckets.get(key) || { ms, rate: rate.toFixed(2), net: 0, vat: 0 };
+          curB.net += netEur;
+          curB.vat += vatEur;
+          buckets.set(key, curB);
+        });
+        const bzst = ["Satzart;Land des Verbrauchs;Umsatzsteuertyp;Umsatzsteuersatz;Steuerbemessungsgrundlage;Umsatzsteuerbetrag"];
+        let totalVat = 0;
+        Array.from(buckets.values()).sort((a, b) => a.ms.localeCompare(b.ms)).forEach((b) => {
+          totalVat += b.vat;
+          bzst.push(["BOP_OSS_V1", b.ms, "STANDARD", b.rate.replace(".", ","), b.net.toFixed(2).replace(".", ","), b.vat.toFixed(2).replace(".", ",")].join(";"));
+        });
+        ossOut.textContent =
+          "# EU27 OSS Summary (Excluded DE/Non-EU/B2B: " + excluded + ") | Total VAT Due: €" + totalVat.toFixed(2) + "\n\n" +
+          "# Germany BZSt BOP (; delimited, comma decimals, GR->EL):\n" + bzst.join("\n");
+      }
+      ossCsv?.addEventListener("input", runOssVat);
+      runOssVat();
     })();
   </script>"""
 
@@ -792,8 +862,8 @@ def render_hub_html(
     cards_html = "\n".join(cards)
     hub_title = f"Friction-Killer Suite — {len(products)} Zero-Backend Micro-Utilities & Web Apps"
     hub_desc = (
-        "Client-side micro-tools and zero-install web apps for Lemon Squeezy to Stripe/Polar migration, "
-        "Stripe/PayPal payout journal splitting, Webflow CMS asset backup, Notion, Linear, Claude, and VS Code."
+        "Client-side micro-tools and zero-install web apps for EU VAT OSS quarterly CSV/XML filing, "
+        "Lemon Squeezy to Stripe/Polar migration, Stripe/PayPal payout journal splitting, Webflow CMS asset backup, Notion, Linear, Claude, and VS Code."
     )
     hub_seo_tags = build_seo_head_tags(
         title=hub_title,
@@ -834,7 +904,7 @@ def render_hub_html(
         <span class="text-indigo-400">without paying monthly SaaS taxes.</span>
       </h1>
       <p class="mx-auto mt-4 max-w-2xl text-base text-slate-300">
-        {len(products)} local-first tools &amp; zero-install web apps including LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch, and NotionGuestBridge.
+        {len(products)} local-first tools &amp; zero-install web apps including OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch, and NotionGuestBridge.
       </p>
       <div class="mt-7 flex flex-wrap justify-center gap-3">
         <a href="#playground" class="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-slate-200">Try Live in Browser</a>

@@ -126,6 +126,19 @@
       "payment_link_url": "https://buy.stripe.com/3cI6oHeDibGAf9m4de6sw09",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=lemonsqueezy-stripe-polar-migrator"
     },
+    "eu-oss-vat-return-compiler": {
+      "slug": "eu-oss-vat-return-compiler",
+      "name": "OssVatBridge Pro",
+      "description": "Zero-install Stripe Tax, Shopify & Lemon Squeezy to EU VAT OSS bulk CSV/XML compiler Web App + CLI (Pro License).",
+      "unit_amount": 2900,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_Vg2IUi88B9bJHq",
+      "price_id": "price_1UegEOH2AcdDmQyRuHlzHBAH",
+      "payment_link_id": "plink_1UegEpH2AcdDmQyRyg6cgvUZ",
+      "payment_link_url": "https://buy.stripe.com/00w6oH52I7qk2mA6lm6sw0a",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=eu-oss-vat-return-compiler"
+    },
     "all-access-bundle": {
       "slug": "all-access-bundle",
       "name": "All-Access Friction-Killer Bundle",

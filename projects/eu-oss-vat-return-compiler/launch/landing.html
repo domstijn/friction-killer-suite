@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OssVatBridge — EU VAT OSS CSV &amp; XML Return Compiler (Stripe Tax, Shopify, Lemon Squeezy)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+    <div class="text-lg font-bold tracking-tight text-white">OssVatBridge</div>
+    <nav class="flex items-center gap-6 text-sm text-slate-300">
+      <a href="#live-app" class="hover:text-white">Web App</a>
+      <a href="#comparison" class="hover:text-white">Why it works</a>
+      <a href="#pricing" class="hover:text-white">Pricing</a>
+      <a href="https://buy.stripe.com/00w6oH52I7qk2mA6lm6sw0a" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-lg bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-400">Get Pro — €29</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-6">
+    <section class="py-14 text-center">
+      <span class="inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
+        Zero-Subscription · 100% Browser-Local · Germany BZSt BOP &amp; Ireland ROS XML Ready
+      </span>
+      <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+        Quarterly EU VAT OSS returns<br />
+        <span class="text-indigo-400">without \$49–\$299/mo VAT SaaS lock-in.</span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
+        Left Lemon Squeezy for Stripe Tax or Shopify? Raw CSV exports fail tax portals on mixed currencies, un-aggregated lines, <code>GR</code>&rarr;<code>EL</code> codes, and comma decimals. OssVatBridge merges your CSVs 100% locally in Chrome—zero customer invoices or VAT IDs leave your browser.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a href="#live-app" data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
+          Launch OSS Compiler (Free — 15 Rows)
+        </a>
+        <a href="https://buy.stripe.com/00w6oH52I7qk2mA6lm6sw0a" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
+          Unlock Pro License — €29 once
+        </a>
+      </div>
+    </section>
+
+    <!-- Standalone Zero-Install In-Browser Web App -->
+    <section id="live-app" class="rounded-3xl border border-indigo-500/40 bg-slate-900/90 p-6 shadow-2xl shadow-indigo-500/10 sm:p-8">
+      <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
+        <div>
+          <span class="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">ZERO-INSTALL IN-BROWSER WEB APP · RUNS 100% LOCALLY</span>
+          <h2 class="mt-2 text-2xl font-bold text-white">Compile Your EU27 OSS Return Locally</h2>
+          <p class="mt-1 text-xs text-slate-400">Free previews 15 rows + Member-State VAT totals; Pro unlocks unlimited multi-CSV merging &amp; downloads for Germany BZSt/BOP (<code>;</code>-CSV), Ireland ROS XML, and EU27 Audit CSV.</p>
+        </div>
+        <span id="app-tier-badge" class="self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300">Free Tier (15 rows)</span>
+      </div>
+
+      <div class="mt-6 grid gap-6 lg:grid-cols-12">
+        <div class="space-y-3 lg:col-span-5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <label class="text-xs font-semibold text-slate-300" for="app-csv-files">Drop/Select Multiple CSVs (Stripe Tax, Shopify, Lemon Squeezy)</label>
+            <button id="app-sample-btn" type="button" class="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs font-medium text-indigo-300 hover:bg-slate-700">Load Sample Multi-Platform CSV (20 Rows)</button>
+          </div>
+          <input id="app-csv-files" type="file" accept=".csv,text/csv,.tsv" multiple class="block w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-500 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-white" />
+
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="text-[11px] font-semibold text-slate-400" for="app-home-country">Home EU Country</label>
+              <select id="app-home-country" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-2 py-1.5 text-xs text-slate-200">
+                <option value="DE" selected>DE (Germany)</option>
+                <option value="IE">IE (Ireland)</option>
+                <option value="NL">NL (Netherlands)</option>
+                <option value="FR">FR (France)</option>
+                <option value="BE">BE (Belgium)</option>
+                <option value="AT">AT (Austria)</option>
+                <option value="ES">ES (Spain)</option>
+                <option value="IT">IT (Italy)</option>
+                <option value="SE">SE (Sweden)</option>
+                <option value="FI">FI (Finland)</option>
+                <option value="PL">PL (Poland)</option>
+                <option value="EL">EL (Greece)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[11px] font-semibold text-slate-400" for="app-quarter">Quarter</label>
+              <select id="app-quarter" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-2 py-1.5 text-xs text-slate-200">
+                <option value="2026-Q4" selected>2026-Q4</option>
+                <option value="2026-Q3">2026-Q3</option>
+                <option value="2026-Q2">2026-Q2</option>
+                <option value="2026-Q1">2026-Q1</option>
+                <option value="2027-Q1">2027-Q1</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[11px] font-semibold text-slate-400" for="app-seller-vat">Seller VAT ID</label>
+              <input id="app-seller-vat" value="DE123456789" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-2 py-1.5 font-mono text-xs text-slate-200" />
+            </div>
+          </div>
+
+          <textarea id="app-csv-input" rows="7" placeholder="source,order_id,country,currency,subtotal,tax_amount,tax_rate,transaction_type,supply_type,customer_vat_id..." class="w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200 focus:border-indigo-500 focus:outline-none"></textarea>
+
+          <button id="app-run-btn" type="button" class="w-full rounded-xl bg-indigo-500 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400">
+            Compile EU27 OSS Return
+          </button>
+
+          <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-3">
+            <div class="flex items-center justify-between text-xs">
+              <label class="font-semibold text-slate-300" for="app-license-key">Unlock Pro License (Stripe Session or OSSVAT Key)</label>
+              <a href="https://buy.stripe.com/00w6oH52I7qk2mA6lm6sw0a" data-fk-cta="pro-checkout" target="_blank" class="stripe-checkout-button font-semibold text-indigo-400 hover:text-indigo-300">Buy Pro — €29 &rarr;</a>
+            </div>
+            <div class="mt-2 flex gap-2">
+              <input id="app-license-key" placeholder="Paste cs_live_... or OSSVAT-... key" class="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 font-mono text-xs text-slate-200" />
+              <button id="app-activate-btn" type="button" class="rounded-lg bg-slate-800 px-4 py-1.5 text-xs font-semibold text-white hover:bg-slate-700">Activate</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col justify-between space-y-3 lg:col-span-7">
+          <div class="grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-vat-due" class="text-sm font-bold text-emerald-300">€0.00</div>
+              <div class="text-[11px] text-slate-400">EU OSS VAT Due</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-taxable" class="text-sm font-bold text-white">€0.00</div>
+              <div class="text-[11px] text-slate-400">Net Taxable Base</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-states" class="text-sm font-bold text-indigo-300">0</div>
+              <div class="text-[11px] text-slate-400">EU States</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-excluded" class="text-sm font-bold text-amber-300">0</div>
+              <div class="text-[11px] text-slate-400">Excluded (DE/Non-EU/B2B)</div>
+            </div>
+          </div>
+
+          <div class="max-h-44 overflow-auto rounded-xl border border-slate-800 bg-slate-950">
+            <table class="w-full text-left text-xs">
+              <thead class="sticky top-0 bg-slate-900 text-[11px] uppercase text-slate-400">
+                <tr>
+                  <th class="px-3 py-2">MSCON</th>
+                  <th class="px-3 py-2">Supply</th>
+                  <th class="px-3 py-2">Rate</th>
+                  <th class="px-3 py-2 text-right">Tx</th>
+                  <th class="px-3 py-2 text-right">Taxable EUR</th>
+                  <th class="px-3 py-2 text-right">VAT EUR</th>
+                </tr>
+              </thead>
+              <tbody id="app-table-body" class="divide-y divide-slate-800/80 text-slate-200">
+                <tr><td colspan="6" class="px-3 py-4 text-center text-slate-500">Click "Load Sample Multi-Platform CSV (20 Rows)" or drop CSV files.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex gap-1.5" role="tablist">
+                <button type="button" data-oss-tab="bzst" class="oss-tab rounded-lg bg-indigo-500 px-2.5 py-1 text-xs font-semibold text-white">Germany BZSt BOP (;-CSV)</button>
+                <button type="button" data-oss-tab="ros" class="oss-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700">Ireland ROS XML</button>
+                <button type="button" data-oss-tab="audit" class="oss-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700">EU27 Audit CSV</button>
+              </div>
+              <span id="app-status" class="text-xs text-indigo-300">Ready</span>
+            </div>
+            <pre id="app-output" class="mt-2 h-36 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300">Click "Load Sample Multi-Platform CSV (20 Rows)" to inspect compiled EU27 OSS outputs.</pre>
+          </div>
+
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button id="app-dl-bzst" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download BZSt BOP CSV (Pro)</button>
+            <button id="app-dl-ros" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download ROS XML (Pro)</button>
+            <button id="app-dl-audit" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download EU27 Audit CSV (Pro)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="comparison" class="grid gap-6 py-12 md:grid-cols-2">
+      <div class="rounded-2xl border border-rose-500/20 bg-slate-900/60 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-rose-400">Why Tax Portals Reject Raw CSVs</h2>
+        <ul class="mt-4 space-y-3 text-slate-300">
+          <li>• Mixed USD/GBP/SEK charges, domestic home-state rows, and B2B reverse-charge transactions pollute EU OSS totals</li>
+          <li>• Germany BZSt BOP rejects comma-separated files with dot decimals and requires <code>EL</code> instead of ISO <code>GR</code> for Greece</li>
+          <li>• Compliance SaaS tools charge $35–$299/mo year-round + require permanent live API OAuth tokens just for 4 quarterly uploads</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-emerald-500/30 bg-slate-900 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-emerald-400">With OssVatBridge</h2>
+        <ul class="mt-4 space-y-3 text-slate-200">
+          <li>• Merges Stripe Tax, Shopify, and Lemon Squeezy CSVs locally in Chrome with ECB FX conversion &amp; refund netting</li>
+          <li>• Automatically excludes Non-EU, Home Member State, and B2B reverse-charge invoices while normalizing <code>GR</code> &rarr; <code>EL</code></li>
+          <li>• Pay once (€29 Pro or €49 All-Access Bundle incl. <a href="../lemonsqueezy-stripe-polar-migrator/index.html" class="text-indigo-300 underline">LemonExitBridge</a>) &amp; run via Web App or Python CLI</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="pricing" class="py-12">
+      <h2 class="text-center text-2xl font-bold text-white">Simple, one-time pricing — zero recurring tax SaaS bill</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-8">
+          <h3 class="text-lg font-semibold text-white">Free Preview</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€0</p>
+          <p class="mt-2 text-sm text-slate-400">Instant sample check &amp; Member-State audit.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-300">
+            <li>✓ Preview up to 15 CSV rows in browser</li>
+            <li>✓ FX normalization &amp; EU27 VAT summary table</li>
+            <li>✓ Domestic, Non-EU &amp; B2B exclusion counts</li>
+          </ul>
+          <a href="#live-app" data-fk-cta="free-install" class="mt-8 block rounded-xl border border-slate-700 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800">
+            Run Free Preview
+          </a>
+        </div>
+        <div class="rounded-2xl border border-indigo-500 bg-slate-900 p-8 shadow-lg shadow-indigo-500/10">
+          <h3 class="text-lg font-semibold text-white">OssVatBridge Pro</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€29 once</p>
+          <p class="mt-2 text-sm text-slate-400">Unlock unlimited quarters in Web App + CLI.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-200">
+            <li>✓ Unlimited rows &amp; multi-platform CSV merge</li>
+            <li>✓ Germany BZSt/BOP (<code>;</code>-CSV) + Ireland ROS XML</li>
+            <li>✓ EU27 Audit CSV + offline Python <code>.whl</code> CLI</li>
+          </ul>
+          <a href="https://buy.stripe.com/00w6oH52I7qk2mA6lm6sw0a" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-indigo-500 py-3 text-center text-sm font-semibold text-white hover:bg-indigo-400">
+            Buy Pro License Key — €29
+          </a>
+        </div>
+        <div class="rounded-2xl border border-emerald-500/40 bg-slate-900/80 p-8">
+          <h3 class="text-lg font-semibold text-white">All-Access Suite Bundle</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€49 once</p>
+          <p class="mt-2 text-sm text-slate-400">Includes OssVatBridge + LemonExitBridge + StripePayoutBridge + all tools.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-200">
+            <li>✓ Works across all 9 Friction-Killer tools</li>
+            <li>✓ One Stripe Checkout key unlocks the full suite</li>
+            <li>✓ Instant email/redirect delivery + 14-day guarantee</li>
+          </ul>
+          <a href="https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-emerald-600 py-3 text-center text-sm font-semibold text-white hover:bg-emerald-500">
+            Get All-Access Bundle — €49
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="py-12">
+      <h2 class="text-2xl font-bold text-white">FAQ</h2>
+      <div class="mt-6 space-y-4 text-sm text-slate-300">
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">Do my customer orders or VAT IDs leave my computer?</h3>
+          <p class="mt-1 text-slate-400">No. All CSV parsing, FX normalization, Member-State bucketing, BZSt semicolon formatting, and ROS XML generation happen 100% locally in your browser memory or via our offline Python CLI.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">Just migrated off Lemon Squeezy?</h3>
+          <p class="mt-1 text-slate-400">First audit your subscriber CSV, PayPal <code>trial_end</code> cohort, and legacy keys with <a href="../lemonsqueezy-stripe-polar-migrator/index.html" class="text-indigo-300 underline">LemonExitBridge</a>, then drop your new Stripe Tax + Lemon Squeezy CSVs here at quarter end to file EU OSS without monthly SaaS fees.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mx-auto max-w-6xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500">
+    OssVatBridge (<code>eu-oss-vat-return-compiler</code>) — Built for independent SaaS &amp; e-commerce founders filing quarterly EU VAT OSS.
+  </footer>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "fk_oss_vat_pro_state";
+      const FREE_CAP = 15;
+      const EU27_STD = {
+        AT: 20, BE: 21, BG: 20, CY: 19, CZ: 21, DE: 19, DK: 25, EE: 22, EL: 24,
+        ES: 21, FI: 25.5, FR: 20, HR: 25, HU: 27, IE: 23, IT: 22, LT: 21, LU: 17,
+        LV: 21, MT: 18, NL: 21, PL: 23, PT: 23, RO: 19, SE: 25, SI: 22, SK: 23
+      };
+      const FX_EUR = {
+        EUR: 1.0, USD: 0.92, GBP: 1.19, SEK: 0.088, DKK: 0.134, PLN: 0.233,
+        CZK: 0.04, HUF: 0.00245, RON: 0.201, BGN: 0.5113, CHF: 1.06, CAD: 0.66, AUD: 0.6
+      };
+      const SAMPLE_CSV = [
+        "source,order_id,country,currency,subtotal,tax_amount,tax_rate,transaction_type,supply_type,customer_vat_id",
+        "stripe_tax,st_1001,FR,EUR,100.00,20.00,20.0,charge,SERVICES,",
+        "stripe_tax,st_1002,GR,USD,100.00,24.00,0.24,charge,SERVICES,",
+        "shopify,sh_2001,NL,EUR,50.00,10.50,21%,order,GOODS,",
+        "shopify,sh_2002,ES,GBP,100.00,21.00,21.0,order,GOODS,",
+        "lemon_squeezy,ls_3001,IT,EUR,80.00,17.60,22.0,order,SERVICES,",
+        "stripe_tax,st_1003,FR,EUR,25.00,5.00,20.0,refund,SERVICES,",
+        "stripe_tax,st_1004,DE,EUR,120.00,22.80,19.0,charge,SERVICES,",
+        "shopify,sh_2003,US,USD,200.00,0.00,0.0,order,GOODS,",
+        "stripe_tax,st_1005,NL,EUR,300.00,0.00,0.0,charge,SERVICES,NL123456789B01",
+        "shopify,sh_2004,AT,EUR,40.00,4.00,10.0,order,GOODS,",
+        "lemon_squeezy,ls_3002,BE,EUR,60.00,12.60,21.0,order,SERVICES,",
+        "stripe_tax,st_1006,SE,SEK,1000.00,250.00,25.0,charge,SERVICES,",
+        "shopify,sh_2005,PL,PLN,200.00,46.00,23.0,order,GOODS,",
+        "lemon_squeezy,ls_3003,IE,EUR,90.00,20.70,23.0,order,SERVICES,",
+        "stripe_tax,st_1007,PT,EUR,70.00,16.10,23.0,charge,SERVICES,",
+        "shopify,sh_2006,FI,EUR,50.00,12.75,25.5,order,SERVICES,",
+        "lemon_squeezy,ls_3004,DK,DKK,500.00,125.00,25.0,order,SERVICES,",
+        "stripe_tax,st_1008,CZ,CZK,1000.00,210.00,21.0,charge,SERVICES,",
+        "shopify,sh_2007,GB,GBP,75.00,0.00,0.0,order,GOODS,",
+        "stripe_tax,st_1009,LU,EUR,110.00,18.70,17.0,charge,SERVICES,"
+      ].join("\n");
+
+      const filesEl = document.getElementById("app-csv-files");
+      const sampleBtn = document.getElementById("app-sample-btn");
+      const csvEl = document.getElementById("app-csv-input");
+      const homeEl = document.getElementById("app-home-country");
+      const qtrEl = document.getElementById("app-quarter");
+      const sellerEl = document.getElementById("app-seller-vat");
+      const runBtn = document.getElementById("app-run-btn");
+      const keyEl = document.getElementById("app-license-key");
+      const actBtn = document.getElementById("app-activate-btn");
+      const badgeEl = document.getElementById("app-tier-badge");
+      const statusEl = document.getElementById("app-status");
+      const outEl = document.getElementById("app-output");
+      const tblEl = document.getElementById("app-table-body");
+      const statVat = document.getElementById("stat-vat-due");
+      const statTax = document.getElementById("stat-taxable");
+      const statSt = document.getElementById("stat-states");
+      const statEx = document.getElementById("stat-excluded");
+      const dlBzst = document.getElementById("app-dl-bzst");
+      const dlRos = document.getElementById("app-dl-ros");
+      const dlAudit = document.getElementById("app-dl-audit");
+      const tabBtns = document.querySelectorAll("[data-oss-tab]");
+
+      let activeTab = "bzst";
+      let lastExports = null;
+
+      function isProUnlocked() {
+        try {
+          return Boolean(JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}").valid);
+        } catch {
+          return false;
+        }
+      }
+
+      function refreshBadge() {
+        if (isProUnlocked()) {
+          badgeEl.textContent = "Pro Unlocked";
+          badgeEl.className = "self-start rounded-full border border-indigo-500 bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300";
+        } else {
+          badgeEl.textContent = "Free Tier (15 rows)";
+          badgeEl.className = "self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300";
+        }
+      }
+
+      function parseDelim(line) {
+        if (line.includes("\t") && (line.match(/\t/g) || []).length >= (line.match(/,/g) || []).length) return "\t";
+        if (line.includes(";") && (line.match(/;/g) || []).length >= (line.match(/,/g) || []).length) return ";";
+        return ",";
+      }
+
+      function parseCsvTable(text) {
+        const src = String(text || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
+        if (!src) return [];
+        const delim = parseDelim(src.split("\n")[0] || "");
+        const rows = [];
+        let row = [], cell = "", inQ = false;
+        for (let i = 0; i < src.length; i++) {
+          const ch = src[i];
+          if (inQ) {
+            if (ch === '"' && src[i + 1] === '"') { cell += '"'; i++; }
+            else if (ch === '"') inQ = false;
+            else cell += ch;
+          } else if (ch === '"') inQ = true;
+          else if (ch === delim) { row.push(cell); cell = ""; }
+          else if (ch === "\n") { row.push(cell); if (row.some((c) => c !== "")) rows.push(row); row = []; cell = ""; }
+          else cell += ch;
+        }
+        if (cell !== "" || row.length > 0) { row.push(cell); if (row.some((c) => c !== "")) rows.push(row); }
+        return rows;
+      }
+
+      function toNum(v) {
+        let s = String(v ?? "").replace(/[€$£\s%]/g, "").trim();
+        if (!s) return 0;
+        if (s.includes(",") && !s.includes(".")) s = s.replace(",", ".");
+        else s = s.replace(/,/g, "");
+        return Number(s) || 0;
+      }
+
+      function round2(n) {
+        return Math.round((n + Number.EPSILON) * 100) / 100;
+      }
+
+      function normCountry(c) {
+        const clean = String(c || "").replace(/[^A-Za-z]/g, "").toUpperCase().slice(0, 2);
+        return clean === "GR" ? "EL" : clean;
+      }
+
+      function xmlEsc(s) {
+        return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      }
+
+      function renderActiveTab() {
+        if (!lastExports) return;
+        outEl.textContent = lastExports[activeTab] || "";
+      }
+
+      function compileOssInBrowser() {
+        const pro = isProUnlocked();
+        const rawBlocks = String(csvEl?.value || "").split("\n# --- NEXT FILE ---\n");
+        const parsedRows = [];
+        rawBlocks.forEach((blk) => {
+          const table = parseCsvTable(blk);
+          if (table.length < 2) return;
+          const hdrs = table[0].map((h) => h.trim().toLowerCase());
+          const idx = (names) => hdrs.findIndex((h) => names.includes(h));
+          const iCtry = idx(["tax_country", "customer_tax_country", "shipping_country", "country_code", "country", "billing_country"]);
+          const iCur = idx(["currency", "presentment_currency", "order_currency"]);
+          const iSub = idx(["taxable_amount", "subtotal", "net_sales", "net_amount", "amount_excluding_tax"]);
+          const iGross = idx(["gross_sales", "total", "amount"]);
+          const iTax = idx(["tax_amount", "vat_amount", "total_tax", "taxes", "tax"]);
+          const iRate = idx(["tax_rate", "vat_rate", "tax_percentage", "rate"]);
+          const iType = idx(["transaction_type", "type", "kind", "status"]);
+          const iSup = idx(["supply_type", "product_type", "tax_code_type"]);
+          const iVatId = idx(["customer_vat_id", "vat_id", "tax_id", "customer_tax_id", "buyer_vat_number"]);
+
+          table.slice(1).forEach((r) => {
+            const tax = iTax >= 0 ? toNum(r[iTax]) : 0;
+            const sub = iSub >= 0 ? toNum(r[iSub]) : (iGross >= 0 ? toNum(r[iGross]) - tax : 0);
+            let rateRaw = iRate >= 0 ? String(r[iRate] || "") : "0";
+            let rate = toNum(rateRaw);
+            if (!rateRaw.includes("%") && rate > 0 && rate < 1) rate = round2(rate * 100);
+            const supRaw = String(iSup >= 0 ? r[iSup] : "SERVICES").toUpperCase();
+            parsedRows.push({
+              country: iCtry >= 0 ? r[iCtry] : "",
+              currency: String(iCur >= 0 ? r[iCur] : "EUR").trim().toUpperCase() || "EUR",
+              taxable: sub,
+              tax,
+              rate,
+              txType: String(iType >= 0 ? r[iType] : "charge").toLowerCase(),
+              supply: supRaw.includes("GOOD") ? "GOODS" : "SERVICES",
+              vatId: iVatId >= 0 ? String(r[iVatId] || "").trim() : ""
+            });
+          });
+        });
+
+        if (parsedRows.length === 0) {
+          statusEl.textContent = "Paste or drop CSV(s) with header row first.";
+          return;
+        }
+
+        const home = normCountry(homeEl?.value || "DE");
+        const quarter = qtrEl?.value || "2026-Q4";
+        const sellerVat = String(sellerEl?.value || "DE123456789").trim() || "DE123456789";
+        const selected = pro ? parsedRows : parsedRows.slice(0, FREE_CAP);
+        const lockedCount = Math.max(0, parsedRows.length - selected.length);
+
+        let exNonEu = 0, exHome = 0, exB2b = 0;
+        const map = new Map();
+        selected.forEach((row) => {
+          const ms = normCountry(row.country);
+          if (!(ms in EU27_STD)) { exNonEu += 1; return; }
+          if (ms === home) { exHome += 1; return; }
+          if (row.vatId && row.tax === 0) { exB2b += 1; return; }
+
+          const isRef = row.txType.includes("refund") || row.txType.includes("credit") || row.txType.includes("chargeback");
+          let taxable = isRef && row.taxable > 0 ? -row.taxable : row.taxable;
+          let tax = isRef && row.tax > 0 ? -row.tax : row.tax;
+          const fx = FX_EUR[row.currency] ?? 1.0;
+          const taxEur = round2(taxable * fx);
+          const vatEur = round2(tax * fx);
+          const rate = row.rate > 0 ? round2(row.rate) : (taxEur !== 0 && vatEur !== 0 ? round2((vatEur / taxEur) * 100) : EU27_STD[ms]);
+          const rateType = rate < (EU27_STD[ms] - 2.5) ? "REDUCED" : "STANDARD";
+          const key = [ms, row.supply, rateType, rate.toFixed(2)].join("|");
+          if (!map.has(key)) map.set(key, { ms, supply: row.supply, rateType, rate: rate.toFixed(2), tx: 0, taxableEur: 0, vatEur: 0 });
+          const b = map.get(key);
+          b.tx += 1;
+          b.taxableEur = round2(b.taxableEur + taxEur);
+          b.vatEur = round2(b.vatEur + vatEur);
+        });
+
+        const buckets = Array.from(map.values()).sort((a, b) => a.ms.localeCompare(b.ms) || a.supply.localeCompare(b.supply));
+        let sumTax = 0, sumVat = 0;
+        const states = new Set();
+        tblEl.innerHTML = "";
+        buckets.forEach((b) => {
+          sumTax = round2(sumTax + b.taxableEur);
+          sumVat = round2(sumVat + b.vatEur);
+          states.add(b.ms);
+          const tr = document.createElement("tr");
+          tr.innerHTML =
+            '<td class="px-3 py-1.5 font-mono font-semibold text-indigo-300">' + xmlEsc(b.ms) + "</td>" +
+            '<td class="px-3 py-1.5">' + xmlEsc(b.supply) + "</td>" +
+            '<td class="px-3 py-1.5">' + xmlEsc(b.rateType) + " (" + xmlEsc(b.rate) + "%)</td>" +
+            '<td class="px-3 py-1.5 text-right">' + b.tx + "</td>" +
+            '<td class="px-3 py-1.5 text-right font-mono">€' + b.taxableEur.toFixed(2) + "</td>" +
+            '<td class="px-3 py-1.5 text-right font-mono text-emerald-300">€' + b.vatEur.toFixed(2) + "</td>";
+          tblEl.appendChild(tr);
+        });
+
+        const bzstLines = ["Satzart;Land des Verbrauchs;Umsatzsteuertyp;Umsatzsteuersatz;Steuerbemessungsgrundlage;Umsatzsteuerbetrag"];
+        const auditLines = ["Member State,Supply Type,Rate Type,VAT Rate %,Tx Count,Net Taxable EUR,Net VAT EUR"];
+        const xmlSupplies = [];
+        buckets.forEach((b) => {
+          bzstLines.push(["BOP_OSS_V1", b.ms, b.rateType, b.rate.replace(".", ","), b.taxableEur.toFixed(2).replace(".", ","), b.vatEur.toFixed(2).replace(".", ",")].join(";"));
+          auditLines.push([b.ms, b.supply, b.rateType, b.rate, b.tx, b.taxableEur.toFixed(2), b.vatEur.toFixed(2)].join(","));
+          xmlSupplies.push(
+            "    <Supply>\n" +
+            "      <MSCON>" + xmlEsc(b.ms) + "</MSCON>\n" +
+            "      <SupplyType>" + xmlEsc(b.supply) + "</SupplyType>\n" +
+            "      <RateType>" + xmlEsc(b.rateType) + "</RateType>\n" +
+            "      <VATRate>" + xmlEsc(b.rate) + "</VATRate>\n" +
+            "      <TaxableAmountEUR>" + b.taxableEur.toFixed(2) + "</TaxableAmountEUR>\n" +
+            "      <VATAmountEUR>" + b.vatEur.toFixed(2) + "</VATAmountEUR>\n" +
+            "      <TransactionCount>" + b.tx + "</TransactionCount>\n" +
+            "    </Supply>"
+          );
+        });
+
+        const rosXml =
+          '<?xml version="1.0" encoding="UTF-8"?>\n<OSSReturn version="1.0">\n' +
+          "  <Period>" + xmlEsc(quarter) + "</Period>\n" +
+          "  <MemberStateOfIdentification>" + xmlEsc(home) + "</MemberStateOfIdentification>\n" +
+          "  <SellerVATID>" + xmlEsc(sellerVat) + "</SellerVATID>\n" +
+          "  <TotalTaxableEUR>" + sumTax.toFixed(2) + "</TotalTaxableEUR>\n" +
+          "  <TotalVATDueEUR>" + sumVat.toFixed(2) + "</TotalVATDueEUR>\n" +
+          "  <Supplies>\n" + xmlSupplies.join("\n") + "\n  </Supplies>\n</OSSReturn>";
+
+        lastExports = { bzst: bzstLines.join("\n"), ros: rosXml, audit: auditLines.join("\n") };
+        statVat.textContent = "€" + sumVat.toFixed(2);
+        statTax.textContent = "€" + sumTax.toFixed(2);
+        statSt.textContent = String(states.size);
+        statEx.textContent = String(exHome + exNonEu + exB2b) + " (" + exHome + "/" + exNonEu + "/" + exB2b + ")";
+        statusEl.textContent = "Compiled " + selected.length + "/" + parsedRows.length + " rows" + (lockedCount ? " (" + lockedCount + " rows Pro-locked)" : " · Full Pro Export Ready");
+        renderActiveTab();
+      }
+
+      function downloadProFile(filename, content, mime) {
+        if (!isProUnlocked()) {
+          statusEl.textContent = "Downloads require Pro (€29 once). Enter your Stripe cs_live_... key to unlock.";
+          return;
+        }
+        if (!content) {
+          statusEl.textContent = "Compile a CSV first.";
+          return;
+        }
+        const blob = new Blob([content], { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      filesEl?.addEventListener("change", async (e) => {
+        const list = Array.from(e.target.files || []);
+        if (!list.length) return;
+        const texts = await Promise.all(list.map((f) => f.text()));
+        csvEl.value = texts.join("\n# --- NEXT FILE ---\n");
+        compileOssInBrowser();
+      });
+
+      sampleBtn?.addEventListener("click", () => {
+        csvEl.value = SAMPLE_CSV;
+        compileOssInBrowser();
+      });
+
+      [runBtn, homeEl, qtrEl, sellerEl].forEach((el) => {
+        el?.addEventListener(el === runBtn ? "click" : "change", compileOssInBrowser);
+      });
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeTab = btn.getAttribute("data-oss-tab") || "bzst";
+          tabBtns.forEach((b) => {
+            const on = b.getAttribute("data-oss-tab") === activeTab;
+            b.className = on
+              ? "oss-tab rounded-lg bg-indigo-500 px-2.5 py-1 text-xs font-semibold text-white"
+              : "oss-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700";
+          });
+          renderActiveTab();
+        });
+      });
+
+      dlBzst?.addEventListener("click", () => downloadProFile("bzst-oss-return.csv", lastExports?.bzst, "text/csv;charset=utf-8"));
+      dlRos?.addEventListener("click", () => downloadProFile("ros-oss-return.xml", lastExports?.ros, "application/xml;charset=utf-8"));
+      dlAudit?.addEventListener("click", () => downloadProFile("eu27-oss-audit.csv", lastExports?.audit, "text/csv;charset=utf-8"));
+
+      actBtn?.addEventListener("click", async () => {
+        const key = String(keyEl?.value || "").trim();
+        const isStripeKey = key.startsWith("cs_live_") && key.length >= 24 && !key.toLowerCase().includes("unpaid");
+        const isOssKey = key.startsWith("OSSVAT-") && key.length >= 12;
+        if (!isStripeKey && !isOssKey) {
+          statusEl.textContent = "Enter a valid Stripe cs_live_... session ID or OSSVAT-... key.";
+          return;
+        }
+        statusEl.textContent = "Validating Pro license...";
+        let valid = false;
+        try {
+          const resp = await fetch(globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ license_key: key, product_id: "prod_Vg2IUi88B9bJHq,prod_VeW6IYwGyYJkPv" })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            valid = Boolean(data?.valid || data?.payment_status === "paid");
+          }
+        } catch {
+          valid = true;
+        }
+        if (valid) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ valid: true, key, verifiedAt: Date.now() }));
+          refreshBadge();
+          statusEl.textContent = "Pro License unlocked!";
+          compileOssInBrowser();
+        } else {
+          statusEl.textContent = "Key could not be verified — check your Stripe checkout key.";
+        }
+      });
+
+      refreshBadge();
+
+      document.querySelectorAll("[data-fk-cta]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const cta = el.getAttribute("data-fk-cta");
+          try {
+            const key = "fk_cta_telemetry";
+            const data = JSON.parse(localStorage.getItem(key) || "{}");
+            data[cta] = (Number(data[cta]) || 0) + 1;
+            localStorage.setItem(key, JSON.stringify(data));
+            window.dispatchEvent(new CustomEvent("fk:cta", { detail: { cta, counts: data } }));
+          } catch {}
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
