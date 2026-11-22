@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "e-invoice-xml-batch-converter"
+version = "0.1.0"
+description = "EInvoiceLocal: 100% Local XRechnung, ZUGFeRD & Peppol UBL/CII XML Validator, Printable A4 PDF & DATEV/Xero Batch Converter"
+requires-python = ">=3.10"
+
+[project.scripts]
+e-invoice-xml-batch-converter = "cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["cli", "addon", "license_client"]

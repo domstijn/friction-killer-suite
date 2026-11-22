@@ -1,48 +1,51 @@
-# Friction-Killer Software & Plugin Factory
+# Friction-Killer Suite — 11 Zero-Subscription Local Web Apps & CLIs
 
-An automated, token-efficient workspace for discovering high-friction software pain points, scoring commercial viability, building lean MVPs with zero-backend license monetization (**Polar.sh**, **Lemon Squeezy**, **Gumroad**), and preparing launch & distribution kits.
+**100% browser-local, GDPR/GoBD-safe utilities** for **EU VAT OSS (`BZSt BOP` / `ROS XML`)**, **XRechnung / ZUGFeRD / Peppol XML to DATEV EXTF**, **Amazon Flat-File V2 & Stripe Payouts to Xero / QuickBooks**, **Lemon Squeezy shutdown migrations**, **Webflow CMS backups**, **Notion**, **Linear**, **Claude Code**, and **VS Code**. Zero server uploads, zero API OAuth lock-in, and zero recurring SaaS subscriptions.
 
-## Workflow: Lean Gatekeeper Pipeline
+- **Try All 11 Tools Live in Browser (Zero Install):** https://domstijn.github.io/friction-killer-suite/
+- **All-Access Suite Bundle (€49 once, unlocks all 11 tools):** https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03
+- **Sitemap:** https://domstijn.github.io/friction-killer-suite/sitemap.xml
 
-```mermaid
-flowchart LR
-    S1["Stage 1: Pain Discovery & Scoring"] --> G1{"Gate 1: User Picks 1 Idea & Spec"}
-    G1 -->|Approved| S2["Stage 2: Spec & Scaffolding"]
-    S2 --> S3["Stage 3: MVP & License Gate + Tests"]
-    S3 --> S4["Stage 4: Landing Page & Launch Kit"]
-    S4 --> G2{"Gate 2: Final Review & Publish"}
-    S1 -.->|Blocker / Tradeoff| U["Ask User via ask_question"]
-    S2 -.->|Blocker / ToS| U
-    S3 -.->|Blocker / Secret| U
-```
+---
 
-## Quick-Start Prompts
+## Shipped Catalog (11 Active Products)
 
-Copy and paste any of these when you are ready to start:
+| Tool & Live Web App | Target Workflow | Pro License | Packages | What It Solves |
+| :--- | :--- | :---: | :--- | :--- |
+| **[LinearBridge](https://domstijn.github.io/friction-killer-suite/products/notion-linear-prd-sync/)** | Notion & Linear | €29 once | [.zip](https://domstijn.github.io/friction-killer-suite/downloads/notion-linear-prd-sync-v0.1.0.zip) | Chrome MV3 extension injecting a 'Push PRD to Linear' action bar inside Notion that decomposes headings/checklists into Linear parent + sub-issues and syncs status badges locally via user API keys. |
+| **[NotionGitExport](https://domstijn.github.io/friction-killer-suite/products/notion-clean-md-exporter/)** | Notion | €24 once | [.whl](https://domstijn.github.io/friction-killer-suite/downloads/notion_clean_md_exporter-0.1.0-py3-none-any.whl) · [.zip](https://domstijn.github.io/friction-killer-suite/downloads/notion-clean-md-exporter-v0.1.0.zip) | Zero-dependency CLI wrapper that strips UUID suffixes, converts database properties into clean YAML frontmatter, rewrites relative links, and localizes assets for Git/Obsidian/Astro. |
+| **[ExtProfileLock](https://domstijn.github.io/friction-killer-suite/products/vscode-workspace-profile-config/)** | VS Code | €19 once | [.vsix](https://domstijn.github.io/friction-killer-suite/downloads/vscode-workspace-profile-config-0.1.0.vsix) · [.zip](https://domstijn.github.io/friction-killer-suite/downloads/vscode-workspace-profile-config-v0.1.0.zip) | VS Code extension that reads a repo-committed workspace-lock.json + .env to auto-toggle conflicting extensions and refresh extension host env vars without restarting. |
+| **[ClaudeProfileSwitch](https://domstijn.github.io/friction-killer-suite/products/claude-profile-switcher/)** | Claude Code / Claude Desktop | €24 once | [.whl](https://domstijn.github.io/friction-killer-suite/downloads/claude_profile_switcher-0.1.0-py3-none-any.whl) · [.zip](https://domstijn.github.io/friction-killer-suite/downloads/claude-profile-switcher-v0.1.0.zip) | Zero-dependency CLI that snapshots/swaps isolated Claude auth + MCP profiles per repo (.claude-profile) and audits local JSONL session token burn against 5-hour quota windows |
+| **[NotionGuestBridge](https://domstijn.github.io/friction-killer-suite/products/notion-guest-mcp-bridge/)** | Notion / Claude & Cursor | €29 once | [.zip](https://domstijn.github.io/friction-killer-suite/downloads/notion-guest-mcp-bridge-v0.1.0.zip) | Chrome MV3 extension operating on the guest's open Notion tab to extract database tables, callouts & nested pages into structured JSON/Markdown MCP context packs with zero Member seat upgrade or cookie theft |
+| **[WebflowAssetZip](https://domstijn.github.io/friction-killer-suite/products/webflow-cms-asset-migrator/)** | Webflow CMS (to Framer / WordPress / Next.js) | €29 once | [.zip](https://domstijn.github.io/friction-killer-suite/downloads/webflow-cms-asset-migrator-v0.1.0.zip) | Chrome MV3 extension that parses Webflow CMS CSVs or open CMS collections, downloads and renames every image/asset by item slug, rewrites CSV + Rich-Text HTML CDN URLs to your new host (Framer/S3/R2/WP), and outputs a 301-redirects.csv map. |
+| **[StripePayoutBridge](https://domstijn.github.io/friction-killer-suite/products/stripe-payout-xero-qbo-splitter/)** | Stripe & PayPal to Xero / QuickBooks / DATEV | €29 once | [.whl](https://domstijn.github.io/friction-killer-suite/downloads/stripe_payout_xero_qbo_splitter-0.1.0-py3-none-any.whl) · [.zip](https://domstijn.github.io/friction-killer-suite/downloads/stripe-payout-xero-qbo-splitter-v0.1.0.zip) | 100% local in-browser Web App (+ CLI) that parses Stripe/PayPal itemized payout CSVs, groups transactions by payout batch into balanced double-entry clearing account journals (Gross Sales by tax rate, Processing Fees, Refunds/Disputes, FX fees, Net Transfer), and exports Xero Manual Journal CSV, QuickBooks Journal CSV, and DATEV Buchungsstapel CSV. |
+| **[LemonExitBridge](https://domstijn.github.io/friction-killer-suite/products/lemonsqueezy-stripe-polar-migrator/)** | Lemon Squeezy to Stripe Managed Payments & Polar.sh | €29 once | [.whl](https://domstijn.github.io/friction-killer-suite/downloads/lemonsqueezy_stripe_polar_migrator-0.1.0-py3-none-any.whl) · [.zip](https://domstijn.github.io/friction-killer-suite/downloads/lemonsqueezy-stripe-polar-migrator-v0.1.0.zip) | 100% local in-browser Web App (+ Python CLI .whl) that joins exported Lemon Squeezy Orders, Subscriptions, and License Keys CSVs, isolates at-risk PayPal MRR vs. transferable Card subscribers, calculates exact Unix trial_end timestamps so re-subscribing customers are never double-charged, and exports Stripe Billing / Polar migration CSVs plus a drop-in Legacy License Key JSON/Worker bundle. |
+| **[OssVatBridge](https://domstijn.github.io/friction-killer-suite/products/eu-oss-vat-return-compiler/)** | Stripe Tax / Shopify / Lemon Squeezy -> EU VAT OSS (Germany BZSt BOP, Ireland ROS, EU27) | €29 once | [.whl](https://domstijn.github.io/friction-killer-suite/downloads/eu_oss_vat_return_compiler-0.1.0-py3-none-any.whl) · [.zip](https://domstijn.github.io/friction-killer-suite/downloads/eu-oss-vat-return-compiler-v0.1.0.zip) | 100% browser-local Web App (+ Python CLI) that merges Stripe Tax, Shopify, and Lemon Squeezy CSVs, normalizes currencies via ECB quarterly rates, aggregates EU27 Member-State VAT by Standard/Reduced rate, and exports Germany BZSt/BOP semicolon CSV, Ireland ROS XML, and EU27 OSS audit ledgers. |
+| **[AmzSettlementBridge](https://domstijn.github.io/friction-killer-suite/products/amazon-settlement-xero-qbo-splitter/)** | Amazon Seller Central Settlement V2 -> Xero / QuickBooks Online / DATEV | €29 once | [.whl](https://domstijn.github.io/friction-killer-suite/downloads/amazon_settlement_xero_qbo_splitter-0.1.0-py3-none-any.whl) · [.zip](https://domstijn.github.io/friction-killer-suite/downloads/amazon-settlement-xero-qbo-splitter-v0.1.0.zip) | 100% browser-local Web App (+ Python CLI) that parses Amazon Seller Central Flat-File V2 (.txt/.tsv) settlements locally, separates Principal sales, Marketplace Facilitator tax, FBA/referral/storage/PPC fees, refunds, and rolling reserves into integer-cent balanced Xero, QuickBooks, and DATEV clearing journals. |
+| **[EInvoiceLocal](https://domstijn.github.io/friction-killer-suite/products/e-invoice-xml-batch-converter/)** | EU B2B E-Invoicing (XRechnung / ZUGFeRD / Peppol XML -> DATEV / Xero / QuickBooks) | €29 once | [.whl](https://domstijn.github.io/friction-killer-suite/downloads/e_invoice_xml_batch_converter-0.1.0-py3-none-any.whl) · [.zip](https://domstijn.github.io/friction-killer-suite/downloads/e-invoice-xml-batch-converter-v0.1.0.zip) | 100% browser-local Web App (+ Python CLI) that validates EN 16931 math rules across UBL 2.1 and UN/CEFACT CII XML invoices, renders printable A4 invoice views, and batch-exports unified DATEV EXTF_Buchungsstapel.csv (with BU-Schlüssel tax keys), Xero Bills CSV, and QuickBooks CSV. |
 
-- **Agnostic discovery (recommended):**
-  > `Run Stage 1: Mine software friction signals across high-ROI niches, score candidates, and pitch the top 3 for Gate 1.`
-- **Targeted niche discovery:**
-  > `Run Stage 1 targeting Notion, Linear, and VS Code. Score the top opportunities and stop at Gate 1.`
-- **Check current pipeline state:**
-  > `Check pipeline status and continue from the current stage.`
+---
 
-## Repository Structure
+## Offline Python CLI Installation (`.whl`)
 
-- `AGENTS.md` — Ultra-compact workspace rules & token-efficiency guardrails.
-- `.agents/skills/` — On-demand stage skills (`stage-1-pain-discovery` through `stage-4-launch-and-monetize`) loaded only for the active stage.
-- `scripts/` — Zero-dependency Python 3 CLI helpers that keep raw data out of the LLM context:
-  - `pipeline_ctl.py` — Inspect and update `pipeline/state.json`.
-  - `mine_signals.py` — Harvest compact, deduplicated pain signals from Hacker News, GitHub Issues, and Reddit.
-  - `score_opportunity.py` — Compute Effectiveness, Commercial Potential, Composite Score (0–100), and automatic kill-switch verdicts.
-  - `scaffold_project.py` — Generate `projects/<slug>/` with starter code, tests, license client, landing page, and launch kit.
-- `templates/` — Reusable zero-backend license validators (`license_client.js`, `license_client.py`), Tailwind landing page, spec template, and launch kit template.
-- `pipeline/state.json` — Deterministic pipeline state and scored opportunity backlog.
-- `projects/` — Generated products (`src/`, `tests/`, `launch/`, `SPEC.md`).
+Prefer air-gapped CLI / batch directory automation? Install any zero-dependency wheel directly via `pip`:
 
-## How Token Usage Is Minimized
+- **NotionGitExport**: `pip install https://domstijn.github.io/friction-killer-suite/downloads/notion_clean_md_exporter-0.1.0-py3-none-any.whl`
+- **ClaudeProfileSwitch**: `pip install https://domstijn.github.io/friction-killer-suite/downloads/claude_profile_switcher-0.1.0-py3-none-any.whl`
+- **StripePayoutBridge**: `pip install https://domstijn.github.io/friction-killer-suite/downloads/stripe_payout_xero_qbo_splitter-0.1.0-py3-none-any.whl`
+- **LemonExitBridge**: `pip install https://domstijn.github.io/friction-killer-suite/downloads/lemonsqueezy_stripe_polar_migrator-0.1.0-py3-none-any.whl`
+- **OssVatBridge**: `pip install https://domstijn.github.io/friction-killer-suite/downloads/eu_oss_vat_return_compiler-0.1.0-py3-none-any.whl`
+- **AmzSettlementBridge**: `pip install https://domstijn.github.io/friction-killer-suite/downloads/amazon_settlement_xero_qbo_splitter-0.1.0-py3-none-any.whl`
+- **EInvoiceLocal**: `pip install https://domstijn.github.io/friction-killer-suite/downloads/e_invoice_xml_batch_converter-0.1.0-py3-none-any.whl`
 
-1. **Progressive skill loading**: Only the active stage's `SKILL.md` is read into context; root `AGENTS.md` stays compact.
-2. **Pre-filtered Python miners**: `scripts/mine_signals.py` strips HTML, deduplicates URLs, and truncates snippets to 250 chars before anything reaches the model.
-3. **Deterministic state & scoring**: State tracking and weighted scoring run in Python scripts instead of repeating long histories in chat.
-4. **Targeted subagents**: Heavy UI checks or isolated research can be delegated to `flash`-tier subagents.
+Each tool includes a generous **Free Tier** in both the browser Web App and CLI, plus a one-time €19–€29 Pro license (or €49 All-Access Bundle) powered by Stripe Managed Payments (`cs_live_...`).
+
+---
+
+## Workspace Architecture (`AGENTS.md` + Stage Skills)
+
+- `scripts/pipeline_ctl.py` — Deterministic state machine tracking `pipeline/state.json`
+- `scripts/score_opportunity.py` — Commercial buyer, saturation & DIY-resistance scorer with automatic kill switches
+- `scripts/build_portfolio.py` — Regenerates `docs/` GitHub Pages storefront, OpenGraph/JSON-LD SEO, `sitemap.xml`, `robots.txt`, and this `README.md`
+- `scripts/ship_check.py` — Automated test runner and `.zip` / `.vsix` / `.whl` packager
+- `scripts/ping_indexnow.py` — Instant search indexing via IndexNow (`Bing`, `DuckDuckGo`, `ChatGPT` / `Copilot` search)

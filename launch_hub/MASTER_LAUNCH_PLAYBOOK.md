@@ -1,6 +1,6 @@
 # Master Launch Playbook (Stripe Managed Payments)
 
-## Portfolio Summary (10 Shipped Products)
+## Portfolio Summary (11 Shipped Products)
 
 | Product | Ecosystem | Pro Price | Distributable Bundle | Launch Assets |
 | :--- | :--- | :---: | :--- | :--- |
@@ -14,6 +14,7 @@
 | **LemonExitBridge** (`lemonsqueezy-stripe-polar-migrator`) | saas-addon | €29 once | `projects/lemonsqueezy-stripe-polar-migrator/dist/lemonsqueezy-stripe-polar-migrator-v0.1.0.zip` | [Sales Page](../projects/lemonsqueezy-stripe-polar-migrator/launch/landing.html) / [Kit](../projects/lemonsqueezy-stripe-polar-migrator/launch/LAUNCH_KIT.md) |
 | **OssVatBridge** (`eu-oss-vat-return-compiler`) | saas-addon | €29 once | `projects/eu-oss-vat-return-compiler/dist/eu-oss-vat-return-compiler-v0.1.0.zip` | [Sales Page](../projects/eu-oss-vat-return-compiler/launch/landing.html) / [Kit](../projects/eu-oss-vat-return-compiler/launch/LAUNCH_KIT.md) |
 | **AmzSettlementBridge** (`amazon-settlement-xero-qbo-splitter`) | saas-addon | €29 once | `projects/amazon-settlement-xero-qbo-splitter/dist/amazon-settlement-xero-qbo-splitter-v0.1.0.zip` | [Sales Page](../projects/amazon-settlement-xero-qbo-splitter/launch/landing.html) / [Kit](../projects/amazon-settlement-xero-qbo-splitter/launch/LAUNCH_KIT.md) |
+| **EInvoiceLocal** (`e-invoice-xml-batch-converter`) | saas-addon | €29 once | `projects/e-invoice-xml-batch-converter/dist/e-invoice-xml-batch-converter-v0.1.0.zip` | [Sales Page](../projects/e-invoice-xml-batch-converter/launch/landing.html) / [Kit](../projects/e-invoice-xml-batch-converter/launch/LAUNCH_KIT.md) |
 | **All-Access Bundle** | Multi-Product | **€49 once** (Save 32%) | All 3 Pro Keys | [Storefront](index.html) |
 
 ---

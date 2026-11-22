@@ -119,7 +119,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
       <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
         <div>
           <span class="rounded-full bg-indigo-500/20 px-2.5 py-0.5 text-xs font-semibold text-indigo-300">ZERO-INSTALL INTERACTIVE DEMO</span>
-          <h2 class="mt-2 text-2xl font-bold text-white">Try All 10 Tools Live in Your Browser</h2>
+          <h2 class="mt-2 text-2xl font-bold text-white">Try All 11 Tools Live in Your Browser</h2>
           <p class="mt-1 text-xs text-slate-400">Runs 100% locally in JavaScript — nothing leaves your browser.</p>
         </div>
         <div class="flex flex-wrap gap-2" role="tablist">
@@ -133,6 +133,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
           <button type="button" data-pg-tab="lemon" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">8. LemonExitBridge</button>
           <button type="button" data-pg-tab="ossvat" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">9. OssVatBridge</button>
           <button type="button" data-pg-tab="amz" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">10. AmzSettlementBridge</button>
+          <button type="button" data-pg-tab="einvoice" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">11. EInvoiceLocal</button>
         </div>
       </div>
 
@@ -350,6 +351,26 @@ stripe_tax,NL,EUR,300.00,0.00,0.0,charge,NL123456789B01</textarea>
           <pre id="pg-amz-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
         </div>
       </div>
+
+      <!-- Tab 11: EInvoiceLocal -->
+      <div id="pg-panel-einvoice" class="pg-panel mt-6 hidden grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-300" for="pg-einv-xml">Paste XRechnung / Peppol UBL 2.1 or ZUGFeRD CII XML</label>
+            <textarea id="pg-einv-xml" rows="8" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">&lt;Invoice xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"&gt;
+  &lt;cbc:ID&gt;XR-2026-1001&lt;/cbc:ID&gt;&lt;cbc:IssueDate&gt;2026-11-18&lt;/cbc:IssueDate&gt;&lt;cbc:DocumentCurrencyCode&gt;EUR&lt;/cbc:DocumentCurrencyCode&gt;
+  &lt;cac:AccountingSupplierParty&gt;&lt;cac:Party&gt;&lt;cac:PartyLegalEntity&gt;&lt;cbc:RegistrationName&gt;Nordic Cloud GmbH&lt;/cbc:RegistrationName&gt;&lt;/cac:PartyLegalEntity&gt;&lt;/cac:Party&gt;&lt;/cac:AccountingSupplierParty&gt;
+  &lt;cac:TaxTotal&gt;&lt;cbc:TaxAmount&gt;38.00&lt;/cbc:TaxAmount&gt;&lt;/cac:TaxTotal&gt;
+  &lt;cac:LegalMonetaryTotal&gt;&lt;cbc:TaxExclusiveAmount&gt;200.00&lt;/cbc:TaxExclusiveAmount&gt;&lt;cbc:PayableAmount&gt;238.00&lt;/cbc:PayableAmount&gt;&lt;/cac:LegalMonetaryTotal&gt;
+  &lt;cac:InvoiceLine&gt;&lt;cac:Item&gt;&lt;cbc:Name&gt;PostgreSQL Cluster&lt;/cbc:Name&gt;&lt;cac:ClassifiedTaxCategory&gt;&lt;cbc:Percent&gt;19.00&lt;/cbc:Percent&gt;&lt;/cac:ClassifiedTaxCategory&gt;&lt;/cac:Item&gt;&lt;/cac:InvoiceLine&gt;
+&lt;/Invoice&gt;</textarea>
+          </div>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-emerald-300">EN 16931 Validation + DATEV BU-Schlüssel &amp; Xero Output</span>
+          <pre id="pg-einv-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+        </div>
+      </div>
     </section>"""
 
 
@@ -367,6 +388,7 @@ PLAYGROUND_SCRIPT = r"""  <script>
         lemon: document.getElementById("pg-panel-lemon"),
         ossvat: document.getElementById("pg-panel-ossvat"),
         amz: document.getElementById("pg-panel-amz"),
+        einvoice: document.getElementById("pg-panel-einvoice"),
       };
       tabs.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -814,6 +836,49 @@ PLAYGROUND_SCRIPT = r"""  <script>
       }
       amzCsv?.addEventListener("input", runAmzSettlement);
       runAmzSettlement();
+
+      // 11. EInvoiceLocal live UBL/CII XML validator & DATEV BU-Schlüssel converter
+      const einvXml = document.getElementById("pg-einv-xml");
+      const einvOut = document.getElementById("pg-einv-output");
+      function runEInvoice() {
+        if (!einvXml || !einvOut) return;
+        const xmlStr = (einvXml.value || "").trim();
+        if (!xmlStr) {
+          einvOut.textContent = "Paste UBL 2.1 or CII XML above.";
+          return;
+        }
+        try {
+          const dom = new DOMParser().parseFromString(xmlStr, "application/xml");
+          const getVal = (tag) => {
+            const matches = dom.getElementsByTagName("*");
+            for (let i = 0; i < matches.length; i++) {
+              const ln = (matches[i].localName || matches[i].tagName || "").split(":").pop();
+              if (ln === tag && matches[i].textContent) return matches[i].textContent.trim();
+            }
+            return "";
+          };
+          const id = getVal("ID") || "UNKNOWN";
+          const dt = getVal("IssueDate") || getVal("DateTimeString") || "2026-11-18";
+          const cur = getVal("DocumentCurrencyCode") || getVal("InvoiceCurrencyCode") || "EUR";
+          const net = parseFloat(getVal("TaxExclusiveAmount") || getVal("TaxBasisTotalAmount") || "0") || 0;
+          const vat = parseFloat(getVal("TaxAmount") || getVal("TaxTotalAmount") || "0") || 0;
+          const gross = parseFloat(getVal("PayableAmount") || getVal("DuePayableAmount") || getVal("GrandTotalAmount") || "0") || 0;
+          const pct = parseFloat(getVal("Percent") || getVal("RateApplicablePercent") || "19") || 0;
+          const validMath = Math.abs((net + vat) - gross) <= 0.02;
+          const bu = pct === 19 ? "9" : pct === 7 ? "8" : "0";
+          const konto = pct === 19 ? "3400" : pct === 7 ? "3300" : "3200";
+          einvOut.textContent =
+            "# EN 16931 Math Validation: " + (validMath ? "PASS (BR-CO-15 OK)" : "MISMATCH") + "\n" +
+            "# Invoice: " + id + " | Issue: " + dt + " | Net: " + net.toFixed(2) + " " + cur + " | VAT (" + pct + "%): " + vat.toFixed(2) + " | Gross: " + gross.toFixed(2) + "\n\n" +
+            "# DATEV EXTF Buchungsstapel CSV (BU-Schlüssel " + bu + ", SKR03 " + konto + "):\n" +
+            "Umsatz;Soll/Haben;WKZ;Konto;Gegenkonto;BU-Schlüssel;Belegfeld 1\n" +
+            gross.toFixed(2).replace(".", ",") + ";S;" + cur + ";" + konto + ";70000;" + bu + ";" + id;
+        } catch {
+          einvOut.textContent = "Invalid XML structure.";
+        }
+      }
+      einvXml?.addEventListener("input", runEInvoice);
+      runEInvoice();
     })();
   </script>"""
 
@@ -927,8 +992,8 @@ def render_hub_html(
     cards_html = "\n".join(cards)
     hub_title = f"Friction-Killer Suite — {len(products)} Zero-Backend Micro-Utilities & Web Apps"
     hub_desc = (
-        "Client-side micro-tools and zero-install web apps for Amazon Flat-File V2 settlement journals, "
-        "EU VAT OSS quarterly CSV/XML filing, Lemon Squeezy to Stripe/Polar migration, Stripe/PayPal payout journal splitting, Webflow CMS backup, Notion, Linear, Claude, and VS Code."
+        "Client-side micro-tools and zero-install web apps for XRechnung/Peppol XML validation & DATEV export, "
+        "Amazon Flat-File V2 settlement journals, EU VAT OSS quarterly CSV/XML filing, Lemon Squeezy migration, Stripe/PayPal payouts, Webflow, Notion, Linear, Claude & VS Code."
     )
     hub_seo_tags = build_seo_head_tags(
         title=hub_title,
@@ -969,7 +1034,7 @@ def render_hub_html(
         <span class="text-indigo-400">without paying monthly SaaS taxes.</span>
       </h1>
       <p class="mx-auto mt-4 max-w-2xl text-base text-slate-300">
-        {len(products)} local-first tools &amp; zero-install web apps including AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch, and NotionGuestBridge.
+        {len(products)} local-first tools &amp; zero-install web apps including EInvoiceLocal, AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch, and NotionGuestBridge.
       </p>
       <div class="mt-7 flex flex-wrap justify-center gap-3">
         <a href="#playground" class="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-slate-200">Try Live in Browser</a>
@@ -986,14 +1051,14 @@ def render_hub_html(
     <section id="bundle" class="mt-14 rounded-3xl border border-indigo-500/50 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/60 p-8 sm:p-10">
       <div class="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
         <div>
-          <span class="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300">BEST VALUE · SAVE 80%+</span>
+          <span class="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300">BEST VALUE · SAVE 83%</span>
           <h2 class="mt-3 text-3xl font-extrabold text-white">All-Access Friction-Killer Bundle</h2>
           <p class="mt-2 max-w-xl text-sm text-slate-300">
-            Unlock Pro licenses across all {len(products)} tools (AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch &amp; NotionGuestBridge) with one single purchase (€260+ combined value).
+            Unlock Pro licenses across all {len(products)} tools (EInvoiceLocal, AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch &amp; NotionGuestBridge) with one single purchase (€290+ combined value).
           </p>
         </div>
         <div class="w-full shrink-0 rounded-2xl border border-slate-700 bg-slate-950/70 p-6 text-center md:w-72">
-          <div class="text-xs text-slate-400 line-through">€260+ combined</div>
+          <div class="text-xs text-slate-400 line-through">€290+ combined</div>
           <div class="mt-1 text-4xl font-extrabold text-white">€49 <span class="text-sm font-normal text-slate-400">once</span></div>
           <a href="{html.escape(bundle_checkout_url)}" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-5 block rounded-xl bg-indigo-500 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
             Get All-Access Bundle
@@ -1286,6 +1351,65 @@ curl -X POST -is "http://localhost:4242/create-checkout-session" -d ""
 """
 
 
+def render_root_readme_md(products: list[dict[str, Any]], bundle_checkout_url: str) -> str:
+    """Generate an SEO-friendly root README.md showcasing all shipped Web Apps, CLIs & Storefront links."""
+    rows = []
+    cli_installs = []
+    for p in products:
+        web_url = f"{SITE_BASE_URL}/products/{p['slug']}/"
+        dl_parts = []
+        if p["whl_exists"]:
+            whl_url = f"{SITE_BASE_URL}/downloads/{p['whl_name']}"
+            dl_parts.append(f"[.whl]({whl_url})")
+            cli_installs.append(f"- **{p['short_title']}**: `pip install {whl_url}`")
+        if p["vsix_exists"]:
+            dl_parts.append(f"[.vsix]({SITE_BASE_URL}/downloads/{p['slug']}-0.1.0.vsix)")
+        if p["zip_exists"]:
+            dl_parts.append(f"[.zip]({SITE_BASE_URL}/downloads/{p['slug']}-v0.1.0.zip)")
+        artifacts = " · ".join(dl_parts) or "Browser Web App"
+        rows.append(
+            f"| **[{p['short_title']}]({web_url})** | {p['target_software']} | {p['price']} | {artifacts} | {p['summary']} |"
+        )
+    table_body = "\n".join(rows)
+    cli_block = "\n".join(cli_installs)
+    return f"""# Friction-Killer Suite — {len(products)} Zero-Subscription Local Web Apps & CLIs
+
+**100% browser-local, GDPR/GoBD-safe utilities** for **EU VAT OSS (`BZSt BOP` / `ROS XML`)**, **XRechnung / ZUGFeRD / Peppol XML to DATEV EXTF**, **Amazon Flat-File V2 & Stripe Payouts to Xero / QuickBooks**, **Lemon Squeezy shutdown migrations**, **Webflow CMS backups**, **Notion**, **Linear**, **Claude Code**, and **VS Code**. Zero server uploads, zero API OAuth lock-in, and zero recurring SaaS subscriptions.
+
+- **Try All {len(products)} Tools Live in Browser (Zero Install):** {SITE_BASE_URL}/
+- **All-Access Suite Bundle (€49 once, unlocks all {len(products)} tools):** {bundle_checkout_url}
+- **Sitemap:** {SITE_BASE_URL}/sitemap.xml
+
+---
+
+## Shipped Catalog ({len(products)} Active Products)
+
+| Tool & Live Web App | Target Workflow | Pro License | Packages | What It Solves |
+| :--- | :--- | :---: | :--- | :--- |
+{table_body}
+
+---
+
+## Offline Python CLI Installation (`.whl`)
+
+Prefer air-gapped CLI / batch directory automation? Install any zero-dependency wheel directly via `pip`:
+
+{cli_block}
+
+Each tool includes a generous **Free Tier** in both the browser Web App and CLI, plus a one-time €19–€29 Pro license (or €49 All-Access Bundle) powered by Stripe Managed Payments (`cs_live_...`).
+
+---
+
+## Workspace Architecture (`AGENTS.md` + Stage Skills)
+
+- `scripts/pipeline_ctl.py` — Deterministic state machine tracking `pipeline/state.json`
+- `scripts/score_opportunity.py` — Commercial buyer, saturation & DIY-resistance scorer with automatic kill switches
+- `scripts/build_portfolio.py` — Regenerates `docs/` GitHub Pages storefront, OpenGraph/JSON-LD SEO, `sitemap.xml`, `robots.txt`, and this `README.md`
+- `scripts/ship_check.py` — Automated test runner and `.zip` / `.vsix` / `.whl` packager
+- `scripts/ping_indexnow.py` — Instant search indexing via IndexNow (`Bing`, `DuckDuckGo`, `ChatGPT` / `Copilot` search)
+"""
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Build launch_hub portfolio storefront, GitHub Pages docs/, and playbook."
@@ -1335,9 +1459,12 @@ def main() -> int:
     docs_dir = Path(args.docs_dir)
     publish_docs_site(products, docs_dir, bundle_checkout_url)
 
+    readme_path = REPO_ROOT / "README.md"
+    readme_path.write_text(render_root_readme_md(products, bundle_checkout_url), encoding="utf-8")
+
     print(
         f"Built portfolio hub & GitHub Pages site for {len(products)} product(s) "
-        f"-> {html_path}, {md_path}, & {docs_dir / 'index.html'}"
+        f"-> {html_path}, {md_path}, {readme_path}, & {docs_dir / 'index.html'}"
     )
     return 0
 

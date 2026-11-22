@@ -152,6 +152,19 @@
       "payment_link_url": "https://buy.stripe.com/bJefZh66M2601iw6lm6sw0b",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=amazon-settlement-xero-qbo-splitter"
     },
+    "e-invoice-xml-batch-converter": {
+      "slug": "e-invoice-xml-batch-converter",
+      "name": "EInvoiceLocal Pro",
+      "description": "100% browser-local XRechnung, ZUGFeRD & Peppol UBL/CII XML validator, printable A4 PDF & DATEV/Xero/QuickBooks batch converter Web App + CLI (Pro License).",
+      "unit_amount": 2900,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_Vg3C753ZbsDlQk",
+      "price_id": "price_1Ueh6RH2AcdDmQyRWu1Na1UV",
+      "payment_link_id": "plink_1Ueh6eH2AcdDmQyRe1NX3DWw",
+      "payment_link_url": "https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=e-invoice-xml-batch-converter"
+    },
     "all-access-bundle": {
       "slug": "all-access-bundle",
       "name": "All-Access Friction-Killer Bundle",
