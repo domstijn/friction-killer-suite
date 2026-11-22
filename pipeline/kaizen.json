@@ -142,6 +142,13 @@
         "Updated .agents/skills/stage-1-pain-discovery/SKILL.md with the Chrome Web Store 2/2 quota kill switch."
       ],
       "expected_impact": "Zero distribution stalls from Chrome Web Store new-developer extension caps and faster checkout-to-usage conversion via zero-install browser web apps."
+    },
+    {
+      "cycle": 11,
+      "date": "2026-11-22",
+      "friction_observed": "Zero-install web apps hosted on GitHub Pages lack organic Google/AI search discoverability without sitemap.xml, robots.txt, canonical tags, OpenGraph metadata, and Schema.org SoftwareApplication JSON-LD, and shipping new tools without executing high-intent thread replies leaves shipped apps unseen.",
+      "upgrade_applied": "Upgraded scripts/build_portfolio.py to auto-generate docs/sitemap.xml, docs/robots.txt, canonical URLs, OpenGraph tags, and JSON-LD SoftwareApplication schema across docs/index.html and all product pages; updated stage-4-launch-and-monetize/SKILL.md and pipeline/OUTREACH_QUEUE.md.",
+      "expected_impact": "Full Google Search Console & AI crawler indexability across all 8 shipped product pages and disciplined high-intent distribution execution after every launch."
     }
   ]
 }

@@ -20,6 +20,7 @@ Find recent, un-saturated pain points with minimal token overhead, verify that n
    ```
 
 2. **Mine recent pain signals & inspect existing supply**:
+   - Check `pipeline/MARKET_RADAR.md` first — if the Radar Agent (`fb4a3e59-d8d5-40c7-97b7-e1c8983cfb6f`) already has verified `GO` commercial opportunities queued, reuse them directly instead of burning tokens re-mining from scratch.
    Prefer `--since-year 2024` (or `2025`) and `--check-existing` so old 2017–2019 mega-issues with built-in/comment workarounds are filtered down and existing GitHub/OSS tools are surfaced automatically.
    ```bash
    python3 scripts/mine_signals.py --targets "<s1>,<s2>" --since-year 2024 --check-existing --limit 6 --format md

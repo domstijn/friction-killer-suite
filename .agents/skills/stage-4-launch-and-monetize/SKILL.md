@@ -26,8 +26,10 @@ Prepare everything needed to market, distribute, and sell the verified MVP, then
      - Non-spammy "Reply-to-Pain" outreach drafts pointing to the exact Stage 1 complaint URLs
      - Launch copy (never suggest top-level showcase/self-promo posts on product subreddits like `r/Notion` or `r/vscode` that ban self-promotion; prioritize official marketplaces like Chrome Web Store / VS Code Marketplace and direct replies to active complaint threads)
 
-3. **Package Native Distributable Builds**:
+3. **Package Native Distributable Builds & Rebuild SEO Storefront**:
    - Run `python3 scripts/ship_check.py --slug <slug> --package` to generate `.zip` plus native marketplace artifacts (`.vsix` for VS Code plugins, PEP 427 `.whl` for Python CLI wrappers).
+   - Run `python3 scripts/build_portfolio.py` and verify `docs/sitemap.xml`, `docs/robots.txt`, canonical links, OpenGraph tags, and JSON-LD `SoftwareApplication` structured data exist for `docs/index.html` and every active product page.
+   - Before starting any subsequent Stage 1 build cycle, execute at least 1 verified high-intent distribution reply from `pipeline/OUTREACH_QUEUE.md` (so shipped products do not accumulate undistributed).
 
 4. **Present Results & Stop at Gate 2**:
    Provide a concise summary linking to:

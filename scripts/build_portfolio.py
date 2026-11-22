@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+SITE_BASE_URL = "https://domstijn.github.io/friction-killer-suite"
 DEFAULT_STATE_PATH = REPO_ROOT / "pipeline" / "state.json"
 DEFAULT_HUB_DIR = REPO_ROOT / "launch_hub"
 DEFAULT_DOCS_DIR = REPO_ROOT / "docs"
@@ -682,6 +683,60 @@ PLAYGROUND_SCRIPT = r"""  <script>
   </script>"""
 
 
+def build_seo_head_tags(
+    *,
+    title: str,
+    description: str,
+    canonical_url: str,
+    app_name: str,
+    app_category: str = "BusinessApplication",
+    price_eur: str = "29.00",
+) -> str:
+    """Build meta description, canonical, OpenGraph, Twitter, and JSON-LD SoftwareApplication tags."""
+    safe_title = html.escape(title, quote=True)
+    safe_desc = html.escape(description, quote=True)
+    safe_url = html.escape(canonical_url, quote=True)
+    ld_payload = {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": app_name,
+        "headline": title,
+        "description": description,
+        "url": canonical_url,
+        "applicationCategory": app_category,
+        "operatingSystem": "Web, macOS, Windows, Linux",
+        "offers": [
+            {
+                "@type": "Offer",
+                "name": "Free Tier",
+                "price": "0.00",
+                "priceCurrency": "EUR",
+            },
+            {
+                "@type": "Offer",
+                "name": "Pro Lifetime License",
+                "price": price_eur,
+                "priceCurrency": "EUR",
+            },
+        ],
+    }
+    ld_json = json.dumps(ld_payload, ensure_ascii=False).replace("</", "<\\/")
+    return "\n".join(
+        [
+            f'  <meta name="description" content="{safe_desc}" />',
+            f'  <link rel="canonical" href="{safe_url}" />',
+            f'  <meta property="og:title" content="{safe_title}" />',
+            f'  <meta property="og:description" content="{safe_desc}" />',
+            '  <meta property="og:type" content="website" />',
+            f'  <meta property="og:url" content="{safe_url}" />',
+            '  <meta name="twitter:card" content="summary_large_image" />',
+            f'  <meta name="twitter:title" content="{safe_title}" />',
+            f'  <meta name="twitter:description" content="{safe_desc}" />',
+            f'  <script type="application/ld+json">{ld_json}</script>',
+        ]
+    )
+
+
 def render_hub_html(
     products: list[dict[str, Any]],
     *,
@@ -735,12 +790,25 @@ def render_hub_html(
         )
 
     cards_html = "\n".join(cards)
+    hub_title = f"Friction-Killer Suite — {len(products)} Zero-Backend Micro-Utilities & Web Apps"
+    hub_desc = (
+        "Client-side micro-tools and zero-install web apps for Lemon Squeezy to Stripe/Polar migration, "
+        "Stripe/PayPal payout journal splitting, Webflow CMS asset backup, Notion, Linear, Claude, and VS Code."
+    )
+    hub_seo_tags = build_seo_head_tags(
+        title=hub_title,
+        description=hub_desc,
+        canonical_url=f"{SITE_BASE_URL}/",
+        app_name="Friction-Killer Suite",
+        price_eur="49.00",
+    )
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Friction-Killer Suite — All-Access Developer &amp; PM Tools</title>
+  <title>{html.escape(hub_title)}</title>
+{hub_seo_tags}
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
@@ -762,11 +830,11 @@ def render_hub_html(
         Zero-Subscription · Local-First · Powered by Stripe Managed Payments
       </span>
       <h1 class="mt-5 text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
-        Eliminate Notion, Linear &amp; VS Code friction<br />
+        Eliminate SaaS, Ops &amp; Dev Friction<br />
         <span class="text-indigo-400">without paying monthly SaaS taxes.</span>
       </h1>
       <p class="mx-auto mt-4 max-w-2xl text-base text-slate-300">
-        Three purpose-built utilities that automate PRD-to-Linear epics, clean Notion Markdown Git exports, and declarative VS Code workspace profiles.
+        {len(products)} local-first tools &amp; zero-install web apps including LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch, and NotionGuestBridge.
       </p>
       <div class="mt-7 flex flex-wrap justify-center gap-3">
         <a href="#playground" class="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-slate-200">Try Live in Browser</a>
@@ -842,6 +910,19 @@ def render_product_page_for_docs(product: dict[str, Any]) -> str:
         1,
     )
 
+    # Inject SEO, OpenGraph, canonical, and JSON-LD SoftwareApplication structured data
+    if 'rel="canonical"' not in page_html and "</head>" in page_html:
+        price_match = re.search(r"(\d+(?:\.\d+)?)", str(product.get("price", "29")))
+        price_num = f"{float(price_match.group(1)):.2f}" if price_match else "29.00"
+        seo_tags = build_seo_head_tags(
+            title=f"{product['short_title']} — {product['title']}",
+            description=product["summary"],
+            canonical_url=f"{SITE_BASE_URL}/products/{slug}/",
+            app_name=product["short_title"],
+            price_eur=price_num,
+        )
+        page_html = page_html.replace("</head>", f"{seo_tags}\n</head>", 1)
+
     # Replace basic footer with Lemon Squeezy verification-compliant support/refund footer
     compliant_footer = (
         f"{LEGAL_FOOTER_HTML}\n"
@@ -889,6 +970,39 @@ def publish_docs_site(
         render_success_html(products, for_pages=True), encoding="utf-8"
     )
     (docs_dir / "cancel.html").write_text(render_cancel_html(), encoding="utf-8")
+
+    sitemap_entries = [
+        (f"{SITE_BASE_URL}/", "1.0"),
+        *[
+            (f"{SITE_BASE_URL}/products/{p['slug']}/", "0.9")
+            for p in products
+            if (p["proj_dir"] / "launch" / "landing.html").is_file()
+        ],
+    ]
+    url_blocks = "\n".join(
+        [
+            "  <url>\n"
+            f"    <loc>{html.escape(loc)}</loc>\n"
+            "    <lastmod>2026-11-22</lastmod>\n"
+            "    <changefreq>weekly</changefreq>\n"
+            f"    <priority>{priority}</priority>\n"
+            "  </url>"
+            for loc, priority in sitemap_entries
+        ]
+    )
+    (docs_dir / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{url_blocks}\n"
+        "</urlset>\n",
+        encoding="utf-8",
+    )
+    (docs_dir / "robots.txt").write_text(
+        "User-agent: *\n"
+        "Allow: /\n\n"
+        f"Sitemap: {SITE_BASE_URL}/sitemap.xml\n",
+        encoding="utf-8",
+    )
 
 
 def render_success_html(products: list[dict[str, Any]], *, for_pages: bool = True) -> str:

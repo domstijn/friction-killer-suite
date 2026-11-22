@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://domstijn.github.io/friction-killer-suite/sitemap.xml
