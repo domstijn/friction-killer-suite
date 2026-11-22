@@ -163,6 +163,13 @@
       "friction_observed": "Post-purchase redirect docs/success.html still listed only the first 3 tools and forced buyers to manually copy/paste their cs_live_... session ID back into browser Web Apps, creating conversion/activation friction; saturated dev-config idea claude-diff-review-vscode remained queued as GO despite free Marketplace extensions.",
       "upgrade_applied": "Upgraded render_success_html() in scripts/build_portfolio.py to auto-write Pro unlock tokens directly into localStorage for all 6 browser Web Apps (or all 6 at once on All-Access Bundle) with a 1-click Open Unlocked Web App banner, plus updated 11-tool CLI/extension instructions; reclassified claude-diff-review-vscode to NO-GO (59.0) and published GitHub Release v0.3.0.",
       "expected_impact": "Zero-friction post-checkout activation across all 6 browser Web Apps and clean, noise-free unbuilt opportunity pipeline."
+    },
+    {
+      "cycle": 14,
+      "date": "2026-11-22",
+      "friction_observed": "All 7 shipped Python .whl CLIs had bare 5-line METADATA lacking Author, License, Home-page, Project-URLs, and Markdown README descriptions needed for PyPI discoverability & DR-93 referral backlinks, and no stdlib uploader script existed.",
+      "upgrade_applied": "Upgraded build_wheel_package() in scripts/ship_check.py to generate PEP 566 Metadata 2.1 wheels with Stripe checkout links, Web App Project-URLs, classifiers, and Markdown descriptions; built zero-dependency scripts/publish_pypi.py with RECORD SHA-256 verification and claude-profile-switcher -> claude-profile-switch name mapping.",
+      "expected_impact": "Ready-to-publish PyPI distribution for all 7 Python CLI packages, creating 7 additional search-indexed DR-93 entry points linking straight to our Web Apps & Stripe Checkout."
     }
   ]
 }

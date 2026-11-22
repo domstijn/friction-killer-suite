@@ -270,12 +270,63 @@ def build_wheel_package(proj_dir: Path, version: str, pyproject_path: Path) -> P
         entries.insert(0, (f"{dist_name}/__init__.py", b""))
     top_levels = [dist_name]
 
+    scripts = proj_meta.get("scripts") or {}
+    cmd_name = next(iter(scripts.keys()), pkg_name) if isinstance(scripts, dict) else pkg_name
+
+    slug = proj_dir.name
+    catalog_path = REPO_ROOT / "pipeline" / "stripe_catalog.json"
+    checkout_url = "https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03"
+    price_label = "€24–€29 one-time"
+    if catalog_path.is_file():
+        try:
+            cat = json.loads(catalog_path.read_text(encoding="utf-8"))
+            entry = (cat.get("products") or {}).get(slug) or {}
+            if entry.get("payment_link_url"):
+                checkout_url = str(entry["payment_link_url"])
+            if entry.get("unit_amount"):
+                price_label = f"€{int(entry['unit_amount']) // 100} one-time"
+        except (OSError, json.JSONDecodeError, ValueError):
+            pass
+
+    clean_summary = re.sub(r"\s+", " ", summary).strip()
+    web_app_url = f"https://domstijn.github.io/friction-killer-suite/products/{slug}/"
+    long_desc = (
+        f"# {pkg_name}\n\n"
+        f"{clean_summary}\n\n"
+        f"- **Try Zero-Install Web App in Browser (No Install Required):** {web_app_url}\n"
+        f"- **Install Offline CLI:** `pip install {pkg_name}`\n\n"
+        "## Quick Usage\n\n"
+        "```bash\n"
+        f"{cmd_name} --help\n"
+        f"{cmd_name} --activate YOUR_STRIPE_KEY\n"
+        "```\n\n"
+        "## Free Tier & Pro License\n\n"
+        "- **Free Tier:** Included out-of-the-box for evaluation and small batches.\n"
+        f"- **Pro Lifetime License ({price_label}):** Instant activation via Stripe Managed Payments: {checkout_url}\n"
+        "- **All-Access Suite Bundle (€49 once):** Unlocks every Friction-Killer tool: https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03\n\n"
+        "## Source & Support\n\n"
+        "- Source & Documentation: https://github.com/domstijn/friction-killer-suite\n"
+        "- Issue Tracker: https://github.com/domstijn/friction-killer-suite/issues\n"
+    )
+
     metadata_txt = (
         "Metadata-Version: 2.1\n"
         f"Name: {pkg_name}\n"
         f"Version: {pkg_ver}\n"
-        f"Summary: {summary}\n"
+        f"Summary: {clean_summary}\n"
+        "Author: Stijn Dom\n"
+        "Author-email: dom.stijn99@gmail.com\n"
+        "License: MIT\n"
+        f"Home-page: {web_app_url}\n"
+        f"Project-URL: Web App, {web_app_url}\n"
+        "Project-URL: Source, https://github.com/domstijn/friction-killer-suite\n"
+        "Project-URL: Releases, https://github.com/domstijn/friction-killer-suite/releases\n"
+        "Classifier: License :: OSI Approved :: MIT License\n"
+        "Classifier: Programming Language :: Python :: 3\n"
+        "Classifier: Operating System :: OS Independent\n"
         f"Requires-Python: {req_py}\n"
+        "Description-Content-Type: text/markdown\n\n"
+        f"{long_desc}\n"
     ).encode("utf-8")
     wheel_txt = (
         "Wheel-Version: 1.0\n"
@@ -288,7 +339,6 @@ def build_wheel_package(proj_dir: Path, version: str, pyproject_path: Path) -> P
     entries.append((f"{dist_info}/WHEEL", wheel_txt))
     entries.append((f"{dist_info}/top_level.txt", ("\n".join(top_levels) + "\n").encode("utf-8")))
 
-    scripts = proj_meta.get("scripts") or {}
     if isinstance(scripts, dict) and scripts:
         ep_lines = ["[console_scripts]"]
         for cmd, target in scripts.items():
