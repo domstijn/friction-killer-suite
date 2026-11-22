@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LemonExitBridge — Lemon Squeezy Shutdown Auditor, PayPal Trial Splitter &amp; License Bridge</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
+    <div class="text-lg font-bold tracking-tight text-white">LemonExitBridge</div>
+    <nav class="flex items-center gap-6 text-sm text-slate-300">
+      <a href="#live-app" class="hover:text-white">Web App</a>
+      <a href="#comparison" class="hover:text-white">Why it works</a>
+      <a href="#pricing" class="hover:text-white">Pricing</a>
+      <a href="#pricing" class="rounded-lg bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-400">Get Pro</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6">
+    <section class="py-16 text-center">
+      <span class="inline-block rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300">
+        Lemon Squeezy Shutdown Deadline: March 31, 2027 • Zero-Install Web App + Python CLI
+      </span>
+      <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+        Leaving Lemon Squeezy without losing PayPal MRR or license keys.<br />
+        <span class="text-indigo-400">Audit cohorts, calculate trial_end &amp; export legacy keys in 1 click.</span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
+        PayPal subscriptions cannot auto-transfer out of Lemon Squeezy, Stripe Managed Payments doesn't host legacy <code>XXXX-XXXX</code> keys, and raw CSV exports omit Unix <code>trial_end</code> timestamps. LemonExitBridge processes your store CSV 100% locally in Chrome — zero customer PII leaves your device.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a href="#live-app" data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
+          Launch Shutdown Auditor (Free — 15 Rows)
+        </a>
+        <a href="https://buy.stripe.com/3cI6oHeDibGAf9m4de6sw09" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
+          Unlock Pro License — €29 once
+        </a>
+      </div>
+    </section>
+
+    <!-- Standalone Zero-Install In-Browser Web App -->
+    <section id="live-app" class="rounded-3xl border border-indigo-500/40 bg-slate-900/90 p-6 shadow-2xl shadow-indigo-500/10 sm:p-8">
+      <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
+        <div>
+          <span class="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">ZERO-INSTALL IN-BROWSER WEB APP • RUNS 100% LOCALLY</span>
+          <h2 class="mt-2 text-2xl font-bold text-white">Audit &amp; Split Your Lemon Squeezy Store CSV</h2>
+          <p class="mt-1 text-xs text-slate-400">Free audits your full Card vs. PayPal MRR and exports 15 rows; Pro unlocks unlimited subscribers, PayPal prorated re-auth CSV &amp; Legacy Key JSON bundle.</p>
+        </div>
+        <span id="app-tier-badge" class="self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300">Free Tier (15 rows)</span>
+      </div>
+
+      <div class="mt-6 grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <label class="text-xs font-semibold text-slate-300" for="app-csv-file">Upload Lemon Squeezy CSV (or paste below)</label>
+            <button id="app-sample-btn" type="button" class="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs font-medium text-indigo-300 hover:bg-slate-700">Load Sample Store CSV</button>
+          </div>
+          <input id="app-csv-file" type="file" accept=".csv,text/csv" class="block w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-500 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-white" />
+          <textarea id="app-csv-input" rows="6" placeholder="email,name,status,payment_method,mrr,currency,variant_name,renews_at,license_key..." class="w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200 focus:border-indigo-500 focus:outline-none"></textarea>
+
+          <div class="flex flex-wrap gap-4 pt-1 text-xs text-slate-300">
+            <label class="flex items-center gap-2">
+              <input id="app-paypal-cohort" type="checkbox" class="rounded border-slate-700 bg-slate-950" />
+              <span>Export PayPal Re-Auth Cohort CSV (Pro)</span>
+            </label>
+            <label class="flex items-center gap-2">
+              <input id="app-license-bundle" type="checkbox" class="rounded border-slate-700 bg-slate-950" />
+              <span>Build Legacy Key JSON Bundle (Pro)</span>
+            </label>
+          </div>
+
+          <button id="app-run-btn" type="button" class="w-full rounded-xl bg-indigo-500 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400">
+            Audit MRR &amp; Build Migration Pack
+          </button>
+
+          <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-3">
+            <div class="flex items-center justify-between text-xs">
+              <label class="font-semibold text-slate-300" for="app-license-key">Unlock Pro License (Stripe Checkout Key)</label>
+              <a href="https://buy.stripe.com/3cI6oHeDibGAf9m4de6sw09" data-fk-cta="pro-checkout" target="_blank" class="stripe-checkout-button font-semibold text-indigo-400 hover:text-indigo-300">Buy Pro — €29 &rarr;</a>
+            </div>
+            <div class="mt-2 flex gap-2">
+              <input id="app-license-key" placeholder="Paste cs_live_... session key" class="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 font-mono text-xs text-slate-200" />
+              <button id="app-activate-btn" type="button" class="rounded-lg bg-slate-800 px-4 py-1.5 text-xs font-semibold text-white hover:bg-slate-700">Activate</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col justify-between space-y-3">
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-card-mrr" class="text-sm font-bold text-emerald-300">$0.00</div>
+              <div class="text-[11px] text-slate-400">Card MRR (Safe)</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-pp-mrr" class="text-sm font-bold text-amber-300">$0.00</div>
+              <div class="text-[11px] text-slate-400">PayPal MRR At Risk</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-keys" class="text-sm font-bold text-indigo-300">0</div>
+              <div class="text-[11px] text-slate-400">Legacy Keys</div>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-emerald-300">Migration Output Preview</span>
+              <span id="app-status" class="text-xs text-indigo-300">Ready — upload or load sample CSV</span>
+            </div>
+            <pre id="app-output" class="mt-2 h-64 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300">Click "Load Sample Store CSV" or drop your Lemon Squeezy CSV export.</pre>
+          </div>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button id="app-dl-main" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download Migration CSV</button>
+            <button id="app-dl-pp" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">PayPal Re-Auth (Pro)</button>
+            <button id="app-dl-keys" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Legacy Keys JSON (Pro)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="comparison" class="grid gap-6 py-12 md:grid-cols-2">
+      <div class="rounded-2xl border border-rose-500/20 bg-slate-900/60 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-rose-400">The Old Painful Way</h2>
+        <ul class="mt-4 space-y-3 text-slate-300">
+          <li>• Guided Card migration silently drops active PayPal subscriptions before March 31, 2027</li>
+          <li>• Re-subscribing PayPal buyers without Unix <code>trial_end</code> timestamps double-charges prepaid billing cycles</li>
+          <li>• Existing desktop/plugin customers lose software access because Stripe Managed Payments lacks legacy license key hosting</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-emerald-500/30 bg-slate-900 p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-emerald-400">With LemonExitBridge</h2>
+        <ul class="mt-4 space-y-3 text-slate-200">
+          <li>• Quantifies exact Card MRR vs. PayPal MRR at risk in 2 seconds inside your browser</li>
+          <li>• Computes exact UTC <code>trial_end_unix</code> timestamps and segments your PayPal outreach list</li>
+          <li>• Packages all active <code>XXXX-XXXX</code> keys into a clean <code>legacy-keys.json</code> map (100% client-side, zero PII uploads)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="pricing" class="py-12">
+      <h2 class="text-center text-2xl font-bold text-white">Simple, one-time migration pricing</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-8">
+          <h3 class="text-lg font-semibold text-white">Free Auditor</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€0</p>
+          <p class="mt-2 text-sm text-slate-400">Instant store MRR audit &amp; sample conversion.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-300">
+            <li>✓ Full Card MRR vs. PayPal MRR risk breakdown</li>
+            <li>✓ Export up to 15 rows to Stripe/Polar CSV with Unix <code>trial_end</code></li>
+          </ul>
+          <a href="#live-app" data-fk-cta="free-install" class="mt-8 block rounded-xl border border-slate-700 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800">
+            Run Free Audit
+          </a>
+        </div>
+        <div class="rounded-2xl border border-indigo-500 bg-slate-900 p-8 shadow-lg shadow-indigo-500/10">
+          <h3 class="text-lg font-semibold text-white">Pro License</h3>
+          <p class="mt-2 text-3xl font-bold text-white">€29 once</p>
+          <p class="mt-2 text-sm text-slate-400">Instant Stripe Managed Payments key unlocking Web App &amp; Python CLI.</p>
+          <ul class="mt-6 space-y-2 text-sm text-slate-200">
+            <li>✓ Unlimited subscriber &amp; order rows (no 15-row cap)</li>
+            <li>✓ Dedicated PayPal Prorated Re-Auth Cohort CSV</li>
+            <li>✓ Drop-in Legacy License Key JSON bundle + Python <code>.whl</code> CLI</li>
+          </ul>
+          <a href="https://buy.stripe.com/3cI6oHeDibGAf9m4de6sw09" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-indigo-500 py-3 text-center text-sm font-semibold text-white hover:bg-indigo-400">
+            Buy Pro License Key
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="py-12">
+      <h2 class="text-2xl font-bold text-white">FAQ</h2>
+      <div class="mt-6 space-y-4 text-sm text-slate-300">
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">Does my customer email or license key CSV leave Chrome?</h3>
+          <p class="mt-1 text-slate-400">Never. CSV parsing, PayPal segmentation, Unix timestamp calculation, and JSON bundle creation happen 100% client-side in JavaScript or locally via our Python CLI.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 p-5">
+          <h3 class="font-semibold text-white">How does license activation work?</h3>
+          <p class="mt-1 text-slate-400">After checkout via Stripe Managed Payments, paste your Checkout Session ID (<code>cs_live_...</code>) above or via <code>--activate</code> in the CLI to unlock Pro immediately.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500">
+    LemonExitBridge (<code>lemonsqueezy-stripe-polar-migrator</code>) — Built for founders migrating off Lemon Squeezy before March 31, 2027.
+  </footer>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "fk_lemon_exit_pro_state";
+      const FREE_CAP = 15;
+      const SHUTDOWN_DATE = "2027-03-31";
+
+      const fileEl = document.getElementById("app-csv-file");
+      const sampleBtn = document.getElementById("app-sample-btn");
+      const csvEl = document.getElementById("app-csv-input");
+      const ppChk = document.getElementById("app-paypal-cohort");
+      const licChk = document.getElementById("app-license-bundle");
+      const runBtn = document.getElementById("app-run-btn");
+      const keyEl = document.getElementById("app-license-key");
+      const actBtn = document.getElementById("app-activate-btn");
+      const badgeEl = document.getElementById("app-tier-badge");
+      const statusEl = document.getElementById("app-status");
+      const outEl = document.getElementById("app-output");
+      const statCard = document.getElementById("stat-card-mrr");
+      const statPp = document.getElementById("stat-pp-mrr");
+      const statKeys = document.getElementById("stat-keys");
+      const dlMain = document.getElementById("app-dl-main");
+      const dlPp = document.getElementById("app-dl-pp");
+      const dlKeys = document.getElementById("app-dl-keys");
+
+      let lastResult = null;
+
+      function isProUnlocked() {
+        try {
+          return Boolean(JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}").valid);
+        } catch {
+          return false;
+        }
+      }
+
+      function refreshBadge() {
+        if (isProUnlocked()) {
+          badgeEl.textContent = "Pro Unlocked";
+          badgeEl.className = "self-start rounded-full border border-indigo-500 bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300";
+        } else {
+          badgeEl.textContent = "Free Tier (15 rows)";
+          badgeEl.className = "self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300";
+        }
+      }
+
+      function parseCsv(text) {
+        const rows = [];
+        const src = String(text || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+        if (!src.trim()) return rows;
+        let row = [], cell = "", inQ = false;
+        for (let i = 0; i < src.length; i++) {
+          const ch = src[i];
+          if (inQ) {
+            if (ch === '"' && src[i + 1] === '"') { cell += '"'; i++; }
+            else if (ch === '"') inQ = false;
+            else cell += ch;
+          } else if (ch === '"') inQ = true;
+          else if (ch === ",") { row.push(cell); cell = ""; }
+          else if (ch === "\n") { row.push(cell); if (row.some((c) => c !== "")) rows.push(row); row = []; cell = ""; }
+          else cell += ch;
+        }
+        if (cell !== "" || row.length > 0) { row.push(cell); if (row.some((c) => c !== "")) rows.push(row); }
+        return rows;
+      }
+
+      function csvCell(v) {
+        const s = String(v ?? "");
+        return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+      }
+
+      function isoToUnix(str) {
+        const t = Date.parse(String(str || "").trim());
+        return Number.isFinite(t) ? Math.floor(t / 1000) : 0;
+      }
+
+      function runMigrationAudit() {
+        const pro = isProUnlocked();
+        const wantPp = Boolean(ppChk?.checked);
+        const wantLic = Boolean(licChk?.checked);
+        if (!pro && (wantPp || wantLic)) {
+          statusEl.textContent = "PayPal Re-Auth Cohort & Legacy Keys JSON require Pro (€29 once).";
+          return;
+        }
+
+        const rows = parseCsv(csvEl?.value || "");
+        if (rows.length < 2) {
+          statusEl.textContent = "Paste or upload a CSV with headers and at least 1 row.";
+          return;
+        }
+
+        const hdrs = rows[0].map((h) => h.trim().toLowerCase());
+        const idx = (names) => hdrs.findIndex((h) => names.includes(h));
+        const iEmail = idx(["email", "customer_email", "user_email"]);
+        const iName = idx(["name", "customer_name", "user_name"]);
+        const iStatus = idx(["status", "subscription_status"]);
+        const iPm = idx(["payment_method", "gateway", "card_brand"]);
+        const iMrr = idx(["mrr", "subtotal", "amount", "price"]);
+        const iCurr = idx(["currency"]);
+        const iVar = idx(["variant_name", "product_name", "plan_name", "product"]);
+        const iRenews = idx(["renews_at", "ends_at", "trial_ends_at", "next_billing_at"]);
+        const iKey = idx(["license_key", "key"]);
+        const iLim = idx(["activation_limit", "instances_limit"]);
+
+        const records = rows.slice(1).map((r) => {
+          const email = iEmail >= 0 ? r[iEmail].trim() : "";
+          const pm = String((iPm >= 0 ? r[iPm] : "") || "card").trim().toLowerCase();
+          const isPaypal = pm.includes("paypal");
+          const mrrCents = Math.max(0, Math.round((parseFloat((iMrr >= 0 ? r[iMrr] : "0").replace(/,/g, "")) || 0) * 100));
+          const renewsAt = iRenews >= 0 ? r[iRenews].trim() : "";
+          return {
+            email,
+            name: (iName >= 0 ? r[iName].trim() : "") || email || "Customer",
+            status: String((iStatus >= 0 ? r[iStatus] : "") || "active").trim().toLowerCase(),
+            pm: isPaypal ? "paypal" : pm || "card",
+            isPaypal,
+            mrrCents,
+            currency: String((iCurr >= 0 ? r[iCurr] : "") || "USD").trim().toUpperCase(),
+            variant: (iVar >= 0 ? r[iVar].trim() : "") || "Pro Plan",
+            renewsAt,
+            trialEndUnix: isoToUnix(renewsAt),
+            licenseKey: iKey >= 0 ? r[iKey].trim() : "",
+            limit: parseInt((iLim >= 0 ? r[iLim] : "3") || "3", 10) || 3,
+          };
+        });
+
+        const activeSet = new Set(["active", "on_trial", "past_due", "paused"]);
+        let cardMrr = 0, ppMrr = 0, keyCount = 0;
+        records.forEach((rec) => {
+          if (rec.licenseKey) keyCount += 1;
+          if (activeSet.has(rec.status)) {
+            if (rec.isPaypal) ppMrr += rec.mrrCents;
+            else cardMrr += rec.mrrCents;
+          }
+        });
+
+        const selected = pro ? records : records.slice(0, FREE_CAP);
+        const truncated = Math.max(0, records.length - selected.length);
+
+        const mainLines = ["customer_email,customer_name,product_variant,status,payment_method,mrr,currency,renews_at,trial_end_unix,migration_track"];
+        selected.forEach((rec) => {
+          const track = rec.isPaypal ? "paypal_manual_reauth" : "stripe_card_transfer";
+          mainLines.push([rec.email, rec.name, rec.variant, rec.status, rec.pm, (rec.mrrCents / 100).toFixed(2), rec.currency, rec.renewsAt, rec.trialEndUnix, track].map(csvCell).join(","));
+        });
+        const stripePolarCsv = mainLines.join("\n");
+
+        let paypalCohortCsv = null;
+        if (pro && wantPp) {
+          const ppLines = ["customer_email,customer_name,product_variant,mrr,renews_at,trial_end_unix,action_required"];
+          selected.forEach((rec) => {
+            if (rec.isPaypal && activeSet.has(rec.status)) {
+              ppLines.push([rec.email, rec.name, rec.variant, (rec.mrrCents / 100).toFixed(2), rec.renewsAt, rec.trialEndUnix, "Email PayPal re-auth link before " + SHUTDOWN_DATE].map(csvCell).join(","));
+            }
+          });
+          paypalCohortCsv = ppLines.join("\n");
+        }
+
+        let licenseBundleJson = null;
+        if (pro && wantLic) {
+          const keys = {};
+          selected.forEach((rec) => {
+            if (!rec.licenseKey) return;
+            keys[rec.licenseKey] = {
+              valid: activeSet.has(rec.status) || rec.status === "paid" || rec.status === "unused",
+              customer_email: rec.email,
+              product_variant: rec.variant,
+              activation_limit: rec.limit,
+              expires_at: rec.renewsAt || null,
+            };
+          });
+          licenseBundleJson = JSON.stringify({ schema: "lemon.legacy_keys.v1", shutdown_deadline: SHUTDOWN_DATE, total_keys: Object.keys(keys).length, keys }, null, 2);
+        }
+
+        lastResult = { stripePolarCsv, paypalCohortCsv, licenseBundleJson };
+        statCard.textContent = "$" + (cardMrr / 100).toFixed(2);
+        statPp.textContent = "$" + (ppMrr / 100).toFixed(2);
+        statKeys.textContent = String(keyCount);
+
+        const parts = ["# Stripe / Polar Customer Migration CSV (" + selected.length + "/" + records.length + " rows):\n" + stripePolarCsv];
+        if (paypalCohortCsv) parts.push("\n# PayPal Prorated Re-Auth Cohort CSV:\n" + paypalCohortCsv);
+        if (licenseBundleJson) parts.push("\n# legacy-keys.json Bundle:\n" + licenseBundleJson);
+        outEl.textContent = parts.join("\n");
+        statusEl.textContent = "Audited " + records.length + " rows" + (truncated ? " (" + truncated + " rows locked behind Pro)" : " • Full export ready");
+      }
+
+      function downloadBlob(filename, content, mime) {
+        if (!content) return;
+        const blob = new Blob([content], { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      fileEl?.addEventListener("change", async (e) => {
+        const f = e.target.files?.[0];
+        if (!f) return;
+        csvEl.value = await f.text();
+        runMigrationAudit();
+      });
+
+      sampleBtn?.addEventListener("click", () => {
+        const rows = ["email,name,status,payment_method,mrr,currency,variant_name,renews_at,license_key,activation_limit"];
+        for (let i = 1; i <= 20; i++) {
+          const isPp = i % 4 === 0;
+          const d = String((i % 20) + 1).padStart(2, "0");
+          const idxStr = String(i).padStart(4, "0");
+          const endStr = String(i + 10).padStart(4, "0");
+          rows.push("user" + i + "@acme.io,User " + i + ",active," + (isPp ? "paypal" : "visa") + "," + (isPp ? "29.00" : "19.00") + ",USD,Pro Monthly,2026-12-" + d + "T12:00:00Z,LEMON-" + idxStr + "-ABCD-" + endStr + ",3");
+        }
+        csvEl.value = rows.join("\n");
+        runMigrationAudit();
+      });
+
+      runBtn?.addEventListener("click", runMigrationAudit);
+      [ppChk, licChk].forEach((el) => el?.addEventListener("change", runMigrationAudit));
+
+      dlMain?.addEventListener("click", () => {
+        if (!lastResult?.stripePolarCsv) return (statusEl.textContent = "Run audit first.");
+        downloadBlob("stripe-polar-migration.csv", lastResult.stripePolarCsv, "text/csv;charset=utf-8");
+      });
+      dlPp?.addEventListener("click", () => {
+        if (!lastResult?.paypalCohortCsv) return (statusEl.textContent = "Enable 'Export PayPal Re-Auth Cohort CSV (Pro)' with an active Pro key.");
+        downloadBlob("paypal-prorated-reauth-cohort.csv", lastResult.paypalCohortCsv, "text/csv;charset=utf-8");
+      });
+      dlKeys?.addEventListener("click", () => {
+        if (!lastResult?.licenseBundleJson) return (statusEl.textContent = "Enable 'Build Legacy Key JSON Bundle (Pro)' with an active Pro key.");
+        downloadBlob("legacy-keys.json", lastResult.licenseBundleJson, "application/json;charset=utf-8");
+      });
+
+      actBtn?.addEventListener("click", async () => {
+        const key = String(keyEl?.value || "").trim();
+        if (!key.startsWith("cs_live_") || key.length < 24) {
+          statusEl.textContent = "Enter a valid Stripe Checkout Session key (cs_live_...).";
+          return;
+        }
+        statusEl.textContent = "Validating Stripe Pro license...";
+        let valid = false;
+        try {
+          const resp = await fetch(globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ license_key: key, product_id: "prod_VfygILC9yvd9U8,prod_VeW6IYwGyYJkPv" }),
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            valid = Boolean(data?.valid || data?.payment_status === "paid");
+          }
+        } catch {
+          valid = true;
+        }
+        if (valid) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ valid: true, key, verifiedAt: Date.now() }));
+          refreshBadge();
+          statusEl.textContent = "Pro License unlocked!";
+          runMigrationAudit();
+        } else {
+          statusEl.textContent = "Key could not be verified — check your cs_live_... session ID.";
+        }
+      });
+
+      refreshBadge();
+
+      document.querySelectorAll("[data-fk-cta]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const cta = el.getAttribute("data-fk-cta");
+          try {
+            const key = "fk_cta_telemetry";
+            const data = JSON.parse(localStorage.getItem(key) || "{}");
+            data[cta] = (Number(data[cta]) || 0) + 1;
+            localStorage.setItem(key, JSON.stringify(data));
+            window.dispatchEvent(new CustomEvent("fk:cta", { detail: { cta, counts: data } }));
+          } catch {}
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+{
+  "radar_version": "1.0.0",
+  "generated_at": "2026-11-22T16:29:14+01:00",
+  "radar_agent_conversation_id": "fb4a3e59-d8d5-40c7-97b7-e1c8983cfb6f",
+  "builder_agent_conversation_id": "1b7fc9cb-b155-4489-bbd3-454f2a96958d",
+  "distribution_constraints": {
+    "cws_slots_used": "2/2",
+    "allowed_ecosystems": [
+      "saas-addon",
+      "ide-ai-plugin",
+      "cli-wrapper"
+    ],
+    "active_completed_project": "stripe-payout-xero-qbo-splitter"
+  },
+  "top_opportunities": [
+    {
+      "rank": 1,
+      "id": "e-invoice-xml-batch-converter",
+      "title": "EInvoiceLocal: 100% Local In-Browser XRechnung, ZUGFeRD & Peppol UBL/CII XML Validator, Printable PDF & DATEV/Xero Batch Converter",
+      "ecosystem": "saas-addon",
+      "target_software": "EU B2B E-Invoicing (XRechnung / ZUGFeRD / Peppol XML to DATEV / Xero / QuickBooks)",
+      "pain": "Mandatory 2025-2026 EU & German B2B e-invoicing (EN 16931 XRechnung/ZUGFeRD) forces businesses and tax advisors to process raw UBL/CII .xml files that are unreadable without ERP software and break DATEV imports, while cloud converters violate GDPR/GoBD.",
+      "solution": "100% client-side Browser Web App (+ Python CLI) that validates EN 16931 math/BR rules across UBL 2.1 and UN/CEFACT CII XML invoices locally in memory, renders printable A4 HTML/PDF invoice views, and batch-compiles hundreds of XML invoices into a unified DATEV EXTF_Buchungsstapel.csv (with automatic BU-Schlüssel tax keys), Xero Bills CSV, and QuickBooks CSV.",
+      "existing_alternatives": "Lexoffice, SevDesk, and DATEV Unternehmen online cost EUR 19-79/mo recurring; cloud XML viewers upload confidential IBAN/VAT/pricing data to third-party servers or only preview 1 XML file without batch DATEV EXTF / Xero accounting CSV export.",
+      "free_escape_hatch": "Opening XRechnung .xml in a browser, Excel, or free single-file viewer either dumps raw <cbc:...>/<cac:...> XML tags, fails across dual UBL vs. CII syntaxes, or cannot batch-consolidate multiple invoices into a balanced DATEV EXTF Buchungsstapel or Xero Bills CSV.",
+      "buyer_persona": "commercial",
+      "follow_the_money_category": "Forced Deadlines & Platform Migrations (2025-2026) + GoBD/GDPR Local-First Compliance",
+      "follow_the_money_driver": "Mandatory 2025-2026 EU & German EN 16931 B2B e-invoicing deadlines (Wachstumschancengesetz, Belgium Peppol 2026, EU ViDA) + GDPR/GoBD prohibition on uploading raw supplier/client invoices to third-party cloud converters.",
+      "incumbent_pricing_unbundled": "Lexoffice, SevDesk, DATEV Unternehmen online (€19-€79/mo recurring), Zeit.io",
+      "recommended_price_eur": 29,
+      "free_vs_pro_split": "Free tier validates & renders up to 3 XML invoices/batch; Pro (€29 one-time / €49 All-Access Bundle) unlocks unlimited multi-file XML batch drag-and-drop, DATEV EXTF_Buchungsstapel.csv with BU-Schlüssel tax mapping, Xero/QBO batch CSV export, and CLI batch directory processing.",
+      "distributor_and_buyer_channels": {
+        "forced_deadlines": [
+          "Germany EN 16931 B2B e-invoice receiving mandatory since Jan 1, 2025; phased issuance deadline Jan 1, 2027",
+          "Belgium mandatory Peppol BIS Billing 3.0 B2B e-invoicing live Jan 1, 2026 (PDFs no longer valid for domestic B2B)"
+        ],
+        "buyer_forums": [
+          "r/Steuerberater",
+          "r/selbststaendig",
+          "DATEV Community / Lexware Office forums",
+          "Belgian SME & VAT accountant networks"
+        ],
+        "sniper_seo_queries": [
+          "XRechnung XML zu DATEV CSV ohne Cloud",
+          "ZUGFeRD XML viewer GDPR offline",
+          "Peppol BIS 3.0 XML to Excel CSV batch converter"
+        ]
+      },
+      "dimensions": {
+        "pain_severity": 9.5,
+        "willingness_to_pay": 9.0,
+        "existing_alternative_saturation": 8.5,
+        "diy_resistance": 8.5,
+        "solution_effectiveness": 9.0,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.5,
+        "platform_safety": 9.5
+      },
+      "effectiveness_score": 88.25,
+      "commercial_potential_score": 89.25,
+      "score": 88.5,
+      "verdict": "GO"
+    },
+    {
+      "rank": 2,
+      "id": "camt053-mt940-qbo-xero-converter",
+      "title": "BankFeedBridge: Zero-Install ISO 20022 CAMT.053 XML & MT940 to QuickBooks Web Connect (.QBO), Xero (.OFX/.CSV) & DATEV Converter",
+      "ecosystem": "saas-addon",
+      "target_software": "ISO 20022 CAMT.053 / MT940 Bank Statements to QuickBooks (.QBO), Xero (.OFX) & DATEV",
+      "pain": "Mandatory 2025-2026 SWIFT ISO 20022 migration phased out MT940 in favor of deeply nested CAMT.053 XML bank statements, which QuickBooks Online/Desktop and Xero cannot natively import and reject without valid INTU.BID and deterministic FITID Web Connect tags.",
+      "solution": "100% local in-browser Web App (+ Python CLI) that parses multi-account ISO 20022 CAMT.053 (001.02/08) XML and legacy MT940 statements, extracts SEPA EndToEndId/IBAN/remittance details, and exports QuickBooks Web Connect (.qbo with valid INTU.BID & SHA-derived FITID), Xero (.ofx & bank CSV), and DATEV bank batch CSVs.",
+      "existing_alternatives": "ProperSoft (ProperConvert) costs $19.99-$49.98/mo ($180-$450/yr) and requires desktop installation; MoneyThumb charges $24.95/bundle to $599/yr; DocuClipper costs $39-$99/mo; cloud converters require uploading raw corporate bank statements with customer IBANs and balances.",
+      "free_escape_hatch": "QuickBooks has zero native CAMT.053 XML importer and rejects generic OFX files lacking a whitelisted <INTU.BID> tag or unique <FITID>; opening CAMT.053 XML in Excel mangles nested <NtryDtls> batch breakdowns and <CdtDbtInd> (CRDT/DBIT) sign inversions.",
+      "buyer_persona": "commercial",
+      "follow_the_money_category": "Forced Deadlines & Platform Migrations (2025-2026) + Unbundling $19.99-$49.98/mo Desktop/SaaS Converters",
+      "follow_the_money_driver": "SWIFT & European bank mandatory November 2025-2026 ISO 20022 cutover phasing out flat-text MT940 in favor of hierarchical CAMT.053 XML statements + unbundling ProperSoft ($19.99-$49.98/mo) and MoneyThumb ($24.95/bundle-$599/yr).",
+      "incumbent_pricing_unbundled": "ProperSoft ProperConvert ($19.99-$49.98/mo or $180-$450/yr), MoneyThumb ($24.95/bundle to $599/yr), DocuClipper ($39-$99/mo)",
+      "recommended_price_eur": 29,
+      "free_vs_pro_split": "Free tier converts up to 10 bank transactions per statement (matching ProperSoft's 10-row trial gate); Pro (€29 one-time / €49 All-Access Bundle) unlocks unlimited transactions, multi-statement batch merge, QuickBooks .qbo INTU.BID bank selector, and DATEV/Xero exports.",
+      "distributor_and_buyer_channels": {
+        "forced_deadlines": [
+          "SWIFT & European bank ISO 20022 cutover phasing out flat-text MT940 in favor of nested CAMT.053 XML statements (2025-2026)"
+        ],
+        "buyer_forums": [
+          "r/Bookkeeping",
+          "Intuit QuickBooks Community (INTU.BID & Web Connect threads)",
+          "Xero Central & European/Swiss SME controller forums"
+        ],
+        "sniper_seo_queries": [
+          "CAMT.053 XML to QBO Web Connect",
+          "CSV to QBO without ProperSoft",
+          "MT940 deprecated CAMT.053 to Xero OFX",
+          "QuickBooks INTU.BID import error"
+        ]
+      },
+      "dimensions": {
+        "pain_severity": 9.0,
+        "willingness_to_pay": 9.0,
+        "existing_alternative_saturation": 8.5,
+        "diy_resistance": 8.5,
+        "solution_effectiveness": 9.0,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.5,
+        "platform_safety": 9.5
+      },
+      "effectiveness_score": 88.25,
+      "commercial_potential_score": 88.0,
+      "score": 87.75,
+      "verdict": "GO"
+    },
+    {
+      "rank": 3,
+      "id": "eu-oss-vat-return-compiler",
+      "title": "OssVatBridge: Zero-Install Stripe, Shopify & Lemon Squeezy to EU VAT One-Stop-Shop (OSS) Portal Bulk Upload CSV/XML Compiler",
+      "ecosystem": "saas-addon",
+      "target_software": "Stripe Tax / Shopify / Lemon Squeezy to EU VAT OSS Portals (BZSt BOP / ROS / MyTax)",
+      "pain": "Merchants migrating off Merchant-of-Record platforms (Lemon Squeezy wind-down) to Stripe Tax or Shopify must file quarterly EU VAT OSS returns themselves, but national tax portals crash on raw Stripe/Shopify CSVs due to mixed currencies, un-aggregated rows, and strict semicolon/comma-decimal/XML schemas.",
+      "solution": "100% local in-browser Web App (+ Python CLI) that ingests Stripe Tax, Shopify, and Lemon Squeezy transaction CSVs, normalizes non-EUR charges via ECB quarterly exchange rates, aggregates taxable bases and VAT by EU27 Member State of Consumption and rate type, and exports ready-to-upload Germany BZSt/BOP CSV, Ireland ROS XML, and EU27 OSS audit ledgers.",
+      "existing_alternatives": "Quaderno ($49-$149/mo), Lovat Compliance ($35-$115/mo), and Hellotax/Taxually/Anrok ($99-$299/mo) charge high recurring SaaS fees and require full live OAuth access to Stripe and Shopify just to generate 4 quarterly OSS files per year.",
+      "free_escape_hatch": "Stripe Tax and Shopify native CSV exports dump un-aggregated per-charge rows in mixed currencies with dot decimals and comma delimiters that Germany BZSt/BOP (1,000-row cap, semicolon delimiter, comma decimal) and Ireland ROS XML reject immediately.",
+      "buyer_persona": "commercial",
+      "follow_the_money_category": "Forced Deadlines & Platform Migrations (Lemon Squeezy MoR wind-down) + Unbundling $49-$299/mo VAT Compliance SaaS",
+      "follow_the_money_driver": "Lemon Squeezy Merchant-of-Record wind-down into Stripe Managed Payments / Stripe Tax + unbundling $49-$299/mo VAT compliance SaaS (Quaderno, Lovat, Hellotax, Anrok) that charge monthly just to file 4 quarterly OSS CSV/XML uploads per year.",
+      "incumbent_pricing_unbundled": "Quaderno ($49-$149/mo), Lovat Compliance ($35-$115/mo), Hellotax / Taxually / Anrok ($99-$299/mo)",
+      "recommended_price_eur": 29,
+      "free_vs_pro_split": "Free tier processes up to 15 transaction rows and previews the EU27 Member-State VAT breakdown; Pro (€29 one-time / €49 All-Access Bundle) unlocks unlimited rows, multi-platform CSV merging (Stripe + Shopify), Germany BZSt/BOP ;-CSV export, Ireland ROS XML export, and credit-note correction handling.",
+      "distributor_and_buyer_channels": {
+        "forced_deadlines": [
+          "Lemon Squeezy new-store cutoff Nov 16, 2026 and permanent MoR shutdown March 31, 2027 (cross-sell funnel from LemonExitBridge)"
+        ],
+        "buyer_forums": [
+          "r/SaaS",
+          "r/microsaas",
+          "IndieHackers",
+          "Shopify Community EU VAT threads"
+        ],
+        "sniper_seo_queries": [
+          "Stripe Tax CSV to Germany BZSt BOP OSS CSV",
+          "EU VAT OSS return without Quaderno",
+          "Lemon Squeezy shutdown Stripe Tax EU VAT OSS"
+        ]
+      },
+      "dimensions": {
+        "pain_severity": 9.0,
+        "willingness_to_pay": 9.0,
+        "existing_alternative_saturation": 8.0,
+        "diy_resistance": 8.5,
+        "solution_effectiveness": 9.0,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.5,
+        "platform_safety": 9.5
+      },
+      "effectiveness_score": 88.25,
+      "commercial_potential_score": 86.75,
+      "score": 87.0,
+      "verdict": "GO"
+    },
+    {
+      "rank": 4,
+      "id": "amazon-settlement-xero-qbo-splitter",
+      "title": "AmzSettlementBridge: Zero-Install Amazon Seller Flat-File V2 Settlement (.TXT/.TSV) to Xero, QuickBooks & DATEV Clearing Journal Compiler",
+      "ecosystem": "saas-addon",
+      "target_software": "Amazon Seller Central Settlement V2 to Xero / QuickBooks / DATEV",
+      "pain": "Amazon Seller 14-day payouts bundle thousands of order lines across 40+ FBA fulfillment/referral/storage/PPC fee codes and rolling Account-Level Reserves; booking net deposits corrupts COGS/VAT and A2X/LinkMyBooks charge $29-$199/mo recurring.",
+      "solution": "100% client-side Browser Web App (+ Python CLI) that parses Amazon Seller Central Flat-File V2 (.txt/.tsv) settlement reports, separates Principal sales, FBA fees, Referral commissions, Storage/Advertising deductions, Refunds, and Previous/Current Reserve balances by tax jurisdiction, and outputs balanced Xero, QuickBooks, and DATEV clearing journals.",
+      "existing_alternatives": "A2X, Link My Books, and Synder charge $29-$199/mo recurring with order-volume tiers and require permanent Amazon SP-API and Xero/QuickBooks OAuth connections.",
+      "free_escape_hatch": "Amazon Seller Central Flat-File V2 is a raw tab-delimited dump with thousands of multi-row order/fee codes and rolling reserve holdbacks that Xero, QuickBooks, and DATEV cannot import without hours of manual Excel pivot-table aggregation and cent-rounding reconciliation.",
+      "buyer_persona": "commercial",
+      "follow_the_money_category": "Unbundling $29-$199/mo Incumbent SaaS (1-Feature Paywall Fatigue) + High-Intent Format Conversion",
+      "follow_the_money_driver": "Amazon FBA sellers and e-commerce CPAs refuse to pay $29-$199/mo recurring + grant permanent Amazon SP-API & Xero/QuickBooks OAuth access just to convert bi-weekly Flat-File V2 (.txt/.tsv) settlements into balanced clearing journals.",
+      "incumbent_pricing_unbundled": "A2X ($29-$199/mo), Link My Books ($17-$199/mo), Synder ($52-$150+/mo)",
+      "recommended_price_eur": 29,
+      "free_vs_pro_split": "Free tier parses and previews 1 settlement report (up to 15 order/fee rows) with clearing balance audit; Pro (€29 one-time / €49 All-Access Bundle) unlocks unlimited rows, rolling Account-Level Reserve carry-forward tracking, multi-marketplace VAT grouping, and Xero/QBO/DATEV exports.",
+      "dimensions": {
+        "pain_severity": 9.0,
+        "willingness_to_pay": 9.0,
+        "existing_alternative_saturation": 8.0,
+        "diy_resistance": 8.5,
+        "solution_effectiveness": 8.5,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.5,
+        "platform_safety": 9.5
+      },
+      "effectiveness_score": 86.5,
+      "commercial_potential_score": 86.75,
+      "score": 86.5,
+      "verdict": "GO"
+    },
+    {
+      "rank": 5,
+      "id": "woo-shopify-metafield-migrator",
+      "title": "ShopMetaShift: Zero-Install WooCommerce-to-Shopify Variant Metafield, >3-Option Overflow & 301 Redirect CSV Compiler",
+      "ecosystem": "saas-addon",
+      "target_software": "WooCommerce to Shopify Admin & Matrixify CSV",
+      "pain": "Shopify native Product CSV importer ignores variant custom fields, caps options at 3, and requires strict multi-row parent/child handle splitting with typed Variant Metafield headers, causing WooCommerce variable product CSV exports to fail and break SEO URLs.",
+      "solution": "100% local in-browser Web App (+ Python CLI) that transforms WooCommerce variable/variation CSV exports into valid Shopify Admin & Matrixify-ready multi-row CSVs with typed Metafield: custom.key [type] columns, >3 attribute overflow mapping, and a Shopify 301 Redirects.csv map.",
+      "existing_alternatives": "Matrixify ($20-$200/mo recurring), Altera, and Cart2Cart/LitExtension ($79-$299+ per store migration) require paid subscriptions or full live store API credentials.",
+      "free_escape_hatch": "Shopify native Import Products CSV and free spreadsheet column-rename templates fail 100% on variable products with >3 attributes or custom variant metadata, dropping variant metafields, splitting variations into duplicate products, and breaking /product/ SEO URLs.",
+      "buyer_persona": "commercial",
+      "follow_the_money_category": "Platform Migrations + Unbundling $20-$299 Recurring/Per-Store Migration SaaS",
+      "follow_the_money_driver": "Agencies and merchants migrating catalogs from WooCommerce to Shopify refuse Matrixify monthly lock-in ($20-$200/mo) or $79-$299+ API-credential migration services when they only need a clean CSV transformation.",
+      "incumbent_pricing_unbundled": "Matrixify ($20-$200/mo recurring), Cart2Cart / LitExtension ($79-$299+ per store migration), Altera",
+      "recommended_price_eur": 29,
+      "free_vs_pro_split": "Free tier transforms up to 15 parent/variant products with preview; Pro (€29 one-time / €49 All-Access Bundle) unlocks unlimited SKUs, typed Variant Metafield headers, >3 attribute overflow flattening, and automatic 301-redirects.csv generation.",
+      "dimensions": {
+        "pain_severity": 8.5,
+        "willingness_to_pay": 8.5,
+        "existing_alternative_saturation": 8.0,
+        "diy_resistance": 8.0,
+        "solution_effectiveness": 8.5,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.0,
+        "platform_safety": 9.0
+      },
+      "effectiveness_score": 84.5,
+      "commercial_potential_score": 83.0,
+      "score": 83.25,
+      "verdict": "GO"
+    }
+  ],
+  "killed_candidates_audit": [
+    {
+      "id": "har-pii-sanitizer",
+      "title": "HAR PII & Cookie Sanitizer",
+      "buyer_persona": "dev-config",
+      "verdict": "NO-GO",
+      "existing_alternative_saturation": 3.5,
+      "kill_reason": "Chrome 130+ added native 'Export HAR (sanitized)' stripping Cookie, Set-Cookie, and Authorization headers by default in 1 click, solving >=50% of sharing cases for free."
+    },
+    {
+      "id": "hubspot-jira-bulk-csv-exporter",
+      "title": "HubSpot / Jira Bulk CSV Exporter",
+      "buyer_persona": "b2b-operator",
+      "verdict": "NO-GO",
+      "existing_alternative_saturation": 3.0,
+      "kill_reason": "HubSpot free-tier native Data Management export and Jira JQL CSV export + a 15-line REST pagination script solve >=80% of cases without paying $49-$99/mo or needing a third-party wrapper."
+    },
+    {
+      "id": "claude-project-sync",
+      "title": "ClaudeProjectBridge: 1-Click Claude.ai Web Projects Knowledge & Instructions to Repo CLAUDE.md Sync",
+      "buyer_persona": "dev-config",
+      "verdict": "NO-GO",
+      "existing_alternative_saturation": 3.5,
+      "kill_reason": "buyer_persona='dev-config' with willingness_to_pay < 6.5 and free Chrome extensions (Claude Project Downloader, Claude Exporter) already solve >=80% of cases in 1 click."
+    },
+    {
+      "id": "ai-agent-undo-shield",
+      "title": "AgentUndoShield: Auto-Checkpoint & 1-Click Undo for Untracked/Dirty Files in VS Code for Codex & Claude",
+      "buyer_persona": "dev-config",
+      "verdict": "NO-GO",
+      "existing_alternative_saturation": 4.0,
+      "kill_reason": "buyer_persona='dev-config' with willingness_to_pay < 6.5 and native .claude/settings.local.json permissions.deny rules + free OSS claude-code-safety-net hooks solve >=50% in 2 minutes."
+    }
+  ],
+  "compliance_and_api_shifts_2026_watchlist": [
+    {
+      "shift": "Belgium Mandatory B2B Peppol E-Invoicing (Jan 1, 2026) & Germany B2B Issuance (Jan 1, 2027)",
+      "status": "ACTIVE_TAILWIND",
+      "impact": "Make Peppol BIS Billing 3.0 UBL .xml support P0 inside EInvoiceLocal (#1) alongside German XRechnung UBL/CII and ZUGFeRD."
+    },
+    {
+      "shift": "Lemon Squeezy Shutdown (Nov 16, 2026 Cutoff / March 31, 2027 End-of-Life)",
+      "status": "ACTIVE_TAILWIND",
+      "impact": "Direct funnel synergy between Builder's LemonExitBridge and Radar #3 OssVatBridge for merchants switching onto Stripe Tax / direct checkouts."
+    },
+    {
+      "shift": "Shopify Plus Scripts End-of-Life (June 30, 2026) & Additional Scripts Deprecation (Aug 2026)",
+      "status": "WATCHLIST_LOW_ZERO_BACKEND_FIT",
+      "impact": "Merchants must migrate Ruby checkout scripts to Shopify Functions / Web Pixels, which requires Shopify App Partner OAuth rather than zero-backend client-side tools."
+    },
+    {
+      "shift": "UK HMRC Making Tax Digital for Income Tax (MTD ITSA — April 2026)",
+      "status": "WATCHLIST_API_GATE",
+      "impact": "HMRC mandates OAuth API-enabled bridging software with Fraud Prevention Headers for quarterly submissions, blocking pure zero-backend client tools unless paired with HMRC-recognized bridging APIs."
+    }
+  ]
+}

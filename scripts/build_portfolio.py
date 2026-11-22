@@ -118,7 +118,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
       <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
         <div>
           <span class="rounded-full bg-indigo-500/20 px-2.5 py-0.5 text-xs font-semibold text-indigo-300">ZERO-INSTALL INTERACTIVE DEMO</span>
-          <h2 class="mt-2 text-2xl font-bold text-white">Try All 7 Tools Live in Your Browser</h2>
+          <h2 class="mt-2 text-2xl font-bold text-white">Try All 8 Tools Live in Your Browser</h2>
           <p class="mt-1 text-xs text-slate-400">Runs 100% locally in JavaScript — nothing leaves your browser.</p>
         </div>
         <div class="flex flex-wrap gap-2" role="tablist">
@@ -129,6 +129,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
           <button type="button" data-pg-tab="guest" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">5. NotionGuestBridge</button>
           <button type="button" data-pg-tab="webflow" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">6. WebflowAssetZip</button>
           <button type="button" data-pg-tab="payout" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">7. StripePayoutBridge</button>
+          <button type="button" data-pg-tab="lemon" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">8. LemonExitBridge</button>
         </div>
       </div>
 
@@ -287,6 +288,23 @@ po_nov_01,2026-11-05,dispute,-40.00,15.00,0.00,0.00,-55.00,EUR</textarea>
           <pre id="pg-pb-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
         </div>
       </div>
+
+      <!-- Tab 8: LemonExitBridge -->
+      <div id="pg-panel-lemon" class="pg-panel mt-6 hidden grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-300" for="pg-lm-csv">Lemon Squeezy Store Export CSV (Orders, Subscriptions &amp; Keys)</label>
+            <textarea id="pg-lm-csv" rows="8" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">email,name,status,payment_method,mrr,currency,variant_name,renews_at,license_key
+founder1@acme.io,Alice,active,visa,29.00,USD,Pro Monthly,2026-12-10T12:00:00Z,LEMON-0001-ABCD
+agency2@client.co,Bob,active,paypal,49.00,USD,Team Monthly,2026-12-18T12:00:00Z,LEMON-0002-EFGH
+ops3@studio.dev,Carol,active,paypal,29.00,USD,Pro Monthly,2026-12-22T12:00:00Z,LEMON-0003-IJKL</textarea>
+          </div>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-emerald-300">Card vs. PayPal MRR Audit + Unix trial_end + legacy-keys.json</span>
+          <pre id="pg-lm-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+        </div>
+      </div>
     </section>"""
 
 
@@ -301,6 +319,7 @@ PLAYGROUND_SCRIPT = r"""  <script>
         guest: document.getElementById("pg-panel-guest"),
         webflow: document.getElementById("pg-panel-webflow"),
         payout: document.getElementById("pg-panel-payout"),
+        lemon: document.getElementById("pg-panel-lemon"),
       };
       tabs.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -619,6 +638,46 @@ PLAYGROUND_SCRIPT = r"""  <script>
       }
       pCsv?.addEventListener("input", runPayoutBridge);
       runPayoutBridge();
+
+      // 8. LemonExitBridge live shutdown auditor & PayPal trial_end / legacy key splitter
+      const lmCsv = document.getElementById("pg-lm-csv");
+      const lmOut = document.getElementById("pg-lm-output");
+      function runLemonExit() {
+        if (!lmCsv || !lmOut) return;
+        const lines = (lmCsv.value || "").split("\n").map((l) => l.trim()).filter(Boolean);
+        if (lines.length < 2) {
+          lmOut.textContent = "Add header + at least 1 subscriber row.";
+          return;
+        }
+        let cardMrr = 0, ppMrr = 0;
+        const ppCohort = ["customer_email,product_variant,mrr,renews_at,trial_end_unix"];
+        const keys = {};
+        lines.slice(1).forEach((l) => {
+          const cols = l.split(",");
+          const email = cols[0] || "";
+          const status = (cols[2] || "active").toLowerCase();
+          const pm = (cols[3] || "card").toLowerCase();
+          const mrr = parseFloat(cols[4]) || 0;
+          const variant = cols[6] || "Pro";
+          const renews = cols[7] || "";
+          const key = cols[8] || "";
+          const unix = Number.isFinite(Date.parse(renews)) ? Math.floor(Date.parse(renews) / 1000) : 0;
+          if (pm.includes("paypal")) {
+            ppMrr += mrr;
+            ppCohort.push([email, variant, mrr.toFixed(2), renews, unix].join(","));
+          } else {
+            cardMrr += mrr;
+          }
+          if (key) keys[key] = { valid: status === "active", customer_email: email, product_variant: variant, expires_at: renews };
+        });
+        lmOut.textContent =
+          "# Shutdown Risk Audit (Deadline 2027-03-31):\n" +
+          "Card MRR (Transferable): $" + cardMrr.toFixed(2) + " | PayPal MRR At Risk: $" + ppMrr.toFixed(2) + "\n\n" +
+          "# PayPal Prorated Re-Auth Cohort CSV:\n" + ppCohort.join("\n") + "\n\n" +
+          "# legacy-keys.json Bundle:\n" + JSON.stringify({ schema: "lemon.legacy_keys.v1", keys }, null, 2);
+      }
+      lmCsv?.addEventListener("input", runLemonExit);
+      runLemonExit();
     })();
   </script>"""
 

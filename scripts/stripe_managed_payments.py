@@ -95,6 +95,14 @@ DEFAULT_CATALOG_ITEMS = [
         "mode": "payment",
     },
     {
+        "slug": "lemonsqueezy-stripe-polar-migrator",
+        "name": "LemonExitBridge Pro",
+        "description": "Zero-install Lemon Squeezy shutdown CSV auditor, PayPal prorated trial_end splitter & legacy license key bridge for Stripe/Polar (Pro License).",
+        "unit_amount": 2900,
+        "currency": "eur",
+        "mode": "payment",
+    },
+    {
         "slug": "all-access-bundle",
         "name": "All-Access Friction-Killer Bundle",
         "description": "Pro licenses for LinearBridge, NotionGitExport, and ExtProfileLock.",

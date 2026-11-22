@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lemonsqueezy-stripe-polar-migrator"
+version = "0.1.0"
+description = "LemonExitBridge: Zero-Install Lemon Squeezy Shutdown CSV Auditor, PayPal Prorated Re-Auth Splitter & Legacy License Key Bridge"
+requires-python = ">=3.10"
+
+[project.scripts]
+lemonsqueezy-stripe-polar-migrator = "cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["cli", "addon", "license_client"]

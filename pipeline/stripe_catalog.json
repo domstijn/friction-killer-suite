@@ -113,6 +113,19 @@
       "payment_link_url": "https://buy.stripe.com/7sY9AT9iYh0U8KY39a6sw08",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=stripe-payout-xero-qbo-splitter"
     },
+    "lemonsqueezy-stripe-polar-migrator": {
+      "slug": "lemonsqueezy-stripe-polar-migrator",
+      "name": "LemonExitBridge Pro",
+      "description": "Zero-install Lemon Squeezy shutdown CSV auditor, PayPal prorated trial_end splitter & legacy license key bridge for Stripe/Polar (Pro License).",
+      "unit_amount": 2900,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_VfygILC9yvd9U8",
+      "price_id": "price_1Uecj4H2AcdDmQyR82OysTZV",
+      "payment_link_id": "plink_1UecjqH2AcdDmQyRkhdQtSWN",
+      "payment_link_url": "https://buy.stripe.com/3cI6oHeDibGAf9m4de6sw09",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=lemonsqueezy-stripe-polar-migrator"
+    },
     "all-access-bundle": {
       "slug": "all-access-bundle",
       "name": "All-Access Friction-Killer Bundle",
