@@ -13,8 +13,13 @@
       <span class="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300">PAYMENT CONFIRMED</span>
       <h1 class="mt-4 text-3xl font-extrabold text-white">Thanks for purchasing!</h1>
       <p class="mt-2 text-sm text-slate-300">
-        Your Stripe Checkout Session ID below acts as your Pro License Key for LinearBridge, NotionGitExport, and ExtProfileLock.
+        Your Stripe Checkout Session ID below acts as your Pro License Key across all 11 Friction-Killer tools (Browser Web Apps, Python <code>.whl</code> CLIs, Chrome extensions, and VS Code extension).
       </p>
+
+      <div id="auto-unlock-banner" class="mt-4 hidden rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-sm text-emerald-200">
+        <p id="auto-unlock-text" class="font-semibold"></p>
+        <a id="auto-unlock-link" href="./index.html" class="mt-2 inline-block rounded-lg bg-emerald-500 px-4 py-2 text-xs font-semibold text-slate-950 hover:bg-emerald-400">Open Unlocked Web App &rarr;</a>
+      </div>
 
       <div class="mt-6 rounded-2xl border border-slate-700 bg-slate-950 p-5">
         <div class="text-xs font-semibold uppercase tracking-wider text-slate-400">Your Pro License Key</div>
@@ -28,24 +33,33 @@
       </div>
 
       <div class="mt-6 space-y-2 text-xs text-slate-300">
-        <p class="font-semibold text-white">How to activate:</p>
-        <p>• <strong>LinearBridge</strong>: Open extension popup &rarr; paste key &rarr; click <em>Activate</em>.</p>
-        <p>• <strong>NotionGitExport</strong>: Run <code>python3 src/cli.py --activate YOUR_KEY</code>.</p>
-        <p>• <strong>ExtProfileLock</strong>: Call <code>activate("YOUR_KEY")</code> in your workspace profile config.</p>
+        <p class="font-semibold text-white">How to activate across all 11 tools:</p>
+        <p>• <strong>Browser Web Apps</strong> (<code>WebflowAssetZip</code>, <code>StripePayoutBridge</code>, <code>LemonExitBridge</code>, <code>OssVatBridge</code>, <code>AmzSettlementBridge</code>, <code>EInvoiceLocal</code>): Auto-unlocked above in this browser, or paste your key into the Pro box on any product page.</p>
+        <p>• <strong>Python CLIs (<code>.whl</code>)</strong>: Run <code>&lt;tool-slug&gt; --activate YOUR_KEY</code> (e.g. <code>eu-oss-vat-return-compiler --activate YOUR_KEY</code>).</p>
+        <p>• <strong>Chrome Extensions</strong> (<code>LinearBridge</code>, <code>NotionGuestBridge</code>): Open the extension popup &rarr; paste key &rarr; click <em>Activate</em>.</p>
+        <p>• <strong>VS Code</strong> (<code>ExtProfileLock</code>): Call <code>activate("YOUR_KEY")</code> in your workspace profile config.</p>
       </div>
 
       <div class="mt-6 flex flex-wrap gap-2">
-        <a href="./downloads/notion-linear-prd-sync-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">Download LinearBridge (.zip)</a>
-        <a href="./downloads/notion-clean-md-exporter-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">Download NotionGitExport (.zip)</a>
-        <a href="./downloads/vscode-workspace-profile-config-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">Download ExtProfileLock (.zip)</a>
-        <a href="./downloads/claude-profile-switcher-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">Download ClaudeProfileSwitch (.zip)</a>
-        <a href="./downloads/notion-guest-mcp-bridge-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">Download NotionGuestBridge (.zip)</a>
-        <a href="./downloads/webflow-cms-asset-migrator-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">Download WebflowAssetZip (.zip)</a>
-        <a href="./downloads/stripe-payout-xero-qbo-splitter-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">Download StripePayoutBridge (.zip)</a>
-        <a href="./downloads/lemonsqueezy-stripe-polar-migrator-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">Download LemonExitBridge (.zip)</a>
-        <a href="./downloads/eu-oss-vat-return-compiler-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">Download OssVatBridge (.zip)</a>
-        <a href="./downloads/amazon-settlement-xero-qbo-splitter-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">Download AmzSettlementBridge (.zip)</a>
-        <a href="./downloads/e-invoice-xml-batch-converter-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">Download EInvoiceLocal (.zip)</a>
+        <a href="./downloads/notion-linear-prd-sync-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">LinearBridge (.zip)</a>
+        <a href="./downloads/notion-clean-md-exporter-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">NotionGitExport (.zip)</a>
+        <a href="./downloads/notion_clean_md_exporter-0.1.0-py3-none-any.whl" download class="rounded-lg border border-emerald-700/60 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-emerald-300 hover:border-emerald-400 hover:text-white">NotionGitExport (.whl)</a>
+        <a href="./downloads/vscode-workspace-profile-config-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">ExtProfileLock (.zip)</a>
+        <a href="./downloads/vscode-workspace-profile-config-0.1.0.vsix" download class="rounded-lg border border-sky-700/60 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-sky-300 hover:border-sky-400 hover:text-white">ExtProfileLock (.vsix)</a>
+        <a href="./downloads/claude-profile-switcher-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">ClaudeProfileSwitch (.zip)</a>
+        <a href="./downloads/claude_profile_switcher-0.1.0-py3-none-any.whl" download class="rounded-lg border border-emerald-700/60 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-emerald-300 hover:border-emerald-400 hover:text-white">ClaudeProfileSwitch (.whl)</a>
+        <a href="./downloads/notion-guest-mcp-bridge-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">NotionGuestBridge (.zip)</a>
+        <a href="./downloads/webflow-cms-asset-migrator-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">WebflowAssetZip (.zip)</a>
+        <a href="./downloads/stripe-payout-xero-qbo-splitter-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">StripePayoutBridge (.zip)</a>
+        <a href="./downloads/stripe_payout_xero_qbo_splitter-0.1.0-py3-none-any.whl" download class="rounded-lg border border-emerald-700/60 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-emerald-300 hover:border-emerald-400 hover:text-white">StripePayoutBridge (.whl)</a>
+        <a href="./downloads/lemonsqueezy-stripe-polar-migrator-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">LemonExitBridge (.zip)</a>
+        <a href="./downloads/lemonsqueezy_stripe_polar_migrator-0.1.0-py3-none-any.whl" download class="rounded-lg border border-emerald-700/60 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-emerald-300 hover:border-emerald-400 hover:text-white">LemonExitBridge (.whl)</a>
+        <a href="./downloads/eu-oss-vat-return-compiler-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">OssVatBridge (.zip)</a>
+        <a href="./downloads/eu_oss_vat_return_compiler-0.1.0-py3-none-any.whl" download class="rounded-lg border border-emerald-700/60 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-emerald-300 hover:border-emerald-400 hover:text-white">OssVatBridge (.whl)</a>
+        <a href="./downloads/amazon-settlement-xero-qbo-splitter-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">AmzSettlementBridge (.zip)</a>
+        <a href="./downloads/amazon_settlement_xero_qbo_splitter-0.1.0-py3-none-any.whl" download class="rounded-lg border border-emerald-700/60 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-emerald-300 hover:border-emerald-400 hover:text-white">AmzSettlementBridge (.whl)</a>
+        <a href="./downloads/e-invoice-xml-batch-converter-v0.1.0.zip" download class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">EInvoiceLocal (.zip)</a>
+        <a href="./downloads/e_invoice_xml_batch_converter-0.1.0-py3-none-any.whl" download class="rounded-lg border border-emerald-700/60 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-emerald-300 hover:border-emerald-400 hover:text-white">EInvoiceLocal (.whl)</a>
       </div>
 
       <p class="mt-6 border-t border-slate-800 pt-4 text-xs text-slate-400">
@@ -54,12 +68,47 @@
     </div>
   </main>
   <script>
+    const STORAGE_KEYS = {
+      "webflow-cms-asset-migrator": "fk_webflow_pro_state",
+      "stripe-payout-xero-qbo-splitter": "fk_payout_pro_state",
+      "lemonsqueezy-stripe-polar-migrator": "fk_lemon_exit_pro_state",
+      "eu-oss-vat-return-compiler": "fk_oss_vat_pro_state",
+      "amazon-settlement-xero-qbo-splitter": "fk_amz_settlement_pro_state",
+      "e-invoice-xml-batch-converter": "fk_einvoice_pro_state"
+    };
     const params = new URLSearchParams(window.location.search);
-    const sid = params.get("session_id");
+    const sid = (params.get("session_id") || "").trim();
+    const slug = (params.get("slug") || "").trim();
     const keyEl = document.getElementById("license-key");
     const statusEl = document.getElementById("copy-status");
+    const banner = document.getElementById("auto-unlock-banner");
+    const bannerText = document.getElementById("auto-unlock-text");
+    const bannerLink = document.getElementById("auto-unlock-link");
+
     if (sid) {
       keyEl.textContent = sid;
+      if (sid.startsWith("cs_live_") && sid.length >= 24 && !sid.toLowerCase().includes("unpaid")) {
+        try {
+          const record = JSON.stringify({ valid: true, key: sid, verifiedAt: Date.now() });
+          if (slug && STORAGE_KEYS[slug]) {
+            localStorage.setItem(STORAGE_KEYS[slug], record);
+            if (banner && bannerText && bannerLink) {
+              bannerText.textContent = "Pro unlocked automatically for " + slug + " in this browser!";
+              bannerLink.href = "./products/" + slug + "/index.html#live-app";
+              bannerLink.textContent = "Open Unlocked Web App →";
+              banner.classList.remove("hidden");
+            }
+          } else if (!slug || slug === "all-access-bundle") {
+            Object.values(STORAGE_KEYS).forEach((k) => localStorage.setItem(k, record));
+            if (banner && bannerText && bannerLink) {
+              bannerText.textContent = "All 6 Browser Web Apps Unlocked in this browser!";
+              bannerLink.href = "./index.html";
+              bannerLink.textContent = "Open Friction-Killer Suite →";
+              banner.classList.remove("hidden");
+            }
+          }
+        } catch {}
+      }
     } else {
       keyEl.textContent = "No session_id found in URL";
       statusEl.textContent = "Return here directly from Stripe Checkout to display your license key.";

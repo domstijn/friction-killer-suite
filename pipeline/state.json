@@ -13,7 +13,7 @@
     "gumroad"
   ],
   "active_project": "e-invoice-xml-batch-converter",
-  "current_stage": "STAGE_4_LAUNCH",
+  "current_stage": "COMPLETED",
   "gates": {
     "gate_1_idea_and_spec_approved": true,
     "gate_2_launch_approved": true
@@ -39,27 +39,6 @@
       "score": 90.5,
       "verdict": "GO",
       "updated_at": "2026-11-20T22:04:31+00:00"
-    },
-    {
-      "id": "claude-diff-review-vscode",
-      "title": "ClaudeDiffReview: Copilot-Style Multi-File Diff Review & Hunk Accept/Reject for Claude Code",
-      "ecosystem": "ide-ai-plugin",
-      "target_software": "VS Code / Claude Code",
-      "pain": "Claude Code CLI modifies multiple files without an interactive hunk-by-hunk Accept/Reject review UI in VS Code like Copilot Edits Review (anthropics/claude-code#33932: 318 upvotes)",
-      "solution": "VS Code .vsix extension that captures pre/post Claude Code file snapshots, renders hunk-by-hunk Accept/Reject/Revert controls, and exports PR diff summaries",
-      "dimensions": {
-        "pain_severity": 9.0,
-        "willingness_to_pay": 8.5,
-        "solution_effectiveness": 9.0,
-        "build_speed": 9.0,
-        "distribution_clarity": 9.5,
-        "platform_safety": 9.0
-      },
-      "effectiveness_score": 90.0,
-      "commercial_potential_score": 88.75,
-      "score": 89.5,
-      "verdict": "GO",
-      "updated_at": "2026-11-20T22:20:16+00:00"
     },
     {
       "id": "lemonsqueezy-stripe-polar-migrator",
@@ -520,6 +499,32 @@
       "score": 60.25,
       "verdict": "NO-GO (Kill Switch Triggered: existing_alternative_saturation < 5 (existing native/free tool solves >=80%), diy_resistance < 5 (replaceable by <15-line script/alias))",
       "updated_at": "2026-11-21T10:43:11+00:00"
+    },
+    {
+      "id": "claude-diff-review-vscode",
+      "title": "ClaudeDiffReview: Copilot-Style Multi-File Diff Review & Hunk Accept/Reject for Claude Code",
+      "ecosystem": "ide-ai-plugin",
+      "target_software": "Claude Code / VS Code",
+      "pain": "Reviewing multi-file Claude Code terminal edits hunk-by-hunk in VS Code.",
+      "solution": "Inline diff hunk accept/reject CodeLens buttons.",
+      "existing_alternatives": "Free community VS Code Marketplace & OpenVSX extensions (Inline Review for Claude Code, Claude Diff Review) already ship CodeLens Accept/Reject hunks for free.",
+      "free_escape_hatch": "VS Code native Source Control Discard Hunk + free Marketplace extensions solve >=80% of cases in under 2 minutes.",
+      "buyer_persona": "dev-config",
+      "dimensions": {
+        "pain_severity": 7.0,
+        "willingness_to_pay": 5.0,
+        "existing_alternative_saturation": 3.0,
+        "diy_resistance": 4.0,
+        "solution_effectiveness": 7.5,
+        "build_speed": 8.0,
+        "distribution_clarity": 8.0,
+        "platform_safety": 9.0
+      },
+      "effectiveness_score": 69.75,
+      "commercial_potential_score": 54.5,
+      "score": 59.0,
+      "verdict": "NO-GO (Kill Switch Triggered: buyer_persona='dev-config' with willingness_to_pay < 6.5 (dev-config audiences prefer free OSS + token workarounds), existing_alternative_saturation < 5 (native export, shared PAT + OSS repo, or 2-min free escape hatch solves >=50%), diy_resistance < 5 (replaceable by <15-line script/alias))",
+      "updated_at": "2026-11-22T21:27:10+00:00"
     }
   ],
   "projects": {
@@ -616,7 +621,7 @@
       "title": "EInvoiceLocal: 100% Local XRechnung, ZUGFeRD & Peppol UBL/CII XML Validator, Printable A4 PDF & DATEV/Xero Batch Converter",
       "ecosystem": "saas-addon",
       "target_software": "EU B2B E-Invoicing (XRechnung / ZUGFeRD / Peppol XML -> DATEV / Xero / QuickBooks)",
-      "status": "STAGE_4_LAUNCH",
+      "status": "COMPLETED",
       "selected_at": "2026-11-22T20:09:36+00:00"
     }
   }

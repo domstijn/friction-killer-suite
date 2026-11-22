@@ -1209,9 +1209,19 @@ def render_success_html(products: list[dict[str, Any]], *, for_pages: bool = Tru
     dl_items = []
     for p in products:
         zip_href = p["site_zip_rel"] if for_pages else p["zip_rel"]
+        whl_href = p["site_whl_rel"] if for_pages else p["whl_rel"]
+        vsix_href = p["site_vsix_rel"] if for_pages else p["vsix_rel"]
         dl_items.append(
-            f'<a href="{html.escape(zip_href)}" download class="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">Download {html.escape(p["short_title"])} (.zip)</a>'
+            f'<a href="{html.escape(zip_href)}" download class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-indigo-300 hover:border-indigo-400 hover:text-white">{html.escape(p["short_title"])} (.zip)</a>'
         )
+        if p.get("whl_exists"):
+            dl_items.append(
+                f'<a href="{html.escape(whl_href)}" download class="rounded-lg border border-emerald-700/60 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-emerald-300 hover:border-emerald-400 hover:text-white">{html.escape(p["short_title"])} (.whl)</a>'
+            )
+        if p.get("vsix_exists"):
+            dl_items.append(
+                f'<a href="{html.escape(vsix_href)}" download class="rounded-lg border border-sky-700/60 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-sky-300 hover:border-sky-400 hover:text-white">{html.escape(p["short_title"])} (.vsix)</a>'
+            )
     downloads_html = "\n        ".join(dl_items)
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -1228,8 +1238,13 @@ def render_success_html(products: list[dict[str, Any]], *, for_pages: bool = Tru
       <span class="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300">PAYMENT CONFIRMED</span>
       <h1 class="mt-4 text-3xl font-extrabold text-white">Thanks for purchasing!</h1>
       <p class="mt-2 text-sm text-slate-300">
-        Your Stripe Checkout Session ID below acts as your Pro License Key for LinearBridge, NotionGitExport, and ExtProfileLock.
+        Your Stripe Checkout Session ID below acts as your Pro License Key across all {len(products)} Friction-Killer tools (Browser Web Apps, Python <code>.whl</code> CLIs, Chrome extensions, and VS Code extension).
       </p>
+
+      <div id="auto-unlock-banner" class="mt-4 hidden rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-sm text-emerald-200">
+        <p id="auto-unlock-text" class="font-semibold"></p>
+        <a id="auto-unlock-link" href="./index.html" class="mt-2 inline-block rounded-lg bg-emerald-500 px-4 py-2 text-xs font-semibold text-slate-950 hover:bg-emerald-400">Open Unlocked Web App &rarr;</a>
+      </div>
 
       <div class="mt-6 rounded-2xl border border-slate-700 bg-slate-950 p-5">
         <div class="text-xs font-semibold uppercase tracking-wider text-slate-400">Your Pro License Key</div>
@@ -1243,10 +1258,11 @@ def render_success_html(products: list[dict[str, Any]], *, for_pages: bool = Tru
       </div>
 
       <div class="mt-6 space-y-2 text-xs text-slate-300">
-        <p class="font-semibold text-white">How to activate:</p>
-        <p>• <strong>LinearBridge</strong>: Open extension popup &rarr; paste key &rarr; click <em>Activate</em>.</p>
-        <p>• <strong>NotionGitExport</strong>: Run <code>python3 src/cli.py --activate YOUR_KEY</code>.</p>
-        <p>• <strong>ExtProfileLock</strong>: Call <code>activate("YOUR_KEY")</code> in your workspace profile config.</p>
+        <p class="font-semibold text-white">How to activate across all {len(products)} tools:</p>
+        <p>• <strong>Browser Web Apps</strong> (<code>WebflowAssetZip</code>, <code>StripePayoutBridge</code>, <code>LemonExitBridge</code>, <code>OssVatBridge</code>, <code>AmzSettlementBridge</code>, <code>EInvoiceLocal</code>): Auto-unlocked above in this browser, or paste your key into the Pro box on any product page.</p>
+        <p>• <strong>Python CLIs (<code>.whl</code>)</strong>: Run <code>&lt;tool-slug&gt; --activate YOUR_KEY</code> (e.g. <code>eu-oss-vat-return-compiler --activate YOUR_KEY</code>).</p>
+        <p>• <strong>Chrome Extensions</strong> (<code>LinearBridge</code>, <code>NotionGuestBridge</code>): Open the extension popup &rarr; paste key &rarr; click <em>Activate</em>.</p>
+        <p>• <strong>VS Code</strong> (<code>ExtProfileLock</code>): Call <code>activate("YOUR_KEY")</code> in your workspace profile config.</p>
       </div>
 
       <div class="mt-6 flex flex-wrap gap-2">
@@ -1259,12 +1275,47 @@ def render_success_html(products: list[dict[str, Any]], *, for_pages: bool = Tru
     </div>
   </main>
   <script>
+    const STORAGE_KEYS = {{
+      "webflow-cms-asset-migrator": "fk_webflow_pro_state",
+      "stripe-payout-xero-qbo-splitter": "fk_payout_pro_state",
+      "lemonsqueezy-stripe-polar-migrator": "fk_lemon_exit_pro_state",
+      "eu-oss-vat-return-compiler": "fk_oss_vat_pro_state",
+      "amazon-settlement-xero-qbo-splitter": "fk_amz_settlement_pro_state",
+      "e-invoice-xml-batch-converter": "fk_einvoice_pro_state"
+    }};
     const params = new URLSearchParams(window.location.search);
-    const sid = params.get("session_id");
+    const sid = (params.get("session_id") || "").trim();
+    const slug = (params.get("slug") || "").trim();
     const keyEl = document.getElementById("license-key");
     const statusEl = document.getElementById("copy-status");
+    const banner = document.getElementById("auto-unlock-banner");
+    const bannerText = document.getElementById("auto-unlock-text");
+    const bannerLink = document.getElementById("auto-unlock-link");
+
     if (sid) {{
       keyEl.textContent = sid;
+      if (sid.startsWith("cs_live_") && sid.length >= 24 && !sid.toLowerCase().includes("unpaid")) {{
+        try {{
+          const record = JSON.stringify({{ valid: true, key: sid, verifiedAt: Date.now() }});
+          if (slug && STORAGE_KEYS[slug]) {{
+            localStorage.setItem(STORAGE_KEYS[slug], record);
+            if (banner && bannerText && bannerLink) {{
+              bannerText.textContent = "Pro unlocked automatically for " + slug + " in this browser!";
+              bannerLink.href = "./products/" + slug + "/index.html#live-app";
+              bannerLink.textContent = "Open Unlocked Web App →";
+              banner.classList.remove("hidden");
+            }}
+          }} else if (!slug || slug === "all-access-bundle") {{
+            Object.values(STORAGE_KEYS).forEach((k) => localStorage.setItem(k, record));
+            if (banner && bannerText && bannerLink) {{
+              bannerText.textContent = "All 6 Browser Web Apps Unlocked in this browser!";
+              bannerLink.href = "./index.html";
+              bannerLink.textContent = "Open Friction-Killer Suite →";
+              banner.classList.remove("hidden");
+            }}
+          }}
+        }} catch {{}}
+      }}
     }} else {{
       keyEl.textContent = "No session_id found in URL";
       statusEl.textContent = "Return here directly from Stripe Checkout to display your license key.";
