@@ -165,6 +165,19 @@
       "payment_link_url": "https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=e-invoice-xml-batch-converter"
     },
+    "woo-shopify-metafield-migrator": {
+      "slug": "woo-shopify-metafield-migrator",
+      "name": "ShopMetaShift Pro",
+      "description": "100% browser-local WooCommerce-to-Shopify variant metafield, >3-option overflow & 301 redirect CSV compiler Web App + CLI (Pro License).",
+      "unit_amount": 2900,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_VgOLfg5TiKHhLU",
+      "price_id": "price_1Uf1Z2H2AcdDmQyRZiTbmdRo",
+      "payment_link_id": "plink_1Uf1ZGH2AcdDmQyRh6FDkQQO",
+      "payment_link_url": "https://buy.stripe.com/6oU8wPan2fWQ8KY4de6sw0d",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=woo-shopify-metafield-migrator"
+    },
     "all-access-bundle": {
       "slug": "all-access-bundle",
       "name": "All-Access Friction-Killer Bundle",

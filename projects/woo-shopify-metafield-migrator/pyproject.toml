@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "woo-shopify-metafield-migrator"
+version = "0.1.0"
+description = "ShopMetaShift: 100% Local WooCommerce-to-Shopify Variant Metafield, >3-Option Overflow & 301 Redirect CSV Compiler"
+requires-python = ">=3.10"
+
+[project.scripts]
+woo-shopify-metafield-migrator = "cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["cli", "addon", "license_client"]

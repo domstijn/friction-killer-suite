@@ -1,14 +1,14 @@
-# Friction-Killer Suite — 11 Zero-Subscription Local Web Apps & CLIs
+# Friction-Killer Suite — 12 Zero-Subscription Local Web Apps & CLIs
 
-**100% browser-local, GDPR/GoBD-safe utilities** for **EU VAT OSS (`BZSt BOP` / `ROS XML`)**, **XRechnung / ZUGFeRD / Peppol XML to DATEV EXTF**, **Amazon Flat-File V2 & Stripe Payouts to Xero / QuickBooks**, **Lemon Squeezy shutdown migrations**, **Webflow CMS backups**, **Notion**, **Linear**, **Claude Code**, and **VS Code**. Zero server uploads, zero API OAuth lock-in, and zero recurring SaaS subscriptions.
+**100% browser-local, GDPR/GoBD-safe utilities** for **WooCommerce-to-Shopify Metafields & 301 Redirects**, **EU VAT OSS (`BZSt BOP` / `ROS XML`)**, **XRechnung / ZUGFeRD / Peppol XML to DATEV EXTF**, **Amazon Flat-File V2 & Stripe Payouts to Xero / QuickBooks**, **Lemon Squeezy shutdown migrations**, **Webflow CMS backups**, **Notion**, **Linear**, **Claude Code**, and **VS Code**. Zero server uploads, zero API OAuth lock-in, and zero recurring SaaS subscriptions.
 
-- **Try All 11 Tools Live in Browser (Zero Install):** https://domstijn.github.io/friction-killer-suite/
-- **All-Access Suite Bundle (€49 once, unlocks all 11 tools):** https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03
+- **Try All 12 Tools Live in Browser (Zero Install):** https://domstijn.github.io/friction-killer-suite/
+- **All-Access Suite Bundle (€49 once, unlocks all 12 tools):** https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03
 - **Sitemap:** https://domstijn.github.io/friction-killer-suite/sitemap.xml
 
 ---
 
-## Shipped Catalog (11 Active Products)
+## Shipped Catalog (12 Active Products)
 
 | Tool & Live Web App | Target Workflow | Pro License | Packages | What It Solves |
 | :--- | :--- | :---: | :--- | :--- |
@@ -23,6 +23,7 @@
 | **[OssVatBridge](https://domstijn.github.io/friction-killer-suite/products/eu-oss-vat-return-compiler/)** | Stripe Tax / Shopify / Lemon Squeezy -> EU VAT OSS (Germany BZSt BOP, Ireland ROS, EU27) | €29 once | [PyPI](https://pypi.org/project/eu-oss-vat-return-compiler/) · [.whl](https://domstijn.github.io/friction-killer-suite/downloads/eu_oss_vat_return_compiler-0.1.0-py3-none-any.whl) · [.zip](https://domstijn.github.io/friction-killer-suite/downloads/eu-oss-vat-return-compiler-v0.1.0.zip) | 100% browser-local Web App (+ Python CLI) that merges Stripe Tax, Shopify, and Lemon Squeezy CSVs, normalizes currencies via ECB quarterly rates, aggregates EU27 Member-State VAT by Standard/Reduced rate, and exports Germany BZSt/BOP semicolon CSV, Ireland ROS XML, and EU27 OSS audit ledgers. |
 | **[AmzSettlementBridge](https://domstijn.github.io/friction-killer-suite/products/amazon-settlement-xero-qbo-splitter/)** | Amazon Seller Central Settlement V2 -> Xero / QuickBooks Online / DATEV | €29 once | [PyPI](https://pypi.org/project/amazon-settlement-xero-qbo-splitter/) · [.whl](https://domstijn.github.io/friction-killer-suite/downloads/amazon_settlement_xero_qbo_splitter-0.1.0-py3-none-any.whl) · [.zip](https://domstijn.github.io/friction-killer-suite/downloads/amazon-settlement-xero-qbo-splitter-v0.1.0.zip) | 100% browser-local Web App (+ Python CLI) that parses Amazon Seller Central Flat-File V2 (.txt/.tsv) settlements locally, separates Principal sales, Marketplace Facilitator tax, FBA/referral/storage/PPC fees, refunds, and rolling reserves into integer-cent balanced Xero, QuickBooks, and DATEV clearing journals. |
 | **[EInvoiceLocal](https://domstijn.github.io/friction-killer-suite/products/e-invoice-xml-batch-converter/)** | EU B2B E-Invoicing (XRechnung / ZUGFeRD / Peppol XML -> DATEV / Xero / QuickBooks) | €29 once | [PyPI](https://pypi.org/project/e-invoice-xml-batch-converter/) · [.whl](https://domstijn.github.io/friction-killer-suite/downloads/e_invoice_xml_batch_converter-0.1.0-py3-none-any.whl) · [.zip](https://domstijn.github.io/friction-killer-suite/downloads/e-invoice-xml-batch-converter-v0.1.0.zip) | 100% browser-local Web App (+ Python CLI) that validates EN 16931 math rules across UBL 2.1 and UN/CEFACT CII XML invoices, renders printable A4 invoice views, and batch-exports unified DATEV EXTF_Buchungsstapel.csv (with BU-Schlüssel tax keys), Xero Bills CSV, and QuickBooks CSV. |
+| **[ShopMetaShift](https://domstijn.github.io/friction-killer-suite/products/woo-shopify-metafield-migrator/)** | WooCommerce to Shopify / Matrixify CSV | €29 once | [.whl](https://domstijn.github.io/friction-killer-suite/downloads/woo_shopify_metafield_migrator-0.1.0-py3-none-any.whl) · [.zip](https://domstijn.github.io/friction-killer-suite/downloads/woo-shopify-metafield-migrator-v0.1.0.zip) | 100% local in-browser Web App (+ CLI) that transforms WooCommerce variable/variation CSV exports into valid Shopify Admin & Matrixify-ready multi-row CSVs with typed 'Variant Metafield: custom.key [type]' columns, >3 option overflow mapping, and 301 redirect rules. |
 
 ---
 
@@ -37,6 +38,7 @@ Prefer air-gapped CLI / batch directory automation? Install any zero-dependency 
 - **OssVatBridge**: `pip install eu-oss-vat-return-compiler` ([PyPI](https://pypi.org/project/eu-oss-vat-return-compiler/) · [.whl](https://domstijn.github.io/friction-killer-suite/downloads/eu_oss_vat_return_compiler-0.1.0-py3-none-any.whl))
 - **AmzSettlementBridge**: `pip install amazon-settlement-xero-qbo-splitter` ([PyPI](https://pypi.org/project/amazon-settlement-xero-qbo-splitter/) · [.whl](https://domstijn.github.io/friction-killer-suite/downloads/amazon_settlement_xero_qbo_splitter-0.1.0-py3-none-any.whl))
 - **EInvoiceLocal**: `pip install e-invoice-xml-batch-converter` ([PyPI](https://pypi.org/project/e-invoice-xml-batch-converter/) · [.whl](https://domstijn.github.io/friction-killer-suite/downloads/e_invoice_xml_batch_converter-0.1.0-py3-none-any.whl))
+- **ShopMetaShift**: `pip install https://domstijn.github.io/friction-killer-suite/downloads/woo_shopify_metafield_migrator-0.1.0-py3-none-any.whl`
 
 Each tool includes a generous **Free Tier** in both the browser Web App and CLI, plus a one-time €19–€29 Pro license (or €49 All-Access Bundle) powered by Stripe Managed Payments (`cs_live_...`).
 

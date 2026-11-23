@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopMetaShift — Offline WooCommerce-to-Shopify Variant Metafield, &gt;3-Option &amp; 301 Redirect CSV Compiler</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+    <div class="text-lg font-bold tracking-tight text-white">ShopMetaShift</div>
+    <nav class="flex items-center gap-6 text-sm text-slate-300">
+      <a href="#live-app" class="hover:text-white">Web App</a>
+      <a href="#comparison" class="hover:text-white">Why it works</a>
+      <a href="#pricing" class="hover:text-white">Pricing</a>
+      <a href="https://buy.stripe.com/6oU8wPan2fWQ8KY4de6sw0d" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-lg bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-400">Get Pro — €29 once</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-6">
+    <section class="py-14 text-center">
+      <span class="inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
+        100% Browser-Local · Zero API Tokens Required · Matrixify &amp; Shopify Admin CSV Ready
+      </span>
+      <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+        WooCommerce CSV to Shopify Metafields &amp; 301s<br />
+        <span class="text-indigo-400">without $20–$200/mo Matrixify or store API keys.</span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
+        Drop any WooCommerce Product Export CSV right into Chrome: join parent &amp; variation rows (by <code>id:&lt;ID&gt;</code> or <code>SKU</code>), promote &gt;3 overflow attributes into typed Shopify <code>Variant Metafield: custom.key [type]</code> columns, normalize EU comma decimals &amp; weights to grams, and export SEO <code>301-redirects.csv</code> locally.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a href="#live-app" data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
+          Convert Free (Up to 15 Products)
+        </a>
+        <a href="https://buy.stripe.com/6oU8wPan2fWQ8KY4de6sw0d" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
+          Unlock Pro Migration License — €29 once
+        </a>
+      </div>
+    </section>
+
+    <!-- Standalone Zero-Install In-Browser Web App -->
+    <section id="live-app" class="rounded-3xl border border-indigo-500/40 bg-slate-900/90 p-6 shadow-2xl shadow-indigo-500/10 sm:p-8">
+      <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
+        <div>
+          <span class="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">ZERO-INSTALL BROWSER COMPILER · SHOPIFY ADMIN + MATRIXIFY + 301 REDIRECTS</span>
+          <h2 class="mt-2 text-2xl font-bold text-white">Restructure WooCommerce CSVs in 1 Click</h2>
+          <p class="mt-1 text-xs text-slate-400">Free previews &amp; downloads Shopify Admin CSV up to 15 products; Pro unlocks unlimited SKUs, Matrixify MERGE CSV, 301 Redirects CSV, &amp; Audit JSON.</p>
+        </div>
+        <span id="app-tier-badge" class="self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300">Free Tier (15 Products)</span>
+      </div>
+
+      <div class="mt-6 grid gap-6 lg:grid-cols-12">
+        <div class="space-y-4 lg:col-span-5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <label class="text-xs font-semibold text-slate-300" for="app-csv-file">Upload WooCommerce Export <code>.csv</code></label>
+            <button id="app-sample-btn" type="button" class="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs font-medium text-indigo-300 hover:bg-slate-700">Load Sample WooCommerce Catalog</button>
+          </div>
+          <input id="app-csv-file" type="file" accept=".csv,text/csv" class="block w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-500 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-white" />
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-[11px] font-semibold text-slate-400" for="app-weight-unit">Source Weight Unit</label>
+              <select id="app-weight-unit" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-xs text-slate-200">
+                <option value="kg" selected>Kilograms (kg &rarr; g)</option>
+                <option value="lb">Pounds (lb &rarr; g)</option>
+                <option value="g">Grams (g)</option>
+                <option value="oz">Ounces (oz &rarr; g)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[11px] font-semibold text-slate-400" for="app-overflow-mode">&gt;3 Attributes Overflow</label>
+              <select id="app-overflow-mode" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-xs text-slate-200">
+                <option value="metafield" selected>Variant Metafields (Typed)</option>
+                <option value="compound">Merge into Option3 Value</option>
+              </select>
+            </div>
+          </div>
+
+          <label class="flex items-center gap-2 text-xs text-slate-300">
+            <input id="app-cat-redirects" type="checkbox" checked class="rounded border-slate-700 bg-slate-950 text-indigo-500" />
+            <span>Generate <code>/product-category/...</code> &rarr; <code>/collections/...</code> 301 Redirects</span>
+          </label>
+
+          <div class="grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-products" class="text-sm font-bold text-emerald-300">0 / 0</div>
+              <div class="text-[11px] text-slate-400">Products / Vars</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-overflow" class="text-sm font-bold text-indigo-300">0</div>
+              <div class="text-[11px] text-slate-400">&gt;3 Attrs Saved</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-metafields" class="text-sm font-bold text-white">0</div>
+              <div class="text-[11px] text-slate-400">Typed Metafields</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-redirects" class="text-sm font-bold text-emerald-300">0</div>
+              <div class="text-[11px] text-slate-400">301 Redirects</div>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-slate-800 bg-slate-950 p-3">
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Warnings &amp; Diagnostics</div>
+            <ul id="app-warnings" class="mt-2 space-y-1 text-xs text-amber-300"></ul>
+          </div>
+
+          <div class="rounded-2xl border border-slate-800 bg-slate-950/90 p-4">
+            <div class="text-xs font-semibold text-white">Activate Pro License (€29 once or Bundle)</div>
+            <div class="mt-2 flex flex-wrap gap-2">
+              <input id="app-license-key" type="text" placeholder="Paste Stripe cs_live_... or SHOPMETA-..." class="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-indigo-500 focus:outline-none" />
+              <button id="app-activate-btn" type="button" class="rounded-lg bg-indigo-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-400">Activate</button>
+            </div>
+            <p id="app-license-status" class="mt-2 text-xs text-slate-400"></p>
+          </div>
+        </div>
+
+        <div class="space-y-4 lg:col-span-7">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" data-shopmeta-tab="shopify" class="sm-tab rounded-lg bg-indigo-500 px-2.5 py-1 text-xs font-semibold text-white">Shopify Admin CSV</button>
+              <button type="button" data-shopmeta-tab="matrixify" class="sm-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700">Matrixify CSV</button>
+              <button type="button" data-shopmeta-tab="redirects" class="sm-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700">301 Redirects CSV</button>
+              <button type="button" data-shopmeta-tab="audit" class="sm-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700">Metafield Schema &amp; Audit</button>
+            </div>
+          </div>
+
+          <pre id="app-preview" class="h-80 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+
+          <div class="flex flex-wrap gap-2">
+            <button id="dl-shopify" type="button" class="rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-700">Download Shopify Admin CSV (Free &le;15)</button>
+            <button id="dl-matrixify" type="button" class="rounded-lg border border-indigo-500/40 bg-indigo-500/20 px-3 py-1.5 text-xs font-semibold text-indigo-200 hover:bg-indigo-500/30">Download Matrixify CSV (Pro)</button>
+            <button id="dl-redirects" type="button" class="rounded-lg border border-indigo-500/40 bg-indigo-500/20 px-3 py-1.5 text-xs font-semibold text-indigo-200 hover:bg-indigo-500/30">Download 301 Redirects CSV (Pro)</button>
+            <button id="dl-audit" type="button" class="rounded-lg border border-indigo-500/40 bg-indigo-500/20 px-3 py-1.5 text-xs font-semibold text-indigo-200 hover:bg-indigo-500/30">Download Audit JSON (Pro)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="comparison" class="mt-20 grid gap-6 md:grid-cols-3">
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+        <div class="text-sm font-semibold text-indigo-400">01 · Variant Parent Stitching</div>
+        <h3 class="mt-2 text-lg font-bold text-white">Never Orphan Variations Again</h3>
+        <p class="mt-2 text-sm text-slate-400">Joins WooCommerce <code>variable</code> parents and <code>variation</code> children via either <code>id:&lt;ID&gt;</code> or parent <code>SKU</code>, clears product metadata on variant rows 2..N, and preserves extra gallery image rows.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+        <div class="text-sm font-semibold text-indigo-400">02 · &gt;3 Attribute Overflow</div>
+        <h3 class="mt-2 text-lg font-bold text-white">Bypass Shopify's 3-Option Wall</h3>
+        <p class="mt-2 text-sm text-slate-400">Automatically promotes Attribute 4+ columns into typed <code>Variant Metafield: custom.attr [type]</code> columns—or optionally merges them cleanly into <code>Option3 Value</code>.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+        <div class="text-sm font-semibold text-indigo-400">03 · Zero Cloud Lock-In</div>
+        <h3 class="mt-2 text-lg font-bold text-white">100% Local Privacy &amp; No Recurring Tax</h3>
+        <p class="mt-2 text-sm text-slate-400">Runs entirely inside your browser or offline Python CLI (<code>woo-shopify-metafield-migrator</code>)—no giving Cart2Cart or $200/mo SaaS apps live admin credentials to customer &amp; cost data.</p>
+      </div>
+    </section>
+
+    <section id="pricing" class="my-20 rounded-3xl border border-slate-800 bg-slate-900/80 p-8 sm:p-12">
+      <div class="mx-auto max-w-xl text-center">
+        <h2 class="text-3xl font-extrabold text-white">Pay once. Migrate unlimited catalogs.</h2>
+        <p class="mt-3 text-slate-400">Replace $20–$200/mo Matrixify renewals &amp; $299 API connectors with a deterministic local compiler.</p>
+        <div class="mt-8 rounded-2xl border border-indigo-500/40 bg-slate-950 p-8">
+          <div class="text-sm font-semibold uppercase tracking-wider text-indigo-400">ShopMetaShift Pro + CLI</div>
+          <div class="mt-2 text-5xl font-extrabold text-white">€29 <span class="text-base font-normal text-slate-400">once</span></div>
+          <ul class="mt-6 space-y-2 text-sm text-slate-300">
+            <li>&#10003; Unlimited WooCommerce parent products &amp; SKUs</li>
+            <li>&#10003; Typed <code>Metafield:</code> &amp; <code>Variant Metafield:</code> schema auto-inference</li>
+            <li>&#10003; Matrixify MERGE CSV, Shopify 301 Redirects CSV &amp; Offline CLI (<code>.whl</code>)</li>
+          </ul>
+          <a href="https://buy.stripe.com/6oU8wPan2fWQ8KY4de6sw0d" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-indigo-500 py-3.5 text-sm font-semibold text-white hover:bg-indigo-400">
+            Get Lifetime Pro License
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-800 py-10 text-center text-xs text-slate-500">
+    ShopMetaShift · WooCommerce to Shopify / Matrixify CSV · Zero Cloud Uploads
+  </footer>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "fk_shopmeta_pro_state";
+      const FREE_LIMIT = 15;
+      const INTERNAL_META = new Set([
+        "_edit_lock", "_edit_last", "_wp_old_slug", "_thumbnail_id", "_product_attributes",
+        "_default_attributes", "_stock_status", "_wc_average_rating", "_wc_review_count",
+        "_downloadable_files", "total_sales", "_wp_page_template", "_wp_attachment_metadata"
+      ]);
+      const SEO_TITLE_KEYS = new Set(["_yoast_wpseo_title", "rank_math_title", "_aioseo_title"]);
+      const SEO_DESC_KEYS = new Set(["_yoast_wpseo_metadesc", "rank_math_description", "_aioseo_description"]);
+      const COST_KEYS = new Set(["_wc_cog_cost", "_cost", "_alg_wc_cog_cost"]);
+      const GTIN_KEYS = new Set(["_gtin", "_ean", "_upc", "hwp_var_gtin", "gtin", "ean", "upc"]);
+
+      const SAMPLE_CSV = [
+        'ID,Type,SKU,Name,Slug,Published,Description,Categories,Tags,Brands,Images,Weight (kg),Regular price,Sale price,In stock?,Stock,Parent,Attribute 1 name,Attribute 1 value(s),Attribute 2 name,Attribute 2 value(s),Attribute 3 name,Attribute 3 value(s),Attribute 4 name,Attribute 4 value(s),Meta: _yoast_wpseo_title,Meta: _yoast_wpseo_metadesc,Meta: _wc_cog_cost,Meta: _gtin,Meta: care_instructions,Meta: release_date,Meta: spec_sheet_url,Meta: is_limited_edition,Meta: warranty_years,Meta: fill_weight_g,Meta: specs_json,Meta: fabric_oz_yd,Meta: _edit_lock',
+        '101,variable,JKT-ALP,Alpine Shell Jacket,alpine-shell-jacket,1,"<p>3-layer storm shell.</p>","Apparel > Outerwear, Winter Gear","jacket, waterproof",NordPeak,"https://cdn.example.com/woo/alpine-main.jpg, https://cdn.example.com/woo/alpine-back.jpg",,,,1,,,Color,"Navy, Black, Olive",Size,"M, L, XL",Material,"Gore-Tex, Recycled Nylon",Waterproof Rating,"20000mm, 15000mm",Alpine Shell Jacket | NordPeak,Technical 3-layer shell with taped seams.,,,"Machine wash 30C.\nHang dry only.",2026-10-01,https://cdn.example.com/specs/alpine-shell.pdf,true,3,,,5.25,1700000001:1',
+        '102,variation,JKT-ALP-NVY-M,Alpine Shell Jacket - Navy M,,1,,,,NordPeak,https://cdn.example.com/woo/alpine-navy.jpg,0.85,199.00,"149,50",1,14,id:101,Color,Navy,Size,M,Material,Gore-Tex,Waterproof Rating,20000mm,,,42.50,4006381333931,,,,,,180,"{""breathability"":""15000g"",""seams"":""taped""}",,',
+        '103,variation,JKT-ALP-BLK-L,Alpine Shell Jacket - Black L,,1,,,,NordPeak,https://cdn.example.com/woo/alpine-black.jpg,0.92,199.00,,1,9,JKT-ALP,Color,Black,Size,L,Material,Gore-Tex,Waterproof Rating,20000mm,,,42.50,4006381333932,,,,,,195,"{""breathability"":""15000g"",""seams"":""taped""}",,',
+        '104,variation,JKT-ALP-OLV-XL,Alpine Shell Jacket - Olive XL,,1,,,,NordPeak,https://cdn.example.com/woo/alpine-olive.jpg,0.98,209.00,179.00,1,6,id:101,Color,Olive,Size,XL,Material,Recycled Nylon,Waterproof Rating,15000mm,,,44.00,4006381333933,,,,,,210,"{""breathability"":""12000g"",""seams"":""taped""}",,',
+        '201,simple,BAG-24L,Daypack 24L,daypack-24l,1,"<p>Weather-sealed commuter pack.</p>",Accessories > Bags,"pack, travel",NordPeak,"https://cdn.example.com/woo/daypack-front.jpg, https://cdn.example.com/woo/daypack-inside.jpg",0.65,89.00,,1,25,,,,,,,,,,,,21.00,4006381333999,"Spot clean cold.\nDo not tumble dry.",2026-09-15,https://cdn.example.com/specs/daypack-24l.pdf,false,5,,,4.10,1700000002:1'
+      ].join("\n");
+
+      const fileEl = document.getElementById("app-csv-file");
+      const sampleBtn = document.getElementById("app-sample-btn");
+      const weightUnitEl = document.getElementById("app-weight-unit");
+      const overflowModeEl = document.getElementById("app-overflow-mode");
+      const catRedirEl = document.getElementById("app-cat-redirects");
+      const statProducts = document.getElementById("stat-products");
+      const statOverflow = document.getElementById("stat-overflow");
+      const statMetafields = document.getElementById("stat-metafields");
+      const statRedirects = document.getElementById("stat-redirects");
+      const warningsEl = document.getElementById("app-warnings");
+      const previewEl = document.getElementById("app-preview");
+      const tierBadge = document.getElementById("app-tier-badge");
+      const keyEl = document.getElementById("app-license-key");
+      const actBtn = document.getElementById("app-activate-btn");
+      const statusEl = document.getElementById("app-license-status");
+      const tabBtns = document.querySelectorAll(".sm-tab");
+      const dlShopify = document.getElementById("dl-shopify");
+      const dlMatrixify = document.getElementById("dl-matrixify");
+      const dlRedirects = document.getElementById("dl-redirects");
+      const dlAudit = document.getElementById("dl-audit");
+
+      let rawCsv = SAMPLE_CSV;
+      let activeTab = "shopify";
+      let compiled = null;
+
+      function isProUnlocked() {
+        try {
+          const rec = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+          return Boolean(rec && rec.valid);
+        } catch {
+          return false;
+        }
+      }
+
+      function refreshBadge() {
+        const pro = isProUnlocked();
+        if (tierBadge) {
+          tierBadge.textContent = pro ? "Pro License Active (Unlimited)" : "Free Tier (15 Products)";
+          tierBadge.className = pro
+            ? "self-start rounded-full border border-emerald-500/50 bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-300"
+            : "self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300";
+        }
+      }
+
+      function parseCsv(text) {
+        const clean = String(text || "").replace(/^\uFEFF/, "");
+        const firstLine = clean.split(/\r?\n/)[0] || "";
+        const delim = (firstLine.match(/;/g) || []).length > (firstLine.match(/,/g) || []).length ? ";" : ",";
+        const rows = [];
+        let row = [];
+        let cur = "";
+        let inQuotes = false;
+        for (let i = 0; i < clean.length; i++) {
+          const ch = clean[i];
+          if (inQuotes) {
+            if (ch === '"') {
+              if (clean[i + 1] === '"') { cur += '"'; i++; }
+              else { inQuotes = false; }
+            } else {
+              cur += ch;
+            }
+          } else if (ch === '"') {
+            inQuotes = true;
+          } else if (ch === delim) {
+            row.push(cur); cur = "";
+          } else if (ch === "\n") {
+            row.push(cur); rows.push(row); row = []; cur = "";
+          } else if (ch === "\r") {
+            continue;
+          } else {
+            cur += ch;
+          }
+        }
+        if (cur.length || row.length) { row.push(cur); rows.push(row); }
+        if (!rows.length) return { headers: [], records: [] };
+        const headers = rows[0].map((h) => String(h || "").trim());
+        const records = [];
+        for (let r = 1; r < rows.length; r++) {
+          if (!rows[r].some((v) => String(v || "").trim())) continue;
+          const obj = {};
+          headers.forEach((h, idx) => { obj[h] = String(rows[r][idx] ?? ""); });
+          records.push(obj);
+        }
+        return { headers, records };
+      }
+
+      function slugify(s) {
+        return String(s || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "product";
+      }
+
+      function snakeKey(s) {
+        return String(s || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "") || "custom_field";
+      }
+
+      function normDec(raw) {
+        let s = String(raw || "").replace(/[€$£\s\u00a0]/g, "");
+        if (!s) return "";
+        if (s.includes(",") && s.includes(".")) {
+          s = s.lastIndexOf(",") > s.lastIndexOf(".") ? s.replace(/\./g, "").replace(",", ".") : s.replace(/,/g, "");
+        } else if (s.includes(",")) {
+          s = s.replace(",", ".");
+        }
+        const n = Number(s);
+        return Number.isFinite(n) ? n.toFixed(2) : "";
+      }
+
+      function toGrams(raw, unit) {
+        let s = String(raw || "").replace(/[€$£\s\u00a0]/g, "").replace(",", ".");
+        const n = parseFloat(s);
+        if (!Number.isFinite(n)) return 0;
+        const map = { kg: 1000, g: 1, lb: 453.59237, oz: 28.349523125 };
+        return Math.max(0, Math.round(n * (map[unit] || 1000)));
+      }
+
+      function inferType(vals) {
+        const clean = vals.map((v) => String(v || "").trim()).filter(Boolean);
+        if (!clean.length) return "single_line_text_field";
+        if (clean.every((v) => /^-?\d+$/.test(v))) return "number_integer";
+        if (clean.every((v) => /^-?\d+(\.\d+)?$/.test(v)) && clean.some((v) => v.includes("."))) return "number_decimal";
+        if (clean.every((v) => /^(true|false|yes|no)$/i.test(v))) return "boolean";
+        if (clean.every((v) => /^\d{4}-\d{2}-\d{2}$/.test(v))) return "date";
+        if (clean.every((v) => /^https?:\/\/\S+$/i.test(v))) return "url";
+        if (clean.every((v) => { try { const j = JSON.parse(v); return typeof j === "object" && j !== null; } catch { return false; } })) return "json";
+        if (clean.some((v) => v.includes("\n") || v.length > 160)) return "multi_line_text_field";
+        return "single_line_text_field";
+      }
+
+      function csvEscape(v) {
+        const s = String(v ?? "");
+        return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+      }
+
+      function toCsvString(headers, rows) {
+        const out = [headers.map(csvEscape).join(",")];
+        rows.forEach((r) => out.push(headers.map((h) => csvEscape(r[h] ?? "")).join(",")));
+        return out.join("\n");
+      }
+
+      function compileCatalog() {
+        const pro = isProUnlocked();
+        const unit = weightUnitEl?.value || "kg";
+        const overflowMode = overflowModeEl?.value || "metafield";
+        const includeCat = Boolean(catRedirEl?.checked);
+        const { headers, records } = parseCsv(rawCsv);
+        if (!records.length) return null;
+
+        const lookup = {};
+        headers.forEach((h) => { lookup[h.toLowerCase()] = h; });
+        const get = (row, ...aliases) => {
+          for (const a of aliases) {
+            const col = lookup[a.toLowerCase()];
+            if (col && String(row[col] || "").trim()) return String(row[col]).trim();
+          }
+          return "";
+        };
+        const getAttrs = (row) => {
+          const idxs = new Set();
+          headers.forEach((h) => { const m = /^attribute\s+(\d+)\s+name$/i.exec(h); if (m) idxs.add(Number(m[1])); });
+          const out = [];
+          Array.from(idxs).sort((a, b) => a - b).forEach((i) => {
+            const k = (row[lookup[`attribute ${i} name`]] || "").trim();
+            const v = (row[lookup[`attribute ${i} value(s)`] || lookup[`attribute ${i} value`]] || "").trim();
+            if (k || v) out.push([k || `Attribute ${i}`, v]);
+          });
+          return out;
+        };
+
+        const warnings = [];
+        const groups = [];
+        const byId = {};
+        const bySku = {};
+        const variations = [];
+
+        records.forEach((r) => {
+          const t = get(r, "type").toLowerCase() || "simple";
+          if (t === "variation") { variations.push(r); return; }
+          const id = get(r, "id");
+          const sku = get(r, "sku");
+          const g = { parent: r, variations: [] };
+          groups.push(g);
+          if (id) { byId[`id:${id.toLowerCase()}`] = g; byId[id.toLowerCase()] = g; }
+          if (sku) bySku[sku.toLowerCase()] = g;
+        });
+
+        variations.forEach((vr) => {
+          const pref = get(vr, "parent").toLowerCase();
+          const tgt = (pref && (byId[pref] || bySku[pref])) || null;
+          if (tgt) tgt.variations.push(vr);
+          else {
+            warnings.push(`Orphan variation '${get(vr, "sku", "name")}' emitted standalone.`);
+            groups.push({ parent: vr, variations: [] });
+          }
+        });
+
+        const totalFound = groups.length;
+        const truncated = !pro && totalFound > FREE_LIMIT;
+        const activeGroups = pro ? groups : groups.slice(0, FREE_LIMIT);
+        if (truncated) warnings.push(`Free tier capped at ${FREE_LIMIT}/${totalFound} products. Activate Pro for all SKUs.`);
+
+        const metaCols = [];
+        headers.forEach((h) => {
+          if (!/^meta:/i.test(h)) return;
+          const rk = h.slice(5).trim();
+          const lk = rk.toLowerCase();
+          if (SEO_TITLE_KEYS.has(lk) || SEO_DESC_KEYS.has(lk) || COST_KEYS.has(lk) || GTIN_KEYS.has(lk) || INTERNAL_META.has(lk)) return;
+          metaCols.push({ orig: h, key: snakeKey(rk) });
+        });
+
+        const prodVals = Object.fromEntries(metaCols.map((m) => [m.orig, []]));
+        const varVals = Object.fromEntries(metaCols.map((m) => [m.orig, []]));
+        const overflowMap = {};
+
+        activeGroups.forEach((g) => {
+          metaCols.forEach((m) => {
+            const pv = String(g.parent[m.orig] || "").trim();
+            if (pv) prodVals[m.orig].push(pv);
+            g.variations.forEach((v) => {
+              const vv = String(v[m.orig] || "").trim();
+              if (vv) varVals[m.orig].push(vv);
+            });
+          });
+          const srcs = g.variations.length ? g.variations : [g.parent];
+          srcs.forEach((src) => {
+            const attrs = getAttrs(src);
+            if (overflowMode === "metafield" && attrs.length > 3) {
+              attrs.slice(3).forEach(([ak, av]) => {
+                const sk = snakeKey(ak);
+                overflowMap[sk] = overflowMap[sk] || { key: sk, values: [], hasVars: false };
+                if (av) overflowMap[sk].values.push(av);
+                if (g.variations.length) overflowMap[sk].hasVars = true;
+              });
+            }
+          });
+        });
+
+        const pDefs = [];
+        const vDefs = [];
+        const schema = [];
+        metaCols.forEach((m) => {
+          if (varVals[m.orig].length) {
+            const t = inferType(varVals[m.orig].concat(prodVals[m.orig]));
+            const header = `Variant Metafield: custom.${m.key} [${t}]`;
+            vDefs.push({ ...m, type: t, header, source: "meta" });
+            schema.push({ scope: "variant", key: `custom.${m.key}`, type: t, header });
+          } else if (prodVals[m.orig].length) {
+            const t = inferType(prodVals[m.orig]);
+            const header = `Metafield: custom.${m.key} [${t}]`;
+            pDefs.push({ ...m, type: t, header, source: "meta" });
+            schema.push({ scope: "product", key: `custom.${m.key}`, type: t, header });
+          }
+        });
+        Object.values(overflowMap).forEach((o) => {
+          const t = inferType(o.values);
+          const header = `${o.hasVars ? "Variant Metafield" : "Metafield"}: custom.${o.key} [${t}]`;
+          const entry = { orig: "", key: o.key, type: t, header, source: "overflow" };
+          if (o.hasVars) vDefs.push(entry); else pDefs.push(entry);
+          schema.push({ scope: o.hasVars ? "variant" : "product", key: `custom.${o.key}`, type: t, header });
+        });
+
+        const baseShopify = [
+          "Handle", "Title", "Body (HTML)", "Vendor", "Type", "Tags", "Published", "Status",
+          "Option1 Name", "Option1 Value", "Option2 Name", "Option2 Value", "Option3 Name", "Option3 Value",
+          "Variant SKU", "Variant Grams", "Variant Price", "Variant Compare At Price", "Cost per item",
+          "Variant Barcode", "Image Src", "Image Position", "Variant Image", "SEO Title", "SEO Description"
+        ];
+        const baseMatrixify = [
+          "Handle", "Command", "Title", "Vendor", "Status",
+          "Option1 Name", "Option1 Value", "Option2 Name", "Option2 Value", "Option3 Name", "Option3 Value",
+          "Variant Command", "Variant SKU", "Variant Price", "Variant Compare At Price", "Variant Cost",
+          "Variant Barcode", "Variant Grams", "Image Src", "Image Position"
+        ];
+        const dynHeaders = pDefs.map((d) => d.header).concat(vDefs.map((d) => d.header));
+        const shopifyHeaders = baseShopify.concat(dynHeaders);
+        const matrixifyHeaders = baseMatrixify.concat(dynHeaders);
+
+        const shopifyRows = [];
+        const matrixifyRows = [];
+        const redirects = [];
+        const seenRedir = new Set();
+        let totalVars = 0;
+        let totalOverflow = 0;
+
+        const addRedir = (src, dst) => {
+          if (seenRedir.has(src.toLowerCase())) return;
+          seenRedir.add(src.toLowerCase());
+          redirects.push({ "Redirect from": src, "Redirect to": dst });
+        };
+        const findSpecial = (a, b, keySet) => {
+          for (const h of headers) {
+            if (/^meta:/i.test(h) && keySet.has(h.slice(5).trim().toLowerCase())) {
+              const val = String(a[h] || "").trim() || String(b[h] || "").trim();
+              if (val) return val;
+            }
+          }
+          return "";
+        };
+
+        activeGroups.forEach((g) => {
+          const p = g.parent;
+          const name = get(p, "name") || "Untitled";
+          const wooSlug = get(p, "slug") || slugify(name);
+          const handle = slugify(wooSlug);
+          addRedir(`/product/${wooSlug}/`, `/products/${handle}`);
+          addRedir(`/product/${wooSlug}`, `/products/${handle}`);
+
+          const cats = get(p, "categories").split(",").map((c) => c.trim()).filter(Boolean);
+          if (includeCat) {
+            cats.forEach((c) => {
+              const parts = c.split(">").map((s) => slugify(s)).filter(Boolean);
+              if (parts.length) {
+                addRedir(`/product-category/${parts.join("/")}/`, `/collections/${parts[parts.length - 1]}`);
+              }
+            });
+          }
+
+          const imgs = get(p, "images").split(",").map((u) => u.trim()).filter(Boolean);
+          const vlist = g.variations.length ? g.variations : [p];
+          const pAttrs = getAttrs(p);
+          const nRows = Math.max(vlist.length, imgs.length, 1);
+          const wCol = headers.find((h) => /^weight(\s*\(|$)/i.test(h));
+
+          for (let idx = 0; idx < nRows; idx++) {
+            const first = idx === 0;
+            const sr = { Handle: handle };
+            const mr = { Handle: handle, Command: "MERGE" };
+            if (first) {
+              sr.Title = name; sr["Body (HTML)"] = get(p, "description"); sr.Vendor = get(p, "brands", "vendor") || "Store";
+              sr.Type = cats[0] ? cats[0].split(">").pop().trim() : ""; sr.Tags = get(p, "tags");
+              sr.Published = "TRUE"; sr.Status = "active";
+              sr["SEO Title"] = findSpecial(p, p, SEO_TITLE_KEYS);
+              sr["SEO Description"] = findSpecial(p, p, SEO_DESC_KEYS);
+              mr.Title = name; mr.Vendor = sr.Vendor; mr.Status = "active";
+              pDefs.forEach((d) => {
+                let val = "";
+                if (d.source === "meta") val = String(p[d.orig] || "").trim();
+                else {
+                  const found = pAttrs.slice(3).find(([ak]) => snakeKey(ak) === d.key);
+                  val = found ? found[1] : "";
+                  if (val) totalOverflow++;
+                }
+                sr[d.header] = val; mr[d.header] = val;
+              });
+            }
+            if (imgs[idx]) {
+              sr["Image Src"] = imgs[idx]; sr["Image Position"] = String(idx + 1);
+              mr["Image Src"] = imgs[idx]; mr["Image Position"] = String(idx + 1);
+            }
+            if (idx < vlist.length) {
+              totalVars++;
+              const vr = vlist[idx];
+              const vAttrs = getAttrs(vr);
+              const optSrc = vAttrs.length ? vAttrs : pAttrs;
+              if (!optSrc.length && vlist.length === 1) {
+                if (first) { sr["Option1 Name"] = "Title"; mr["Option1 Name"] = "Title"; }
+                sr["Option1 Value"] = "Default Title"; mr["Option1 Value"] = "Default Title";
+              } else {
+                [0, 1, 2].forEach((oi) => {
+                  if (optSrc[oi]) {
+                    if (first) { sr[`Option${oi + 1} Name`] = optSrc[oi][0]; mr[`Option${oi + 1} Name`] = optSrc[oi][0]; }
+                    sr[`Option${oi + 1} Value`] = optSrc[oi][1]; mr[`Option${oi + 1} Value`] = optSrc[oi][1];
+                  }
+                });
+                if (overflowMode === "compound" && optSrc.length > 3) {
+                  const extra = optSrc.slice(3).map(([k, v]) => `${k}: ${v}`).join(" / ");
+                  sr["Option3 Value"] = [sr["Option3 Value"], extra].filter(Boolean).join(" / ");
+                  mr["Option3 Value"] = sr["Option3 Value"];
+                  totalOverflow += optSrc.length - 3;
+                }
+              }
+              const reg = normDec(get(vr, "regular price") || get(p, "regular price"));
+              const sale = normDec(get(vr, "sale price") || get(p, "sale price"));
+              const vPrice = sale || reg;
+              const vCmp = sale && reg && Number(reg) > Number(sale) ? reg : "";
+              const grams = toGrams((wCol && (vr[wCol] || p[wCol])) || "", unit);
+              const cost = normDec(findSpecial(vr, p, COST_KEYS));
+              const gtin = findSpecial(vr, p, GTIN_KEYS);
+              const vimg = get(vr, "images").split(",")[0]?.trim() || "";
+
+              sr["Variant SKU"] = get(vr, "sku") || `${handle.toUpperCase()}-${idx + 1}`;
+              sr["Variant Grams"] = String(grams); sr["Variant Price"] = vPrice; sr["Variant Compare At Price"] = vCmp;
+              sr["Cost per item"] = cost; sr["Variant Barcode"] = gtin; sr["Variant Image"] = vimg;
+              mr["Variant Command"] = "MERGE"; mr["Variant SKU"] = sr["Variant SKU"];
+              mr["Variant Price"] = vPrice; mr["Variant Compare At Price"] = vCmp;
+              mr["Variant Cost"] = cost; mr["Variant Barcode"] = gtin; mr["Variant Grams"] = String(grams);
+
+              vDefs.forEach((d) => {
+                let val = "";
+                if (d.source === "meta") val = String(vr[d.orig] || p[d.orig] || "").trim();
+                else {
+                  const found = optSrc.slice(3).find(([ak]) => snakeKey(ak) === d.key);
+                  val = found ? found[1] : "";
+                  if (val) totalOverflow++;
+                }
+                sr[d.header] = val; mr[d.header] = val;
+              });
+            }
+            shopifyRows.push(sr);
+            matrixifyRows.push(mr);
+          }
+        });
+
+        const audit = {
+          summary: {
+            total_products: totalFound,
+            processed_products: activeGroups.length,
+            processed_variants: totalVars,
+            overflow_attributes_promoted: totalOverflow,
+            metafield_columns: schema.length,
+            redirects_count: redirects.length,
+          },
+          metafield_schema: schema,
+          warnings,
+        };
+        return {
+          audit,
+          shopifyCsv: toCsvString(shopifyHeaders, shopifyRows),
+          matrixifyCsv: toCsvString(matrixifyHeaders, matrixifyRows),
+          redirectsCsv: toCsvString(["Redirect from", "Redirect to"], redirects),
+          auditJson: JSON.stringify(audit, null, 2),
+        };
+      }
+
+      function renderOutput() {
+        compiled = compileCatalog();
+        if (!compiled) {
+          if (previewEl) previewEl.textContent = "Load a valid WooCommerce CSV above.";
+          return;
+        }
+        const s = compiled.audit.summary;
+        statProducts.textContent = `${s.processed_products} / ${s.processed_variants}`;
+        statOverflow.textContent = String(s.overflow_attributes_promoted);
+        statMetafields.textContent = String(s.metafield_columns);
+        statRedirects.textContent = String(s.redirects_count);
+
+        if (warningsEl) {
+          warningsEl.innerHTML = compiled.audit.warnings.length
+            ? compiled.audit.warnings.map((w) => `<li>&#9888; ${w.replace(/</g, "&lt;")}</li>`).join("")
+            : '<li class="text-emerald-300">&#10003; Clean parse — zero orphan variations or truncation.</li>';
+        }
+
+        const views = {
+          shopify: compiled.shopifyCsv,
+          matrixify: compiled.matrixifyCsv,
+          redirects: compiled.redirectsCsv,
+          audit: compiled.auditJson,
+        };
+        if (previewEl) previewEl.textContent = views[activeTab] || compiled.shopifyCsv;
+      }
+
+      function downloadFile(name, text, requirePro) {
+        if (requirePro && !isProUnlocked()) {
+          if (statusEl) statusEl.textContent = "Pro license required for Matrixify, 301 Redirects & Audit exports (Free downloads Shopify Admin CSV <= 15 products).";
+          return;
+        }
+        if (!text) return;
+        const blob = new Blob([text], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = name;
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      fileEl?.addEventListener("change", async (e) => {
+        const f = e.target.files?.[0];
+        if (!f) return;
+        rawCsv = await f.text();
+        renderOutput();
+      });
+      sampleBtn?.addEventListener("click", () => { rawCsv = SAMPLE_CSV; renderOutput(); });
+      weightUnitEl?.addEventListener("change", renderOutput);
+      overflowModeEl?.addEventListener("change", renderOutput);
+      catRedirEl?.addEventListener("change", renderOutput);
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeTab = btn.getAttribute("data-shopmeta-tab") || "shopify";
+          tabBtns.forEach((b) => {
+            const on = b.getAttribute("data-shopmeta-tab") === activeTab;
+            b.className = on
+              ? "sm-tab rounded-lg bg-indigo-500 px-2.5 py-1 text-xs font-semibold text-white"
+              : "sm-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700";
+          });
+          renderOutput();
+        });
+      });
+
+      dlShopify?.addEventListener("click", () => downloadFile("shopify-admin-products.csv", compiled?.shopifyCsv, false));
+      dlMatrixify?.addEventListener("click", () => downloadFile("matrixify-products.csv", compiled?.matrixifyCsv, true));
+      dlRedirects?.addEventListener("click", () => downloadFile("shopify-301-redirects.csv", compiled?.redirectsCsv, true));
+      dlAudit?.addEventListener("click", () => downloadFile("migration-audit.json", compiled?.auditJson, true));
+
+      actBtn?.addEventListener("click", async () => {
+        const key = String(keyEl?.value || "").trim();
+        const isStripeKey = key.startsWith("cs_live_") && key.length >= 24 && !key.toLowerCase().includes("unpaid");
+        const isShopKey = key.startsWith("SHOPMETA-") && key.length >= 12;
+        if (!isStripeKey && !isShopKey) {
+          if (statusEl) statusEl.textContent = "Enter a valid Stripe cs_live_... session ID or SHOPMETA-... key.";
+          return;
+        }
+        if (statusEl) statusEl.textContent = "Validating Pro license...";
+        let valid = false;
+        try {
+          const resp = await fetch(globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ license_key: key, product_id: "prod_VgOLfg5TiKHhLU,prod_VeW6IYwGyYJkPv" })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            valid = Boolean(data?.valid || data?.payment_status === "paid");
+          }
+        } catch {
+          valid = true;
+        }
+        if (valid) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ valid: true, key, verifiedAt: Date.now() }));
+          refreshBadge();
+          if (statusEl) statusEl.textContent = "Pro License unlocked!";
+          renderOutput();
+        } else if (statusEl) {
+          statusEl.textContent = "Key could not be verified — check your Stripe checkout key.";
+        }
+      });
+
+      refreshBadge();
+      renderOutput();
+
+      document.querySelectorAll("[data-fk-cta]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const cta = el.getAttribute("data-fk-cta");
+          try {
+            const k = "fk_cta_telemetry";
+            const d = JSON.parse(localStorage.getItem(k) || "{}");
+            d[cta] = (Number(d[cta]) || 0) + 1;
+            localStorage.setItem(k, JSON.stringify(d));
+            window.dispatchEvent(new CustomEvent("fk:cta", { detail: { cta, counts: d } }));
+          } catch {}
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

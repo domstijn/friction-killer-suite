@@ -119,7 +119,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
       <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
         <div>
           <span class="rounded-full bg-indigo-500/20 px-2.5 py-0.5 text-xs font-semibold text-indigo-300">ZERO-INSTALL INTERACTIVE DEMO</span>
-          <h2 class="mt-2 text-2xl font-bold text-white">Try All 11 Tools Live in Your Browser</h2>
+          <h2 class="mt-2 text-2xl font-bold text-white">Try All 12 Tools Live in Your Browser</h2>
           <p class="mt-1 text-xs text-slate-400">Runs 100% locally in JavaScript — nothing leaves your browser.</p>
         </div>
         <div class="flex flex-wrap gap-2" role="tablist">
@@ -134,6 +134,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
           <button type="button" data-pg-tab="ossvat" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">9. OssVatBridge</button>
           <button type="button" data-pg-tab="amz" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">10. AmzSettlementBridge</button>
           <button type="button" data-pg-tab="einvoice" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">11. EInvoiceLocal</button>
+          <button type="button" data-pg-tab="shopmeta" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">12. ShopMetaShift</button>
         </div>
       </div>
 
@@ -371,6 +372,23 @@ stripe_tax,NL,EUR,300.00,0.00,0.0,charge,NL123456789B01</textarea>
           <pre id="pg-einv-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
         </div>
       </div>
+
+      <!-- Tab 12: ShopMetaShift -->
+      <div id="pg-panel-shopmeta" class="pg-panel mt-6 hidden grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-300" for="pg-shopmeta-csv">Paste WooCommerce Variable/Variation Product CSV</label>
+            <textarea id="pg-shopmeta-csv" rows="8" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">ID,Type,SKU,Name,Slug,Parent,Regular price,Sale price,Attribute 1 name,Attribute 1 value(s),Attribute 2 name,Attribute 2 value(s),Attribute 3 name,Attribute 3 value(s),Attribute 4 name,Attribute 4 value(s),Meta: warranty_years
+101,variable,JKT-ALP,Alpine Shell Jacket,alpine-shell-jacket,,,,Color,"Navy, Black",Size,"M, L",Material,Gore-Tex,Waterproof Rating,20000mm,3
+102,variation,JKT-ALP-NVY-M,,,id:101,199.00,"149,50",Color,Navy,Size,M,Material,Gore-Tex,Waterproof Rating,20000mm,
+103,variation,JKT-ALP-BLK-L,,,JKT-ALP,199.00,,Color,Black,Size,L,Material,Gore-Tex,Waterproof Rating,20000mm,</textarea>
+          </div>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-emerald-300">Shopify Multi-Row CSV + Variant Metafield &amp; 301 Redirect Preview</span>
+          <pre id="pg-shopmeta-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+        </div>
+      </div>
     </section>"""
 
 
@@ -389,6 +407,7 @@ PLAYGROUND_SCRIPT = r"""  <script>
         ossvat: document.getElementById("pg-panel-ossvat"),
         amz: document.getElementById("pg-panel-amz"),
         einvoice: document.getElementById("pg-panel-einvoice"),
+        shopmeta: document.getElementById("pg-panel-shopmeta"),
       };
       tabs.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -879,6 +898,86 @@ PLAYGROUND_SCRIPT = r"""  <script>
       }
       einvXml?.addEventListener("input", runEInvoice);
       runEInvoice();
+
+      // 12. ShopMetaShift live WooCommerce-to-Shopify CSV + >3 Attr & 301 Redirect preview
+      const smIn = document.getElementById("pg-shopmeta-csv");
+      const smOut = document.getElementById("pg-shopmeta-output");
+      function parseSimpleCsv(txt) {
+        const lines = String(txt || "").trim().split(/\r?\n/).filter(Boolean);
+        if (lines.length < 2) return null;
+        const splitRow = (line) => {
+          const out = [];
+          let cur = "";
+          let q = false;
+          for (let i = 0; i < line.length; i++) {
+            const c = line[i];
+            if (c === '"') { q = !q; continue; }
+            if (c === "," && !q) { out.push(cur.trim()); cur = ""; continue; }
+            cur += c;
+          }
+          out.push(cur.trim());
+          return out;
+        };
+        const headers = splitRow(lines[0]);
+        return {
+          headers,
+          rows: lines.slice(1).map((ln) => {
+            const vals = splitRow(ln);
+            const obj = {};
+            headers.forEach((h, idx) => { obj[h] = vals[idx] || ""; });
+            return obj;
+          })
+        };
+      }
+      function runShopMeta() {
+        if (!smIn || !smOut) return;
+        const parsed = parseSimpleCsv(smIn.value);
+        if (!parsed) {
+          smOut.textContent = "Paste WooCommerce CSV rows above.";
+          return;
+        }
+        const parents = parsed.rows.filter((r) => (r.Type || "").toLowerCase() !== "variation");
+        const vars = parsed.rows.filter((r) => (r.Type || "").toLowerCase() === "variation");
+        const lines = [
+          "# Shopify Admin Multi-Row CSV + Variant Metafield Preview:",
+          "Handle,Title,Option1 Value,Option2 Value,Option3 Value,Variant SKU,Variant Price,Variant Compare At Price,Metafield: custom.warranty_years [number_integer],Variant Metafield: custom.waterproof_rating [single_line_text_field]"
+        ];
+        const redirs = ["# 301 Redirects CSV:", "Redirect from,Redirect to"];
+        parents.forEach((p) => {
+          const handle = (p.Slug || p.Name || "product").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+          const pid = `id:${(p.ID || "").toLowerCase()}`;
+          const psku = (p.SKU || "").toLowerCase();
+          const children = vars.filter((v) => {
+            const pr = (v.Parent || "").toLowerCase();
+            return pr && (pr === pid || pr === psku);
+          });
+          const activeList = children.length ? children : [p];
+          activeList.forEach((v, idx) => {
+            const sale = (v["Sale price"] || "").replace(",", ".");
+            const reg = (v["Regular price"] || "").replace(",", ".");
+            const price = sale || reg;
+            const cmp = sale && reg ? reg : "";
+            lines.push(
+              [
+                handle,
+                idx === 0 ? p.Name : "",
+                v["Attribute 1 value(s)"] || "",
+                v["Attribute 2 value(s)"] || "",
+                v["Attribute 3 value(s)"] || "",
+                v.SKU || "",
+                price,
+                cmp,
+                idx === 0 ? (p["Meta: warranty_years"] || "") : "",
+                v["Attribute 4 value(s)"] || ""
+              ].join(",")
+            );
+          });
+          redirs.push(`/product/${p.Slug || handle}/,/products/${handle}`);
+        });
+        smOut.textContent = lines.join("\n") + "\n\n" + redirs.join("\n");
+      }
+      smIn?.addEventListener("input", runShopMeta);
+      runShopMeta();
     })();
   </script>"""
 
@@ -992,8 +1091,9 @@ def render_hub_html(
     cards_html = "\n".join(cards)
     hub_title = f"Friction-Killer Suite — {len(products)} Zero-Backend Micro-Utilities & Web Apps"
     hub_desc = (
-        "Client-side micro-tools and zero-install web apps for XRechnung/Peppol XML validation & DATEV export, "
-        "Amazon Flat-File V2 settlement journals, EU VAT OSS quarterly CSV/XML filing, Lemon Squeezy migration, Stripe/PayPal payouts, Webflow, Notion, Linear, Claude & VS Code."
+        "Client-side micro-tools and zero-install web apps for WooCommerce-to-Shopify variant metafield & 301 CSV migration, "
+        "XRechnung/Peppol XML validation & DATEV export, Amazon Flat-File V2 settlement journals, EU VAT OSS quarterly CSV/XML filing, "
+        "Lemon Squeezy migration, Stripe/PayPal payouts, Webflow, Notion, Linear, Claude & VS Code."
     )
     hub_seo_tags = build_seo_head_tags(
         title=hub_title,
@@ -1034,7 +1134,7 @@ def render_hub_html(
         <span class="text-indigo-400">without paying monthly SaaS taxes.</span>
       </h1>
       <p class="mx-auto mt-4 max-w-2xl text-base text-slate-300">
-        {len(products)} local-first tools &amp; zero-install web apps including EInvoiceLocal, AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch, and NotionGuestBridge.
+        {len(products)} local-first tools &amp; zero-install web apps including ShopMetaShift, EInvoiceLocal, AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch, and NotionGuestBridge.
       </p>
       <div class="mt-7 flex flex-wrap justify-center gap-3">
         <a href="#playground" class="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-slate-200">Try Live in Browser</a>
@@ -1054,11 +1154,11 @@ def render_hub_html(
           <span class="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300">BEST VALUE · SAVE 83%</span>
           <h2 class="mt-3 text-3xl font-extrabold text-white">All-Access Friction-Killer Bundle</h2>
           <p class="mt-2 max-w-xl text-sm text-slate-300">
-            Unlock Pro licenses across all {len(products)} tools (EInvoiceLocal, AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch &amp; NotionGuestBridge) with one single purchase (€290+ combined value).
+            Unlock Pro licenses across all {len(products)} tools (ShopMetaShift, EInvoiceLocal, AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch &amp; NotionGuestBridge) with one single purchase (€320+ combined value).
           </p>
         </div>
         <div class="w-full shrink-0 rounded-2xl border border-slate-700 bg-slate-950/70 p-6 text-center md:w-72">
-          <div class="text-xs text-slate-400 line-through">€290+ combined</div>
+          <div class="text-xs text-slate-400 line-through">€320+ combined</div>
           <div class="mt-1 text-4xl font-extrabold text-white">€49 <span class="text-sm font-normal text-slate-400">once</span></div>
           <a href="{html.escape(bundle_checkout_url)}" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-5 block rounded-xl bg-indigo-500 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
             Get All-Access Bundle
@@ -1259,7 +1359,7 @@ def render_success_html(products: list[dict[str, Any]], *, for_pages: bool = Tru
 
       <div class="mt-6 space-y-2 text-xs text-slate-300">
         <p class="font-semibold text-white">How to activate across all {len(products)} tools:</p>
-        <p>• <strong>Browser Web Apps</strong> (<code>WebflowAssetZip</code>, <code>StripePayoutBridge</code>, <code>LemonExitBridge</code>, <code>OssVatBridge</code>, <code>AmzSettlementBridge</code>, <code>EInvoiceLocal</code>): Auto-unlocked above in this browser, or paste your key into the Pro box on any product page.</p>
+        <p>• <strong>Browser Web Apps</strong> (<code>WebflowAssetZip</code>, <code>StripePayoutBridge</code>, <code>LemonExitBridge</code>, <code>OssVatBridge</code>, <code>AmzSettlementBridge</code>, <code>EInvoiceLocal</code>, <code>ShopMetaShift</code>): Auto-unlocked above in this browser, or paste your key into the Pro box on any product page.</p>
         <p>• <strong>Python CLIs (<code>.whl</code>)</strong>: Run <code>&lt;tool-slug&gt; --activate YOUR_KEY</code> (e.g. <code>eu-oss-vat-return-compiler --activate YOUR_KEY</code>).</p>
         <p>• <strong>Chrome Extensions</strong> (<code>LinearBridge</code>, <code>NotionGuestBridge</code>): Open the extension popup &rarr; paste key &rarr; click <em>Activate</em>.</p>
         <p>• <strong>VS Code</strong> (<code>ExtProfileLock</code>): Call <code>activate("YOUR_KEY")</code> in your workspace profile config.</p>
@@ -1281,7 +1381,8 @@ def render_success_html(products: list[dict[str, Any]], *, for_pages: bool = Tru
       "lemonsqueezy-stripe-polar-migrator": "fk_lemon_exit_pro_state",
       "eu-oss-vat-return-compiler": "fk_oss_vat_pro_state",
       "amazon-settlement-xero-qbo-splitter": "fk_amz_settlement_pro_state",
-      "e-invoice-xml-batch-converter": "fk_einvoice_pro_state"
+      "e-invoice-xml-batch-converter": "fk_einvoice_pro_state",
+      "woo-shopify-metafield-migrator": "fk_shopmeta_pro_state"
     }};
     const params = new URLSearchParams(window.location.search);
     const sid = (params.get("session_id") || "").trim();
@@ -1446,7 +1547,7 @@ def render_root_readme_md(products: list[dict[str, Any]], bundle_checkout_url: s
     cli_block = "\n".join(cli_installs)
     return f"""# Friction-Killer Suite — {len(products)} Zero-Subscription Local Web Apps & CLIs
 
-**100% browser-local, GDPR/GoBD-safe utilities** for **EU VAT OSS (`BZSt BOP` / `ROS XML`)**, **XRechnung / ZUGFeRD / Peppol XML to DATEV EXTF**, **Amazon Flat-File V2 & Stripe Payouts to Xero / QuickBooks**, **Lemon Squeezy shutdown migrations**, **Webflow CMS backups**, **Notion**, **Linear**, **Claude Code**, and **VS Code**. Zero server uploads, zero API OAuth lock-in, and zero recurring SaaS subscriptions.
+**100% browser-local, GDPR/GoBD-safe utilities** for **WooCommerce-to-Shopify Metafields & 301 Redirects**, **EU VAT OSS (`BZSt BOP` / `ROS XML`)**, **XRechnung / ZUGFeRD / Peppol XML to DATEV EXTF**, **Amazon Flat-File V2 & Stripe Payouts to Xero / QuickBooks**, **Lemon Squeezy shutdown migrations**, **Webflow CMS backups**, **Notion**, **Linear**, **Claude Code**, and **VS Code**. Zero server uploads, zero API OAuth lock-in, and zero recurring SaaS subscriptions.
 
 - **Try All {len(products)} Tools Live in Browser (Zero Install):** {SITE_BASE_URL}/
 - **All-Access Suite Bundle (€49 once, unlocks all {len(products)} tools):** {bundle_checkout_url}

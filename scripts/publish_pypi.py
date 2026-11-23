@@ -30,6 +30,7 @@ ACTIVE_GO_PYTHON_SLUGS = [
     "stripe-payout-xero-qbo-splitter",
     "notion-clean-md-exporter",
     "claude-profile-switcher",
+    "woo-shopify-metafield-migrator",
 ]
 
 PYPI_NAME_OVERRIDES = {
