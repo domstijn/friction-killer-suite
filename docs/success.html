@@ -107,7 +107,7 @@
           } else if (!slug || slug === "all-access-bundle") {
             Object.values(STORAGE_KEYS).forEach((k) => localStorage.setItem(k, record));
             if (banner && bannerText && bannerLink) {
-              bannerText.textContent = "All 6 Browser Web Apps Unlocked in this browser!";
+              bannerText.textContent = "All " + Object.keys(STORAGE_KEYS).length + " Browser Web Apps Unlocked in this browser!";
               bannerLink.href = "./index.html";
               bannerLink.textContent = "Open Friction-Killer Suite →";
               banner.classList.remove("hidden");

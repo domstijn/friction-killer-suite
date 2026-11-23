@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import html
 import json
 import re
 import shutil
 import sys
+import urllib.parse
 from pathlib import Path
 from typing import Any
 
@@ -18,6 +20,108 @@ DEFAULT_STATE_PATH = REPO_ROOT / "pipeline" / "state.json"
 DEFAULT_HUB_DIR = REPO_ROOT / "launch_hub"
 DEFAULT_DOCS_DIR = REPO_ROOT / "docs"
 DEFAULT_BUNDLE_CONFIG = DEFAULT_HUB_DIR / "bundle_config.json"
+DEFAULT_ANALYTICS_CONFIG_PATH = REPO_ROOT / "pipeline" / "analytics_config.json"
+
+
+def load_analytics_config(path: Path = DEFAULT_ANALYTICS_CONFIG_PATH) -> dict[str, str]:
+    """Load non-secret Cloudflare Web Analytics + D1 funnel beacon config if present."""
+    if not path.is_file():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return {str(k): str(v) for k, v in data.items()} if isinstance(data, dict) else {}
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def build_analytics_footer_html(
+    slug: str,
+    short_title: str,
+    cfg: dict[str, str],
+    *,
+    include_feedback_bar: bool = False,
+) -> str:
+    """Build cookie-less Cloudflare Web Analytics + zero-PII Worker funnel tracker + feedback bar."""
+    parts: list[str] = []
+    if include_feedback_bar:
+        issue_title = urllib.parse.quote_plus(f"Feedback: {short_title}")
+        issue_body = urllib.parse.quote_plus(
+            f"Product slug: {slug}\nWhat format, bank, or step did not work as expected?\n"
+        )
+        mail_subj = urllib.parse.quote(f"Feedback: {short_title}")
+        parts.append(
+            f"""  <section id="fk-feedback-bar" class="mx-auto max-w-5xl px-6 pb-6 no-print">
+    <div class="flex flex-col items-center justify-between gap-3 rounded-2xl border border-indigo-500/20 bg-slate-900/60 px-5 py-4 text-xs text-slate-300 sm:flex-row">
+      <span>Missing a bank, CSV format, or hit a snag with <strong>{html.escape(short_title)}</strong>?</span>
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="https://github.com/domstijn/friction-killer-suite/issues/new?title={issue_title}&amp;body={issue_body}" target="_blank" rel="noopener noreferrer" data-fk-cta="feedback" class="rounded-lg border border-indigo-500/40 bg-indigo-500/15 px-3 py-1.5 font-semibold text-indigo-200 hover:bg-indigo-500/25">Missing a bank/format or hit a snag? Report it &rarr;</a>
+        <a href="mailto:dom.stijn99@gmail.com?subject={mail_subj}" data-fk-cta="feedback" class="text-slate-400 underline hover:text-white">Email Stijn</a>
+      </div>
+    </div>
+  </section>"""
+        )
+
+    rum_token = cfg.get("rum_site_token", "").strip()
+    if rum_token:
+        parts.append(
+            f'  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon=\'{{"token": "{html.escape(rum_token)}"}}\'></script>'
+        )
+
+    worker_url = cfg.get("worker_url", "").strip().rstrip("/")
+    if worker_url:
+        ep = json.dumps(f"{worker_url}/e")
+        safe_slug = json.dumps(slug)
+        parts.append(
+            f"""  <script>
+    (function () {{
+      if (navigator.webdriver || location.protocol === "file:") return;
+      const EP = {ep};
+      const SLUG = {safe_slug};
+      let refHost = "direct";
+      try {{
+        if (document.referrer) {{
+          const u = new URL(document.referrer);
+          if (u.hostname && u.hostname !== location.hostname) refHost = u.hostname.toLowerCase();
+        }}
+      }} catch {{}}
+      const seen = new Set();
+      function send(ev, onceKey) {{
+        if (onceKey) {{
+          if (seen.has(onceKey)) return;
+          seen.add(onceKey);
+        }}
+        try {{
+          fetch(EP, {{
+            method: "POST",
+            mode: "cors",
+            keepalive: true,
+            headers: {{ "Content-Type": "application/json" }},
+            body: JSON.stringify({{ slug: SLUG, event: ev, ref_host: refHost }})
+          }}).catch(() => {{}});
+        }} catch {{}}
+      }}
+      send("page_view", "pv");
+      document.addEventListener("change", (e) => {{
+        if (e.target && e.target.matches('input[type="file"]')) send("file_upload", "fu");
+      }}, true);
+      document.addEventListener("click", (e) => {{
+        const t = e.target && e.target.closest ? e.target.closest("a,button") : null;
+        if (!t) return;
+        if (t.matches("#app-sample-btn,#app-sample-camt-btn,#app-sample-mt-btn,#app-run-btn,.pg-tab")) {{
+          send("tool_run", "tr:" + (t.id || t.getAttribute("data-pg-tab") || "btn"));
+        }}
+        if (t.matches('[id^="app-dl-"],#dl-matrixify,#dl-redirects,#dl-audit,#dl-qbo,#dl-ofx,#dl-datev,#app-activate-btn')) {{
+          send("paywall_hit", "pw:" + (t.id || "btn"));
+        }}
+        const cta = t.getAttribute("data-fk-cta");
+        if (cta === "pro-checkout") send("checkout_click");
+        else if (cta === "feedback") send("feedback_click");
+      }}, true);
+    }})();
+  </script>"""
+        )
+
+    return "\n".join(parts)
 
 DEFAULT_PRICES = {
     "notion-linear-prd-sync": "€29 once",
@@ -1174,6 +1278,16 @@ def render_hub_html(
         app_name="Friction-Killer Suite",
         price_eur="49.00",
     )
+    analytics_footer = (
+        build_analytics_footer_html(
+            "hub",
+            "Friction-Killer Suite",
+            load_analytics_config(),
+            include_feedback_bar=False,
+        )
+        if for_pages
+        else ""
+    )
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1261,15 +1375,20 @@ def render_hub_html(
     }});
   </script>
 {PLAYGROUND_SCRIPT}
+{analytics_footer}
 </body>
 </html>
 """
 
 
-def render_product_page_for_docs(product: dict[str, Any]) -> str:
+def render_product_page_for_docs(
+    product: dict[str, Any],
+    analytics_cfg: dict[str, str] | None = None,
+) -> str:
     landing_path = product["proj_dir"] / "launch" / "landing.html"
     page_html = landing_path.read_text(encoding="utf-8")
     slug = product["slug"]
+    cfg = analytics_cfg if analytics_cfg is not None else load_analytics_config()
     zip_href = f"../../downloads/{slug}-v0.1.0.zip"
 
     # Rewrite #install action links to direct downloadable .zip artifact
@@ -1295,8 +1414,14 @@ def render_product_page_for_docs(product: dict[str, Any]) -> str:
         )
         page_html = page_html.replace("</head>", f"{seo_tags}\n</head>", 1)
 
-    # Replace basic footer with Lemon Squeezy verification-compliant support/refund footer
+    # Inject 1-click feedback bar above footer & cookie-less Cloudflare Web Analytics + D1 funnel tracker
+    feedback_and_scripts = build_analytics_footer_html(
+        slug, product["short_title"], cfg, include_feedback_bar=True
+    )
+    feedback_section, _, analytics_scripts = feedback_and_scripts.partition("</section>")
+    feedback_html = f"{feedback_section}</section>\n" if feedback_section and "</section>" in feedback_and_scripts else ""
     compliant_footer = (
+        f"{feedback_html}"
         f"{LEGAL_FOOTER_HTML}\n"
         f'  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500">\n'
         f'    {html.escape(product["short_title"])} (<code>{html.escape(slug)}</code>) — Friction-Killer Suite by Stijn Dom (@domstijn) · '
@@ -1305,6 +1430,8 @@ def render_product_page_for_docs(product: dict[str, Any]) -> str:
         f"  </footer>"
     )
     page_html = re.sub(r"<footer[\s\S]*?</footer>", compliant_footer, page_html, count=1)
+    if analytics_scripts.strip():
+        page_html = re.sub(r"</body>", f"{analytics_scripts}\n</body>", page_html, count=1, flags=re.I)
     return page_html
 
 
@@ -1318,6 +1445,7 @@ def publish_docs_site(
     downloads_dir.mkdir(parents=True, exist_ok=True)
     products_dir.mkdir(parents=True, exist_ok=True)
     (docs_dir / ".nojekyll").write_text("", encoding="utf-8")
+    analytics_cfg = load_analytics_config()
 
     for p in products:
         if p["zip_exists"]:
@@ -1331,7 +1459,7 @@ def publish_docs_site(
             prod_out = products_dir / p["slug"]
             prod_out.mkdir(parents=True, exist_ok=True)
             (prod_out / "index.html").write_text(
-                render_product_page_for_docs(p), encoding="utf-8"
+                render_product_page_for_docs(p, analytics_cfg=analytics_cfg), encoding="utf-8"
             )
 
     (docs_dir / "index.html").write_text(
@@ -1351,11 +1479,12 @@ def publish_docs_site(
             if (p["proj_dir"] / "launch" / "landing.html").is_file()
         ],
     ]
+    lastmod_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     url_blocks = "\n".join(
         [
             "  <url>\n"
             f"    <loc>{html.escape(loc)}</loc>\n"
-            "    <lastmod>2026-11-22</lastmod>\n"
+            f"    <lastmod>{lastmod_str}</lastmod>\n"
             "    <changefreq>weekly</changefreq>\n"
             f"    <priority>{priority}</priority>\n"
             "  </url>"
@@ -1482,7 +1611,7 @@ def render_success_html(products: list[dict[str, Any]], *, for_pages: bool = Tru
           }} else if (!slug || slug === "all-access-bundle") {{
             Object.values(STORAGE_KEYS).forEach((k) => localStorage.setItem(k, record));
             if (banner && bannerText && bannerLink) {{
-              bannerText.textContent = "All 6 Browser Web Apps Unlocked in this browser!";
+              bannerText.textContent = "All " + Object.keys(STORAGE_KEYS).length + " Browser Web Apps Unlocked in this browser!";
               bannerLink.href = "./index.html";
               bannerLink.textContent = "Open Friction-Killer Suite →";
               banner.classList.remove("hidden");
