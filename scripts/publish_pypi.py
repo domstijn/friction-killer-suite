@@ -8,6 +8,7 @@ import base64
 import configparser
 import email.parser
 import hashlib
+import json
 import os
 import re
 import sys
@@ -246,7 +247,22 @@ def upload_wheel_pypi(whl_path: Path, meta: dict[str, object], token: str, repo_
         with urllib.request.urlopen(req, timeout=30) as resp:
             return resp.status, resp.read().decode("utf-8", errors="replace")
     except urllib.error.HTTPError as exc:
-        return exc.code, exc.read().decode("utf-8", errors="replace")
+        body = exc.read().decode("utf-8", errors="replace")
+        retry_after = exc.headers.get("Retry-After") if exc.headers else None
+        if retry_after:
+            body = f"(Retry-After: {retry_after}s) {body}"
+        return exc.code, body
+
+
+def is_version_published(pkg_name: str, version: str) -> bool:
+    """Return True when pkg_name==version already has published files on PyPI."""
+    url = f"https://pypi.org/pypi/{pkg_name}/json"
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, method="GET"), timeout=8) as resp:
+            data = json.loads(resp.read().decode("utf-8", errors="replace"))
+        return bool(data.get("releases", {}).get(version, []))
+    except (urllib.error.HTTPError, OSError, ValueError, TypeError):
+        return False
 
 
 def check_pypi_available(pkg_name: str) -> str:
@@ -293,11 +309,23 @@ def main() -> int:
                 )
                 continue
 
+            if not args.test_pypi and is_version_published(str(meta["name"]), str(meta["version"])):
+                print(f"SKIPPED (already live on PyPI): https://pypi.org/project/{meta['name']}/{meta['version']}/")
+                continue
+
             status, resp_body = upload_wheel_pypi(upload_whl, meta, token, repo_url)
             if status in (200, 201):
                 print(f"PUBLISHED: https://pypi.org/project/{meta['name']}/{meta['version']}/ (HTTP {status})")
             elif status == 400 and "File already exists" in resp_body:
                 print(f"SKIPPED (already exists on PyPI): {meta['name']}=={meta['version']}")
+            elif status == 429:
+                print(
+                    f"RATE-LIMITED {meta['name']} -> HTTP 429: {resp_body[:300]}\n"
+                    "Hint: PyPI limits new-project creation bursts; re-run `python3 scripts/publish_pypi.py` later to resume remaining packages.",
+                    file=sys.stderr,
+                )
+                failures += 1
+                break
             else:
                 print(f"FAILED {meta['name']} -> HTTP {status}: {resp_body[:300]}", file=sys.stderr)
                 failures += 1

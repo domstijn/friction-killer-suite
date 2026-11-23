@@ -1402,6 +1402,18 @@ curl -X POST -is "http://localhost:4242/create-checkout-session" -d ""
 """
 
 
+LIVE_PYPI_PACKAGES: dict[str, str] = {
+    "eu-oss-vat-return-compiler": "eu-oss-vat-return-compiler",
+    "amazon-settlement-xero-qbo-splitter": "amazon-settlement-xero-qbo-splitter",
+    "e-invoice-xml-batch-converter": "e-invoice-xml-batch-converter",
+    "lemonsqueezy-stripe-polar-migrator": "lemonsqueezy-stripe-polar-migrator",
+    # Pending PyPI new-project rate-limit reset:
+    # "stripe-payout-xero-qbo-splitter": "stripe-payout-xero-qbo-splitter",
+    # "notion-clean-md-exporter": "notion-clean-md-exporter",
+    # "claude-profile-switcher": "claude-profile-switch",
+}
+
+
 def render_root_readme_md(products: list[dict[str, Any]], bundle_checkout_url: str) -> str:
     """Generate an SEO-friendly root README.md showcasing all shipped Web Apps, CLIs & Storefront links."""
     rows = []
@@ -1411,8 +1423,17 @@ def render_root_readme_md(products: list[dict[str, Any]], bundle_checkout_url: s
         dl_parts = []
         if p["whl_exists"]:
             whl_url = f"{SITE_BASE_URL}/downloads/{p['whl_name']}"
-            dl_parts.append(f"[.whl]({whl_url})")
-            cli_installs.append(f"- **{p['short_title']}**: `pip install {whl_url}`")
+            pypi_name = LIVE_PYPI_PACKAGES.get(p["slug"])
+            if pypi_name:
+                pypi_url = f"https://pypi.org/project/{pypi_name}/"
+                dl_parts.append(f"[PyPI]({pypi_url})")
+                dl_parts.append(f"[.whl]({whl_url})")
+                cli_installs.append(
+                    f"- **{p['short_title']}**: `pip install {pypi_name}` ([PyPI]({pypi_url}) · [.whl]({whl_url}))"
+                )
+            else:
+                dl_parts.append(f"[.whl]({whl_url})")
+                cli_installs.append(f"- **{p['short_title']}**: `pip install {whl_url}`")
         if p["vsix_exists"]:
             dl_parts.append(f"[.vsix]({SITE_BASE_URL}/downloads/{p['slug']}-0.1.0.vsix)")
         if p["zip_exists"]:
@@ -1441,7 +1462,7 @@ def render_root_readme_md(products: list[dict[str, Any]], bundle_checkout_url: s
 
 ---
 
-## Offline Python CLI Installation (`.whl`)
+## Python CLI Installation (PyPI & Offline `.whl`)
 
 Prefer air-gapped CLI / batch directory automation? Install any zero-dependency wheel directly via `pip`:
 
@@ -1457,6 +1478,7 @@ Each tool includes a generous **Free Tier** in both the browser Web App and CLI,
 - `scripts/score_opportunity.py` — Commercial buyer, saturation & DIY-resistance scorer with automatic kill switches
 - `scripts/build_portfolio.py` — Regenerates `docs/` GitHub Pages storefront, OpenGraph/JSON-LD SEO, `sitemap.xml`, `robots.txt`, and this `README.md`
 - `scripts/ship_check.py` — Automated test runner and `.zip` / `.vsix` / `.whl` packager
+- `scripts/publish_pypi.py` — Zero-dependency PyPI Metadata 2.1 wheel validator & uploader
 - `scripts/ping_indexnow.py` — Instant search indexing via IndexNow (`Bing`, `DuckDuckGo`, `ChatGPT` / `Copilot` search)
 """
 
