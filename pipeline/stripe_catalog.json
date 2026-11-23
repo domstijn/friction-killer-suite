@@ -178,6 +178,19 @@
       "payment_link_url": "https://buy.stripe.com/6oU8wPan2fWQ8KY4de6sw0d",
       "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=woo-shopify-metafield-migrator"
     },
+    "camt053-mt940-qbo-xero-converter": {
+      "slug": "camt053-mt940-qbo-xero-converter",
+      "name": "BankFeedBridge Pro",
+      "description": "100% browser-local ISO 20022 CAMT.053 XML & SWIFT MT940 to QuickBooks (.QBO), Xero (.OFX/CSV) & DATEV bank statement converter Web App + CLI (Pro License).",
+      "unit_amount": 2900,
+      "currency": "eur",
+      "mode": "payment",
+      "product_id": "prod_VgPF3c0DrjRVFW",
+      "price_id": "price_1Uf2RZH2AcdDmQyRKHnM1WNF",
+      "payment_link_id": "plink_1Uf2RmH2AcdDmQyRRUYRtvC3",
+      "payment_link_url": "https://buy.stripe.com/4gM9ATfHm5ic5yMh006sw0e",
+      "checkout_endpoint": "http://localhost:4242/create-checkout-session?slug=camt053-mt940-qbo-xero-converter"
+    },
     "all-access-bundle": {
       "slug": "all-access-bundle",
       "name": "All-Access Friction-Killer Bundle",

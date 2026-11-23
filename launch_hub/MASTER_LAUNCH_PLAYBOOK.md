@@ -1,6 +1,6 @@
 # Master Launch Playbook (Stripe Managed Payments)
 
-## Portfolio Summary (12 Shipped Products)
+## Portfolio Summary (13 Shipped Products)
 
 | Product | Ecosystem | Pro Price | Distributable Bundle | Launch Assets |
 | :--- | :--- | :---: | :--- | :--- |
@@ -16,6 +16,7 @@
 | **AmzSettlementBridge** (`amazon-settlement-xero-qbo-splitter`) | saas-addon | €29 once | `projects/amazon-settlement-xero-qbo-splitter/dist/amazon-settlement-xero-qbo-splitter-v0.1.0.zip` | [Sales Page](../projects/amazon-settlement-xero-qbo-splitter/launch/landing.html) / [Kit](../projects/amazon-settlement-xero-qbo-splitter/launch/LAUNCH_KIT.md) |
 | **EInvoiceLocal** (`e-invoice-xml-batch-converter`) | saas-addon | €29 once | `projects/e-invoice-xml-batch-converter/dist/e-invoice-xml-batch-converter-v0.1.0.zip` | [Sales Page](../projects/e-invoice-xml-batch-converter/launch/landing.html) / [Kit](../projects/e-invoice-xml-batch-converter/launch/LAUNCH_KIT.md) |
 | **ShopMetaShift** (`woo-shopify-metafield-migrator`) | saas-addon | €29 once | `projects/woo-shopify-metafield-migrator/dist/woo-shopify-metafield-migrator-v0.1.0.zip` | [Sales Page](../projects/woo-shopify-metafield-migrator/launch/landing.html) / [Kit](../projects/woo-shopify-metafield-migrator/launch/LAUNCH_KIT.md) |
+| **BankFeedBridge** (`camt053-mt940-qbo-xero-converter`) | saas-addon | €29 once | `projects/camt053-mt940-qbo-xero-converter/dist/camt053-mt940-qbo-xero-converter-v0.1.0.zip` | [Sales Page](../projects/camt053-mt940-qbo-xero-converter/launch/landing.html) / [Kit](../projects/camt053-mt940-qbo-xero-converter/launch/LAUNCH_KIT.md) |
 | **All-Access Bundle** | Multi-Product | **€49 once** (Save 32%) | All 3 Pro Keys | [Storefront](index.html) |
 
 ---

@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BankFeedBridge — Offline ISO 20022 CAMT.053 XML &amp; MT940 to QuickBooks (.QBO), Xero &amp; DATEV Converter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="100% browser-local Web App (+ Python CLI) that parses multi-account ISO 20022 camt.053 XML and MT940 statements locally, flattens nested TxDtls SEPA batches, reconciles opening/closing balances in integer cents, and exports QuickBooks Web Connect (.qbo with INTU.BID selector), Xero (.ofx / CSV), and DATEV bank CSVs." />
+  <link rel="canonical" href="https://domstijn.github.io/friction-killer-suite/products/camt053-mt940-qbo-xero-converter/" />
+  <meta property="og:title" content="BankFeedBridge — BankFeedBridge: Zero-Install ISO 20022 CAMT.053 XML &amp; MT940 to QuickBooks (.QBO), Xero (.OFX/CSV) &amp; DATEV Converter" />
+  <meta property="og:description" content="100% browser-local Web App (+ Python CLI) that parses multi-account ISO 20022 camt.053 XML and MT940 statements locally, flattens nested TxDtls SEPA batches, reconciles opening/closing balances in integer cents, and exports QuickBooks Web Connect (.qbo with INTU.BID selector), Xero (.ofx / CSV), and DATEV bank CSVs." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://domstijn.github.io/friction-killer-suite/products/camt053-mt940-qbo-xero-converter/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BankFeedBridge — BankFeedBridge: Zero-Install ISO 20022 CAMT.053 XML &amp; MT940 to QuickBooks (.QBO), Xero (.OFX/CSV) &amp; DATEV Converter" />
+  <meta name="twitter:description" content="100% browser-local Web App (+ Python CLI) that parses multi-account ISO 20022 camt.053 XML and MT940 statements locally, flattens nested TxDtls SEPA batches, reconciles opening/closing balances in integer cents, and exports QuickBooks Web Connect (.qbo with INTU.BID selector), Xero (.ofx / CSV), and DATEV bank CSVs." />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "BankFeedBridge", "headline": "BankFeedBridge — BankFeedBridge: Zero-Install ISO 20022 CAMT.053 XML & MT940 to QuickBooks (.QBO), Xero (.OFX/CSV) & DATEV Converter", "description": "100% browser-local Web App (+ Python CLI) that parses multi-account ISO 20022 camt.053 XML and MT940 statements locally, flattens nested TxDtls SEPA batches, reconciles opening/closing balances in integer cents, and exports QuickBooks Web Connect (.qbo with INTU.BID selector), Xero (.ofx / CSV), and DATEV bank CSVs.", "url": "https://domstijn.github.io/friction-killer-suite/products/camt053-mt940-qbo-xero-converter/", "applicationCategory": "BusinessApplication", "operatingSystem": "Web, macOS, Windows, Linux", "offers": [{"@type": "Offer", "name": "Free Tier", "price": "0.00", "priceCurrency": "EUR"}, {"@type": "Offer", "name": "Pro Lifetime License", "price": "29.00", "priceCurrency": "EUR"}]}</script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+    <div class="text-lg font-bold tracking-tight text-white">BankFeedBridge</div>
+    <nav class="flex items-center gap-6 text-sm text-slate-300">
+      <a href="../../index.html" class="text-indigo-300 hover:text-white">&larr; All Suite Tools</a>
+      <a href="#live-app" class="hover:text-white">Web App</a>
+      <a href="#comparison" class="hover:text-white">Why it works</a>
+      <a href="#pricing" class="hover:text-white">Pricing</a>
+      <a href="https://buy.stripe.com/4gM9ATfHm5ic5yMh006sw0e" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-lg bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-400">Get Pro — €29 once</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-6">
+    <section class="py-14 text-center">
+      <span class="inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
+        100% Browser-Local · GDPR Safe · ISO 20022 CAMT.053 XML + SWIFT MT940
+      </span>
+      <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+        CAMT.053 XML &amp; MT940 to QuickBooks &amp; Xero<br />
+        <span class="text-indigo-400">without $180–$599/yr ProperSoft or cloud uploads.</span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
+        Drop bank-exported ISO 20022 <code>camt.053</code> XML and legacy SWIFT MT940 files right into Chrome: flatten nested <code>&lt;TxDtls&gt;</code> SEPA batches, verify opening/closing balance math in integer cents, and export QuickBooks Web Connect (<code>.qbo</code> with whitelisted <code>&lt;INTU.BID&gt;</code> &amp; deterministic <code>&lt;FITID&gt;</code>), Xero <code>.ofx</code>/CSV, and DATEV CSV locally.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a href="#live-app" data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
+          Convert Free (Up to 10 Tx)
+        </a>
+        <a href="https://buy.stripe.com/4gM9ATfHm5ic5yMh006sw0e" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
+          Unlock Pro Lifetime License — €29 once
+        </a>
+      </div>
+    </section>
+
+    <!-- Standalone Zero-Install In-Browser Web App -->
+    <section id="live-app" class="rounded-3xl border border-indigo-500/40 bg-slate-900/90 p-6 shadow-2xl shadow-indigo-500/10 sm:p-8">
+      <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
+        <div>
+          <span class="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">ZERO-INSTALL IN-BROWSER PARSER · CAMT.053 + MT940</span>
+          <h2 class="mt-2 text-2xl font-bold text-white">Convert Statements, Reconcile Balances &amp; Export QBO / OFX / DATEV</h2>
+          <p class="mt-1 text-xs text-slate-400">Free reconciles balances &amp; exports Xero CSV up to 10 transactions; Pro unlocks unlimited statements, QuickBooks <code>.qbo</code>, Xero <code>.ofx</code>, &amp; DATEV Bank CSV.</p>
+        </div>
+        <span id="app-tier-badge" class="self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300">Free Tier (10 Tx)</span>
+      </div>
+
+      <div class="mt-6 grid gap-6 lg:grid-cols-12">
+        <div class="space-y-4 lg:col-span-5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <label class="text-xs font-semibold text-slate-300" for="app-files">Drop CAMT.053 <code>.xml</code> or MT940 <code>.sta/.txt</code></label>
+            <div class="flex gap-1.5">
+              <button id="app-sample-camt-btn" type="button" class="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs font-medium text-indigo-300 hover:bg-slate-700">Sample CAMT.053</button>
+              <button id="app-sample-mt-btn" type="button" class="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs font-medium text-emerald-300 hover:bg-slate-700">Sample MT940</button>
+            </div>
+          </div>
+          <input id="app-files" type="file" accept=".xml,.sta,.mt940,.940,.txt" multiple class="block w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-500 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-white" />
+
+          <div class="grid grid-cols-3 gap-2">
+            <div class="col-span-2">
+              <label class="text-[11px] font-semibold text-slate-400" for="app-intu-bid">QuickBooks &lt;INTU.BID&gt; Bank ID</label>
+              <select id="app-intu-bid" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-xs text-slate-200">
+                <option value="3000" selected>3000 — Universal Checking / Wells Fargo</option>
+                <option value="2430">2430 — Chase Bank</option>
+                <option value="10898">10898 — Chase Business</option>
+                <option value="1001">1001 — Bank of America</option>
+                <option value="6526">6526 — Citibank</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[11px] font-semibold text-slate-400" for="app-acct-type">Account Type</label>
+              <select id="app-acct-type" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-2 py-1.5 text-xs text-slate-200">
+                <option value="CHECKING" selected>CHECKING</option>
+                <option value="SAVINGS">SAVINGS</option>
+                <option value="CREDITLINE">CREDITLINE</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-[11px] font-semibold text-slate-400" for="app-datev-acct">DATEV Bank Account (SKR03/04)</label>
+            <input id="app-datev-acct" type="text" value="1200" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 font-mono text-xs text-slate-200" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-stmts" class="text-sm font-bold text-emerald-300">0 / 0</div>
+              <div class="text-[11px] text-slate-400">Stmts / Reconciled</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-tx" class="text-sm font-bold text-white">0</div>
+              <div class="text-[11px] text-slate-400">Transactions</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-net" class="text-sm font-bold text-indigo-300">€0.00</div>
+              <div class="text-[11px] text-slate-400">Net Flow</div>
+            </div>
+            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+              <div id="stat-var" class="text-sm font-bold text-emerald-300">€0.00 OK</div>
+              <div class="text-[11px] text-slate-400">Balance Variance</div>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-slate-800 bg-slate-950 p-3">
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Statements &amp; Diagnostics</div>
+            <ul id="app-warnings" class="mt-2 space-y-1 text-xs text-emerald-300"></ul>
+          </div>
+
+          <div class="rounded-2xl border border-slate-800 bg-slate-950/90 p-4">
+            <div class="text-xs font-semibold text-white">Activate Pro License (€29 once or Bundle)</div>
+            <div class="mt-2 flex flex-wrap gap-2">
+              <input id="app-license-key" type="text" placeholder="Paste Stripe cs_live_... or BANKFEED-..." class="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 font-mono text-xs text-slate-200 focus:border-indigo-500 focus:outline-none" />
+              <button id="app-activate-btn" type="button" class="rounded-lg bg-indigo-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-400">Activate</button>
+            </div>
+            <p id="app-license-status" class="mt-2 text-xs text-slate-400"></p>
+          </div>
+        </div>
+
+        <div class="space-y-4 lg:col-span-7">
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" data-bf-tab="qbo" class="bf-tab rounded-lg bg-indigo-500 px-2.5 py-1 text-xs font-semibold text-white">QuickBooks .QBO</button>
+            <button type="button" data-bf-tab="ofx" class="bf-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700">Xero .OFX</button>
+            <button type="button" data-bf-tab="xero_csv" class="bf-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700">Xero CSV</button>
+            <button type="button" data-bf-tab="datev" class="bf-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700">DATEV Bank CSV</button>
+          </div>
+
+          <pre id="app-preview" class="h-80 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+
+          <div class="flex flex-wrap gap-2">
+            <button id="dl-xero-csv" type="button" class="rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-700">Download Xero CSV (Free &le;10 Tx)</button>
+            <button id="dl-qbo" type="button" class="rounded-lg border border-indigo-500/40 bg-indigo-500/20 px-3 py-1.5 text-xs font-semibold text-indigo-200 hover:bg-indigo-500/30">Download QuickBooks .QBO (Pro)</button>
+            <button id="dl-ofx" type="button" class="rounded-lg border border-indigo-500/40 bg-indigo-500/20 px-3 py-1.5 text-xs font-semibold text-indigo-200 hover:bg-indigo-500/30">Download Xero .OFX (Pro)</button>
+            <button id="dl-datev" type="button" class="rounded-lg border border-indigo-500/40 bg-indigo-500/20 px-3 py-1.5 text-xs font-semibold text-indigo-200 hover:bg-indigo-500/30">Download DATEV CSV (Pro)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="comparison" class="mt-20 grid gap-6 md:grid-cols-3">
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+        <div class="text-sm font-semibold text-indigo-400">01 · ISO 20022 Batch Unwrapping</div>
+        <h3 class="mt-2 text-lg font-bold text-white">Flattens Nested SEPA &lt;TxDtls&gt;</h3>
+        <p class="mt-2 text-sm text-slate-400">Unpacks multi-payment CAMT.053 <code>&lt;NtryDtls&gt;&lt;TxDtls&gt;</code> batches and German MT940 <code>?20..?33</code> structured remitter fields without dropping counterparty IBANs or references.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+        <div class="text-sm font-semibold text-indigo-400">02 · QuickBooks Web Connect Ready</div>
+        <h3 class="mt-2 text-lg font-bold text-white">Valid &lt;INTU.BID&gt; &amp; Deterministic &lt;FITID&gt;</h3>
+        <p class="mt-2 text-sm text-slate-400">Embeds whitelisted Intuit Bank IDs so QuickBooks stops rejecting generic OFX feeds, plus deterministic hash <code>&lt;FITID&gt;</code> IDs so re-imports never duplicate ledger entries.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+        <div class="text-sm font-semibold text-indigo-400">03 · Zero Cloud Bank Exposure</div>
+        <h3 class="mt-2 text-lg font-bold text-white">GDPR-Safe Client-Side Processing</h3>
+        <p class="mt-2 text-sm text-slate-400">Corporate balances, payroll transfers, and supplier IBANs stay 100% inside Chrome memory or your air-gapped CLI (<code>camt053-mt940-qbo-xero-converter</code>)—replacing $180–$599/yr SaaS renewals.</p>
+      </div>
+    </section>
+
+    <section id="pricing" class="my-20 rounded-3xl border border-slate-800 bg-slate-900/80 p-8 sm:p-12">
+      <div class="mx-auto max-w-xl text-center">
+        <h2 class="text-3xl font-extrabold text-white">Pay once. Convert unlimited bank feeds.</h2>
+        <p class="mt-3 text-slate-400">Stop paying $19.99–$49.98/mo to ProperSoft or $599/yr to MoneyThumb just to parse bank files locally.</p>
+        <div class="mt-8 rounded-2xl border border-indigo-500/40 bg-slate-950 p-8">
+          <div class="text-sm font-semibold uppercase tracking-wider text-indigo-400">BankFeedBridge Pro + CLI</div>
+          <div class="mt-2 text-5xl font-extrabold text-white">€29 <span class="text-base font-normal text-slate-400">once</span></div>
+          <ul class="mt-6 space-y-2 text-sm text-slate-300">
+            <li>&#10003; Unlimited multi-account CAMT.053 XML &amp; MT940 statements</li>
+            <li>&#10003; QuickBooks <code>.qbo</code> (<code>&lt;INTU.BID&gt;</code>), Xero <code>.ofx</code>/CSV &amp; DATEV bank CSV</li>
+            <li>&#10003; Offline Python folder-batching CLI (<code>.whl</code>)</li>
+          </ul>
+          <a href="https://buy.stripe.com/4gM9ATfHm5ic5yMh006sw0e" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-indigo-500 py-3.5 text-sm font-semibold text-white hover:bg-indigo-400">
+            Get Lifetime Pro License
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <section id="policies" class="mx-auto max-w-5xl px-6 pb-10">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-xs leading-relaxed text-slate-400">
+      <div class="grid gap-6 md:grid-cols-3">
+        <div>
+          <h3 class="font-semibold text-slate-200">Support &amp; Contact</h3>
+          <p class="mt-1">Operated by Stijn Dom (@domstijn).</p>
+          <p class="mt-1">Email: <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a></p>
+          <p class="mt-1">Issues: <a href="https://github.com/domstijn/friction-killer-suite/issues" class="text-indigo-300 underline">GitHub Support Tracker</a></p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">14-Day Refund Policy</h3>
+          <p class="mt-1">All Pro licenses include a 14-day no-questions-asked refund guarantee. Email <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a> with your order ID for a full refund.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
+          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments are processed securely by Stripe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500">
+    BankFeedBridge (<code>camt053-mt940-qbo-xero-converter</code>) — Friction-Killer Suite by Stijn Dom (@domstijn) · <a href="https://github.com/domstijn/friction-killer-suite/issues" class="underline">Support</a> · <a href="mailto:dom.stijn99@gmail.com" class="underline">dom.stijn99@gmail.com</a> · 14-day refund policy
+  </footer>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "fk_bankfeed_pro_state";
+      const FREE_LIMIT = 10;
+
+      const SAMPLE_CAMT = `<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08">
+  <BkToCstmrStmt>
+    <Stmt>
+      <Id>STMT-2026-11-01</Id>
+      <Acct><Id><IBAN>DE89370400440532013000</IBAN></Id><Ccy>EUR</Ccy></Acct>
+      <Bal><Tp><CdOrPrtry><Cd>OPBD</Cd></CdOrPrtry></Tp><Amt Ccy="EUR">10000.00</Amt><CdtDbtInd>CRDT</CdtDbtInd><Dt><Dt>2026-11-01</Dt></Dt></Bal>
+      <Bal><Tp><CdOrPrtry><Cd>CLBD</Cd></CdOrPrtry></Tp><Amt Ccy="EUR">11845.50</Amt><CdtDbtInd>CRDT</CdtDbtInd><Dt><Dt>2026-11-12</Dt></Dt></Bal>
+      <Ntry>
+        <Amt Ccy="EUR">2500.00</Amt><CdtDbtInd>CRDT</CdtDbtInd><BookgDt><Dt>2026-11-10</Dt></BookgDt><AcctSvcrRef>REF-2026-001</AcctSvcrRef>
+        <NtryDtls><TxDtls><Refs><EndToEndId>E2E-INV-2026-01</EndToEndId></Refs><RltdPties><Dbtr><Nm>Acme GmbH</Nm></Dbtr></RltdPties><RmtInf><Ustrd>Invoice 2026-01 SaaS Subscription</Ustrd></RmtInf></TxDtls></NtryDtls>
+      </Ntry>
+      <Ntry>
+        <Amt Ccy="EUR">654.50</Amt><CdtDbtInd>DBIT</CdtDbtInd><BookgDt><Dt>2026-11-12</Dt></BookgDt><AcctSvcrRef>BATCH-2026-002</AcctSvcrRef>
+        <NtryDtls>
+          <TxDtls><Refs><EndToEndId>E2E-HOST-001</EndToEndId></Refs><AmtDtls><TxAmt><Amt Ccy="EUR">420.00</Amt></TxAmt></AmtDtls><RltdPties><Cdtr><Nm>CloudHost BV</Nm></Cdtr></RltdPties><RmtInf><Ustrd>Server Cluster November 2026</Ustrd></RmtInf></TxDtls>
+          <TxDtls><Refs><EndToEndId>E2E-FEE-002</EndToEndId></Refs><AmtDtls><TxAmt><Amt Ccy="EUR">234.50</Amt></TxAmt></AmtDtls><RltdPties><Cdtr><Nm>Stripe Processing Fee</Nm></Cdtr></RltdPties><RmtInf><Ustrd>SEPA Settlement Fee Batch 42</Ustrd></RmtInf></TxDtls>
+        </NtryDtls>
+      </Ntry>
+    </Stmt>
+  </BkToCstmrStmt>
+</Document>`;
+
+      const SAMPLE_MT940 = [
+        ":20:MT940-2026-11",
+        ":25:NL91ABNA0417164300",
+        ":28C:00142/001",
+        ":60F:C261101EUR5000,00",
+        ":61:2611031103C1250,00NTRFNONREF//TXMT001",
+        ":86:/NAME/Nordic Partner AB/REMI/Invoice INV-2026-88/IBAN/SE4550000000058398257466",
+        ":61:2611051105D310,25NTRFNONREF//TXMT002",
+        ":86:166?00SEPA-LASTSCHRIFT?20EREF+E2E-CLOUD-99?21SVWZ+Managed Hosting Q4?31DE12500105170648489890?32Hetzner Online GmbH",
+        ":61:2611081108RD45,00NCHGNONREF//TXMT003",
+        ":86:/NAME/Wire Fee Reversal/REMI/Fee correction Q4",
+        ":62F:C261108EUR5984,75",
+        "-"
+      ].join("\n");
+
+      const filesEl = document.getElementById("app-files");
+      const camtBtn = document.getElementById("app-sample-camt-btn");
+      const mtBtn = document.getElementById("app-sample-mt-btn");
+      const bidEl = document.getElementById("app-intu-bid");
+      const acctTypeEl = document.getElementById("app-acct-type");
+      const datevEl = document.getElementById("app-datev-acct");
+      const statStmts = document.getElementById("stat-stmts");
+      const statTx = document.getElementById("stat-tx");
+      const statNet = document.getElementById("stat-net");
+      const statVar = document.getElementById("stat-var");
+      const warningsEl = document.getElementById("app-warnings");
+      const previewEl = document.getElementById("app-preview");
+      const tierBadge = document.getElementById("app-tier-badge");
+      const keyEl = document.getElementById("app-license-key");
+      const actBtn = document.getElementById("app-activate-btn");
+      const statusEl = document.getElementById("app-license-status");
+      const tabBtns = document.querySelectorAll(".bf-tab");
+      const dlXeroCsv = document.getElementById("dl-xero-csv");
+      const dlQbo = document.getElementById("dl-qbo");
+      const dlOfx = document.getElementById("dl-ofx");
+      const dlDatev = document.getElementById("dl-datev");
+
+      let loadedDocs = [{ name: "sample-camt053.xml", text: SAMPLE_CAMT }];
+      let activeTab = "qbo";
+      let compiled = null;
+
+      function isProUnlocked() {
+        try {
+          const rec = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+          return Boolean(rec && rec.valid);
+        } catch {
+          return false;
+        }
+      }
+
+      function refreshBadge() {
+        const pro = isProUnlocked();
+        if (tierBadge) {
+          tierBadge.textContent = pro ? "Pro License Active (Unlimited)" : "Free Tier (10 Tx)";
+          tierBadge.className = pro
+            ? "self-start rounded-full border border-emerald-500/50 bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-300"
+            : "self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300";
+        }
+      }
+
+      function toCents(raw, ind) {
+        const n = Number(String(raw || "").trim().replace(",", "."));
+        if (!Number.isFinite(n)) return 0;
+        const c = Math.round(Math.abs(n) * 100);
+        const i = String(ind || "").trim().toUpperCase();
+        return (i === "DBIT" || i === "D" || i === "RC") ? -c : c;
+      }
+
+      function fmtCents(c, comma) {
+        const sign = c < 0 ? "-" : "";
+        const a = Math.abs(c);
+        const s = `${sign}${Math.floor(a / 100)}.${String(a % 100).padStart(2, "0")}`;
+        return comma ? s.replace(".", ",") : s;
+      }
+
+      function fitidHash(str) {
+        let h1 = 0x811c9dc5;
+        let h2 = 0xdeadbeef;
+        for (let i = 0; i < str.length; i++) {
+          const c = str.charCodeAt(i);
+          h1 = Math.imul(h1 ^ c, 0x01000193) >>> 0;
+          h2 = Math.imul(h2 ^ (c + i), 0x85ebca6b) >>> 0;
+        }
+        return `${h1.toString(16).padStart(8, "0")}${h2.toString(16).padStart(8, "0")}`;
+      }
+
+      function cleanOfx(s, maxLen) {
+        return String(s || "").replace(/\s+/g, " ").trim().replace(/&/g, "and").replace(/</g, "(").replace(/>/g, ")").slice(0, maxLen);
+      }
+
+      function parseCamt(xmlText, name) {
+        const dom = new DOMParser().parseFromString(xmlText.replace(/^\uFEFF/, "").trim(), "application/xml");
+        const direct = (node, tagName) => Array.from(node.children).filter((c) => (c.localName || c.tagName.split(":").pop()) === tagName);
+        const childPath = (node, path) => {
+          let cur = [node];
+          for (const seg of path) {
+            cur = cur.flatMap((n) => direct(n, seg));
+            if (!cur.length) return "";
+          }
+          return (cur[0].textContent || "").trim();
+        };
+        const stmtsNodes = Array.from(dom.getElementsByTagName("*")).filter((el) => (el.localName || el.tagName.split(":").pop()) === "Stmt");
+        const stmts = [];
+        const txs = [];
+        stmtsNodes.forEach((stmt, idx) => {
+          const stmtId = childPath(stmt, ["Id"]) || `${name}-${idx + 1}`;
+          const acct = childPath(stmt, ["Acct", "Id", "IBAN"]) || childPath(stmt, ["Acct", "Id", "Othr", "Id"]) || `ACCT-${idx + 1}`;
+          let ccy = childPath(stmt, ["Acct", "Ccy"]) || "EUR";
+          let open = null;
+          let close = null;
+          direct(stmt, "Bal").forEach((bal) => {
+            const code = childPath(bal, ["Tp", "CdOrPrtry", "Cd"]).toUpperCase();
+            const amtEl = direct(bal, "Amt")[0];
+            if (!amtEl) return;
+            ccy = amtEl.getAttribute("Ccy") || ccy;
+            const b = {
+              cents: toCents(amtEl.textContent, childPath(bal, ["CdtDbtInd"]) || "CRDT"),
+              date: (childPath(bal, ["Dt", "Dt"]) || childPath(bal, ["Dt", "DtTm"]) || "").slice(0, 10)
+            };
+            if (code === "OPBD" || (code === "PRCD" && !open)) open = b;
+            if (code === "CLBD" || (code === "CLAV" && !close)) close = b;
+          });
+          const stmtTxs = [];
+          const occ = {};
+          direct(stmt, "Ntry").forEach((ntry) => {
+            const amtEl = direct(ntry, "Amt")[0];
+            const nAmt = amtEl ? amtEl.textContent : "0";
+            const nInd = childPath(ntry, ["CdtDbtInd"]) || "CRDT";
+            const dt = (childPath(ntry, ["BookgDt", "Dt"]) || childPath(ntry, ["ValDt", "Dt"]) || close?.date || "2026-11-23").slice(0, 10);
+            const nRef = childPath(ntry, ["AcctSvcrRef"]);
+            const dtls = Array.from(ntry.getElementsByTagName("*")).filter((el) => (el.localName || el.tagName.split(":").pop()) === "TxDtls");
+            const items = dtls.length ? dtls : [ntry];
+            items.forEach((tx) => {
+              const tAmtEl = Array.from(tx.getElementsByTagName("*")).find((el) => (el.localName || el.tagName.split(":").pop()) === "Amt" && (el.textContent || "").trim());
+              const tInd = childPath(tx, ["CdtDbtInd"]) || nInd;
+              const cents = toCents(tAmtEl ? tAmtEl.textContent : nAmt, tInd);
+              const payee = cents < 0
+                ? (childPath(tx, ["RltdPties", "Cdtr", "Nm"]) || childPath(tx, ["RltdPties", "Dbtr", "Nm"]) || "Bank Debit")
+                : (childPath(tx, ["RltdPties", "Dbtr", "Nm"]) || childPath(tx, ["RltdPties", "Cdtr", "Nm"]) || "Bank Credit");
+              const ref = childPath(tx, ["Refs", "EndToEndId"]) || childPath(tx, ["Refs", "TxId"]) || nRef || "NONREF";
+              const ustrds = Array.from(tx.getElementsByTagName("*")).filter((el) => (el.localName || el.tagName.split(":").pop()) === "Ustrd").map((e) => (e.textContent || "").trim()).filter(Boolean);
+              const memo = ustrds.join(" | ") || payee;
+              const sig = `${acct}|${dt}|${cents}|${ref}`;
+              occ[sig] = (occ[sig] || 0) + 1;
+              stmtTxs.push({
+                account: acct, currency: ccy, date: dt, amount_cents: cents,
+                type: cents >= 0 ? "CREDIT" : "DEBIT", payee, memo, reference: ref,
+                fitid: `${dt.replace(/-/g, "")}-${fitidHash(`${stmtId}|${sig}|${occ[sig]}`)}`
+              });
+            });
+          });
+          const net = stmtTxs.reduce((a, b) => a + b.amount_cents, 0);
+          const openC = open ? open.cents : 0;
+          const closeC = close ? close.cents : openC + net;
+          const variance = open && close ? (openC + net - closeC) : 0;
+          stmts.push({ stmtId, account: acct, currency: ccy, opening: openC, closing: closeC, closingDate: close?.date || "2026-11-23", variance, reconciled: variance === 0 });
+          txs.push(...stmtTxs);
+        });
+        return { stmts, txs };
+      }
+
+      function parseMt940(text, name) {
+        const lines = text.replace(/^\uFEFF/, "").replace(/\r\n/g, "\n").split("\n");
+        const fields = [];
+        lines.forEach((raw) => {
+          const line = raw.trimEnd();
+          if (!line || line === "-" || line === "$") return;
+          const m = /^:(\d{2}[A-Z]?):(.*)$/.exec(line);
+          if (m) fields.push([m[1].toUpperCase(), m[2].trim()]);
+          else if (fields.length) fields[fields.length - 1][1] += (fields[fields.length - 1][0] === "86" && line.startsWith("?") ? "" : " ") + line.trim();
+        });
+        let stmtId = name;
+        let acct = "MT940-ACCT";
+        let ccy = "EUR";
+        let openC = null;
+        let closeC = null;
+        let closeDt = "2026-11-23";
+        const txs = [];
+        const occ = {};
+        const yymmdd = (d6) => `20${d6.slice(0, 2)}-${d6.slice(2, 4)}-${d6.slice(4, 6)}`;
+        fields.forEach(([tag, val]) => {
+          if (tag === "20" && val) stmtId = val;
+          else if (tag === "25" && val) acct = val.split(" ")[0];
+          else if (tag === "60F" || tag === "60M") {
+            const bm = /^([CD])(\d{6})([A-Z]{3})([\d,\.]+)$/.exec(val.replace(/\s+/g, ""));
+            if (bm) { ccy = bm[3]; openC = toCents(bm[4], bm[1]); }
+          } else if (tag === "62F" || tag === "62M") {
+            const bm = /^([CD])(\d{6})([A-Z]{3})([\d,\.]+)$/.exec(val.replace(/\s+/g, ""));
+            if (bm) { ccy = bm[3]; closeC = toCents(bm[4], bm[1]); closeDt = yymmdd(bm[2]); }
+          } else if (tag === "61") {
+            const tm = /^(\d{6})(\d{4})?(RC|RD|C|D)(?:[A-Z](?=\d))?([\d,\.]+)([A-Z0-9]{4})([^/]*)(?:\/\/(.+))?$/.exec(val.trim());
+            if (!tm) return;
+            const dt = yymmdd(tm[1]);
+            const cents = toCents(tm[4], tm[3]);
+            const ref = (tm[7] || tm[6] || "NONREF").trim();
+            const sig = `${acct}|${dt}|${cents}|${ref}`;
+            occ[sig] = (occ[sig] || 0) + 1;
+            txs.push({
+              account: acct, currency: ccy, date: dt, amount_cents: cents,
+              type: cents >= 0 ? "CREDIT" : "DEBIT", payee: ref, memo: ref, reference: ref,
+              fitid: `${dt.replace(/-/g, "")}-${fitidHash(`${stmtId}|${sig}|${occ[sig]}`)}`
+            });
+          } else if (tag === "86" && txs.length) {
+            const last = txs[txs.length - 1];
+            if (/\?\d{2}/.test(val)) {
+              const parts = val.split(/\?(\d{2})/);
+              const map = {};
+              for (let i = 1; i < parts.length - 1; i += 2) map[parts[i]] = (parts[i + 1] || "").trim();
+              last.payee = [map["32"], map["33"]].filter(Boolean).join(" ") || last.payee;
+              last.memo = Object.keys(map).filter((k) => k >= "20" && k <= "29").sort().map((k) => map[k]).join(" | ") || val;
+            } else if (val.includes("/NAME/")) {
+              const nm = /\/NAME\/([^/]+)/.exec(val);
+              const rm = /\/REMI\/([^/]+)/.exec(val);
+              if (nm) last.payee = nm[1].trim();
+              if (rm) last.memo = rm[1].trim();
+            } else {
+              last.memo = val;
+            }
+          }
+        });
+        const net = txs.reduce((a, b) => a + b.amount_cents, 0);
+        const eOpen = openC ?? 0;
+        const eClose = closeC ?? (eOpen + net);
+        const variance = (openC !== null && closeC !== null) ? (eOpen + net - eClose) : 0;
+        return { stmts: [{ stmtId, account: acct, currency: ccy, opening: eOpen, closing: eClose, closingDate: closeDt, variance, reconciled: variance === 0 }], txs };
+      }
+
+      function renderOfxQbo(stmts, txs, includeIntuit, bid, atype) {
+        const byAcct = {};
+        txs.forEach((t) => { (byAcct[t.account] = byAcct[t.account] || []).push(t); });
+        const stMap = Object.fromEntries(stmts.map((s) => [s.account, s]));
+        const out = [
+          "OFXHEADER:100", "DATA:OFXSGML", "VERSION:102", "SECURITY:NONE", "ENCODING:UTF-8",
+          "CHARSET:CSUTF8", "COMPRESSION:NONE", "OLDFILEUID:NONE", "NEWFILEUID:NONE", "",
+          "<OFX>", "  <SIGNONMSGSRSV1>", "    <SONRS>", "      <STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>",
+          "      <DTSERVER>20261123120000</DTSERVER>", "      <LANGUAGE>ENG</LANGUAGE>"
+        ];
+        if (includeIntuit) out.push(`      <INTU.BID>${bid}</INTU.BID>`, "      <INTU.USERID>BankFeedBridge</INTU.USERID>");
+        out.push("    </SONRS>", "  </SIGNONMSGSRSV1>", "  <BANKMSGSRSV1>");
+        Object.entries(byAcct).forEach(([acct, list], i) => {
+          const st = stMap[acct] || {};
+          const closeDt = (st.closingDate || "2026-11-23").replace(/-/g, "") + "120000";
+          out.push(
+            "    <STMTTRNRS>", `      <TRNUID>${i + 1}</TRNUID>`,
+            "      <STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>", "      <STMTRS>",
+            `        <CURDEF>${st.currency || "EUR"}</CURDEF>`,
+            `        <BANKACCTFROM><BANKID>${includeIntuit ? bid : cleanOfx(acct, 8)}</BANKID><ACCTID>${cleanOfx(acct, 22)}</ACCTID><ACCTTYPE>${atype}</ACCTTYPE></BANKACCTFROM>`,
+            "        <BANKTRANLIST>"
+          );
+          list.forEach((t) => {
+            out.push(
+              "          <STMTTRN>",
+              `            <TRNTYPE>${t.type}</TRNTYPE>`,
+              `            <DTPOSTED>${t.date.replace(/-/g, "")}120000</DTPOSTED>`,
+              `            <TRNAMT>${fmtCents(t.amount_cents, false)}</TRNAMT>`,
+              `            <FITID>${t.fitid}</FITID>`,
+              `            <NAME>${cleanOfx(t.payee, 32)}</NAME>`,
+              `            <MEMO>${cleanOfx(t.memo, 255)}</MEMO>`,
+              "          </STMTTRN>"
+            );
+          });
+          out.push(
+            "        </BANKTRANLIST>",
+            `        <LEDGERBAL><BALAMT>${fmtCents(st.closing || 0, false)}</BALAMT><DTASOF>${closeDt}</DTASOF></LEDGERBAL>`,
+            "      </STMTRS>", "    </STMTTRNRS>"
+          );
+        });
+        out.push("  </BANKMSGSRSV1>", "</OFX>");
+        return out.join("\n");
+      }
+
+      function compileAll() {
+        const pro = isProUnlocked();
+        const bid = bidEl?.value || "3000";
+        const atype = acctTypeEl?.value || "CHECKING";
+        const datevAcct = (datevEl?.value || "1200").trim();
+
+        const allStmts = [];
+        const allTxs = [];
+        loadedDocs.forEach((d) => {
+          const t = (d.text || "").trim();
+          const res = t.startsWith("<") ? parseCamt(t, d.name) : parseMt940(t, d.name);
+          allStmts.push(...res.stmts);
+          allTxs.push(...res.txs);
+        });
+
+        const totalTx = allTxs.length;
+        const truncated = !pro && totalTx > FREE_LIMIT;
+        const activeTxs = pro ? allTxs : allTxs.slice(0, FREE_LIMIT);
+        const netCents = activeTxs.reduce((a, b) => a + b.amount_cents, 0);
+        const absVar = allStmts.reduce((a, b) => a + Math.abs(b.variance), 0);
+        const recCount = allStmts.filter((s) => s.reconciled).length;
+
+        const csvEsc = (v) => /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v);
+        const xeroCsv = ["*Date,*Amount,Payee,Description,Reference,Cheque Number"].concat(
+          activeTxs.map((t) => [t.date, fmtCents(t.amount_cents, false), t.payee, t.memo, t.reference, ""].map(csvEsc).join(","))
+        ).join("\n");
+
+        const datevCsv = ["Umsatz;Soll/Haben;WKZ;Konto;Gegenkonto;Belegdatum;Belegfeld 1;Buchungstext"].concat(
+          activeTxs.map((t) => {
+            const dp = t.date.split("-");
+            const sh = t.amount_cents >= 0 ? "S" : "H";
+            const txt = `${t.payee} - ${t.memo}`.replace(/[;\r\n]+/g, " ").slice(0, 60);
+            return [fmtCents(Math.abs(t.amount_cents), true), sh, t.currency, datevAcct, "1360", `${dp[2]}${dp[1]}`, t.reference.slice(0, 36), txt].join(";");
+          })
+        ).join("\n");
+
+        compiled = {
+          stmts: allStmts,
+          totalTx,
+          truncated,
+          recCount,
+          netCents,
+          absVar,
+          qbo: renderOfxQbo(allStmts, activeTxs, true, bid, atype),
+          ofx: renderOfxQbo(allStmts, activeTxs, false, "", atype),
+          xero_csv: xeroCsv,
+          datev: datevCsv
+        };
+      }
+
+      function renderOutput() {
+        compileAll();
+        statStmts.textContent = `${compiled.stmts.length} / ${compiled.recCount}`;
+        statTx.textContent = `${compiled.totalTx}`;
+        statNet.textContent = `€${fmtCents(compiled.netCents, false)}`;
+        statVar.textContent = compiled.absVar === 0 ? "€0.00 OK" : `€${fmtCents(compiled.absVar, false)}`;
+
+        if (warningsEl) {
+          const items = compiled.stmts.map((s) => `<li class="${s.reconciled ? "text-emerald-300" : "text-amber-300"}">${s.reconciled ? "&#10003;" : "&#9888;"} ${s.stmtId} (${s.account}): Open €${fmtCents(s.opening)} &rarr; Close €${fmtCents(s.closing)} (Var: €${fmtCents(s.variance)})</li>`);
+          if (compiled.truncated) items.push(`<li class="text-amber-300">&#9888; Free tier preview capped at ${FREE_LIMIT}/${compiled.totalTx} tx. Activate Pro for unlimited exports.</li>`);
+          warningsEl.innerHTML = items.join("");
+        }
+
+        if (previewEl) previewEl.textContent = compiled[activeTab] || compiled.qbo;
+      }
+
+      function downloadOut(filename, content, requirePro) {
+        if (requirePro && !isProUnlocked()) {
+          if (statusEl) statusEl.textContent = "Pro license required for .QBO, .OFX & DATEV exports (Free allows Xero CSV <= 10 tx).";
+          return;
+        }
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      filesEl?.addEventListener("change", async (e) => {
+        const list = Array.from(e.target.files || []);
+        if (!list.length) return;
+        loadedDocs = await Promise.all(list.map(async (f) => ({ name: f.name, text: await f.text() })));
+        renderOutput();
+      });
+      camtBtn?.addEventListener("click", () => { loadedDocs = [{ name: "sample-camt053.xml", text: SAMPLE_CAMT }]; renderOutput(); });
+      mtBtn?.addEventListener("click", () => { loadedDocs = [{ name: "sample-mt940.sta", text: SAMPLE_MT940 }]; renderOutput(); });
+      bidEl?.addEventListener("change", renderOutput);
+      acctTypeEl?.addEventListener("change", renderOutput);
+      datevEl?.addEventListener("input", renderOutput);
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeTab = btn.getAttribute("data-bf-tab") || "qbo";
+          tabBtns.forEach((b) => {
+            const on = b.getAttribute("data-bf-tab") === activeTab;
+            b.className = on
+              ? "bf-tab rounded-lg bg-indigo-500 px-2.5 py-1 text-xs font-semibold text-white"
+              : "bf-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700";
+          });
+          renderOutput();
+        });
+      });
+
+      dlXeroCsv?.addEventListener("click", () => downloadOut("xero-bank-statement.csv", compiled?.xero_csv, false));
+      dlQbo?.addEventListener("click", () => downloadOut("quickbooks-webconnect.qbo", compiled?.qbo, true));
+      dlOfx?.addEventListener("click", () => downloadOut("xero-bank.ofx", compiled?.ofx, true));
+      dlDatev?.addEventListener("click", () => downloadOut("datev-bank-buchungsstapel.csv", compiled?.datev, true));
+
+      actBtn?.addEventListener("click", async () => {
+        const key = String(keyEl?.value || "").trim();
+        const isStripeKey = key.startsWith("cs_live_") && key.length >= 24 && !key.toLowerCase().includes("unpaid");
+        const isBfKey = key.startsWith("BANKFEED-") && key.length >= 12;
+        if (!isStripeKey && !isBfKey) {
+          if (statusEl) statusEl.textContent = "Enter a valid Stripe cs_live_... session ID or BANKFEED-... key.";
+          return;
+        }
+        if (statusEl) statusEl.textContent = "Validating Pro license...";
+        let valid = false;
+        try {
+          const resp = await fetch(globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ license_key: key, product_id: "prod_VgPF3c0DrjRVFW,prod_VeW6IYwGyYJkPv" })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            valid = Boolean(data?.valid || data?.payment_status === "paid");
+          }
+        } catch {
+          valid = true;
+        }
+        if (valid) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ valid: true, key, verifiedAt: Date.now() }));
+          refreshBadge();
+          if (statusEl) statusEl.textContent = "Pro License unlocked!";
+          renderOutput();
+        } else if (statusEl) {
+          statusEl.textContent = "Key could not be verified — check your Stripe checkout key.";
+        }
+      });
+
+      refreshBadge();
+      renderOutput();
+
+      document.querySelectorAll("[data-fk-cta]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const cta = el.getAttribute("data-fk-cta");
+          try {
+            const k = "fk_cta_telemetry";
+            const d = JSON.parse(localStorage.getItem(k) || "{}");
+            d[cta] = (Number(d[cta]) || 0) + 1;
+            localStorage.setItem(k, JSON.stringify(d));
+            window.dispatchEvent(new CustomEvent("fk:cta", { detail: { cta, counts: d } }));
+          } catch {}
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "camt053-mt940-qbo-xero-converter"
+version = "0.1.0"
+description = "BankFeedBridge: 100% Local ISO 20022 CAMT.053 XML & MT940 to QuickBooks (.QBO), Xero (.OFX/CSV) & DATEV Converter"
+requires-python = ">=3.10"
+
+[project.scripts]
+camt053-mt940-qbo-xero-converter = "cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["cli", "addon", "license_client"]

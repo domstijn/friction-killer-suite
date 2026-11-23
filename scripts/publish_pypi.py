@@ -31,6 +31,7 @@ ACTIVE_GO_PYTHON_SLUGS = [
     "notion-clean-md-exporter",
     "claude-profile-switcher",
     "woo-shopify-metafield-migrator",
+    "camt053-mt940-qbo-xero-converter",
 ]
 
 PYPI_NAME_OVERRIDES = {

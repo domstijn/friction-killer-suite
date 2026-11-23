@@ -119,7 +119,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
       <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center">
         <div>
           <span class="rounded-full bg-indigo-500/20 px-2.5 py-0.5 text-xs font-semibold text-indigo-300">ZERO-INSTALL INTERACTIVE DEMO</span>
-          <h2 class="mt-2 text-2xl font-bold text-white">Try All 12 Tools Live in Your Browser</h2>
+          <h2 class="mt-2 text-2xl font-bold text-white">Try All 13 Tools Live in Your Browser</h2>
           <p class="mt-1 text-xs text-slate-400">Runs 100% locally in JavaScript — nothing leaves your browser.</p>
         </div>
         <div class="flex flex-wrap gap-2" role="tablist">
@@ -135,6 +135,7 @@ PLAYGROUND_SECTION = r"""    <section id="playground" class="mt-14 rounded-3xl b
           <button type="button" data-pg-tab="amz" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">10. AmzSettlementBridge</button>
           <button type="button" data-pg-tab="einvoice" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">11. EInvoiceLocal</button>
           <button type="button" data-pg-tab="shopmeta" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">12. ShopMetaShift</button>
+          <button type="button" data-pg-tab="bankfeed" class="pg-tab rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700">13. BankFeedBridge</button>
         </div>
       </div>
 
@@ -389,6 +390,24 @@ stripe_tax,NL,EUR,300.00,0.00,0.0,charge,NL123456789B01</textarea>
           <pre id="pg-shopmeta-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
         </div>
       </div>
+
+      <!-- Tab 13: BankFeedBridge -->
+      <div id="pg-panel-bankfeed" class="pg-panel mt-6 hidden grid gap-6 md:grid-cols-2">
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-300" for="pg-bankfeed-input">Paste ISO 20022 CAMT.053 XML or SWIFT MT940 Statement</label>
+            <textarea id="pg-bankfeed-input" rows="8" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">&lt;Document&gt;&lt;BkToCstmrStmt&gt;&lt;Stmt&gt;
+  &lt;Acct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;Ccy&gt;EUR&lt;/Ccy&gt;&lt;/Acct&gt;
+  &lt;Ntry&gt;&lt;Amt Ccy="EUR"&gt;2500.00&lt;/Amt&gt;&lt;CdtDbtInd&gt;CRDT&lt;/CdtDbtInd&gt;&lt;BookgDt&gt;&lt;Dt&gt;2026-11-10&lt;/Dt&gt;&lt;/BookgDt&gt;&lt;NtryDtls&gt;&lt;TxDtls&gt;&lt;RltdPties&gt;&lt;Dbtr&gt;&lt;Nm&gt;Acme GmbH&lt;/Nm&gt;&lt;/Dbtr&gt;&lt;/RltdPties&gt;&lt;RmtInf&gt;&lt;Ustrd&gt;Invoice 2026-01&lt;/Ustrd&gt;&lt;/RmtInf&gt;&lt;/TxDtls&gt;&lt;/NtryDtls&gt;&lt;/Ntry&gt;
+  &lt;Ntry&gt;&lt;Amt Ccy="EUR"&gt;420.00&lt;/Amt&gt;&lt;CdtDbtInd&gt;DBIT&lt;/CdtDbtInd&gt;&lt;BookgDt&gt;&lt;Dt&gt;2026-11-12&lt;/Dt&gt;&lt;/BookgDt&gt;&lt;NtryDtls&gt;&lt;TxDtls&gt;&lt;RltdPties&gt;&lt;Cdtr&gt;&lt;Nm&gt;CloudHost BV&lt;/Nm&gt;&lt;/Cdtr&gt;&lt;/RltdPties&gt;&lt;RmtInf&gt;&lt;Ustrd&gt;Cluster Nov&lt;/Ustrd&gt;&lt;/RmtInf&gt;&lt;/TxDtls&gt;&lt;/NtryDtls&gt;&lt;/Ntry&gt;
+&lt;/Stmt&gt;&lt;/BkToCstmrStmt&gt;&lt;/Document&gt;</textarea>
+          </div>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-emerald-300">QuickBooks Web Connect (.QBO &lt;INTU.BID&gt;) &amp; Xero CSV Output</span>
+          <pre id="pg-bankfeed-output" class="mt-2 h-56 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300"></pre>
+        </div>
+      </div>
     </section>"""
 
 
@@ -408,6 +427,7 @@ PLAYGROUND_SCRIPT = r"""  <script>
         amz: document.getElementById("pg-panel-amz"),
         einvoice: document.getElementById("pg-panel-einvoice"),
         shopmeta: document.getElementById("pg-panel-shopmeta"),
+        bankfeed: document.getElementById("pg-panel-bankfeed"),
       };
       tabs.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -978,6 +998,58 @@ PLAYGROUND_SCRIPT = r"""  <script>
       }
       smIn?.addEventListener("input", runShopMeta);
       runShopMeta();
+
+      // 13. BankFeedBridge live CAMT.053 XML / MT940 -> QBO + Xero preview
+      const bfIn = document.getElementById("pg-bankfeed-input");
+      const bfOut = document.getElementById("pg-bankfeed-output");
+      function runBankFeed() {
+        if (!bfIn || !bfOut) return;
+        const txt = (bfIn.value || "").trim();
+        if (!txt) { bfOut.textContent = "Paste CAMT.053 XML or MT940 statement above."; return; }
+        const txs = [];
+        let acct = "DE89370400440532013000";
+        if (txt.startsWith("<")) {
+          const dom = new DOMParser().parseFromString(txt, "application/xml");
+          const getFirst = (root, tag) => {
+            const el = Array.from(root.getElementsByTagName("*")).find((n) => (n.localName || n.tagName.split(":").pop()) === tag);
+            return el ? (el.textContent || "").trim() : "";
+          };
+          acct = getFirst(dom, "IBAN") || acct;
+          Array.from(dom.getElementsByTagName("*")).filter((n) => (n.localName || n.tagName.split(":").pop()) === "Ntry").forEach((ntry, i) => {
+            const amt = parseFloat(getFirst(ntry, "Amt") || "0") || 0;
+            const ind = getFirst(ntry, "CdtDbtInd") || "CRDT";
+            const signed = ind === "DBIT" ? -amt : amt;
+            const dt = getFirst(ntry, "Dt") || "2026-11-10";
+            const payee = getFirst(ntry, "Nm") || (signed >= 0 ? "Credit" : "Debit");
+            const memo = getFirst(ntry, "Ustrd") || payee;
+            txs.push({ dt, signed, payee, memo, fitid: `${dt.replace(/-/g, "")}-bf0${i + 1}` });
+          });
+        } else {
+          const lines = txt.split(/\r?\n/);
+          lines.forEach((ln, i) => {
+            if (ln.startsWith(":25:")) acct = ln.slice(4).trim();
+            const m = /^:61:(\d{6})(?:\d{4})?(RC|RD|C|D)([\d,]+)/.exec(ln.trim());
+            if (m) {
+              const val = parseFloat(m[3].replace(",", ".")) || 0;
+              const signed = (m[2] === "D" || m[2] === "RC") ? -val : val;
+              const dt = `20${m[1].slice(0, 2)}-${m[1].slice(2, 4)}-${m[1].slice(4, 6)}`;
+              txs.push({ dt, signed, payee: `MT940 ${m[2]}`, memo: "MT940 entry", fitid: `${dt.replace(/-/g, "")}-mt0${i + 1}` });
+            }
+          });
+        }
+        const qboLines = [
+          "# QuickBooks Web Connect (.QBO <INTU.BID>3000</INTU.BID>):",
+          `<BANKACCTFROM><BANKID>3000</BANKID><ACCTID>${acct}</ACCTID><ACCTTYPE>CHECKING</ACCTTYPE></BANKACCTFROM>`
+        ];
+        txs.forEach((t) => {
+          qboLines.push(`<STMTTRN><TRNTYPE>${t.signed >= 0 ? "CREDIT" : "DEBIT"}</TRNTYPE><DTPOSTED>${t.dt.replace(/-/g, "")}120000</DTPOSTED><TRNAMT>${t.signed.toFixed(2)}</TRNAMT><FITID>${t.fitid}</FITID><NAME>${t.payee}</NAME></STMTTRN>`);
+        });
+        const csvLines = ["# Xero Bank CSV:", "*Date,*Amount,Payee,Description"];
+        txs.forEach((t) => csvLines.push(`${t.dt},${t.signed.toFixed(2)},${t.payee},${t.memo}`));
+        bfOut.textContent = qboLines.join("\n") + "\n\n" + csvLines.join("\n");
+      }
+      bfIn?.addEventListener("input", runBankFeed);
+      runBankFeed();
     })();
   </script>"""
 
@@ -1091,9 +1163,9 @@ def render_hub_html(
     cards_html = "\n".join(cards)
     hub_title = f"Friction-Killer Suite — {len(products)} Zero-Backend Micro-Utilities & Web Apps"
     hub_desc = (
-        "Client-side micro-tools and zero-install web apps for WooCommerce-to-Shopify variant metafield & 301 CSV migration, "
-        "XRechnung/Peppol XML validation & DATEV export, Amazon Flat-File V2 settlement journals, EU VAT OSS quarterly CSV/XML filing, "
-        "Lemon Squeezy migration, Stripe/PayPal payouts, Webflow, Notion, Linear, Claude & VS Code."
+        "Client-side micro-tools and zero-install web apps for ISO 20022 CAMT.053 & MT940 to QuickBooks .QBO / Xero / DATEV conversion, "
+        "WooCommerce-to-Shopify variant metafield & 301 CSV migration, XRechnung/Peppol XML validation & DATEV export, Amazon Flat-File V2 settlement journals, "
+        "EU VAT OSS quarterly CSV/XML filing, Lemon Squeezy migration, Stripe/PayPal payouts, Webflow, Notion, Linear, Claude & VS Code."
     )
     hub_seo_tags = build_seo_head_tags(
         title=hub_title,
@@ -1134,7 +1206,7 @@ def render_hub_html(
         <span class="text-indigo-400">without paying monthly SaaS taxes.</span>
       </h1>
       <p class="mx-auto mt-4 max-w-2xl text-base text-slate-300">
-        {len(products)} local-first tools &amp; zero-install web apps including ShopMetaShift, EInvoiceLocal, AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch, and NotionGuestBridge.
+        {len(products)} local-first tools &amp; zero-install web apps including BankFeedBridge, ShopMetaShift, EInvoiceLocal, AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch, and NotionGuestBridge.
       </p>
       <div class="mt-7 flex flex-wrap justify-center gap-3">
         <a href="#playground" class="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-slate-200">Try Live in Browser</a>
@@ -1154,11 +1226,11 @@ def render_hub_html(
           <span class="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300">BEST VALUE · SAVE 83%</span>
           <h2 class="mt-3 text-3xl font-extrabold text-white">All-Access Friction-Killer Bundle</h2>
           <p class="mt-2 max-w-xl text-sm text-slate-300">
-            Unlock Pro licenses across all {len(products)} tools (ShopMetaShift, EInvoiceLocal, AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch &amp; NotionGuestBridge) with one single purchase (€320+ combined value).
+            Unlock Pro licenses across all {len(products)} tools (BankFeedBridge, ShopMetaShift, EInvoiceLocal, AmzSettlementBridge, OssVatBridge, LemonExitBridge, StripePayoutBridge, WebflowAssetZip, LinearBridge, NotionGitExport, ExtProfileLock, ClaudeProfileSwitch &amp; NotionGuestBridge) with one single purchase (€350+ combined value).
           </p>
         </div>
         <div class="w-full shrink-0 rounded-2xl border border-slate-700 bg-slate-950/70 p-6 text-center md:w-72">
-          <div class="text-xs text-slate-400 line-through">€320+ combined</div>
+          <div class="text-xs text-slate-400 line-through">€350+ combined</div>
           <div class="mt-1 text-4xl font-extrabold text-white">€49 <span class="text-sm font-normal text-slate-400">once</span></div>
           <a href="{html.escape(bundle_checkout_url)}" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-5 block rounded-xl bg-indigo-500 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
             Get All-Access Bundle
@@ -1359,7 +1431,7 @@ def render_success_html(products: list[dict[str, Any]], *, for_pages: bool = Tru
 
       <div class="mt-6 space-y-2 text-xs text-slate-300">
         <p class="font-semibold text-white">How to activate across all {len(products)} tools:</p>
-        <p>• <strong>Browser Web Apps</strong> (<code>WebflowAssetZip</code>, <code>StripePayoutBridge</code>, <code>LemonExitBridge</code>, <code>OssVatBridge</code>, <code>AmzSettlementBridge</code>, <code>EInvoiceLocal</code>, <code>ShopMetaShift</code>): Auto-unlocked above in this browser, or paste your key into the Pro box on any product page.</p>
+        <p>• <strong>Browser Web Apps</strong> (<code>WebflowAssetZip</code>, <code>StripePayoutBridge</code>, <code>LemonExitBridge</code>, <code>OssVatBridge</code>, <code>AmzSettlementBridge</code>, <code>EInvoiceLocal</code>, <code>ShopMetaShift</code>, <code>BankFeedBridge</code>): Auto-unlocked above in this browser, or paste your key into the Pro box on any product page.</p>
         <p>• <strong>Python CLIs (<code>.whl</code>)</strong>: Run <code>&lt;tool-slug&gt; --activate YOUR_KEY</code> (e.g. <code>eu-oss-vat-return-compiler --activate YOUR_KEY</code>).</p>
         <p>• <strong>Chrome Extensions</strong> (<code>LinearBridge</code>, <code>NotionGuestBridge</code>): Open the extension popup &rarr; paste key &rarr; click <em>Activate</em>.</p>
         <p>• <strong>VS Code</strong> (<code>ExtProfileLock</code>): Call <code>activate("YOUR_KEY")</code> in your workspace profile config.</p>
@@ -1382,7 +1454,8 @@ def render_success_html(products: list[dict[str, Any]], *, for_pages: bool = Tru
       "eu-oss-vat-return-compiler": "fk_oss_vat_pro_state",
       "amazon-settlement-xero-qbo-splitter": "fk_amz_settlement_pro_state",
       "e-invoice-xml-batch-converter": "fk_einvoice_pro_state",
-      "woo-shopify-metafield-migrator": "fk_shopmeta_pro_state"
+      "woo-shopify-metafield-migrator": "fk_shopmeta_pro_state",
+      "camt053-mt940-qbo-xero-converter": "fk_bankfeed_pro_state"
     }};
     const params = new URLSearchParams(window.location.search);
     const sid = (params.get("session_id") || "").trim();
@@ -1547,7 +1620,7 @@ def render_root_readme_md(products: list[dict[str, Any]], bundle_checkout_url: s
     cli_block = "\n".join(cli_installs)
     return f"""# Friction-Killer Suite — {len(products)} Zero-Subscription Local Web Apps & CLIs
 
-**100% browser-local, GDPR/GoBD-safe utilities** for **WooCommerce-to-Shopify Metafields & 301 Redirects**, **EU VAT OSS (`BZSt BOP` / `ROS XML`)**, **XRechnung / ZUGFeRD / Peppol XML to DATEV EXTF**, **Amazon Flat-File V2 & Stripe Payouts to Xero / QuickBooks**, **Lemon Squeezy shutdown migrations**, **Webflow CMS backups**, **Notion**, **Linear**, **Claude Code**, and **VS Code**. Zero server uploads, zero API OAuth lock-in, and zero recurring SaaS subscriptions.
+**100% browser-local, GDPR/GoBD-safe utilities** for **ISO 20022 CAMT.053 & MT940 to QuickBooks `.QBO` / Xero / DATEV**, **WooCommerce-to-Shopify Metafields & 301 Redirects**, **EU VAT OSS (`BZSt BOP` / `ROS XML`)**, **XRechnung / ZUGFeRD / Peppol XML to DATEV EXTF**, **Amazon Flat-File V2 & Stripe Payouts to Xero / QuickBooks**, **Lemon Squeezy shutdown migrations**, **Webflow CMS backups**, **Notion**, **Linear**, **Claude Code**, and **VS Code**. Zero server uploads, zero API OAuth lock-in, and zero recurring SaaS subscriptions.
 
 - **Try All {len(products)} Tools Live in Browser (Zero Install):** {SITE_BASE_URL}/
 - **All-Access Suite Bundle (€49 once, unlocks all {len(products)} tools):** {bundle_checkout_url}

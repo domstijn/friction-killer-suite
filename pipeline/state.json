@@ -12,7 +12,7 @@
     "lemonsqueezy",
     "gumroad"
   ],
-  "active_project": "woo-shopify-metafield-migrator",
+  "active_project": "camt053-mt940-qbo-xero-converter",
   "current_stage": "COMPLETED",
   "gates": {
     "gate_1_idea_and_spec_approved": true,
@@ -133,6 +133,32 @@
       "score": 87.75,
       "verdict": "GO",
       "updated_at": "2026-11-22T19:09:47+00:00"
+    },
+    {
+      "id": "camt053-mt940-qbo-xero-converter",
+      "title": "BankFeedBridge: Zero-Install ISO 20022 CAMT.053 XML & MT940 to QuickBooks (.QBO), Xero (.OFX/CSV) & DATEV Converter",
+      "ecosystem": "saas-addon",
+      "target_software": "ISO 20022 CAMT.053 & MT940 -> QuickBooks (.QBO), Xero (.OFX/CSV) & DATEV",
+      "pain": "2025-2026 SWIFT ISO 20022 migration phases out legacy MT940 in favor of deeply nested CAMT.053 XML statements, while QuickBooks has zero native CAMT.053 importer and rejects generic OFX files lacking whitelisted INTU.BID and deterministic FITID tags.",
+      "solution": "100% browser-local Web App (+ Python CLI) that parses multi-account ISO 20022 camt.053 XML and MT940 statements locally, flattens nested TxDtls SEPA batches, reconciles opening/closing balances in integer cents, and exports QuickBooks Web Connect (.qbo with INTU.BID selector), Xero (.ofx / CSV), and DATEV bank CSVs.",
+      "existing_alternatives": "ProperSoft ProperConvert charges $19.99-$49.98/mo ($180-$450/yr); MoneyThumb charges $24.95/pack to $599/yr; cloud converters upload raw bank balances and IBANs off-device.",
+      "free_escape_hatch": "Excel XML import flattens nested NtryDtls/TxDtls batches, breaks CRDT/DBIT signs, and cannot emit valid INTU.BID + SHA-FITID QuickBooks Web Connect .qbo files.",
+      "buyer_persona": "commercial",
+      "dimensions": {
+        "pain_severity": 9.0,
+        "willingness_to_pay": 9.0,
+        "existing_alternative_saturation": 8.5,
+        "diy_resistance": 8.5,
+        "solution_effectiveness": 9.0,
+        "build_speed": 8.5,
+        "distribution_clarity": 8.5,
+        "platform_safety": 9.5
+      },
+      "effectiveness_score": 88.25,
+      "commercial_potential_score": 88.0,
+      "score": 87.75,
+      "verdict": "GO",
+      "updated_at": "2026-11-23T18:45:13+00:00"
     },
     {
       "id": "notion-linear-prd-sync",
@@ -631,6 +657,14 @@
       "target_software": "WooCommerce to Shopify / Matrixify CSV",
       "status": "COMPLETED",
       "selected_at": "2026-11-23T17:49:41+00:00"
+    },
+    "camt053-mt940-qbo-xero-converter": {
+      "id": "camt053-mt940-qbo-xero-converter",
+      "title": "BankFeedBridge: Zero-Install ISO 20022 CAMT.053 XML & MT940 to QuickBooks (.QBO), Xero (.OFX/CSV) & DATEV Converter",
+      "ecosystem": "saas-addon",
+      "target_software": "ISO 20022 CAMT.053 & MT940 -> QuickBooks (.QBO), Xero (.OFX/CSV) & DATEV",
+      "status": "COMPLETED",
+      "selected_at": "2026-11-23T18:45:13+00:00"
     }
   }
 }
