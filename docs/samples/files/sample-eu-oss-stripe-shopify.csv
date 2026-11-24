@@ -1,0 +1,7 @@
+source,order_id,customer_country,currency,net_amount,tax_amount,tax_rate,tx_type,supply_type,customer_vat_id
+stripe_tax,st_sample_01,FR,EUR,100.00,20.00,20.0,sale,SERVICES,
+stripe_tax,st_sample_02,GR,EUR,100.00,24.00,24.0,sale,SERVICES,
+stripe_tax,st_sample_03,FR,EUR,25.00,5.00,20.0,refund,SERVICES,
+shopify,sh_sample_04,NL,EUR,50.00,10.50,21.0,sale,GOODS,
+shopify,sh_sample_05,DE,EUR,80.00,15.20,19.0,sale,GOODS,
+stripe_tax,st_sample_06,IT,EUR,200.00,0.00,0.0,sale,SERVICES,IT12345678901

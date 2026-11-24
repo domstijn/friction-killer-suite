@@ -489,12 +489,21 @@
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "9656870dc56f45d2a6f701841b6dd29b"}'></script>
   <script>
     (function () {
-      if (navigator.webdriver || location.protocol === "file:") return;
+      let ignore = false;
+      try { ignore = localStorage.getItem("fk_ignore_telemetry") === "1"; } catch {}
+      if (navigator.webdriver || location.protocol === "file:" || ignore) return;
       const EP = "https://fk-funnel-beacon.dom-stijn99.workers.dev/e";
       const SLUG = "webflow-cms-asset-migrator";
       let refHost = "direct";
       try {
-        if (document.referrer) {
+        const qs = new URLSearchParams(location.search);
+        const rawRef = (qs.get("ref") || qs.get("utm_source") || "").trim().toLowerCase();
+        if (rawRef) {
+          const normalized = rawRef.replace(/[^a-z0-9.-]/g, "-").replace(/^-+|-+$/g, "");
+          if (normalized) {
+            refHost = (normalized.startsWith("src.") ? normalized : "src." + normalized).slice(0, 64);
+          }
+        } else if (document.referrer) {
           const u = new URL(document.referrer);
           if (u.hostname && u.hostname !== location.hostname) refHost = u.hostname.toLowerCase();
         }

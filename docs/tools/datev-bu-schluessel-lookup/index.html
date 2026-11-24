@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DATEV BU-Schlüssel &amp; EN 16931 (BT-151) Lookup | Friction-Killer Suite</title>
+  <meta name="description" content="Free interactive DE/EN lookup mapping XRechnung &amp; ZUGFeRD EN 16931 VAT categories (S, AE, E, Z, K) to DATEV BU-Schlüssel (9, 8, 94, 0) and SKR03/SKR04 accounts." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://domstijn.github.io/friction-killer-suite/tools/datev-bu-schluessel-lookup/" />
+  <meta property="og:title" content="DATEV BU-Schlüssel &amp; EN 16931 (BT-151) Lookup | Friction-Killer Suite" />
+  <meta property="og:description" content="Free interactive DE/EN lookup mapping XRechnung &amp; ZUGFeRD EN 16931 VAT categories (S, AE, E, Z, K) to DATEV BU-Schlüssel (9, 8, 94, 0) and SKR03/SKR04 accounts." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://domstijn.github.io/friction-killer-suite/tools/datev-bu-schluessel-lookup/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="DATEV BU-Schlüssel &amp; EN 16931 (BT-151) Lookup | Friction-Killer Suite" />
+  <meta name="twitter:description" content="Free interactive DE/EN lookup mapping XRechnung &amp; ZUGFeRD EN 16931 VAT categories (S, AE, E, Z, K) to DATEV BU-Schlüssel (9, 8, 94, 0) and SKR03/SKR04 accounts." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-6 no-print">
+    <a href="../../index.html" class="text-base font-bold tracking-tight text-white hover:text-indigo-300">Friction-Killer Suite</a>
+    <nav class="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-slate-300">
+      <a href="../../index.html" class="hover:text-white">Alle Tools</a>
+      <a href="../../tools/index.html" class="hover:text-white">Rechner (Kostenlos)</a>
+      <a href="../../guides/index.html" class="hover:text-white">Ratgeber</a>
+      <a href="../../samples/index.html" class="hover:text-white">Beispieldateien</a>
+      <a href="../../partners/index.html" class="hover:text-white">Kanzleien</a>
+      <a href="../../de/index.html" class="rounded border border-slate-700 px-2 py-0.5 text-xs text-slate-200 hover:border-indigo-400">DE</a>
+      <a href="https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03" data-fk-cta="pro-checkout" class="rounded-lg bg-indigo-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-400">Bundle — €49</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6 pb-14">
+    <div class="text-xs text-slate-400"><a href="../index.html" class="text-indigo-300 hover:underline">&larr; All Free Calculators</a></div>
+    <section class="mt-4 space-y-6">
+      <div>
+        <span class="rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-300">DE / EN · EN 16931 &rarr; DATEV EXTF</span>
+        <h1 class="mt-3 text-3xl font-extrabold text-white">DATEV BU-Schlüssel &amp; EN 16931 (<code>BT-118</code> / <code>BT-151</code>) Steuer-Lookup</h1>
+        <p class="mt-2 text-sm text-slate-300">Ermitteln Sie sofort den passenden DATEV-Steuerschlüssel (BU-Schlüssel) und das SKR03/SKR04-Konto aus XRechnung- und ZUGFeRD-XML-Kategorien.</p>
+      </div>
+
+      <div class="grid gap-4 rounded-2xl border border-slate-800 bg-slate-900/70 p-6 md:grid-cols-3">
+        <div>
+          <label for="bu-scenario" class="block text-xs font-semibold text-slate-300">Rechnungsszenario / EN 16931 Code</label>
+          <select id="bu-scenario" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white">
+            <option value="S19">Inland Eingangsrechnung 19 % (Code S, 19%)</option>
+            <option value="S7">Inland Eingangsrechnung 7 % (Code S, 7%)</option>
+            <option value="AE">EU / § 13b Reverse Charge (Code AE, 0%)</option>
+            <option value="E0">Steuerfrei / Kleinunternehmer § 19 UStG (Code E / O / Z)</option>
+            <option value="K0">Innergemeinschaftlicher Erwerb (Code K, 19% fällig)</option>
+          </select>
+        </div>
+        <div>
+          <label for="bu-chart" class="block text-xs font-semibold text-slate-300">Kontenrahmen</label>
+          <select id="bu-chart" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white">
+            <option value="SKR03">SKR03 (Standard Gewerbe)</option>
+            <option value="SKR04">SKR04 (Abschlussgliederung)</option>
+          </select>
+        </div>
+        <div class="flex items-end">
+          <button id="app-run-btn" type="button" class="w-full rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400">BU-Schlüssel anzeigen</button>
+        </div>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-3">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+          <div class="text-xs text-slate-400">DATEV BU-Schlüssel</div>
+          <div id="bu-out-key" class="mt-1 text-3xl font-extrabold text-indigo-300">9</div>
+          <div id="bu-out-label" class="mt-1 text-xs text-slate-300">19 % Vorsteuer</div>
+        </div>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+          <div class="text-xs text-slate-400">Standard-Aufwandskonto</div>
+          <div id="bu-out-acct" class="mt-1 text-3xl font-extrabold text-white">3400</div>
+          <div id="bu-out-chart" class="mt-1 text-xs text-slate-400">SKR03 Standard</div>
+        </div>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+          <div class="text-xs text-slate-400">EN 16931 XML Tag (BT-151)</div>
+          <div id="bu-out-xml" class="mt-1 text-xl font-bold font-mono text-emerald-300">CategoryCode: S (19%)</div>
+          <div class="mt-1 text-xs text-slate-400">Gültig für UBL 2.1 &amp; ZUGFeRD CII</div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-indigo-500/40 bg-indigo-950/30 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="text-sm text-slate-200">Automatisch Dutzende <strong>XRechnung-, ZUGFeRD- &amp; Peppol-XMLs</strong> lokal mit diesem BU-Schlüssel in <strong>DATEV EXTF CSV</strong> umwandeln?</div>
+        <a href="../../products/e-invoice-xml-batch-converter/index.html?ref=src.tool-bu-lookup#live-app" class="shrink-0 rounded-xl bg-white px-4 py-2.5 text-xs font-semibold text-slate-950 hover:bg-slate-200">EInvoiceLocal starten &rarr;</a>
+      </div>
+    </section>
+  </main>
+
+  <section id="policies" class="mx-auto max-w-5xl px-6 pb-10">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-xs leading-relaxed text-slate-400">
+      <div class="grid gap-6 md:grid-cols-3">
+        <div>
+          <h3 class="font-semibold text-slate-200">Support &amp; Contact</h3>
+          <p class="mt-1">Operated by Stijn Dom (@domstijn).</p>
+          <p class="mt-1">Email: <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a></p>
+          <p class="mt-1">Issues: <a href="https://github.com/domstijn/friction-killer-suite/issues" class="text-indigo-300 underline">GitHub Support Tracker</a></p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">14-Day Refund Policy</h3>
+          <p class="mt-1">All Pro licenses include a 14-day no-questions-asked refund guarantee. Email <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a> with your order ID for a full refund.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
+          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments are processed securely by Stripe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500 no-print">
+    Friction-Killer Suite by Stijn Dom (@domstijn) · 100% Local Browser Processing · <a href="../../sitemap.xml" class="underline">Sitemap</a> · <a href="../../llms.txt" class="underline">llms.txt</a> · <a href="mailto:dom.stijn99@gmail.com" class="underline">dom.stijn99@gmail.com</a>
+  </footer>
+  <script>
+    (function () {
+      const MAP = {
+        S19: { key: "9", label: "19 % abziehbare Vorsteuer", SKR03: "3400", SKR04: "5400", xml: "CategoryCode: S (19%)" },
+        S7:  { key: "8", label: "7 % abziehbare Vorsteuer", SKR03: "3300", SKR04: "5300", xml: "CategoryCode: S (7%)" },
+        AE:  { key: "94", label: "§ 13b UStG Reverse Charge (19 % VSt + USt)", SKR03: "3123", SKR04: "5923", xml: "CategoryCode: AE (0%)" },
+        E0:  { key: "0", label: "Steuerfrei / Kein Vorsteuerabzug", SKR03: "3425", SKR04: "5200", xml: "CategoryCode: E / O / Z" },
+        K0:  { key: "19", label: "Innergemeinschaftlicher Erwerb (Standard 19 %)", SKR03: "3425", SKR04: "5425", xml: "CategoryCode: K (0%/19%)" }
+      };
+      function update() {
+        const s = MAP[document.getElementById("bu-scenario").value] || MAP.S19;
+        const chart = document.getElementById("bu-chart").value || "SKR03";
+        document.getElementById("bu-out-key").textContent = s.key;
+        document.getElementById("bu-out-label").textContent = s.label;
+        document.getElementById("bu-out-acct").textContent = s[chart];
+        document.getElementById("bu-out-chart").textContent = chart + " Kontenvorschlag";
+        document.getElementById("bu-out-xml").textContent = s.xml;
+      }
+      document.getElementById("app-run-btn")?.addEventListener("click", update);
+      document.getElementById("bu-scenario")?.addEventListener("change", update);
+      document.getElementById("bu-chart")?.addEventListener("change", update);
+      update();
+    })();
+  </script>
+  <section id="fk-feedback-bar" class="mx-auto max-w-5xl px-6 pb-6 no-print">
+    <div class="flex flex-col items-center justify-between gap-3 rounded-2xl border border-indigo-500/20 bg-slate-900/60 px-5 py-4 text-xs text-slate-300 sm:flex-row">
+      <span>Missing a bank, CSV format, or hit a snag with <strong>DATEV BU-Schlüssel Lookup</strong>?</span>
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="https://github.com/domstijn/friction-killer-suite/issues/new?title=Feedback%3A+DATEV+BU-Schl%C3%BCssel+Lookup&amp;body=Product+slug%3A+tool_datev_bu_lookup%0AWhat+format%2C+bank%2C+or+step+did+not+work+as+expected%3F%0A" target="_blank" rel="noopener noreferrer" data-fk-cta="feedback" class="rounded-lg border border-indigo-500/40 bg-indigo-500/15 px-3 py-1.5 font-semibold text-indigo-200 hover:bg-indigo-500/25">Missing a bank/format or hit a snag? Report it &rarr;</a>
+        <a href="mailto:dom.stijn99@gmail.com?subject=Feedback%3A%20DATEV%20BU-Schl%C3%BCssel%20Lookup" data-fk-cta="feedback" class="text-slate-400 underline hover:text-white">Email Stijn</a>
+      </div>
+    </div>
+  </section>
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "9656870dc56f45d2a6f701841b6dd29b"}'></script>
+  <script>
+    (function () {
+      let ignore = false;
+      try { ignore = localStorage.getItem("fk_ignore_telemetry") === "1"; } catch {}
+      if (navigator.webdriver || location.protocol === "file:" || ignore) return;
+      const EP = "https://fk-funnel-beacon.dom-stijn99.workers.dev/e";
+      const SLUG = "tool_datev_bu_lookup";
+      let refHost = "direct";
+      try {
+        const qs = new URLSearchParams(location.search);
+        const rawRef = (qs.get("ref") || qs.get("utm_source") || "").trim().toLowerCase();
+        if (rawRef) {
+          const normalized = rawRef.replace(/[^a-z0-9.-]/g, "-").replace(/^-+|-+$/g, "");
+          if (normalized) {
+            refHost = (normalized.startsWith("src.") ? normalized : "src." + normalized).slice(0, 64);
+          }
+        } else if (document.referrer) {
+          const u = new URL(document.referrer);
+          if (u.hostname && u.hostname !== location.hostname) refHost = u.hostname.toLowerCase();
+        }
+      } catch {}
+      const seen = new Set();
+      function send(ev, onceKey) {
+        if (onceKey) {
+          if (seen.has(onceKey)) return;
+          seen.add(onceKey);
+        }
+        try {
+          fetch(EP, {
+            method: "POST",
+            mode: "cors",
+            keepalive: true,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ slug: SLUG, event: ev, ref_host: refHost })
+          }).catch(() => {});
+        } catch {}
+      }
+      send("page_view", "pv");
+      document.addEventListener("change", (e) => {
+        if (e.target && e.target.matches('input[type="file"]')) send("file_upload", "fu");
+      }, true);
+      document.addEventListener("click", (e) => {
+        const t = e.target && e.target.closest ? e.target.closest("a,button") : null;
+        if (!t) return;
+        if (t.matches("#app-sample-btn,#app-sample-camt-btn,#app-sample-mt-btn,#app-run-btn,.pg-tab")) {
+          send("tool_run", "tr:" + (t.id || t.getAttribute("data-pg-tab") || "btn"));
+        }
+        if (t.matches('[id^="app-dl-"],#dl-matrixify,#dl-redirects,#dl-audit,#dl-qbo,#dl-ofx,#dl-datev,#app-activate-btn')) {
+          send("paywall_hit", "pw:" + (t.id || "btn"));
+        }
+        const cta = t.getAttribute("data-fk-cta");
+        if (cta === "pro-checkout") send("checkout_click");
+        else if (cta === "feedback") send("feedback_click");
+      }, true);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XRechnung &amp; ZUGFeRD XML zu A4-PDF &amp; DATEV EXTF — EInvoiceLocal (100 % lokal)</title>
+  <meta name="description" content="XRechnung (UBL 2.1), ZUGFeRD 2.x (CII) und Peppol BIS 3.0 XML direkt im Browser nach EN 16931 prüfen, als A4-PDF drucken und mit DATEV BU-Schlüssel (EXTF CSV) exportieren. Ohne Cloud-Upload." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://domstijn.github.io/friction-killer-suite/de/xrechnung-zugferd-konverter/" />
+  <meta property="og:title" content="XRechnung &amp; ZUGFeRD XML zu A4-PDF &amp; DATEV EXTF — EInvoiceLocal (100 % lokal)" />
+  <meta property="og:description" content="XRechnung (UBL 2.1), ZUGFeRD 2.x (CII) und Peppol BIS 3.0 XML direkt im Browser nach EN 16931 prüfen, als A4-PDF drucken und mit DATEV BU-Schlüssel (EXTF CSV) exportieren. Ohne Cloud-Upload." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://domstijn.github.io/friction-killer-suite/de/xrechnung-zugferd-konverter/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="XRechnung &amp; ZUGFeRD XML zu A4-PDF &amp; DATEV EXTF — EInvoiceLocal (100 % lokal)" />
+  <meta name="twitter:description" content="XRechnung (UBL 2.1), ZUGFeRD 2.x (CII) und Peppol BIS 3.0 XML direkt im Browser nach EN 16931 prüfen, als A4-PDF drucken und mit DATEV BU-Schlüssel (EXTF CSV) exportieren. Ohne Cloud-Upload." />
+  <link rel="alternate" hreflang="de" href="https://domstijn.github.io/friction-killer-suite/de/xrechnung-zugferd-konverter/" />
+  <link rel="alternate" hreflang="en" href="https://domstijn.github.io/friction-killer-suite/products/e-invoice-xml-batch-converter/" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Verlassen meine E-Rechnungen meinen Computer?", "acceptedAnswer": {"@type": "Answer", "text": "Nein. Browser-DOMParser verarbeitet jede XML-Datei lokal im Arbeitsspeicher. Für große Ordner oder automatisierte Kanzlei-Prozesse ist zudem eine Offline-Python-CLI (.whl) enthalten."}}, {"@type": "Question", "name": "Erhalte ich beim Kauf eine ordentliche Rechnung?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Über Stripe Managed Payments (€29 einmalig, kein Abo) erhalten Sie automatisch eine Umsatzsteuer-Rechnung (PDF) sowie eine 14-Tage-Geld-zurück-Garantie."}}]}</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-6 no-print">
+    <a href="../../index.html" class="text-base font-bold tracking-tight text-white hover:text-indigo-300">Friction-Killer Suite</a>
+    <nav class="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-slate-300">
+      <a href="../../index.html" class="hover:text-white">Alle Tools</a>
+      <a href="../../tools/index.html" class="hover:text-white">Rechner (Kostenlos)</a>
+      <a href="../../guides/index.html" class="hover:text-white">Ratgeber</a>
+      <a href="../../samples/index.html" class="hover:text-white">Beispieldateien</a>
+      <a href="../../partners/index.html" class="hover:text-white">Kanzleien</a>
+      <a href="../../de/index.html" class="rounded border border-slate-700 px-2 py-0.5 text-xs text-slate-200 hover:border-indigo-400">DE</a>
+      <a href="https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03" data-fk-cta="pro-checkout" class="rounded-lg bg-indigo-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-400">Bundle — €49</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6 pb-14">
+    <section class="py-8">
+      <div class="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+        <a href="../index.html" class="hover:text-white">Deutsch</a> / <span>xrechnung-zugferd-konverter</span>
+      </div>
+      <span class="mt-4 inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">DSGVO &amp; GoBD · KEIN CLOUD-UPLOAD</span>
+      <h1 class="mt-4 text-3xl sm:text-4xl font-extrabold text-white">XRechnung &amp; ZUGFeRD XML lokal prüfen, als A4-PDF drucken &amp; zu DATEV EXTF exportieren</h1>
+      <p class="mt-4 max-w-3xl text-base leading-relaxed text-slate-300">Keine sensiblen Lieferanten-IBANs oder USt-IDs auf fremde Server hochladen: EInvoiceLocal parst OASIS UBL 2.1 und UN/CEFACT CII direkt im Chrome-Speicher (im DevTools-Netzwerk-Tab nachprüfbar) und mappt BT-118/BT-151 automatisch auf DATEV BU-Schlüssel 9, 8, 94 und 0.</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="../../products/e-invoice-xml-batch-converter/index.html?ref=src.de-xrechnung-zugferd-konverter#live-app" class="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">Jetzt im Browser starten (3 XMLs kostenlos) &rarr;</a>
+        <a href="https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c" data-fk-cta="pro-checkout" class="rounded-xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-400">Pro-Lizenz kaufen — €29 einmalig</a>
+        <a href="../../tools/datev-bu-schluessel-lookup/index.html" class="rounded-xl border border-slate-700 px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-slate-800">DATEV BU-Schlüssel Rechner öffnen</a>
+      </div>
+      <p class="mt-3 text-xs text-emerald-300">✓ Automatische Stripe USt-Rechnung (PDF) · ✓ 14 Tage Geld-zurück-Garantie · ✓ 0 Server-Uploads (im Chrome Netzwerk-Tab verifizierbar)</p>
+    </section>
+
+    <section class="grid gap-5 md:grid-cols-3 py-4">
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+        <h2 class="text-base font-bold text-white">Dual-Syntax (UBL 2.1 &amp; CII)</h2>
+        <p class="mt-2 text-sm text-slate-300">Verarbeitet XRechnung 3.0 UBL, Peppol BIS Billing 3.0 und ZUGFeRD / Factur-X CII in einem Batch ohne Java- oder Electron-Abstürze.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+        <h2 class="text-base font-bold text-white">EN 16931 Summenprüfung (BR-CO-10 / BR-CO-15)</h2>
+        <p class="mt-2 text-sm text-slate-300">Prüft Nettozeilensummen, MwSt-Beträge und Bruttogesamtbetrag centgenau vor dem DATEV-Export.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+        <h2 class="text-base font-bold text-white">DATEV EXTF (;-CSV) &amp; BU-Schlüssel</h2>
+        <p class="mt-2 text-sm text-slate-300">Erzeugt direkt importierbare DATEV-Buchungsstapel mit Komma-Dezimalen, SKR03-Konten (3400/3300/3123) und BU-Schlüssel.</p>
+      </div>
+    </section>
+
+    <section class="my-8 rounded-2xl border border-indigo-500/30 bg-slate-900/70 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <div class="text-xs font-semibold uppercase tracking-wider text-indigo-300">Direkt testen ohne eigene Datei</div>
+        <div class="mt-1 text-sm text-slate-200">Beispieldatei herunterladen oder Schritt-für-Schritt-Technikguide lesen.</div>
+      </div>
+      <div class="flex flex-wrap gap-3 shrink-0">
+        <a href="../../samples/files/sample-xrechnung-3.0-ubl.xml" download class="rounded-lg border border-slate-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800">Testdatei laden</a>
+        <a href="../../guides/xrechnung-xml-zu-pdf-und-datev-extf/index.html" class="rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-indigo-300 hover:bg-slate-700">Technischer Ratgeber &rarr;</a>
+      </div>
+    </section>
+
+    <section class="py-6 space-y-4">
+      <h2 class="text-2xl font-bold text-white">Häufige Fragen (DE / EU)</h2>
+      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
+        <h3 class="font-semibold text-white">Verlassen meine E-Rechnungen meinen Computer?</h3>
+        <p class="mt-1 text-sm text-slate-300">Nein. Browser-DOMParser verarbeitet jede XML-Datei lokal im Arbeitsspeicher. Für große Ordner oder automatisierte Kanzlei-Prozesse ist zudem eine Offline-Python-CLI (.whl) enthalten.</p>
+      </div>
+      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
+        <h3 class="font-semibold text-white">Erhalte ich beim Kauf eine ordentliche Rechnung?</h3>
+        <p class="mt-1 text-sm text-slate-300">Ja. Über Stripe Managed Payments (€29 einmalig, kein Abo) erhalten Sie automatisch eine Umsatzsteuer-Rechnung (PDF) sowie eine 14-Tage-Geld-zurück-Garantie.</p>
+      </div>
+    </section>
+  </main>
+
+  <section id="policies" class="mx-auto max-w-5xl px-6 pb-10">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-xs leading-relaxed text-slate-400">
+      <div class="grid gap-6 md:grid-cols-3">
+        <div>
+          <h3 class="font-semibold text-slate-200">Support &amp; Contact</h3>
+          <p class="mt-1">Operated by Stijn Dom (@domstijn).</p>
+          <p class="mt-1">Email: <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a></p>
+          <p class="mt-1">Issues: <a href="https://github.com/domstijn/friction-killer-suite/issues" class="text-indigo-300 underline">GitHub Support Tracker</a></p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">14-Day Refund Policy</h3>
+          <p class="mt-1">All Pro licenses include a 14-day no-questions-asked refund guarantee. Email <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a> with your order ID for a full refund.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
+          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments are processed securely by Stripe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500 no-print">
+    Friction-Killer Suite by Stijn Dom (@domstijn) · 100% Local Browser Processing · <a href="../../sitemap.xml" class="underline">Sitemap</a> · <a href="../../llms.txt" class="underline">llms.txt</a> · <a href="mailto:dom.stijn99@gmail.com" class="underline">dom.stijn99@gmail.com</a>
+  </footer>
+
+  <section id="fk-feedback-bar" class="mx-auto max-w-5xl px-6 pb-6 no-print">
+    <div class="flex flex-col items-center justify-between gap-3 rounded-2xl border border-indigo-500/20 bg-slate-900/60 px-5 py-4 text-xs text-slate-300 sm:flex-row">
+      <span>Missing a bank, CSV format, or hit a snag with <strong>XRechnung &amp; ZUGFeRD XML lokal prüfen, als A4-PDF drucken &amp; zu DATEV EXTF exportieren</strong>?</span>
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="https://github.com/domstijn/friction-killer-suite/issues/new?title=Feedback%3A+XRechnung+%26+ZUGFeRD+XML+lokal+pr%C3%BCfen%2C+als+A4-PDF+drucken+%26+zu+DATEV+EXTF+exportieren&amp;body=Product+slug%3A+de_xrechnung_zugferd%0AWhat+format%2C+bank%2C+or+step+did+not+work+as+expected%3F%0A" target="_blank" rel="noopener noreferrer" data-fk-cta="feedback" class="rounded-lg border border-indigo-500/40 bg-indigo-500/15 px-3 py-1.5 font-semibold text-indigo-200 hover:bg-indigo-500/25">Missing a bank/format or hit a snag? Report it &rarr;</a>
+        <a href="mailto:dom.stijn99@gmail.com?subject=Feedback%3A%20XRechnung%20%26%20ZUGFeRD%20XML%20lokal%20pr%C3%BCfen%2C%20als%20A4-PDF%20drucken%20%26%20zu%20DATEV%20EXTF%20exportieren" data-fk-cta="feedback" class="text-slate-400 underline hover:text-white">Email Stijn</a>
+      </div>
+    </div>
+  </section>
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "9656870dc56f45d2a6f701841b6dd29b"}'></script>
+  <script>
+    (function () {
+      let ignore = false;
+      try { ignore = localStorage.getItem("fk_ignore_telemetry") === "1"; } catch {}
+      if (navigator.webdriver || location.protocol === "file:" || ignore) return;
+      const EP = "https://fk-funnel-beacon.dom-stijn99.workers.dev/e";
+      const SLUG = "de_xrechnung_zugferd";
+      let refHost = "direct";
+      try {
+        const qs = new URLSearchParams(location.search);
+        const rawRef = (qs.get("ref") || qs.get("utm_source") || "").trim().toLowerCase();
+        if (rawRef) {
+          const normalized = rawRef.replace(/[^a-z0-9.-]/g, "-").replace(/^-+|-+$/g, "");
+          if (normalized) {
+            refHost = (normalized.startsWith("src.") ? normalized : "src." + normalized).slice(0, 64);
+          }
+        } else if (document.referrer) {
+          const u = new URL(document.referrer);
+          if (u.hostname && u.hostname !== location.hostname) refHost = u.hostname.toLowerCase();
+        }
+      } catch {}
+      const seen = new Set();
+      function send(ev, onceKey) {
+        if (onceKey) {
+          if (seen.has(onceKey)) return;
+          seen.add(onceKey);
+        }
+        try {
+          fetch(EP, {
+            method: "POST",
+            mode: "cors",
+            keepalive: true,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ slug: SLUG, event: ev, ref_host: refHost })
+          }).catch(() => {});
+        } catch {}
+      }
+      send("page_view", "pv");
+      document.addEventListener("change", (e) => {
+        if (e.target && e.target.matches('input[type="file"]')) send("file_upload", "fu");
+      }, true);
+      document.addEventListener("click", (e) => {
+        const t = e.target && e.target.closest ? e.target.closest("a,button") : null;
+        if (!t) return;
+        if (t.matches("#app-sample-btn,#app-sample-camt-btn,#app-sample-mt-btn,#app-run-btn,.pg-tab")) {
+          send("tool_run", "tr:" + (t.id || t.getAttribute("data-pg-tab") || "btn"));
+        }
+        if (t.matches('[id^="app-dl-"],#dl-matrixify,#dl-redirects,#dl-audit,#dl-qbo,#dl-ofx,#dl-datev,#app-activate-btn')) {
+          send("paywall_hit", "pw:" + (t.id || "btn"));
+        }
+        const cta = t.getAttribute("data-fk-cta");
+        if (cta === "pro-checkout") send("checkout_click");
+        else if (cta === "feedback") send("feedback_click");
+      }, true);
+    })();
+  </script>
+</body>
+</html>

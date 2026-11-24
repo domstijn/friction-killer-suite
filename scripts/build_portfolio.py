@@ -14,6 +14,16 @@ import urllib.parse
 from pathlib import Path
 from typing import Any
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from build_growth_assets import (  # noqa: E402
+    DE_ALTERNATES,
+    GUIDES,
+    build_growth_assets,
+)
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SITE_BASE_URL = "https://domstijn.github.io/friction-killer-suite"
 DEFAULT_STATE_PATH = REPO_ROOT / "pipeline" / "state.json"
@@ -74,12 +84,21 @@ def build_analytics_footer_html(
         parts.append(
             f"""  <script>
     (function () {{
-      if (navigator.webdriver || location.protocol === "file:") return;
+      let ignore = false;
+      try {{ ignore = localStorage.getItem("fk_ignore_telemetry") === "1"; }} catch {{}}
+      if (navigator.webdriver || location.protocol === "file:" || ignore) return;
       const EP = {ep};
       const SLUG = {safe_slug};
       let refHost = "direct";
       try {{
-        if (document.referrer) {{
+        const qs = new URLSearchParams(location.search);
+        const rawRef = (qs.get("ref") || qs.get("utm_source") || "").trim().toLowerCase();
+        if (rawRef) {{
+          const normalized = rawRef.replace(/[^a-z0-9.-]/g, "-").replace(/^-+|-+$/g, "");
+          if (normalized) {{
+            refHost = (normalized.startsWith("src.") ? normalized : "src." + normalized).slice(0, 64);
+          }}
+        }} else if (document.referrer) {{
           const u = new URL(document.referrer);
           if (u.hostname && u.hostname !== location.hostname) refHost = u.hostname.toLowerCase();
         }}
@@ -1288,6 +1307,7 @@ def render_hub_html(
         if for_pages
         else ""
     )
+    res_prefix = "./" if for_pages else "../docs/"
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1298,12 +1318,15 @@ def render_hub_html(
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
-  <header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+  <header class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-6">
     <div class="text-lg font-bold tracking-tight text-white">Friction-Killer Suite</div>
-    <nav class="flex items-center gap-6 text-sm text-slate-300">
-      <a href="#playground" class="hover:text-white">Live Playground</a>
-      <a href="#bundle" class="hover:text-white">Bundle</a>
-      <a href="#policies" class="hover:text-white">Support &amp; Policies</a>
+    <nav class="flex flex-wrap items-center gap-4 text-sm text-slate-300">
+      <a href="#playground" class="hover:text-white">Playground</a>
+      <a href="{res_prefix}tools/index.html" class="hover:text-white">Free Calculators</a>
+      <a href="{res_prefix}guides/index.html" class="hover:text-white">Guides</a>
+      <a href="{res_prefix}samples/index.html" class="hover:text-white">Samples</a>
+      <a href="{res_prefix}partners/index.html" class="hover:text-white">Accountants</a>
+      <a href="{res_prefix}de/index.html" class="rounded border border-slate-700 px-2 py-0.5 text-xs text-slate-200 hover:border-indigo-400">DE</a>
       <a href="#bundle" class="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400">
         All-Access Bundle — €49
       </a>
@@ -1324,6 +1347,7 @@ def render_hub_html(
       </p>
       <div class="mt-7 flex flex-wrap justify-center gap-3">
         <a href="#playground" class="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-slate-200">Try Live in Browser</a>
+        <a href="{res_prefix}tools/index.html" class="rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-5 py-2.5 text-sm font-semibold text-emerald-200 hover:bg-emerald-500/20">Free VAT &amp; DATEV Calculators</a>
         <a href="#bundle" class="rounded-xl border border-slate-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">Get All-Access Bundle — €49</a>
       </div>
     </section>
@@ -1412,7 +1436,40 @@ def render_product_page_for_docs(
             app_name=product["short_title"],
             price_eur=price_num,
         )
+        if slug in DE_ALTERNATES:
+            seo_tags += (
+                f'\n  <link rel="alternate" hreflang="en" href="{html.escape(f"{SITE_BASE_URL}/products/{slug}/", quote=True)}" />'
+                f'\n  <link rel="alternate" hreflang="de" href="{html.escape(DE_ALTERNATES[slug], quote=True)}" />'
+            )
         page_html = page_html.replace("</head>", f"{seo_tags}\n</head>", 1)
+
+    matching_guides = [g for g in GUIDES if g["product_slug"] == slug]
+    guide_links = [
+        f'<a href="../../guides/{html.escape(g["slug"])}/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-indigo-200 hover:border-indigo-400 hover:text-white">{html.escape(g["h1"])}</a>'
+        for g in matching_guides[:5]
+    ]
+    if slug in DE_ALTERNATES:
+        de_rel = DE_ALTERNATES[slug].replace(f"{SITE_BASE_URL}/", "../../") + "index.html"
+        guide_links.insert(
+            0,
+            f'<a href="{html.escape(de_rel)}" class="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-200 hover:bg-emerald-500/20">Deutsche Version (DE) &rarr;</a>',
+        )
+    if slug in ("e-invoice-xml-batch-converter", "camt053-mt940-qbo-xero-converter", "eu-oss-vat-return-compiler", "lemonsqueezy-stripe-polar-migrator"):
+        guide_links.append('<a href="../../tools/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 hover:border-indigo-400">Free Calculators</a>')
+        guide_links.append('<a href="../../samples/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 hover:border-indigo-400">Sample Test Files</a>')
+        guide_links.append('<a href="../../partners/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 hover:border-indigo-400">For Accountants / Agencies</a>')
+    resources_strip = (
+        '  <section class="mx-auto max-w-5xl px-6 pb-4 no-print">\n'
+        '    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-5">\n'
+        '      <div class="text-xs font-semibold uppercase tracking-wider text-slate-400">Related Guides, Free Calculators &amp; Sample Fixtures</div>\n'
+        '      <div class="mt-3 flex flex-wrap gap-2">\n'
+        f'        {"".join(guide_links)}\n'
+        '      </div>\n'
+        '    </div>\n'
+        '  </section>\n'
+        if guide_links
+        else ""
+    )
 
     # Inject 1-click feedback bar above footer & cookie-less Cloudflare Web Analytics + D1 funnel tracker
     feedback_and_scripts = build_analytics_footer_html(
@@ -1421,6 +1478,7 @@ def render_product_page_for_docs(
     feedback_section, _, analytics_scripts = feedback_and_scripts.partition("</section>")
     feedback_html = f"{feedback_section}</section>\n" if feedback_section and "</section>" in feedback_and_scripts else ""
     compliant_footer = (
+        f"{resources_strip}"
         f"{feedback_html}"
         f"{LEGAL_FOOTER_HTML}\n"
         f'  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500">\n'
@@ -1471,14 +1529,31 @@ def publish_docs_site(
     )
     (docs_dir / "cancel.html").write_text(render_cancel_html(), encoding="utf-8")
 
-    sitemap_entries = [
+    growth_sitemap_entries = build_growth_assets(
+        products,
+        docs_dir,
+        analytics_cfg,
+        bundle_checkout_url,
+        legal_footer_html=LEGAL_FOOTER_HTML,
+        analytics_renderer=build_analytics_footer_html,
+    )
+
+    sitemap_entries: list[tuple[str, str]] = [
         (f"{SITE_BASE_URL}/", "1.0"),
         *[
             (f"{SITE_BASE_URL}/products/{p['slug']}/", "0.9")
             for p in products
             if (p["proj_dir"] / "launch" / "landing.html").is_file()
         ],
+        *growth_sitemap_entries,
     ]
+    seen_locs: set[str] = set()
+    dedup_entries: list[tuple[str, str]] = []
+    for loc, priority in sitemap_entries:
+        if loc not in seen_locs:
+            seen_locs.add(loc)
+            dedup_entries.append((loc, priority))
+
     lastmod_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     url_blocks = "\n".join(
         [
@@ -1488,7 +1563,7 @@ def publish_docs_site(
             "    <changefreq>weekly</changefreq>\n"
             f"    <priority>{priority}</priority>\n"
             "  </url>"
-            for loc, priority in sitemap_entries
+            for loc, priority in dedup_entries
         ]
     )
     (docs_dir / "sitemap.xml").write_text(
@@ -1501,7 +1576,8 @@ def publish_docs_site(
     (docs_dir / "robots.txt").write_text(
         "User-agent: *\n"
         "Allow: /\n\n"
-        f"Sitemap: {SITE_BASE_URL}/sitemap.xml\n",
+        f"Sitemap: {SITE_BASE_URL}/sitemap.xml\n"
+        f"# LLMs: {SITE_BASE_URL}/llms.txt\n",
         encoding="utf-8",
     )
 
@@ -1549,11 +1625,16 @@ def render_success_html(products: list[dict[str, Any]], *, for_pages: bool = Tru
 
       <div class="mt-6 rounded-2xl border border-slate-700 bg-slate-950 p-5">
         <div class="text-xs font-semibold uppercase tracking-wider text-slate-400">Your Pro License Key</div>
-        <div class="mt-2 flex items-center justify-between gap-3">
+        <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
           <code id="license-key" class="truncate font-mono text-sm text-emerald-300">Check URL ?session_id=...</code>
-          <button id="copy-btn" type="button" class="shrink-0 rounded-lg bg-indigo-500 px-3.5 py-2 text-xs font-semibold text-white hover:bg-indigo-400">
-            Copy License Key
-          </button>
+          <div class="flex shrink-0 gap-2">
+            <button id="copy-btn" type="button" class="rounded-lg bg-indigo-500 px-3.5 py-2 text-xs font-semibold text-white hover:bg-indigo-400">
+              Copy License Key
+            </button>
+            <button id="download-receipt-btn" type="button" class="rounded-lg border border-emerald-500/50 bg-emerald-500/15 px-3.5 py-2 text-xs font-semibold text-emerald-200 hover:bg-emerald-500/25">
+              Download Pro License Receipt (.txt)
+            </button>
+          </div>
         </div>
         <p id="copy-status" class="mt-2 text-xs text-slate-400"></p>
       </div>
@@ -1631,6 +1712,34 @@ def render_success_html(products: list[dict[str, Any]], *, for_pages: bool = Tru
       }} catch {{
         statusEl.textContent = "Select and copy the key above.";
       }}
+    }});
+    document.getElementById("download-receipt-btn")?.addEventListener("click", () => {{
+      const keyVal = sid || "PASTE_STRIPE_SESSION_ID";
+      const txt = [
+        "FRICTION-KILLER SUITE — PRO LICENSE BACKUP RECEIPT",
+        "==================================================",
+        "License Key (Stripe Checkout Session ID): " + keyVal,
+        "Product Scope: " + (slug || "All-Access Suite"),
+        "Saved At (UTC): " + new Date().toISOString(),
+        "",
+        "Activation Across Any Office PC / Browser:",
+        "1) Web Apps: Open the product page and paste your key in the Pro box.",
+        "2) Python CLIs (.whl): Run <tool-slug> --activate " + keyVal,
+        "3) Chrome Extensions: Paste key inside extension popup -> Activate.",
+        "",
+        "Support & VAT Invoice / 14-Day Refund Help: dom.stijn99@gmail.com",
+        "Storefront: https://domstijn.github.io/friction-killer-suite/"
+      ].join("\\n");
+      const blob = new Blob([txt], {{ type: "text/plain;charset=utf-8" }});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "friction-killer-pro-license.txt";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      statusEl.textContent = "Downloaded friction-killer-pro-license.txt backup file!";
     }});
   </script>
 </body>
@@ -1753,7 +1862,11 @@ def render_root_readme_md(products: list[dict[str, Any]], bundle_checkout_url: s
 
 - **Try All {len(products)} Tools Live in Browser (Zero Install):** {SITE_BASE_URL}/
 - **All-Access Suite Bundle (€49 once, unlocks all {len(products)} tools):** {bundle_checkout_url}
-- **Sitemap:** {SITE_BASE_URL}/sitemap.xml
+- **Free Calculators (`EU VAT 2026`, `DATEV BU-Schlüssel`, `Lemon Squeezy Risk`):** {SITE_BASE_URL}/tools/
+- **20 Error-Code & Format Guides (`OL-222`, `CAMT.053`, `BR-CO-10/15`, `BZSt GR→EL`):** {SITE_BASE_URL}/guides/
+- **Deutsch / DACH Tools (`XRechnung`, `CAMT.053`, `BZSt OSS`):** {SITE_BASE_URL}/de/
+- **Open Sample Test Files & Accountant Partners:** {SITE_BASE_URL}/samples/ · {SITE_BASE_URL}/partners/
+- **Sitemap & AI Search Index (`llms.txt`):** {SITE_BASE_URL}/sitemap.xml · {SITE_BASE_URL}/llms.txt
 
 ---
 

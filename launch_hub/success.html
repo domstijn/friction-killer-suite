@@ -23,11 +23,16 @@
 
       <div class="mt-6 rounded-2xl border border-slate-700 bg-slate-950 p-5">
         <div class="text-xs font-semibold uppercase tracking-wider text-slate-400">Your Pro License Key</div>
-        <div class="mt-2 flex items-center justify-between gap-3">
+        <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
           <code id="license-key" class="truncate font-mono text-sm text-emerald-300">Check URL ?session_id=...</code>
-          <button id="copy-btn" type="button" class="shrink-0 rounded-lg bg-indigo-500 px-3.5 py-2 text-xs font-semibold text-white hover:bg-indigo-400">
-            Copy License Key
-          </button>
+          <div class="flex shrink-0 gap-2">
+            <button id="copy-btn" type="button" class="rounded-lg bg-indigo-500 px-3.5 py-2 text-xs font-semibold text-white hover:bg-indigo-400">
+              Copy License Key
+            </button>
+            <button id="download-receipt-btn" type="button" class="rounded-lg border border-emerald-500/50 bg-emerald-500/15 px-3.5 py-2 text-xs font-semibold text-emerald-200 hover:bg-emerald-500/25">
+              Download Pro License Receipt (.txt)
+            </button>
+          </div>
         </div>
         <p id="copy-status" class="mt-2 text-xs text-slate-400"></p>
       </div>
@@ -127,6 +132,34 @@
       } catch {
         statusEl.textContent = "Select and copy the key above.";
       }
+    });
+    document.getElementById("download-receipt-btn")?.addEventListener("click", () => {
+      const keyVal = sid || "PASTE_STRIPE_SESSION_ID";
+      const txt = [
+        "FRICTION-KILLER SUITE — PRO LICENSE BACKUP RECEIPT",
+        "==================================================",
+        "License Key (Stripe Checkout Session ID): " + keyVal,
+        "Product Scope: " + (slug || "All-Access Suite"),
+        "Saved At (UTC): " + new Date().toISOString(),
+        "",
+        "Activation Across Any Office PC / Browser:",
+        "1) Web Apps: Open the product page and paste your key in the Pro box.",
+        "2) Python CLIs (.whl): Run <tool-slug> --activate " + keyVal,
+        "3) Chrome Extensions: Paste key inside extension popup -> Activate.",
+        "",
+        "Support & VAT Invoice / 14-Day Refund Help: dom.stijn99@gmail.com",
+        "Storefront: https://domstijn.github.io/friction-killer-suite/"
+      ].join("\n");
+      const blob = new Blob([txt], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "friction-killer-pro-license.txt";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      statusEl.textContent = "Downloaded friction-killer-pro-license.txt backup file!";
     });
   </script>
 </body>

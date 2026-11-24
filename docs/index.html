@@ -17,12 +17,15 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
-  <header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+  <header class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-6">
     <div class="text-lg font-bold tracking-tight text-white">Friction-Killer Suite</div>
-    <nav class="flex items-center gap-6 text-sm text-slate-300">
-      <a href="#playground" class="hover:text-white">Live Playground</a>
-      <a href="#bundle" class="hover:text-white">Bundle</a>
-      <a href="#policies" class="hover:text-white">Support &amp; Policies</a>
+    <nav class="flex flex-wrap items-center gap-4 text-sm text-slate-300">
+      <a href="#playground" class="hover:text-white">Playground</a>
+      <a href="./tools/index.html" class="hover:text-white">Free Calculators</a>
+      <a href="./guides/index.html" class="hover:text-white">Guides</a>
+      <a href="./samples/index.html" class="hover:text-white">Samples</a>
+      <a href="./partners/index.html" class="hover:text-white">Accountants</a>
+      <a href="./de/index.html" class="rounded border border-slate-700 px-2 py-0.5 text-xs text-slate-200 hover:border-indigo-400">DE</a>
       <a href="#bundle" class="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400">
         All-Access Bundle — €49
       </a>
@@ -43,6 +46,7 @@
       </p>
       <div class="mt-7 flex flex-wrap justify-center gap-3">
         <a href="#playground" class="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-slate-200">Try Live in Browser</a>
+        <a href="./tools/index.html" class="rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-5 py-2.5 text-sm font-semibold text-emerald-200 hover:bg-emerald-500/20">Free VAT &amp; DATEV Calculators</a>
         <a href="#bundle" class="rounded-xl border border-slate-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">Get All-Access Bundle — €49</a>
       </div>
     </section>
@@ -1243,12 +1247,21 @@ stripe_tax,NL,EUR,300.00,0.00,0.0,charge,NL123456789B01</textarea>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "9656870dc56f45d2a6f701841b6dd29b"}'></script>
   <script>
     (function () {
-      if (navigator.webdriver || location.protocol === "file:") return;
+      let ignore = false;
+      try { ignore = localStorage.getItem("fk_ignore_telemetry") === "1"; } catch {}
+      if (navigator.webdriver || location.protocol === "file:" || ignore) return;
       const EP = "https://fk-funnel-beacon.dom-stijn99.workers.dev/e";
       const SLUG = "hub";
       let refHost = "direct";
       try {
-        if (document.referrer) {
+        const qs = new URLSearchParams(location.search);
+        const rawRef = (qs.get("ref") || qs.get("utm_source") || "").trim().toLowerCase();
+        if (rawRef) {
+          const normalized = rawRef.replace(/[^a-z0-9.-]/g, "-").replace(/^-+|-+$/g, "");
+          if (normalized) {
+            refHost = (normalized.startsWith("src.") ? normalized : "src." + normalized).slice(0, 64);
+          }
+        } else if (document.referrer) {
           const u = new URL(document.referrer);
           if (u.hostname && u.hostname !== location.hostname) refHost = u.hostname.toLowerCase();
         }

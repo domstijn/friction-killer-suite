@@ -191,7 +191,15 @@
     </section>
   </main>
 
-    <section id="fk-feedback-bar" class="mx-auto max-w-5xl px-6 pb-6 no-print">
+    <section class="mx-auto max-w-5xl px-6 pb-4 no-print">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
+      <div class="text-xs font-semibold uppercase tracking-wider text-slate-400">Related Guides, Free Calculators &amp; Sample Fixtures</div>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <a href="../../guides/stripe-payout-reconciliation-xero-quickbooks/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-indigo-200 hover:border-indigo-400 hover:text-white">Split Net Stripe Bank Deposits Back into Gross Revenue, Fees &amp; Refunds Locally</a>
+      </div>
+    </div>
+  </section>
+  <section id="fk-feedback-bar" class="mx-auto max-w-5xl px-6 pb-6 no-print">
     <div class="flex flex-col items-center justify-between gap-3 rounded-2xl border border-indigo-500/20 bg-slate-900/60 px-5 py-4 text-xs text-slate-300 sm:flex-row">
       <span>Missing a bank, CSV format, or hit a snag with <strong>StripePayoutBridge</strong>?</span>
       <div class="flex flex-wrap items-center gap-3">
@@ -511,12 +519,21 @@
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "9656870dc56f45d2a6f701841b6dd29b"}'></script>
   <script>
     (function () {
-      if (navigator.webdriver || location.protocol === "file:") return;
+      let ignore = false;
+      try { ignore = localStorage.getItem("fk_ignore_telemetry") === "1"; } catch {}
+      if (navigator.webdriver || location.protocol === "file:" || ignore) return;
       const EP = "https://fk-funnel-beacon.dom-stijn99.workers.dev/e";
       const SLUG = "stripe-payout-xero-qbo-splitter";
       let refHost = "direct";
       try {
-        if (document.referrer) {
+        const qs = new URLSearchParams(location.search);
+        const rawRef = (qs.get("ref") || qs.get("utm_source") || "").trim().toLowerCase();
+        if (rawRef) {
+          const normalized = rawRef.replace(/[^a-z0-9.-]/g, "-").replace(/^-+|-+$/g, "");
+          if (normalized) {
+            refHost = (normalized.startsWith("src.") ? normalized : "src." + normalized).slice(0, 64);
+          }
+        } else if (document.referrer) {
           const u = new URL(document.referrer);
           if (u.hostname && u.hostname !== location.hostname) refHost = u.hostname.toLowerCase();
         }

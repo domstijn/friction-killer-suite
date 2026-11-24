@@ -23,6 +23,8 @@
   <meta name="twitter:title" content="EInvoiceLocal — EInvoiceLocal: 100% Local XRechnung, ZUGFeRD &amp; Peppol UBL/CII XML Validator, Printable A4 PDF &amp; DATEV/Xero Batch Converter" />
   <meta name="twitter:description" content="100% browser-local Web App (+ Python CLI) that validates EN 16931 math rules across UBL 2.1 and UN/CEFACT CII XML invoices, renders printable A4 invoice views, and batch-exports unified DATEV EXTF_Buchungsstapel.csv (with BU-Schlüssel tax keys), Xero Bills CSV, and QuickBooks CSV." />
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "EInvoiceLocal", "headline": "EInvoiceLocal — EInvoiceLocal: 100% Local XRechnung, ZUGFeRD & Peppol UBL/CII XML Validator, Printable A4 PDF & DATEV/Xero Batch Converter", "description": "100% browser-local Web App (+ Python CLI) that validates EN 16931 math rules across UBL 2.1 and UN/CEFACT CII XML invoices, renders printable A4 invoice views, and batch-exports unified DATEV EXTF_Buchungsstapel.csv (with BU-Schlüssel tax keys), Xero Bills CSV, and QuickBooks CSV.", "url": "https://domstijn.github.io/friction-killer-suite/products/e-invoice-xml-batch-converter/", "applicationCategory": "BusinessApplication", "operatingSystem": "Web, macOS, Windows, Linux", "offers": [{"@type": "Offer", "name": "Free Tier", "price": "0.00", "priceCurrency": "EUR"}, {"@type": "Offer", "name": "Pro Lifetime License", "price": "29.00", "priceCurrency": "EUR"}]}</script>
+  <link rel="alternate" hreflang="en" href="https://domstijn.github.io/friction-killer-suite/products/e-invoice-xml-batch-converter/" />
+  <link rel="alternate" hreflang="de" href="https://domstijn.github.io/friction-killer-suite/de/xrechnung-zugferd-konverter/" />
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
   <header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6 no-print">
@@ -185,6 +187,9 @@
               <div>VAT Total: <strong id="a4-vat">€0.00</strong></div>
               <div class="mt-1 text-base font-extrabold text-slate-950">Payable Gross: <span id="a4-gross">€0.00</span></div>
             </div>
+            <div id="a4-free-stamp" class="mt-4 border-t border-slate-100 pt-2 text-[10px] text-slate-400">
+              EN 16931 locally validated via EInvoiceLocal (0 cloud uploads) — domstijn.github.io/friction-killer-suite
+            </div>
           </div>
         </div>
       </div>
@@ -233,6 +238,8 @@
             <li>✓ Unlimited XRechnung / ZUGFeRD / Peppol XMLs</li>
             <li>✓ DATEV EXTF (<code>;</code>-CSV) + Xero Bills + QBO Bills</li>
             <li>✓ Offline Python <code>.whl</code> CLI directory batcher</li>
+            <li>✓ Automatic Stripe PDF VAT invoice + 14-day refund</li>
+            <li>✓ 0 uploads — verify in DevTools</li>
           </ul>
           <a href="https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-indigo-500 py-3 text-center text-sm font-semibold text-white hover:bg-indigo-400">
             Buy Pro License Key — €29
@@ -269,7 +276,15 @@
     </section>
   </main>
 
-    <section id="fk-feedback-bar" class="mx-auto max-w-5xl px-6 pb-6 no-print">
+    <section class="mx-auto max-w-5xl px-6 pb-4 no-print">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
+      <div class="text-xs font-semibold uppercase tracking-wider text-slate-400">Related Guides, Free Calculators &amp; Sample Fixtures</div>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <a href="../../de/xrechnung-zugferd-konverter/index.html" class="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-200 hover:bg-emerald-500/20">Deutsche Version (DE) &rarr;</a><a href="../../guides/xrechnung-xml-zu-pdf-und-datev-extf/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-indigo-200 hover:border-indigo-400 hover:text-white">XRechnung XML einfach lesen, als A4-PDF drucken &amp; DATEV EXTF exportieren</a><a href="../../guides/en16931-br-co-10-br-co-15-validation-errors/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-indigo-200 hover:border-indigo-400 hover:text-white">Debugging EN 16931 BR-CO-10 &amp; BR-CO-15 Tax Calculation Errors in XRechnung &amp; Peppol XML</a><a href="../../guides/zugferd-xml-datev-bu-schluessel-mapping/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-indigo-200 hover:border-indigo-400 hover:text-white">DATEV BU-Schlüssel &amp; SKR03-Konten aus ZUGFeRD &amp; XRechnung XML bestimmen</a><a href="../../guides/peppol-bis-3-xml-to-pdf-xero-csv/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-indigo-200 hover:border-indigo-400 hover:text-white">Convert Peppol BIS 3.0 UBL XML Files into Readable PDFs &amp; Xero/QuickBooks Bills CSV</a><a href="../../guides/quba-viewer-alternative-browser-einvoice/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-indigo-200 hover:border-indigo-400 hover:text-white">Zero-Install Browser Alternative When Quba Viewer Crashes (libjcef / LC_ALL / Locale Bugs)</a><a href="../../tools/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 hover:border-indigo-400">Free Calculators</a><a href="../../samples/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 hover:border-indigo-400">Sample Test Files</a><a href="../../partners/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 hover:border-indigo-400">For Accountants / Agencies</a>
+      </div>
+    </div>
+  </section>
+  <section id="fk-feedback-bar" class="mx-auto max-w-5xl px-6 pb-6 no-print">
     <div class="flex flex-col items-center justify-between gap-3 rounded-2xl border border-indigo-500/20 bg-slate-900/60 px-5 py-4 text-xs text-slate-300 sm:flex-row">
       <span>Missing a bank, CSV format, or hit a snag with <strong>EInvoiceLocal</strong>?</span>
       <div class="flex flex-wrap items-center gap-3">
@@ -499,6 +514,8 @@
         document.getElementById("a4-net").textContent = inv.net.toFixed(2) + " " + inv.cur;
         document.getElementById("a4-vat").textContent = inv.vat.toFixed(2) + " " + inv.cur;
         document.getElementById("a4-gross").textContent = inv.gross.toFixed(2) + " " + inv.cur;
+        const stamp = document.getElementById("a4-free-stamp");
+        if (stamp) stamp.style.display = isProUnlocked() ? "none" : "block";
       }
 
       function renderActiveTab() {
@@ -662,12 +679,21 @@
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "9656870dc56f45d2a6f701841b6dd29b"}'></script>
   <script>
     (function () {
-      if (navigator.webdriver || location.protocol === "file:") return;
+      let ignore = false;
+      try { ignore = localStorage.getItem("fk_ignore_telemetry") === "1"; } catch {}
+      if (navigator.webdriver || location.protocol === "file:" || ignore) return;
       const EP = "https://fk-funnel-beacon.dom-stijn99.workers.dev/e";
       const SLUG = "e-invoice-xml-batch-converter";
       let refHost = "direct";
       try {
-        if (document.referrer) {
+        const qs = new URLSearchParams(location.search);
+        const rawRef = (qs.get("ref") || qs.get("utm_source") || "").trim().toLowerCase();
+        if (rawRef) {
+          const normalized = rawRef.replace(/[^a-z0-9.-]/g, "-").replace(/^-+|-+$/g, "");
+          if (normalized) {
+            refHost = (normalized.startsWith("src.") ? normalized : "src." + normalized).slice(0, 64);
+          }
+        } else if (document.referrer) {
           const u = new URL(document.referrer);
           if (u.hostname && u.hostname !== location.hostname) refHost = u.hostname.toLowerCase();
         }

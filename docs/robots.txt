@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://domstijn.github.io/friction-killer-suite/sitemap.xml
+# LLMs: https://domstijn.github.io/friction-killer-suite/llms.txt

@@ -177,6 +177,13 @@
       "friction_observed": "With 13 products live and €0 revenue, GitHub Pages had zero human funnel analytics (mixing bot GitHub clones and PyPI link-preview crawlers with demand) and outreach lacked live API-verified open/unlocked targets.",
       "upgrade_applied": "Deployed Cloudflare Web Analytics RUM + zero-PII Cloudflare Worker (`fk-funnel-beacon`) backed by EU D1 (`fk-funnel-db`), instrumented all 13 storefront pages with bot-filtered `page_view`/`file_upload`/`tool_run`/`paywall_hit`/`checkout_click`/`feedback_click` telemetry & feedback bars in scripts/build_portfolio.py, built scripts/growth_scorecard.py evaluating the Day 14 Decision Gate, ran a 5-agent parallel workflow via run_workflow to produce GH-verified pipeline/OUTREACH_QUEUE.md + pipeline/PAID_TEST_PLAN.md, and scheduled PyPI cooldown retry + daily 09:00 scorecard cron.",
       "expected_impact": "Separates real human conversion bottlenecks from bot noise across a disciplined 14-day UP THE ANTE / FIX CONVERSION / ABANDON test without wasting cycles on low-signal product builds."
+    },
+    {
+      "cycle": 16,
+      "date": "2026-11-24",
+      "friction_observed": "Unconventional B2B compliance tools gain zero traction from consumer UGC while 13 single English landing pages miss German DACH search intent, specific error-code queries (OL-222, BR-CO-10/15, BZSt GR->EL), bookmarkable free calculators, open test fixtures, AI search citations, and `?ref=` channel attribution; plus main-chat schedules risked blocking foreground turns.",
+      "upgrade_applied": "Offloaded both scheduled tasks to dedicated `self` daemon subagents (`PyPI Cooldown Publisher Daemon` & `Daily Growth Scorecard Daemon`), built `scripts/build_growth_assets.py` generating native German `/de/` DACH pages, 20 Schema.org `HowTo`/`FAQPage` error-code guides (`/guides/`), 3 free zero-paywall calculators (`/tools/`), 6 anonymized test fixtures (`/samples/`), `/partners/` accountant hub, and `/llms.txt`+`llms-full.txt`; upgraded `scripts/build_portfolio.py` with `?ref=src.<channel>` attribution, `fk_ignore_telemetry` opt-out, cross-links, and downloadable `friction-killer-pro-license.txt` receipts; added trust/VAT/EU bank fixes to flagship landing pages, updated GitHub repo SEO metadata, and built `scripts/find_buyers.py` + `pipeline/UNCONVENTIONAL_GROWTH_PLAYBOOK.md` + 3 syndication articles.",
+      "expected_impact": "Turns 14 static pages into a 40+-URL multi-entry B2B organic/GEO/referral acquisition engine with end-to-end channel attribution and clean unblocked foreground chat execution."
     }
   ]
 }

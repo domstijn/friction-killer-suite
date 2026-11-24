@@ -4,7 +4,11 @@
 
 - **Try All 13 Tools Live in Browser (Zero Install):** https://domstijn.github.io/friction-killer-suite/
 - **All-Access Suite Bundle (€49 once, unlocks all 13 tools):** https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03
-- **Sitemap:** https://domstijn.github.io/friction-killer-suite/sitemap.xml
+- **Free Calculators (`EU VAT 2026`, `DATEV BU-Schlüssel`, `Lemon Squeezy Risk`):** https://domstijn.github.io/friction-killer-suite/tools/
+- **20 Error-Code & Format Guides (`OL-222`, `CAMT.053`, `BR-CO-10/15`, `BZSt GR→EL`):** https://domstijn.github.io/friction-killer-suite/guides/
+- **Deutsch / DACH Tools (`XRechnung`, `CAMT.053`, `BZSt OSS`):** https://domstijn.github.io/friction-killer-suite/de/
+- **Open Sample Test Files & Accountant Partners:** https://domstijn.github.io/friction-killer-suite/samples/ · https://domstijn.github.io/friction-killer-suite/partners/
+- **Sitemap & AI Search Index (`llms.txt`):** https://domstijn.github.io/friction-killer-suite/sitemap.xml · https://domstijn.github.io/friction-killer-suite/llms.txt
 
 ---
 

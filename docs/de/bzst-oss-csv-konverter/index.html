@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BZSt OSS CSV lokal erstellen — Stripe Tax &amp; Shopify zu Mein BOP / EU-OSS Export</title>
+  <meta name="description" content="Stripe Tax, Shopify &amp; Lemon Squeezy CSVs lokal in Chrome zu einer prüffähigen BZSt BOP (;)-CSV für das EU One-Stop-Shop (OSS) Verfahren bündeln. Automatische GR-&gt;EL Korrektur, B2B-Abzug &amp; EZB-FX." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://domstijn.github.io/friction-killer-suite/de/bzst-oss-csv-konverter/" />
+  <meta property="og:title" content="BZSt OSS CSV lokal erstellen — Stripe Tax &amp; Shopify zu Mein BOP / EU-OSS Export" />
+  <meta property="og:description" content="Stripe Tax, Shopify &amp; Lemon Squeezy CSVs lokal in Chrome zu einer prüffähigen BZSt BOP (;)-CSV für das EU One-Stop-Shop (OSS) Verfahren bündeln. Automatische GR-&gt;EL Korrektur, B2B-Abzug &amp; EZB-FX." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://domstijn.github.io/friction-killer-suite/de/bzst-oss-csv-konverter/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BZSt OSS CSV lokal erstellen — Stripe Tax &amp; Shopify zu Mein BOP / EU-OSS Export" />
+  <meta name="twitter:description" content="Stripe Tax, Shopify &amp; Lemon Squeezy CSVs lokal in Chrome zu einer prüffähigen BZSt BOP (;)-CSV für das EU One-Stop-Shop (OSS) Verfahren bündeln. Automatische GR-&gt;EL Korrektur, B2B-Abzug &amp; EZB-FX." />
+  <link rel="alternate" hreflang="de" href="https://domstijn.github.io/friction-killer-suite/de/bzst-oss-csv-konverter/" />
+  <link rel="alternate" hreflang="en" href="https://domstijn.github.io/friction-killer-suite/products/eu-oss-vat-return-compiler/" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Kann ich mehrere Shops und Stripe-Konten zusammenfassen?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Sie können mehrere CSV-Dateien von Stripe Tax, Shopify Tax Reports und Lemon Squeezy gleichzeitig auswählen und zu einem konsolidierten EU-27 OSS-Bericht verschmelzen."}}, {"@type": "Question", "name": "Was kostet die Pro-Lizenz?", "acceptedAnswer": {"@type": "Answer", "text": "€29 einmalig (oder €49 im All-Access-Bundle für alle 13 Werkzeuge inklusive EInvoiceLocal und BankFeedBridge) — ohne Abo."}}]}</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-6 no-print">
+    <a href="../../index.html" class="text-base font-bold tracking-tight text-white hover:text-indigo-300">Friction-Killer Suite</a>
+    <nav class="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-slate-300">
+      <a href="../../index.html" class="hover:text-white">Alle Tools</a>
+      <a href="../../tools/index.html" class="hover:text-white">Rechner (Kostenlos)</a>
+      <a href="../../guides/index.html" class="hover:text-white">Ratgeber</a>
+      <a href="../../samples/index.html" class="hover:text-white">Beispieldateien</a>
+      <a href="../../partners/index.html" class="hover:text-white">Kanzleien</a>
+      <a href="../../de/index.html" class="rounded border border-slate-700 px-2 py-0.5 text-xs text-slate-200 hover:border-indigo-400">DE</a>
+      <a href="https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03" data-fk-cta="pro-checkout" class="rounded-lg bg-indigo-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-400">Bundle — €49</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6 pb-14">
+    <section class="py-8">
+      <div class="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+        <a href="../index.html" class="hover:text-white">Deutsch</a> / <span>bzst-oss-csv-konverter</span>
+      </div>
+      <span class="mt-4 inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">BZSt MEIN BOP · EU-OSS QUARTALSMELDUNG</span>
+      <h1 class="mt-4 text-3xl sm:text-4xl font-extrabold text-white">BZSt OSS CSV (Mein BOP) aus Stripe, Shopify &amp; Lemon Squeezy lokal erstellen</h1>
+      <p class="mt-4 max-w-3xl text-base leading-relaxed text-slate-300">Keine teure Tax-Compliance-Plattform nötig: OssVatBridge führt Exporte lokal im Browser zusammen, rechnet Nicht-EUR-Umsätze über EZB-Quartalskurse um, mappt Griechenland automatisch von GR auf EL und trennt Inlandsumsätze sowie Reverse-Charge-B2B-Rechnungen sauber heraus.</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="../../products/eu-oss-vat-return-compiler/index.html?ref=src.de-bzst-oss-csv-konverter#live-app" class="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">OSS-CSV im Browser testen (15 Zeilen kostenlos) &rarr;</a>
+        <a href="https://buy.stripe.com/00w6oH52I7qk2mA6lm6sw0a" data-fk-cta="pro-checkout" class="rounded-xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-400">Pro-Lizenz kaufen — €29 einmalig</a>
+        <a href="../../tools/eu-oss-vat-rates-2026/index.html" class="rounded-xl border border-slate-700 px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-slate-800">EU-27 MwSt-Sätze &amp; GR→EL Rechner</a>
+      </div>
+      <p class="mt-3 text-xs text-emerald-300">✓ Automatische Stripe USt-Rechnung (PDF) · ✓ 14 Tage Geld-zurück-Garantie · ✓ 0 Server-Uploads (im Chrome Netzwerk-Tab verifizierbar)</p>
+    </section>
+
+    <section class="grid gap-5 md:grid-cols-3 py-4">
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+        <h2 class="text-base font-bold text-white">BZSt Mein BOP (;-CSV) &amp; Ireland ROS XML</h2>
+        <p class="mt-2 text-sm text-slate-300">Exportiert direkt Semikolon-getrennte BZSt-Dateien mit sauberer Trennung nach Mitgliedstaat, MwSt-Satz und Leistungsart.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+        <h2 class="text-base font-bold text-white">Typische BOP-Fehler abgefangen (GR → EL)</h2>
+        <p class="mt-2 text-sm text-slate-300">Korrigiert ISO-Code GR automatisch auf das vom BZSt/EU-Schema geforderte EL und zieht Gutschriften/Erstattungen (Refunds) korrekt ab.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+        <h2 class="text-base font-bold text-white">DSGVO-sicher ohne Kundendaten-Upload</h2>
+        <p class="mt-2 text-sm text-slate-300">Kundennamen, E-Mails und USt-IDs verlassen niemals Ihren Rechner. Einmalig €29 inkl. Stripe PDF-Rechnung.</p>
+      </div>
+    </section>
+
+    <section class="my-8 rounded-2xl border border-indigo-500/30 bg-slate-900/70 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <div class="text-xs font-semibold uppercase tracking-wider text-indigo-300">Direkt testen ohne eigene Datei</div>
+        <div class="mt-1 text-sm text-slate-200">Beispieldatei herunterladen oder Schritt-für-Schritt-Technikguide lesen.</div>
+      </div>
+      <div class="flex flex-wrap gap-3 shrink-0">
+        <a href="../../samples/files/sample-eu-oss-stripe-shopify.csv" download class="rounded-lg border border-slate-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800">Testdatei laden</a>
+        <a href="../../guides/bzst-oss-csv-gr-el-greece-error-fix/index.html" class="rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-indigo-300 hover:bg-slate-700">Technischer Ratgeber &rarr;</a>
+      </div>
+    </section>
+
+    <section class="py-6 space-y-4">
+      <h2 class="text-2xl font-bold text-white">Häufige Fragen (DE / EU)</h2>
+      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
+        <h3 class="font-semibold text-white">Kann ich mehrere Shops und Stripe-Konten zusammenfassen?</h3>
+        <p class="mt-1 text-sm text-slate-300">Ja. Sie können mehrere CSV-Dateien von Stripe Tax, Shopify Tax Reports und Lemon Squeezy gleichzeitig auswählen und zu einem konsolidierten EU-27 OSS-Bericht verschmelzen.</p>
+      </div>
+      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
+        <h3 class="font-semibold text-white">Was kostet die Pro-Lizenz?</h3>
+        <p class="mt-1 text-sm text-slate-300">€29 einmalig (oder €49 im All-Access-Bundle für alle 13 Werkzeuge inklusive EInvoiceLocal und BankFeedBridge) — ohne Abo.</p>
+      </div>
+    </section>
+  </main>
+
+  <section id="policies" class="mx-auto max-w-5xl px-6 pb-10">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-xs leading-relaxed text-slate-400">
+      <div class="grid gap-6 md:grid-cols-3">
+        <div>
+          <h3 class="font-semibold text-slate-200">Support &amp; Contact</h3>
+          <p class="mt-1">Operated by Stijn Dom (@domstijn).</p>
+          <p class="mt-1">Email: <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a></p>
+          <p class="mt-1">Issues: <a href="https://github.com/domstijn/friction-killer-suite/issues" class="text-indigo-300 underline">GitHub Support Tracker</a></p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">14-Day Refund Policy</h3>
+          <p class="mt-1">All Pro licenses include a 14-day no-questions-asked refund guarantee. Email <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a> with your order ID for a full refund.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
+          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments are processed securely by Stripe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500 no-print">
+    Friction-Killer Suite by Stijn Dom (@domstijn) · 100% Local Browser Processing · <a href="../../sitemap.xml" class="underline">Sitemap</a> · <a href="../../llms.txt" class="underline">llms.txt</a> · <a href="mailto:dom.stijn99@gmail.com" class="underline">dom.stijn99@gmail.com</a>
+  </footer>
+
+  <section id="fk-feedback-bar" class="mx-auto max-w-5xl px-6 pb-6 no-print">
+    <div class="flex flex-col items-center justify-between gap-3 rounded-2xl border border-indigo-500/20 bg-slate-900/60 px-5 py-4 text-xs text-slate-300 sm:flex-row">
+      <span>Missing a bank, CSV format, or hit a snag with <strong>BZSt OSS CSV (Mein BOP) aus Stripe, Shopify &amp; Lemon Squeezy lokal erstellen</strong>?</span>
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="https://github.com/domstijn/friction-killer-suite/issues/new?title=Feedback%3A+BZSt+OSS+CSV+%28Mein+BOP%29+aus+Stripe%2C+Shopify+%26+Lemon+Squeezy+lokal+erstellen&amp;body=Product+slug%3A+de_bzst_oss%0AWhat+format%2C+bank%2C+or+step+did+not+work+as+expected%3F%0A" target="_blank" rel="noopener noreferrer" data-fk-cta="feedback" class="rounded-lg border border-indigo-500/40 bg-indigo-500/15 px-3 py-1.5 font-semibold text-indigo-200 hover:bg-indigo-500/25">Missing a bank/format or hit a snag? Report it &rarr;</a>
+        <a href="mailto:dom.stijn99@gmail.com?subject=Feedback%3A%20BZSt%20OSS%20CSV%20%28Mein%20BOP%29%20aus%20Stripe%2C%20Shopify%20%26%20Lemon%20Squeezy%20lokal%20erstellen" data-fk-cta="feedback" class="text-slate-400 underline hover:text-white">Email Stijn</a>
+      </div>
+    </div>
+  </section>
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "9656870dc56f45d2a6f701841b6dd29b"}'></script>
+  <script>
+    (function () {
+      let ignore = false;
+      try { ignore = localStorage.getItem("fk_ignore_telemetry") === "1"; } catch {}
+      if (navigator.webdriver || location.protocol === "file:" || ignore) return;
+      const EP = "https://fk-funnel-beacon.dom-stijn99.workers.dev/e";
+      const SLUG = "de_bzst_oss";
+      let refHost = "direct";
+      try {
+        const qs = new URLSearchParams(location.search);
+        const rawRef = (qs.get("ref") || qs.get("utm_source") || "").trim().toLowerCase();
+        if (rawRef) {
+          const normalized = rawRef.replace(/[^a-z0-9.-]/g, "-").replace(/^-+|-+$/g, "");
+          if (normalized) {
+            refHost = (normalized.startsWith("src.") ? normalized : "src." + normalized).slice(0, 64);
+          }
+        } else if (document.referrer) {
+          const u = new URL(document.referrer);
+          if (u.hostname && u.hostname !== location.hostname) refHost = u.hostname.toLowerCase();
+        }
+      } catch {}
+      const seen = new Set();
+      function send(ev, onceKey) {
+        if (onceKey) {
+          if (seen.has(onceKey)) return;
+          seen.add(onceKey);
+        }
+        try {
+          fetch(EP, {
+            method: "POST",
+            mode: "cors",
+            keepalive: true,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ slug: SLUG, event: ev, ref_host: refHost })
+          }).catch(() => {});
+        } catch {}
+      }
+      send("page_view", "pv");
+      document.addEventListener("change", (e) => {
+        if (e.target && e.target.matches('input[type="file"]')) send("file_upload", "fu");
+      }, true);
+      document.addEventListener("click", (e) => {
+        const t = e.target && e.target.closest ? e.target.closest("a,button") : null;
+        if (!t) return;
+        if (t.matches("#app-sample-btn,#app-sample-camt-btn,#app-sample-mt-btn,#app-run-btn,.pg-tab")) {
+          send("tool_run", "tr:" + (t.id || t.getAttribute("data-pg-tab") || "btn"));
+        }
+        if (t.matches('[id^="app-dl-"],#dl-matrixify,#dl-redirects,#dl-audit,#dl-qbo,#dl-ofx,#dl-datev,#app-activate-btn')) {
+          send("paywall_hit", "pw:" + (t.id || "btn"));
+        }
+        const cta = t.getAttribute("data-fk-cta");
+        if (cta === "pro-checkout") send("checkout_click");
+        else if (cta === "feedback") send("feedback_click");
+      }, true);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Split Amazon Seller Settlement Reports V2 Into Balanced Xero &amp; QuickBooks Journals Locally | Friction-Killer Suite</title>
+  <meta name="description" content="Why recording raw Amazon bank deposits distorts P&amp;L revenue and VAT: unpack Gross Sales, FBA Fees, Refunds, Promos &amp; Reserves into balanced zero-diff journals locally." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://domstijn.github.io/friction-killer-suite/guides/amazon-settlement-report-v2-xero-quickbooks/" />
+  <meta property="og:title" content="Split Amazon Seller Settlement Reports V2 Into Balanced Xero &amp; QuickBooks Journals Locally | Friction-Killer Suite" />
+  <meta property="og:description" content="Why recording raw Amazon bank deposits distorts P&amp;L revenue and VAT: unpack Gross Sales, FBA Fees, Refunds, Promos &amp; Reserves into balanced zero-diff journals locally." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://domstijn.github.io/friction-killer-suite/guides/amazon-settlement-report-v2-xero-quickbooks/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Split Amazon Seller Settlement Reports V2 Into Balanced Xero &amp; QuickBooks Journals Locally | Friction-Killer Suite" />
+  <meta name="twitter:description" content="Why recording raw Amazon bank deposits distorts P&amp;L revenue and VAT: unpack Gross Sales, FBA Fees, Refunds, Promos &amp; Reserves into balanced zero-diff journals locally." />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "HowTo", "name": "Split Amazon Settlement Report V2 (.TSV/.TXT) Into Xero & QuickBooks Deposit Journals", "description": "Why recording raw Amazon bank deposits distorts P&L revenue and VAT: unpack Gross Sales, FBA Fees, Refunds, Promos & Reserves into balanced zero-diff journals locally.", "step": [{"@type": "HowToStep", "position": 1, "text": "Download Settlement Report V2 (Flat File V2) from Amazon Seller Central -> Payments -> All Statements."}, {"@type": "HowToStep", "position": 2, "text": "Load the TSV/TXT locally in AmzSettlementBridge to verify `Gross - Fees - Reserves == Bank Deposit`."}, {"@type": "HowToStep", "position": 3, "text": "Export balanced Xero Manual Journals or QuickBooks IIF/CSV—no A2X per-order monthly tax."}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Do my Seller Central MWS / SP-API keys stay offline?", "acceptedAnswer": {"@type": "Answer", "text": "Completely offline—AmzSettlementBridge requires zero Amazon API OAuth tokens."}}, {"@type": "Question", "name": "Does the math verify exact deposit parity?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, journal debits and credits balance cleanly to match the exact bank clearing deposit."}}]}</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-6 no-print">
+    <a href="../../index.html" class="text-base font-bold tracking-tight text-white hover:text-indigo-300">Friction-Killer Suite</a>
+    <nav class="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-slate-300">
+      <a href="../../index.html" class="hover:text-white">All Tools</a>
+      <a href="../../tools/index.html" class="hover:text-white">Free Tools</a>
+      <a href="../../guides/index.html" class="hover:text-white">Guides</a>
+      <a href="../../samples/index.html" class="hover:text-white">Samples</a>
+      <a href="../../partners/index.html" class="hover:text-white">Accountants</a>
+      <a href="../../de/index.html" class="rounded border border-slate-700 px-2 py-0.5 text-xs text-slate-200 hover:border-indigo-400">DE</a>
+      <a href="https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03" data-fk-cta="pro-checkout" class="rounded-lg bg-indigo-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-400">Bundle — €49</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6 pb-14">
+    <div class="text-xs text-slate-400"><a href="../index.html" class="text-indigo-300 hover:underline">&larr; All 20 Guides</a> · <span>AmzSettlementBridge</span></div>
+    <article class="mt-4 space-y-8">
+      <header class="space-y-4">
+        <span class="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">ZERO-UPLOAD LOCAL FIX · AMZSETTLEMENTBRIDGE</span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-white">Split Amazon Settlement Report V2 (.TSV/.TXT) Into Xero &amp; QuickBooks Deposit Journals</h1>
+        <p class="text-base text-slate-300">Why recording raw Amazon bank deposits distorts P&amp;L revenue and VAT: unpack Gross Sales, FBA Fees, Refunds, Promos &amp; Reserves into balanced zero-diff journals locally.</p>
+        <div class="flex flex-wrap gap-3 pt-1">
+          <a href="../../products/amazon-settlement-xero-qbo-splitter/index.html?ref=guide.amazon-settlement-report-v2-xero-quickbooks#live-app" class="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-slate-200">Launch AmzSettlementBridge Live in Browser &rarr;</a>
+          <a href="https://buy.stripe.com/bJefZh66M2601iw6lm6sw0b" data-fk-cta="pro-checkout" class="rounded-xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400">Unlock Unlimited Pro — €29 once</a>
+          <a href="../../samples/files/sample-eu-oss-stripe-shopify.csv" download class="rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-200 hover:bg-slate-800">Download Sample File</a>
+        </div>
+      </header>
+
+      <section class="grid gap-4 md:grid-cols-2">
+        <div class="rounded-2xl border border-rose-500/30 bg-slate-900/60 p-5">
+          <h2 class="text-xs font-semibold uppercase tracking-wider text-rose-300">Exact Symptom</h2>
+          <p class="mt-2 text-sm text-slate-200">QuickBooks and Xero treat each bi-weekly Amazon payout as net sales, understating gross turnover, hiding FBA/referral fees, and breaking VAT reconciliation.</p>
+        </div>
+        <div class="rounded-2xl border border-indigo-500/30 bg-slate-900/60 p-5">
+          <h2 class="text-xs font-semibold uppercase tracking-wider text-indigo-300">Technical Root Cause</h2>
+          <p class="mt-2 text-sm text-slate-200">Each Amazon bank deposit is a net sum of dozens of Settlement Report V2 transaction types (`Principal`, `Commission`, `FBAPerUnitFulfillmentFee`, `Reserve`).</p>
+        </div>
+      </section>
+
+      <section class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/60">
+        <table class="w-full text-xs sm:text-sm">
+          <thead class="bg-slate-900 text-slate-400 uppercase text-[11px]"><tr><th class="px-3 py-2 text-left">Amazon V2 Transaction Type</th><th class="px-3 py-2 text-left">Ledger Direction</th><th class="px-3 py-2 text-left">Account Bucket Mapped</th></tr></thead>
+          <tbody>
+          <tr class='border-t border-slate-800'><td class='px-3 py-2 text-slate-300'>Principal / Product Charges</td><td class='px-3 py-2 text-slate-300'>Credit (+)</td><td class='px-3 py-2 text-slate-300'>Amazon Gross Sales Revenue</td></tr>
+          <tr class='border-t border-slate-800'><td class='px-3 py-2 text-slate-300'>Commission / FBA / Storage Fees</td><td class='px-3 py-2 text-slate-300'>Debit (-)</td><td class='px-3 py-2 text-slate-300'>Marketplace Selling &amp; Fulfillment Fees</td></tr>
+          <tr class='border-t border-slate-800'><td class='px-3 py-2 text-slate-300'>Tax / MarketplaceFacilitatorVAT</td><td class='px-3 py-2 text-slate-300'>Separate Tax Line</td><td class='px-3 py-2 text-slate-300'>Sales Tax / VAT Clearing</td></tr>
+          <tr class='border-t border-slate-800'><td class='px-3 py-2 text-slate-300'>Previous/Current Reserve Amount</td><td class='px-3 py-2 text-slate-300'>Balance Sheet Asset</td><td class='px-3 py-2 text-slate-300'>Amazon Seller Reserve Clearing (Net Sum = Deposit)</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+        <h2 class="text-sm font-bold text-white">Verified Format / Code Snippet</h2>
+        <pre class="mt-3 overflow-x-auto rounded-xl bg-slate-950 p-4 font-mono text-xs text-emerald-300">pip install amazon-settlement-xero-qbo-splitter
+amazon-settlement-xero-qbo-splitter --input ./settlements/ --format xero</pre>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-xl font-bold text-white">Step-by-Step Local Resolution</h2>
+        <ol class="space-y-2">
+        <li class="rounded-xl border border-slate-800 bg-slate-900/50 p-4 text-sm text-slate-200"><strong class="text-indigo-300">Step 1:</strong> Download Settlement Report V2 (Flat File V2) from Amazon Seller Central -&gt; Payments -&gt; All Statements.</li>
+        <li class="rounded-xl border border-slate-800 bg-slate-900/50 p-4 text-sm text-slate-200"><strong class="text-indigo-300">Step 2:</strong> Load the TSV/TXT locally in AmzSettlementBridge to verify `Gross - Fees - Reserves == Bank Deposit`.</li>
+        <li class="rounded-xl border border-slate-800 bg-slate-900/50 p-4 text-sm text-slate-200"><strong class="text-indigo-300">Step 3:</strong> Export balanced Xero Manual Journals or QuickBooks IIF/CSV—no A2X per-order monthly tax.</li>
+        </ol>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-xl font-bold text-white">Technical FAQ</h2>
+        <div class="space-y-3">
+        <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+          <h3 class="text-sm font-semibold text-white">Do my Seller Central MWS / SP-API keys stay offline?</h3>
+          <p class="mt-1 text-xs text-slate-300">Completely offline—AmzSettlementBridge requires zero Amazon API OAuth tokens.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+          <h3 class="text-sm font-semibold text-white">Does the math verify exact deposit parity?</h3>
+          <p class="mt-1 text-xs text-slate-300">Yes, journal debits and credits balance cleanly to match the exact bank clearing deposit.</p>
+        </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <section id="policies" class="mx-auto max-w-5xl px-6 pb-10">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-xs leading-relaxed text-slate-400">
+      <div class="grid gap-6 md:grid-cols-3">
+        <div>
+          <h3 class="font-semibold text-slate-200">Support &amp; Contact</h3>
+          <p class="mt-1">Operated by Stijn Dom (@domstijn).</p>
+          <p class="mt-1">Email: <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a></p>
+          <p class="mt-1">Issues: <a href="https://github.com/domstijn/friction-killer-suite/issues" class="text-indigo-300 underline">GitHub Support Tracker</a></p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">14-Day Refund Policy</h3>
+          <p class="mt-1">All Pro licenses include a 14-day no-questions-asked refund guarantee. Email <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a> with your order ID for a full refund.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
+          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments are processed securely by Stripe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500 no-print">
+    Friction-Killer Suite by Stijn Dom (@domstijn) · 100% Local Browser Processing · <a href="../../sitemap.xml" class="underline">Sitemap</a> · <a href="../../llms.txt" class="underline">llms.txt</a> · <a href="mailto:dom.stijn99@gmail.com" class="underline">dom.stijn99@gmail.com</a>
+  </footer>
+
+  <section id="fk-feedback-bar" class="mx-auto max-w-5xl px-6 pb-6 no-print">
+    <div class="flex flex-col items-center justify-between gap-3 rounded-2xl border border-indigo-500/20 bg-slate-900/60 px-5 py-4 text-xs text-slate-300 sm:flex-row">
+      <span>Missing a bank, CSV format, or hit a snag with <strong>AmzSettlementBridge</strong>?</span>
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="https://github.com/domstijn/friction-killer-suite/issues/new?title=Feedback%3A+AmzSettlementBridge&amp;body=Product+slug%3A+guide_amazon_settlement_report_v2_xero_quickbooks%0AWhat+format%2C+bank%2C+or+step+did+not+work+as+expected%3F%0A" target="_blank" rel="noopener noreferrer" data-fk-cta="feedback" class="rounded-lg border border-indigo-500/40 bg-indigo-500/15 px-3 py-1.5 font-semibold text-indigo-200 hover:bg-indigo-500/25">Missing a bank/format or hit a snag? Report it &rarr;</a>
+        <a href="mailto:dom.stijn99@gmail.com?subject=Feedback%3A%20AmzSettlementBridge" data-fk-cta="feedback" class="text-slate-400 underline hover:text-white">Email Stijn</a>
+      </div>
+    </div>
+  </section>
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "9656870dc56f45d2a6f701841b6dd29b"}'></script>
+  <script>
+    (function () {
+      let ignore = false;
+      try { ignore = localStorage.getItem("fk_ignore_telemetry") === "1"; } catch {}
+      if (navigator.webdriver || location.protocol === "file:" || ignore) return;
+      const EP = "https://fk-funnel-beacon.dom-stijn99.workers.dev/e";
+      const SLUG = "guide_amazon_settlement_report_v2_xero_quickbooks";
+      let refHost = "direct";
+      try {
+        const qs = new URLSearchParams(location.search);
+        const rawRef = (qs.get("ref") || qs.get("utm_source") || "").trim().toLowerCase();
+        if (rawRef) {
+          const normalized = rawRef.replace(/[^a-z0-9.-]/g, "-").replace(/^-+|-+$/g, "");
+          if (normalized) {
+            refHost = (normalized.startsWith("src.") ? normalized : "src." + normalized).slice(0, 64);
+          }
+        } else if (document.referrer) {
+          const u = new URL(document.referrer);
+          if (u.hostname && u.hostname !== location.hostname) refHost = u.hostname.toLowerCase();
+        }
+      } catch {}
+      const seen = new Set();
+      function send(ev, onceKey) {
+        if (onceKey) {
+          if (seen.has(onceKey)) return;
+          seen.add(onceKey);
+        }
+        try {
+          fetch(EP, {
+            method: "POST",
+            mode: "cors",
+            keepalive: true,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ slug: SLUG, event: ev, ref_host: refHost })
+          }).catch(() => {});
+        } catch {}
+      }
+      send("page_view", "pv");
+      document.addEventListener("change", (e) => {
+        if (e.target && e.target.matches('input[type="file"]')) send("file_upload", "fu");
+      }, true);
+      document.addEventListener("click", (e) => {
+        const t = e.target && e.target.closest ? e.target.closest("a,button") : null;
+        if (!t) return;
+        if (t.matches("#app-sample-btn,#app-sample-camt-btn,#app-sample-mt-btn,#app-run-btn,.pg-tab")) {
+          send("tool_run", "tr:" + (t.id || t.getAttribute("data-pg-tab") || "btn"));
+        }
+        if (t.matches('[id^="app-dl-"],#dl-matrixify,#dl-redirects,#dl-audit,#dl-qbo,#dl-ofx,#dl-datev,#app-activate-btn')) {
+          send("paywall_hit", "pw:" + (t.id || "btn"));
+        }
+        const cta = t.getAttribute("data-fk-cta");
+        if (cta === "pro-checkout") send("checkout_click");
+        else if (cta === "feedback") send("feedback_click");
+      }, true);
+    })();
+  </script>
+</body>
+</html>

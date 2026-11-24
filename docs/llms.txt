@@ -1,0 +1,35 @@
+# Friction-Killer Suite
+
+> 13 zero-subscription, 100% local-first Web Apps & offline Python CLIs for European/B2B finance, e-invoicing, bank-feed conversion, e-commerce migration, and developer workflows. All data runs locally in browser memory or offline CLI with zero server uploads.
+
+## Key Links
+- [Storefront Hub (13 Tools)](https://domstijn.github.io/friction-killer-suite/)
+- [All-Access Bundle (€49 once)](https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03)
+- [Deutsch / DACH Tools](/de/): https://domstijn.github.io/friction-killer-suite/de/
+- [Free Interactive Calculators (EU VAT OSS, Lemon Squeezy Shutdown, DATEV BU-Schlüssel)](https://domstijn.github.io/friction-killer-suite/tools/)
+- [20 Error-Code & Format Guides](https://domstijn.github.io/friction-killer-suite/guides/)
+- [Free Test Fixtures (XRechnung, ZUGFeRD, Peppol, CAMT.053, MT940)](https://domstijn.github.io/friction-killer-suite/samples/)
+- [Accountant & Agency Partners](https://domstijn.github.io/friction-killer-suite/partners/)
+
+## Active Products
+- [LinearBridge](https://domstijn.github.io/friction-killer-suite/products/notion-linear-prd-sync/) (€29 once): Chrome MV3 extension injecting a 'Push PRD to Linear' action bar inside Notion that decomposes headings/checklists into Linear parent + sub-issues and syncs status badges locally via user API keys.
+- [NotionGitExport](https://domstijn.github.io/friction-killer-suite/products/notion-clean-md-exporter/) (€24 once): Zero-dependency CLI wrapper that strips UUID suffixes, converts database properties into clean YAML frontmatter, rewrites relative links, and localizes assets for Git/Obsidian/Astro.
+- [ExtProfileLock](https://domstijn.github.io/friction-killer-suite/products/vscode-workspace-profile-config/) (€19 once): VS Code extension that reads a repo-committed workspace-lock.json + .env to auto-toggle conflicting extensions and refresh extension host env vars without restarting.
+- [ClaudeProfileSwitch](https://domstijn.github.io/friction-killer-suite/products/claude-profile-switcher/) (€24 once): Zero-dependency CLI that snapshots/swaps isolated Claude auth + MCP profiles per repo (.claude-profile) and audits local JSONL session token burn against 5-hour quota windows
+- [NotionGuestBridge](https://domstijn.github.io/friction-killer-suite/products/notion-guest-mcp-bridge/) (€29 once): Chrome MV3 extension operating on the guest's open Notion tab to extract database tables, callouts & nested pages into structured JSON/Markdown MCP context packs with zero Member seat upgrade or cookie theft
+- [WebflowAssetZip](https://domstijn.github.io/friction-killer-suite/products/webflow-cms-asset-migrator/) (€29 once): Chrome MV3 extension that parses Webflow CMS CSVs or open CMS collections, downloads and renames every image/asset by item slug, rewrites CSV + Rich-Text HTML CDN URLs to your new host (Framer/S3/R2/WP), and outputs a 301-redirects.csv map.
+- [StripePayoutBridge](https://domstijn.github.io/friction-killer-suite/products/stripe-payout-xero-qbo-splitter/) (€29 once): 100% local in-browser Web App (+ CLI) that parses Stripe/PayPal itemized payout CSVs, groups transactions by payout batch into balanced double-entry clearing account journals (Gross Sales by tax rate, Processing Fees, Refunds/Disputes, FX fees, Net Transfer), and exports Xero Manual Journal CSV, QuickBooks Journal CSV, and DATEV Buchungsstapel CSV.
+- [LemonExitBridge](https://domstijn.github.io/friction-killer-suite/products/lemonsqueezy-stripe-polar-migrator/) (€29 once): 100% local in-browser Web App (+ Python CLI .whl) that joins exported Lemon Squeezy Orders, Subscriptions, and License Keys CSVs, isolates at-risk PayPal MRR vs. transferable Card subscribers, calculates exact Unix trial_end timestamps so re-subscribing customers are never double-charged, and exports Stripe Billing / Polar migration CSVs plus a drop-in Legacy License Key JSON/Worker bundle.
+- [OssVatBridge](https://domstijn.github.io/friction-killer-suite/products/eu-oss-vat-return-compiler/) (€29 once): 100% browser-local Web App (+ Python CLI) that merges Stripe Tax, Shopify, and Lemon Squeezy CSVs, normalizes currencies via ECB quarterly rates, aggregates EU27 Member-State VAT by Standard/Reduced rate, and exports Germany BZSt/BOP semicolon CSV, Ireland ROS XML, and EU27 OSS audit ledgers.
+- [AmzSettlementBridge](https://domstijn.github.io/friction-killer-suite/products/amazon-settlement-xero-qbo-splitter/) (€29 once): 100% browser-local Web App (+ Python CLI) that parses Amazon Seller Central Flat-File V2 (.txt/.tsv) settlements locally, separates Principal sales, Marketplace Facilitator tax, FBA/referral/storage/PPC fees, refunds, and rolling reserves into integer-cent balanced Xero, QuickBooks, and DATEV clearing journals.
+- [EInvoiceLocal](https://domstijn.github.io/friction-killer-suite/products/e-invoice-xml-batch-converter/) (€29 once): 100% browser-local Web App (+ Python CLI) that validates EN 16931 math rules across UBL 2.1 and UN/CEFACT CII XML invoices, renders printable A4 invoice views, and batch-exports unified DATEV EXTF_Buchungsstapel.csv (with BU-Schlüssel tax keys), Xero Bills CSV, and QuickBooks CSV.
+- [ShopMetaShift](https://domstijn.github.io/friction-killer-suite/products/woo-shopify-metafield-migrator/) (€29 once): 100% local in-browser Web App (+ CLI) that transforms WooCommerce variable/variation CSV exports into valid Shopify Admin & Matrixify-ready multi-row CSVs with typed 'Variant Metafield: custom.key [type]' columns, >3 option overflow mapping, and 301 redirect rules.
+- [BankFeedBridge](https://domstijn.github.io/friction-killer-suite/products/camt053-mt940-qbo-xero-converter/) (€29 once): 100% browser-local Web App (+ Python CLI) that parses multi-account ISO 20022 camt.053 XML and MT940 statements locally, flattens nested TxDtls SEPA batches, reconciles opening/closing balances in integer cents, and exports QuickBooks Web Connect (.qbo with INTU.BID selector), Xero (.ofx / CSV), and DATEV bank CSVs.
+
+## Free Diagnostic Calculators
+- [2026 EU-27 OSS VAT Rates & BZSt GR->EL Checker](https://domstijn.github.io/friction-killer-suite/tools/eu-oss-vat-rates-2026/)
+- [Lemon Squeezy Shutdown PayPal MRR Risk Calculator](https://domstijn.github.io/friction-killer-suite/tools/lemon-squeezy-shutdown-calculator/)
+- [DATEV BU-Schlüssel & EN 16931 BT-151 Lookup](https://domstijn.github.io/friction-killer-suite/tools/datev-bu-schluessel-lookup/)
+
+## Full Context
+- [llms-full.txt](https://domstijn.github.io/friction-killer-suite/llms-full.txt)
