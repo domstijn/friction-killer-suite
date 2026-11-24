@@ -1819,10 +1819,12 @@ LIVE_PYPI_PACKAGES: dict[str, str] = {
     "amazon-settlement-xero-qbo-splitter": "amazon-settlement-xero-qbo-splitter",
     "e-invoice-xml-batch-converter": "e-invoice-xml-batch-converter",
     "lemonsqueezy-stripe-polar-migrator": "lemonsqueezy-stripe-polar-migrator",
+    "stripe-payout-xero-qbo-splitter": "stripe-payout-xero-qbo-splitter",
+    "notion-clean-md-exporter": "notion-clean-md-exporter",
+    "claude-profile-switcher": "claude-profile-switch",
+    "woo-shopify-metafield-migrator": "woo-shopify-metafield-migrator",
     # Pending PyPI new-project rate-limit reset:
-    # "stripe-payout-xero-qbo-splitter": "stripe-payout-xero-qbo-splitter",
-    # "notion-clean-md-exporter": "notion-clean-md-exporter",
-    # "claude-profile-switcher": "claude-profile-switch",
+    # "camt053-mt940-qbo-xero-converter": "camt053-mt940-qbo-xero-converter",
 }
 
 
