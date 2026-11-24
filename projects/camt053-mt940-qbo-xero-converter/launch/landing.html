@@ -523,6 +523,7 @@
         compiled = {
           stmts: allStmts,
           totalTx,
+          activeCount: activeTxs.length,
           truncated,
           recCount,
           netCents,
@@ -537,7 +538,7 @@
       function renderOutput() {
         compileAll();
         statStmts.textContent = `${compiled.stmts.length} / ${compiled.recCount}`;
-        statTx.textContent = `${compiled.totalTx}`;
+        statTx.textContent = compiled.truncated ? `${compiled.activeCount} / ${compiled.totalTx}` : `${compiled.totalTx}`;
         statNet.textContent = `€${fmtCents(compiled.netCents, false)}`;
         statVar.textContent = compiled.absVar === 0 ? "€0.00 OK" : `€${fmtCents(compiled.absVar, false)}`;
 

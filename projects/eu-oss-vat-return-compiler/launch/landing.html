@@ -130,7 +130,7 @@
             </div>
           </div>
 
-          <div class="max-h-44 overflow-auto rounded-xl border border-slate-800 bg-slate-950">
+          <div class="max-h-96 overflow-auto rounded-xl border border-slate-800 bg-slate-950">
             <table class="w-full text-left text-xs">
               <thead class="sticky top-0 bg-slate-900 text-[11px] uppercase text-slate-400">
                 <tr>
@@ -259,7 +259,7 @@
       const STORAGE_KEY = "fk_oss_vat_pro_state";
       const FREE_CAP = 15;
       const EU27_STD = {
-        AT: 20, BE: 21, BG: 20, CY: 19, CZ: 21, DE: 19, DK: 25, EE: 22, EL: 24,
+        AT: 20, BE: 21, BG: 20, CY: 19, CZ: 21, DE: 19, DK: 25, EE: 24, EL: 24,
         ES: 21, FI: 25.5, FR: 20, HR: 25, HU: 27, IE: 23, IT: 22, LT: 21, LU: 17,
         LV: 21, MT: 18, NL: 21, PL: 23, PT: 23, RO: 19, SE: 25, SI: 22, SK: 23
       };
@@ -396,13 +396,13 @@
           if (table.length < 2) return;
           const hdrs = table[0].map((h) => h.trim().toLowerCase());
           const idx = (names) => hdrs.findIndex((h) => names.includes(h));
-          const iCtry = idx(["tax_country", "customer_tax_country", "shipping_country", "country_code", "country", "billing_country"]);
+          const iCtry = idx(["tax_country", "customer_tax_country", "customer_country", "shipping_country", "country_code", "country", "billing_country"]);
           const iCur = idx(["currency", "presentment_currency", "order_currency"]);
           const iSub = idx(["taxable_amount", "subtotal", "net_sales", "net_amount", "amount_excluding_tax"]);
           const iGross = idx(["gross_sales", "total", "amount"]);
           const iTax = idx(["tax_amount", "vat_amount", "total_tax", "taxes", "tax"]);
           const iRate = idx(["tax_rate", "vat_rate", "tax_percentage", "rate"]);
-          const iType = idx(["transaction_type", "type", "kind", "status"]);
+          const iType = idx(["transaction_type", "tx_type", "type", "kind", "status"]);
           const iSup = idx(["supply_type", "product_type", "tax_code_type"]);
           const iVatId = idx(["customer_vat_id", "vat_id", "tax_id", "customer_tax_id", "buyer_vat_number"]);
 
@@ -471,12 +471,12 @@
           states.add(b.ms);
           const tr = document.createElement("tr");
           tr.innerHTML =
-            '<td class="px-3 py-1.5 font-mono font-semibold text-indigo-300">' + xmlEsc(b.ms) + "</td>" +
-            '<td class="px-3 py-1.5">' + xmlEsc(b.supply) + "</td>" +
-            '<td class="px-3 py-1.5">' + xmlEsc(b.rateType) + " (" + xmlEsc(b.rate) + "%)</td>" +
-            '<td class="px-3 py-1.5 text-right">' + b.tx + "</td>" +
-            '<td class="px-3 py-1.5 text-right font-mono">€' + b.taxableEur.toFixed(2) + "</td>" +
-            '<td class="px-3 py-1.5 text-right font-mono text-emerald-300">€' + b.vatEur.toFixed(2) + "</td>";
+            '<td class="whitespace-nowrap px-3 py-1.5 font-mono font-semibold text-indigo-300">' + xmlEsc(b.ms) + "</td>" +
+            '<td class="whitespace-nowrap px-3 py-1.5">' + xmlEsc(b.supply) + "</td>" +
+            '<td class="whitespace-nowrap px-3 py-1.5">' + xmlEsc(b.rateType) + " (" + xmlEsc(b.rate) + "%)</td>" +
+            '<td class="whitespace-nowrap px-3 py-1.5 text-right">' + b.tx + "</td>" +
+            '<td class="whitespace-nowrap px-3 py-1.5 text-right font-mono">€' + b.taxableEur.toFixed(2) + "</td>" +
+            '<td class="whitespace-nowrap px-3 py-1.5 text-right font-mono text-emerald-300">€' + b.vatEur.toFixed(2) + "</td>";
           tblEl.appendChild(tr);
         });
 

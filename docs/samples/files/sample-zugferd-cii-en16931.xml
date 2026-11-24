@@ -3,7 +3,7 @@
   <rsm:ExchangedDocument><ram:ID>ZF-SAMPLE-2026-2002</ram:ID><ram:IssueDateTime><udt:DateTimeString format="102">20261119</udt:DateTimeString></ram:IssueDateTime></rsm:ExchangedDocument>
   <rsm:SupplyChainTradeTransaction>
     <ram:IncludedSupplyChainTradeLineItem>
-      <ram:SpecifiedLineTradeProduct><ram:Name>Fachbuch E-Rechnung &amp; DATEV</ram:Name></ram:SpecifiedLineTradeProduct>
+      <ram:SpecifiedTradeProduct><ram:Name>Fachbuch E-Rechnung &amp; DATEV</ram:Name></ram:SpecifiedTradeProduct>
       <ram:SpecifiedLineTradeAgreement><ram:NetPriceProductTradePrice><ram:ChargeAmount>100.00</ram:ChargeAmount></ram:NetPriceProductTradePrice></ram:SpecifiedLineTradeAgreement>
       <ram:SpecifiedLineTradeDelivery><ram:BilledQuantity unitCode="C62">1.00</ram:BilledQuantity></ram:SpecifiedLineTradeDelivery>
       <ram:SpecifiedLineTradeSettlement><ram:ApplicableTradeTax><ram:CategoryCode>S</ram:CategoryCode><ram:RateApplicablePercent>7</ram:RateApplicablePercent></ram:ApplicableTradeTax><ram:SpecifiedTradeSettlementLineMonetarySummation><ram:LineTotalAmount>100.00</ram:LineTotalAmount></ram:SpecifiedTradeSettlementLineMonetarySummation></ram:SpecifiedLineTradeSettlement>

@@ -1,4 +1,4 @@
-source,order_id,customer_country,currency,net_amount,tax_amount,tax_rate,tx_type,supply_type,customer_vat_id
+source,order_id,country,currency,subtotal,tax_amount,tax_rate,transaction_type,supply_type,customer_vat_id
 stripe_tax,st_sample_01,FR,EUR,100.00,20.00,20.0,sale,SERVICES,
 stripe_tax,st_sample_02,GR,EUR,100.00,24.00,24.0,sale,SERVICES,
 stripe_tax,st_sample_03,FR,EUR,25.00,5.00,20.0,refund,SERVICES,

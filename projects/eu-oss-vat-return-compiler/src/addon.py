@@ -22,7 +22,7 @@ EU27_STANDARD_RATES: dict[str, Decimal] = {
     "CZ": Decimal("21.00"),
     "DE": Decimal("19.00"),
     "DK": Decimal("25.00"),
-    "EE": Decimal("22.00"),
+    "EE": Decimal("24.00"),
     "EL": Decimal("24.00"),
     "ES": Decimal("21.00"),
     "FI": Decimal("25.50"),
@@ -172,6 +172,7 @@ def parse_transactions_csv(csv_text: str, source_hint: str = "auto") -> list[dic
             (
                 "tax_country",
                 "customer_tax_country",
+                "customer_country",
                 "shipping_country",
                 "country_code",
                 "country",
@@ -194,7 +195,7 @@ def parse_transactions_csv(csv_text: str, source_hint: str = "auto") -> list[dic
             taxable_amount = gross_amount - tax_amount
 
         tax_rate = _parse_rate_percent(_pick(lowered, ("tax_rate", "vat_rate", "tax_percentage", "rate"), "0"))
-        tx_type = _pick(lowered, ("transaction_type", "type", "kind", "status"), "charge").lower()
+        tx_type = _pick(lowered, ("transaction_type", "tx_type", "type", "kind", "status"), "charge").lower()
         supply_raw = _pick(lowered, ("supply_type", "product_type", "tax_code_type"), "SERVICES").upper()
         supply_type = "GOODS" if "GOOD" in supply_raw or "PHYS" in supply_raw else "SERVICES"
         customer_vat_id = _pick(

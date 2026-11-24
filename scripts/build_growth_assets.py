@@ -1539,7 +1539,7 @@ def _write_sample_fixtures(samples_files_dir: Path) -> list[dict[str, str]]:
   <rsm:ExchangedDocument><ram:ID>ZF-SAMPLE-2026-2002</ram:ID><ram:IssueDateTime><udt:DateTimeString format="102">20261119</udt:DateTimeString></ram:IssueDateTime></rsm:ExchangedDocument>
   <rsm:SupplyChainTradeTransaction>
     <ram:IncludedSupplyChainTradeLineItem>
-      <ram:SpecifiedLineTradeProduct><ram:Name>Fachbuch E-Rechnung &amp; DATEV</ram:Name></ram:SpecifiedLineTradeProduct>
+      <ram:SpecifiedTradeProduct><ram:Name>Fachbuch E-Rechnung &amp; DATEV</ram:Name></ram:SpecifiedTradeProduct>
       <ram:SpecifiedLineTradeAgreement><ram:NetPriceProductTradePrice><ram:ChargeAmount>100.00</ram:ChargeAmount></ram:NetPriceProductTradePrice></ram:SpecifiedLineTradeAgreement>
       <ram:SpecifiedLineTradeDelivery><ram:BilledQuantity unitCode="C62">1.00</ram:BilledQuantity></ram:SpecifiedLineTradeDelivery>
       <ram:SpecifiedLineTradeSettlement><ram:ApplicableTradeTax><ram:CategoryCode>S</ram:CategoryCode><ram:RateApplicablePercent>7</ram:RateApplicablePercent></ram:ApplicableTradeTax><ram:SpecifiedTradeSettlementLineMonetarySummation><ram:LineTotalAmount>100.00</ram:LineTotalAmount></ram:SpecifiedTradeSettlementLineMonetarySummation></ram:SpecifiedLineTradeSettlement>
@@ -1645,7 +1645,7 @@ def _write_sample_fixtures(samples_files_dir: Path) -> list[dict[str, str]]:
             "title": "Multi-Country EU OSS Sample CSV (Includes DE Domestic, GR Greece & Refund)",
             "product_slug": "eu-oss-vat-return-compiler",
             "product_name": "OssVatBridge",
-            "content": """source,order_id,customer_country,currency,net_amount,tax_amount,tax_rate,tx_type,supply_type,customer_vat_id
+            "content": """source,order_id,country,currency,subtotal,tax_amount,tax_rate,transaction_type,supply_type,customer_vat_id
 stripe_tax,st_sample_01,FR,EUR,100.00,20.00,20.0,sale,SERVICES,
 stripe_tax,st_sample_02,GR,EUR,100.00,24.00,24.0,sale,SERVICES,
 stripe_tax,st_sample_03,FR,EUR,25.00,5.00,20.0,refund,SERVICES,
