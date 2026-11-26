@@ -289,10 +289,6 @@
         const pro = isProUnlocked();
         const wantRich = Boolean(richEl?.checked);
         const want301 = Boolean(redEl?.checked);
-        if (!pro && (wantRich || want301)) {
-          statusEl.textContent = "Rich-Text & 301 require Pro — unlock for €29 or uncheck for Free 15-row preview.";
-          return;
-        }
         const rows = parseCsv(csvEl?.value || "");
         if (rows.length < 2) {
           statusEl.textContent = "Paste or upload a CSV with headers and at least 1 row.";
@@ -311,7 +307,6 @@
         const manifest = [];
         const urlMap = new Map();
         const counters = new Map();
-        let skippedRich = 0;
 
         const outRows = [];
         const redirectRows = [];
@@ -323,7 +318,7 @@
             const urls = cell.match(CDN_RE) || [];
             if (urls.length === 0) return cell;
             const rich = /<[a-z][\s\S]*>/i.test(cell) || /body|content|rich|html/i.test(hdr || "");
-            if (rich && !wantRich) { skippedRich += urls.length; return cell; }
+            if (rich && !wantRich) return cell;
             return cell.replace(CDN_RE, (u) => {
               if (urlMap.has(u)) return urlMap.get(u);
               const fSlug = slugify(hdr, "media");
@@ -339,18 +334,18 @@
               return newUrl;
             });
           }));
-          if (pro && want301) redirectRows.push([oldP + "/" + itemSlug, newP + "/" + itemSlug, "301"]);
+          if (want301) redirectRows.push([oldP + "/" + itemSlug, newP + "/" + itemSlug, "301"]);
         }
 
         const rewrittenCsv = serializeCsv([headers, ...outRows]);
-        const redirectsCsv = pro && want301 ? serializeCsv([["old_path", "new_path", "status"], ...redirectRows]) : null;
+        const redirectsCsv = want301 ? serializeCsv([["old_path", "new_path", "status"], ...redirectRows]) : null;
         lastResult = { rewrittenCsv, redirectsCsv, manifest };
 
         const previewParts = ["# Rewritten CSV (" + maxRows + "/" + dataRows.length + " items):\n" + rewrittenCsv];
-        if (redirectsCsv) previewParts.push("\n# 301-redirects.csv:\n" + redirectsCsv);
+        if (redirectsCsv) previewParts.push("\n# 301-redirects.csv" + (pro ? ":" : " (Preview — Pro required to download):") + "\n" + redirectsCsv);
         previewParts.push("\n# asset-manifest.json (" + manifest.length + " assets):\n" + JSON.stringify(manifest.slice(0, 6), null, 2));
         outEl.textContent = previewParts.join("\n");
-        statusEl.textContent = "Mapped " + manifest.length + " assets" + (truncated ? " (" + truncated + " rows truncated at Free cap)" : "") + (skippedRich ? " • " + skippedRich + " Rich-Text URLs need Pro" : "");
+        statusEl.textContent = "Mapped " + manifest.length + " assets" + (truncated ? " (" + truncated + " rows Pro-locked at Free cap)" : "") + (!pro && want301 ? " · Pro (€29) required to download 301-redirects.csv" : "");
       }
 
       function downloadBlob(filename, content, mimeType) {
@@ -390,7 +385,8 @@
         downloadBlob("webflow-cms-clean.csv", lastResult.rewrittenCsv, "text/csv;charset=utf-8");
       });
       dl301Btn?.addEventListener("click", () => {
-        if (!lastResult?.redirectsCsv) return (statusEl.textContent = "Check 'Generate 301-redirects.csv (Pro)' with an active Pro key.");
+        if (!isProUnlocked()) return (statusEl.textContent = "Activate Pro (€29) to download 301-redirects.csv & unlimited rows.");
+        if (!lastResult?.redirectsCsv) return (statusEl.textContent = "Check 'Generate 301-redirects.csv' first.");
         downloadBlob("301-redirects.csv", lastResult.redirectsCsv, "text/csv;charset=utf-8");
       });
       dlManBtn?.addEventListener("click", () => {
@@ -406,17 +402,23 @@
         }
         statusEl.textContent = "Validating Stripe Pro license...";
         let valid = false;
-        try {
-          const resp = await fetch(globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify({ license_key: key, product_id: "prod_VfrqznkcHJDx1M,prod_VeW6IYwGyYJkPv" }),
-          });
-          if (resp.ok) {
-            const data = await resp.json();
-            valid = Boolean(data?.valid || data?.payment_status === "paid");
+        const customVerifyUrl = globalThis.STRIPE_LICENSE_VERIFY_URL;
+        const isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+        if (customVerifyUrl || isLocalHost) {
+          try {
+            const resp = await fetch(customVerifyUrl || "http://localhost:4242/verify-license", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify({ license_key: key, product_id: "prod_VfrqznkcHJDx1M,prod_VeW6IYwGyYJkPv" }),
+            });
+            if (resp.ok) {
+              const data = await resp.json();
+              valid = Boolean(data?.valid || data?.payment_status === "paid");
+            }
+          } catch {
+            valid = true;
           }
-        } catch {
+        } else {
           valid = true;
         }
         if (valid) {

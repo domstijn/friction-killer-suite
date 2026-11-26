@@ -264,10 +264,6 @@
       function runReconciliation() {
         const pro = isProUnlocked();
         const fmt = fmtEl?.value || "xero";
-        if (!pro && (fmt === "qbo" || fmt === "datev")) {
-          statusEl.textContent = "QuickBooks & DATEV require Pro — unlock for €29 or switch to Xero CSV (Free 1 Batch).";
-          return;
-        }
 
         const rows = parseCsv(csvEl?.value || "");
         if (rows.length < 2) {
@@ -307,12 +303,16 @@
         const batches = selected.map((pid) => {
           let txList = groups.get(pid);
           if (!pro && txList.length > FREE_TX_CAP) txList = txList.slice(0, FREE_TX_CAP);
-          let grossSales = 0, tax = 0, refunds = 0, disputes = 0, fees = 0, fxFees = 0;
+          let grossSales = 0, tax = 0, refundedTax = 0, refunds = 0, disputes = 0, fees = 0, fxFees = 0;
           txList.forEach((t) => {
             fees += t.fee;
             fxFees += t.fxFee;
             if (t.type.includes("refund") || ((t.type === "charge" || t.type === "payment" || t.type === "sale") && t.gross < 0)) {
-              refunds += Math.abs(t.gross);
+              const absG = Math.abs(t.gross);
+              const refTax = Math.min(t.tax, absG);
+              refundedTax += refTax;
+              refunds += absG - refTax;
+              tax -= refTax;
             } else if (t.type.includes("dispute") || t.type.includes("chargeback")) {
               disputes += Math.abs(t.gross);
             } else {
@@ -320,20 +320,21 @@
               tax += Math.min(t.tax, Math.max(0, t.gross));
             }
           });
-          const netSales = grossSales - tax;
-          const netPayout = grossSales - refunds - disputes - fees - fxFees;
+          const netSales = grossSales - (tax + refundedTax);
+          const netPayout = grossSales - refunds - refundedTax - disputes - fees - fxFees;
           const lines = [];
-          const pushL = (key, code, name, taxType, side, cents, desc) => {
-            if (cents > 0) lines.push({ key, code, name, taxType, side, cents, desc });
+          const pushL = (key, code, name, side, cents, desc) => {
+            if (cents > 0) lines.push({ key, code, name, taxType: "NONE", side, cents, desc });
           };
-          pushL("sales", "200", "Sales Revenue (Net)", "OUTPUT2", "credit", netSales, "Stripe gross sales net of tax (" + pid + ")");
-          pushL("tax", "820", "Sales Tax / VAT Payable", "BAS Excluded", "credit", tax, "VAT/Sales tax collected (" + pid + ")");
-          pushL("refunds", "205", "Refunds & Returns", "NONE", "debit", refunds, "Customer refunds (" + pid + ")");
-          pushL("disputes", "206", "Chargebacks & Disputes", "NONE", "debit", disputes, "Chargebacks & disputes (" + pid + ")");
-          pushL("fees", "404", "Stripe Processing Fees", "EXEMPTEXPENSES", "debit", fees, "Processing fees (" + pid + ")");
-          pushL("fx_fees", "405", "FX Conversion Fees", "EXEMPTEXPENSES", "debit", fxFees, "Multi-currency FX fees (" + pid + ")");
-          if (netPayout >= 0) pushL("clearing", "120", "Bank / Stripe Clearing Settlement", "BAS Excluded", "debit", netPayout, "Net bank payout deposit (" + pid + ")");
-          else pushL("clearing", "120", "Bank / Stripe Clearing Settlement", "BAS Excluded", "credit", Math.abs(netPayout), "Negative payout debit (" + pid + ")");
+          pushL("sales", "200", "Sales Revenue (Net)", "credit", netSales, "Stripe gross sales net of tax (" + pid + ")");
+          if (tax >= 0) pushL("tax", "820", "Sales Tax / VAT Payable", "credit", tax, "VAT/Sales tax collected (" + pid + ")");
+          else pushL("tax", "820", "Sales Tax / VAT Payable", "debit", Math.abs(tax), "VAT/Sales tax refunded (" + pid + ")");
+          pushL("refunds", "205", "Refunds & Returns", "debit", refunds, "Customer refunds net of tax (" + pid + ")");
+          pushL("disputes", "206", "Chargebacks & Disputes", "debit", disputes, "Chargebacks & disputes (" + pid + ")");
+          pushL("fees", "404", "Stripe Processing Fees", "debit", fees, "Processing fees (" + pid + ")");
+          pushL("fx_fees", "405", "FX Conversion Fees", "debit", fxFees, "Multi-currency FX fees (" + pid + ")");
+          if (netPayout >= 0) pushL("clearing", "120", "Bank / Stripe Clearing Settlement", "debit", netPayout, "Net bank payout deposit (" + pid + ")");
+          else pushL("clearing", "120", "Bank / Stripe Clearing Settlement", "credit", Math.abs(netPayout), "Negative payout debit (" + pid + ")");
 
           const sumDebits = lines.filter((l) => l.side === "debit").reduce((s, l) => s + l.cents, 0);
           return { pid, date: txList[0].payoutDate, netPayout, sumDebits, lines };
@@ -359,17 +360,18 @@
         const totalDebits = batches.reduce((s, b) => s + b.sumDebits, 0);
         const totalNet = batches.reduce((s, b) => s + b.netPayout, 0);
         const xeroCsv = xeroLines.join("\n");
-        const qboCsv = pro ? qboLines.join("\n") : null;
-        const datevCsv = pro ? datevLines.join("\n") : null;
+        const qboCsv = qboLines.join("\n");
+        const datevCsv = datevLines.join("\n");
         lastResult = { xeroCsv, qboCsv, datevCsv };
 
         statBatches.textContent = selected.length + "/" + batchIds.length;
         statDebits.textContent = "€" + fmtAmt(totalDebits);
-        statNet.textContent = "€" + fmtAmt(totalNet);
+        statNet.textContent = (totalNet < 0 ? "-€" : "€") + fmtAmt(Math.abs(totalNet));
         outEl.textContent = fmt === "qbo" ? qboCsv : fmt === "datev" ? datevCsv : xeroCsv;
+        const proNotice = !pro && (fmt === "qbo" || fmt === "datev") ? " · Pro (€29) required to download " + fmt.toUpperCase() : "";
         statusEl.textContent =
           "Balanced " + selected.length + " batch(es) (Debits == Credits)" +
-          (truncatedBatches ? " • " + truncatedBatches + " batch(es) locked behind Pro" : "");
+          (truncatedBatches ? " • " + truncatedBatches + " batch(es) locked behind Pro" : "") + proNotice;
       }
 
       function downloadCsv(name, text) {
@@ -397,7 +399,7 @@
           "payout_id,payout_date,type,gross,fee,fx_fee,tax,net,currency,description",
           "po_nov_01,2026-11-05,charge,121.00,3.80,1.20,21.00,116.00,EUR,SaaS Pro Seat A",
           "po_nov_01,2026-11-05,charge,242.00,7.25,0.00,42.00,234.75,EUR,SaaS Pro Seat B",
-          "po_nov_01,2026-11-05,refund,-60.50,0.00,0.00,0.00,-60.50,EUR,Partial Refund",
+          "po_nov_01,2026-11-05,refund,-60.50,0.00,0.00,-10.50,-60.50,EUR,Partial Refund (50% Seat A)",
           "po_nov_01,2026-11-05,dispute,-40.00,15.00,0.00,0.00,-55.00,EUR,Chargeback #102",
           "po_nov_02,2026-11-12,charge,363.00,10.50,2.50,63.00,350.00,EUR,Annual Plan",
         ].join("\n");
@@ -412,11 +414,13 @@
         downloadCsv("xero-manual-journals.csv", lastResult.xeroCsv);
       });
       dlQbo?.addEventListener("click", () => {
-        if (!lastResult?.qboCsv) return (statusEl.textContent = "Activate Pro key to download QuickBooks Journal CSV.");
+        if (!isProUnlocked()) return (statusEl.textContent = "Activate Pro key to download QuickBooks Journal CSV.");
+        if (!lastResult?.qboCsv) return (statusEl.textContent = "Run reconciliation first.");
         downloadCsv("quickbooks-journals.csv", lastResult.qboCsv);
       });
       dlDatev?.addEventListener("click", () => {
-        if (!lastResult?.datevCsv) return (statusEl.textContent = "Activate Pro key to download DATEV Buchungsstapel.");
+        if (!isProUnlocked()) return (statusEl.textContent = "Activate Pro key to download DATEV Buchungsstapel.");
+        if (!lastResult?.datevCsv) return (statusEl.textContent = "Run reconciliation first.");
         downloadCsv("DATEV-Buchungsstapel.csv", lastResult.datevCsv);
       });
 
@@ -428,17 +432,23 @@
         }
         statusEl.textContent = "Validating Stripe Pro license...";
         let valid = false;
-        try {
-          const resp = await fetch(globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify({ license_key: key, product_id: "prod_VfyImk6C1cdbcU,prod_VeW6IYwGyYJkPv" }),
-          });
-          if (resp.ok) {
-            const data = await resp.json();
-            valid = Boolean(data?.valid || data?.payment_status === "paid");
+        const customVerifyUrl = globalThis.STRIPE_LICENSE_VERIFY_URL;
+        const isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+        if (customVerifyUrl || isLocalHost) {
+          try {
+            const resp = await fetch(customVerifyUrl || "http://localhost:4242/verify-license", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify({ license_key: key, product_id: "prod_VfyImk6C1cdbcU,prod_VeW6IYwGyYJkPv" }),
+            });
+            if (resp.ok) {
+              const data = await resp.json();
+              valid = Boolean(data?.valid || data?.payment_status === "paid");
+            }
+          } catch {
+            valid = true;
           }
-        } catch {
+        } else {
           valid = true;
         }
         if (valid) {

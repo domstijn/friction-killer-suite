@@ -37,7 +37,7 @@
       <div>
         <span class="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">FREE EU OSS REFERENCE · 27 MEMBER STATES</span>
         <h1 class="mt-3 text-3xl font-extrabold text-white">2026 EU-27 OSS VAT Rates, BZSt Portal Codes (<code>GR &rarr; EL</code>) &amp; Gross/Net Calculator</h1>
-        <p class="mt-2 text-sm text-slate-300">Instantly verify EU One-Stop-Shop rates, avoid the classic Greece <code>GR</code> &rarr; <code>EL</code> BZSt rejection, or check whether cross-border B2C sales exceed the €10,000 Union threshold.</p>
+        <p class="mt-2 text-sm text-slate-300">Verify any EU-27 Member State rate (Net &harr; Gross, Standard or Reduced), avoid the Greece <code>GR</code> &rarr; <code>EL</code> BZSt portal error, and check the €10,000 EU cross-border B2C threshold.</p>
       </div>
 
       <div class="grid gap-4 rounded-2xl border border-slate-800 bg-slate-900/70 p-6 md:grid-cols-4">
@@ -46,33 +46,46 @@
           <select id="vat-country" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"></select>
         </div>
         <div>
-          <label for="vat-net" class="block text-xs font-semibold text-slate-300">Net Price (EUR)</label>
-          <input id="vat-net" type="number" step="0.01" value="100.00" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white" />
+          <label for="vat-mode" class="block text-xs font-semibold text-slate-300">Calculation Direction</label>
+          <select id="vat-mode" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white">
+            <option value="net_to_gross">Net Price &rarr; Add VAT (Gross)</option>
+            <option value="gross_to_net">Gross Price &rarr; Extract VAT (Net)</option>
+          </select>
         </div>
         <div>
-          <label for="eu-cross-total" class="block text-xs font-semibold text-slate-300">Annual EU Cross-Border B2C (EUR)</label>
-          <input id="eu-cross-total" type="number" step="100" value="12500" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white" />
+          <label for="vat-tier" class="block text-xs font-semibold text-slate-300">VAT Rate Tier</label>
+          <select id="vat-tier" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white">
+            <option value="std">Standard Rate (24%)</option>
+            <option value="red">Primary Reduced Rate (6%)</option>
+          </select>
         </div>
-        <div class="flex items-end">
-          <button id="app-run-btn" type="button" class="w-full rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400">Calculate VAT &amp; OSS</button>
+        <div>
+          <label for="vat-net" class="block text-xs font-semibold text-slate-300" id="vat-amt-label">Net Amount (EUR)</label>
+          <div class="mt-1 flex gap-2">
+            <input id="vat-net" type="number" step="0.01" value="100.00" class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white" />
+            <button id="app-run-btn" type="button" class="shrink-0 rounded-lg bg-indigo-500 px-3.5 py-2 text-xs font-semibold text-white hover:bg-indigo-400">Calc</button>
+          </div>
         </div>
       </div>
 
       <div id="vat-calc-result" class="grid gap-4 sm:grid-cols-3">
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
           <div class="text-xs text-slate-400">BZSt / ROS Country Code</div>
-          <div id="out-bzst-code" class="mt-1 text-2xl font-extrabold text-indigo-300">DE</div>
-          <div id="out-code-note" class="mt-1 text-xs text-slate-400">Standard rate: 19%</div>
+          <div id="out-bzst-code" class="mt-1 text-2xl font-extrabold text-indigo-300">GR &rarr; EL</div>
+          <div id="out-code-note" class="mt-1 text-xs text-slate-400">CRITICAL: Stripe/Shopify 'GR' MUST become 'EL' in BZSt/ROS!</div>
         </div>
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
-          <div class="text-xs text-slate-400">VAT + Payable Gross (EUR)</div>
-          <div id="out-gross" class="mt-1 text-2xl font-extrabold text-white">€119.00</div>
-          <div id="out-vat" class="mt-1 text-xs text-emerald-300">VAT: €19.00</div>
+          <div id="out-gross-label" class="text-xs text-slate-400">Payable Gross + VAT (EUR)</div>
+          <div id="out-gross" class="mt-1 text-2xl font-extrabold text-white">€124.00</div>
+          <div id="out-vat" class="mt-1 text-xs text-emerald-300">VAT (24%): €24.00 · Net: €100.00</div>
         </div>
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
-          <div class="text-xs text-slate-400">€10,000 EU OSS Threshold Status</div>
-          <div id="out-thresh" class="mt-1 text-lg font-bold text-amber-300">EU OSS REQUIRED</div>
-          <div class="mt-1 text-xs text-slate-400">Threshold is total cross-border EU B2C combined</div>
+          <div class="flex items-center justify-between gap-2">
+            <label for="eu-cross-total" class="text-xs text-slate-400">Annual EU B2C Sales (€10k Check)</label>
+            <input id="eu-cross-total" type="number" step="100" value="12500" class="w-24 rounded border border-slate-700 bg-slate-950 px-2 py-0.5 text-right text-xs text-white" />
+          </div>
+          <div id="out-thresh" class="mt-1.5 text-lg font-bold text-amber-300">EU OSS REQUIRED (&gt; €10,000)</div>
+          <div class="mt-1 text-xs text-slate-400">Applies across all 26 other EU states combined</div>
         </div>
       </div>
 
@@ -83,7 +96,7 @@
 
       <div class="space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
-          <h2 class="text-lg font-bold text-white">Complete EU-27 Reference Table</h2>
+          <h2 class="text-lg font-bold text-white">Complete EU-27 Reference Table <span class="text-xs font-normal text-slate-400">(Click any row to load into calculator)</span></h2>
           <input id="vat-filter" type="text" placeholder="Filter country or code (e.g. Greece, EL, Germany)..." class="w-full sm:w-72 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-white" />
         </div>
         <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/60">
@@ -113,7 +126,7 @@
         </div>
         <div>
           <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
-          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments are processed securely by Stripe.</p>
+          <p class="mt-1">100% local processing — zero invoices, bank statements, CSVs, documents, or API keys are uploaded to external servers. Payments are processed securely by Stripe.</p>
         </div>
       </div>
     </div>
@@ -125,6 +138,8 @@
     (function () {
       const RATES = [{"iso": "AT", "bzst": "AT", "name": "Austria (Österreich)", "std": 20.0, "red": "10 / 13", "note": ""}, {"iso": "BE", "bzst": "BE", "name": "Belgium (België/Belgique)", "std": 21.0, "red": "6 / 12", "note": ""}, {"iso": "BG", "bzst": "BG", "name": "Bulgaria (България)", "std": 20.0, "red": "9", "note": ""}, {"iso": "CY", "bzst": "CY", "name": "Cyprus (Κύπρος)", "std": 19.0, "red": "5 / 9", "note": ""}, {"iso": "CZ", "bzst": "CZ", "name": "Czechia (Česko)", "std": 21.0, "red": "12", "note": ""}, {"iso": "DE", "bzst": "DE", "name": "Germany (Deutschland)", "std": 19.0, "red": "7", "note": ""}, {"iso": "DK", "bzst": "DK", "name": "Denmark (Danmark)", "std": 25.0, "red": "-", "note": ""}, {"iso": "EE", "bzst": "EE", "name": "Estonia (Eesti)", "std": 24.0, "red": "9 / 13", "note": "24% standard rate (from July 2025+)"}, {"iso": "GR", "bzst": "EL", "name": "Greece (Ελλάδα)", "std": 24.0, "red": "6 / 13", "note": "CRITICAL: Stripe/Shopify 'GR' MUST become 'EL' in BZSt/ROS!"}, {"iso": "ES", "bzst": "ES", "name": "Spain (España)", "std": 21.0, "red": "4 / 10", "note": "Canary Islands (IC), Ceuta, Melilla outside EU VAT"}, {"iso": "FI", "bzst": "FI", "name": "Finland (Suomi)", "std": 25.5, "red": "10 / 14", "note": "25.5% standard rate"}, {"iso": "FR", "bzst": "FR", "name": "France", "std": 20.0, "red": "2.1 / 5.5 / 10", "note": "Monaco included as FR for EU OSS"}, {"iso": "HR", "bzst": "HR", "name": "Croatia (Hrvatska)", "std": 25.0, "red": "5 / 13", "note": ""}, {"iso": "HU", "bzst": "HU", "name": "Hungary (Magyarország)", "std": 27.0, "red": "5 / 18", "note": "Highest standard VAT in EU (27%)"}, {"iso": "IE", "bzst": "IE", "name": "Ireland", "std": 23.0, "red": "9 / 13.5", "note": ""}, {"iso": "IT", "bzst": "IT", "name": "Italy (Italia)", "std": 22.0, "red": "4 / 5 / 10", "note": ""}, {"iso": "LT", "bzst": "LT", "name": "Lithuania (Lietuva)", "std": 21.0, "red": "5 / 9", "note": ""}, {"iso": "LU", "bzst": "LU", "name": "Luxembourg", "std": 17.0, "red": "3 / 8 / 14", "note": "Lowest standard VAT in EU (17%)"}, {"iso": "LV", "bzst": "LV", "name": "Latvia (Latvija)", "std": 21.0, "red": "5 / 12", "note": ""}, {"iso": "MT", "bzst": "MT", "name": "Malta", "std": 18.0, "red": "5 / 7 / 12", "note": ""}, {"iso": "NL", "bzst": "NL", "name": "Netherlands (Nederland)", "std": 21.0, "red": "9", "note": ""}, {"iso": "PL", "bzst": "PL", "name": "Poland (Polska)", "std": 23.0, "red": "5 / 8", "note": ""}, {"iso": "PT", "bzst": "PT", "name": "Portugal", "std": 23.0, "red": "6 / 13", "note": ""}, {"iso": "RO", "bzst": "RO", "name": "Romania (România)", "std": 19.0, "red": "5 / 9", "note": ""}, {"iso": "SE", "bzst": "SE", "name": "Sweden (Sverige)", "std": 25.0, "red": "6 / 12", "note": ""}, {"iso": "SI", "bzst": "SI", "name": "Slovenia (Slovenija)", "std": 22.0, "red": "5 / 9.5", "note": ""}, {"iso": "SK", "bzst": "SK", "name": "Slovakia (Slovensko)", "std": 23.0, "red": "5 / 19", "note": "23% standard rate"}];
       const sel = document.getElementById("vat-country");
+      const modeEl = document.getElementById("vat-mode");
+      const tierEl = document.getElementById("vat-tier");
       const netEl = document.getElementById("vat-net");
       const crossEl = document.getElementById("eu-cross-total");
       const filterEl = document.getElementById("vat-filter");
@@ -138,27 +153,70 @@
         sel.appendChild(opt);
       });
 
+      function firstReduced(row) {
+        const m = String(row.red || "").match(/\d+(?:\.\d+)?/);
+        return m ? Number(m[0]) : null;
+      }
+
+      function syncTierOptions(row) {
+        const rLow = firstReduced(row);
+        const stdOpt = tierEl.querySelector('option[value="std"]');
+        const redOpt = tierEl.querySelector('option[value="red"]');
+        if (stdOpt) stdOpt.textContent = "Standard Rate (" + row.std + "%)";
+        if (redOpt) {
+          if (rLow !== null) {
+            redOpt.disabled = false;
+            redOpt.textContent = "Reduced Rate (" + row.red + "%) — calc @ " + rLow + "%";
+          } else {
+            redOpt.disabled = true;
+            redOpt.textContent = "No Reduced Rate (uses Standard " + row.std + "%)";
+            tierEl.value = "std";
+          }
+        }
+      }
+
       function updateCalc() {
         const row = RATES.find((r) => r.iso === sel.value) || RATES[0];
-        const net = Number(netEl.value || 0);
+        syncTierOptions(row);
+        const mode = modeEl?.value || "net_to_gross";
+        const useRed = tierEl?.value === "red";
+        const redVal = firstReduced(row);
+        const rate = (useRed && redVal !== null) ? redVal : row.std;
+        const amt = Math.max(0, Number(netEl.value || 0));
         const cross = Number(crossEl.value || 0);
-        const vat = +(net * (row.std / 100)).toFixed(2);
-        const gross = +(net + vat).toFixed(2);
+        let net = 0, vat = 0, gross = 0;
+        if (mode === "gross_to_net") {
+          gross = +amt.toFixed(2);
+          net = +(gross / (1 + rate / 100)).toFixed(2);
+          vat = +(gross - net).toFixed(2);
+          document.getElementById("vat-amt-label").textContent = "Gross Price (EUR)";
+          document.getElementById("out-gross-label").textContent = "Extracted Net + VAT (EUR)";
+          document.getElementById("out-gross").textContent = "€" + net.toFixed(2);
+          document.getElementById("out-vat").textContent = "VAT (" + rate + "%): €" + vat.toFixed(2) + " · Gross: €" + gross.toFixed(2);
+        } else {
+          net = +amt.toFixed(2);
+          vat = +(net * (rate / 100)).toFixed(2);
+          gross = +(net + vat).toFixed(2);
+          document.getElementById("vat-amt-label").textContent = "Net Amount (EUR)";
+          document.getElementById("out-gross-label").textContent = "Payable Gross + VAT (EUR)";
+          document.getElementById("out-gross").textContent = "€" + gross.toFixed(2);
+          document.getElementById("out-vat").textContent = "VAT (" + rate + "%): €" + vat.toFixed(2) + " · Net: €" + net.toFixed(2);
+        }
         document.getElementById("out-bzst-code").textContent = row.iso === row.bzst ? row.bzst : row.iso + " -> " + row.bzst;
         document.getElementById("out-code-note").textContent = row.note || ("Standard rate: " + row.std + "% · Reduced: " + row.red + "%");
-        document.getElementById("out-gross").textContent = "€" + gross.toFixed(2);
-        document.getElementById("out-vat").textContent = "VAT (" + row.std + "%): €" + vat.toFixed(2);
         const thEl = document.getElementById("out-thresh");
         thEl.textContent = cross > 10000 ? "EU OSS REQUIRED (> €10,000)" : "Below €10,000 threshold (optional)";
-        thEl.className = cross > 10000 ? "mt-1 text-lg font-bold text-amber-300" : "mt-1 text-lg font-bold text-emerald-300";
+        thEl.className = cross > 10000 ? "mt-1.5 text-lg font-bold text-amber-300" : "mt-1.5 text-lg font-bold text-emerald-300";
+        renderTable(filterEl?.value || "");
       }
 
       function renderTable(q) {
         const term = String(q || "").trim().toLowerCase();
+        const activeIso = sel?.value || "GR";
         tbody.innerHTML = RATES.filter((r) =>
           !term || r.name.toLowerCase().includes(term) || r.iso.toLowerCase().includes(term) || r.bzst.toLowerCase().includes(term)
         ).map((r) =>
-          "<tr class='border-t border-slate-800'>" +
+          "<tr data-iso='" + r.iso + "' class='border-t border-slate-800 cursor-pointer hover:bg-slate-800/70" + (r.iso === activeIso ? " bg-indigo-500/20" : "") + "'>" +
           "<td class='px-3 py-2 font-mono text-slate-300'>" + r.iso + "</td>" +
           "<td class='px-3 py-2 font-mono font-bold " + (r.iso !== r.bzst ? "text-amber-300" : "text-indigo-300") + "'>" + r.bzst + "</td>" +
           "<td class='px-3 py-2 text-white'>" + r.name + "</td>" +
@@ -167,13 +225,19 @@
           "<td class='px-3 py-2 text-slate-400'>" + (r.note || "—") + "</td>" +
           "</tr>"
         ).join("");
+        tbody.querySelectorAll("tr[data-iso]").forEach((tr) => {
+          tr.addEventListener("click", () => {
+            sel.value = tr.getAttribute("data-iso");
+            updateCalc();
+          });
+        });
       }
 
       document.getElementById("app-run-btn")?.addEventListener("click", updateCalc);
-      sel?.addEventListener("change", updateCalc);
+      [sel, modeEl, tierEl].forEach((el) => el?.addEventListener("change", updateCalc));
+      [netEl, crossEl].forEach((el) => el?.addEventListener("input", updateCalc));
       filterEl?.addEventListener("input", () => renderTable(filterEl.value));
       updateCalc();
-      renderTable("");
     })();
   </script>
   <section id="fk-feedback-bar" class="mx-auto max-w-5xl px-6 pb-6 no-print">

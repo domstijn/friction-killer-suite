@@ -60,6 +60,7 @@ def _render_page_shell(
             analytics_title,
             analytics_cfg,
             include_feedback_bar=include_feedback,
+            lang=lang,
         )
         if analytics_renderer
         else ""
@@ -69,6 +70,11 @@ def _render_page_shell(
     tools_label = "Rechner (Kostenlos)" if lang == "de" else "Free Tools"
     samples_label = "Beispieldateien" if lang == "de" else "Samples"
     partners_label = "Kanzleien" if lang == "de" else "Accountants"
+    footer_copy = (
+        "100 % lokale Browser-Verarbeitung"
+        if lang == "de"
+        else "100% Local Browser Processing"
+    )
 
     return f"""<!DOCTYPE html>
 <html lang="{html.escape(lang, quote=True)}">
@@ -109,7 +115,7 @@ def _render_page_shell(
 
 {legal_footer_html}
   <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500 no-print">
-    Friction-Killer Suite by Stijn Dom (@domstijn) · 100% Local Browser Processing · <a href="{html.escape(rel_root)}sitemap.xml" class="underline">Sitemap</a> · <a href="{html.escape(rel_root)}llms.txt" class="underline">llms.txt</a> · <a href="mailto:dom.stijn99@gmail.com" class="underline">dom.stijn99@gmail.com</a>
+    Friction-Killer Suite by Stijn Dom (@domstijn) · {footer_copy} · <a href="{html.escape(rel_root)}sitemap.xml" class="underline">Sitemap</a> · <a href="{html.escape(rel_root)}llms.txt" class="underline">llms.txt</a> · <a href="mailto:dom.stijn99@gmail.com" class="underline">dom.stijn99@gmail.com</a>
   </footer>
 {extra_script}
 {analytics_block}
@@ -1168,7 +1174,7 @@ def _render_tool_eu_oss_rates(
       <div>
         <span class="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">FREE EU OSS REFERENCE · 27 MEMBER STATES</span>
         <h1 class="mt-3 text-3xl font-extrabold text-white">2026 EU-27 OSS VAT Rates, BZSt Portal Codes (<code>GR &rarr; EL</code>) &amp; Gross/Net Calculator</h1>
-        <p class="mt-2 text-sm text-slate-300">Instantly verify EU One-Stop-Shop rates, avoid the classic Greece <code>GR</code> &rarr; <code>EL</code> BZSt rejection, or check whether cross-border B2C sales exceed the €10,000 Union threshold.</p>
+        <p class="mt-2 text-sm text-slate-300">Verify any EU-27 Member State rate (Net &harr; Gross, Standard or Reduced), avoid the Greece <code>GR</code> &rarr; <code>EL</code> BZSt portal error, and check the €10,000 EU cross-border B2C threshold.</p>
       </div>
 
       <div class="grid gap-4 rounded-2xl border border-slate-800 bg-slate-900/70 p-6 md:grid-cols-4">
@@ -1177,33 +1183,46 @@ def _render_tool_eu_oss_rates(
           <select id="vat-country" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"></select>
         </div>
         <div>
-          <label for="vat-net" class="block text-xs font-semibold text-slate-300">Net Price (EUR)</label>
-          <input id="vat-net" type="number" step="0.01" value="100.00" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white" />
+          <label for="vat-mode" class="block text-xs font-semibold text-slate-300">Calculation Direction</label>
+          <select id="vat-mode" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white">
+            <option value="net_to_gross">Net Price &rarr; Add VAT (Gross)</option>
+            <option value="gross_to_net">Gross Price &rarr; Extract VAT (Net)</option>
+          </select>
         </div>
         <div>
-          <label for="eu-cross-total" class="block text-xs font-semibold text-slate-300">Annual EU Cross-Border B2C (EUR)</label>
-          <input id="eu-cross-total" type="number" step="100" value="12500" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white" />
+          <label for="vat-tier" class="block text-xs font-semibold text-slate-300">VAT Rate Tier</label>
+          <select id="vat-tier" class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white">
+            <option value="std">Standard Rate (24%)</option>
+            <option value="red">Primary Reduced Rate (6%)</option>
+          </select>
         </div>
-        <div class="flex items-end">
-          <button id="app-run-btn" type="button" class="w-full rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400">Calculate VAT &amp; OSS</button>
+        <div>
+          <label for="vat-net" class="block text-xs font-semibold text-slate-300" id="vat-amt-label">Net Amount (EUR)</label>
+          <div class="mt-1 flex gap-2">
+            <input id="vat-net" type="number" step="0.01" value="100.00" class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white" />
+            <button id="app-run-btn" type="button" class="shrink-0 rounded-lg bg-indigo-500 px-3.5 py-2 text-xs font-semibold text-white hover:bg-indigo-400">Calc</button>
+          </div>
         </div>
       </div>
 
       <div id="vat-calc-result" class="grid gap-4 sm:grid-cols-3">
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
           <div class="text-xs text-slate-400">BZSt / ROS Country Code</div>
-          <div id="out-bzst-code" class="mt-1 text-2xl font-extrabold text-indigo-300">DE</div>
-          <div id="out-code-note" class="mt-1 text-xs text-slate-400">Standard rate: 19%</div>
+          <div id="out-bzst-code" class="mt-1 text-2xl font-extrabold text-indigo-300">GR &rarr; EL</div>
+          <div id="out-code-note" class="mt-1 text-xs text-slate-400">CRITICAL: Stripe/Shopify 'GR' MUST become 'EL' in BZSt/ROS!</div>
         </div>
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
-          <div class="text-xs text-slate-400">VAT + Payable Gross (EUR)</div>
-          <div id="out-gross" class="mt-1 text-2xl font-extrabold text-white">€119.00</div>
-          <div id="out-vat" class="mt-1 text-xs text-emerald-300">VAT: €19.00</div>
+          <div id="out-gross-label" class="text-xs text-slate-400">Payable Gross + VAT (EUR)</div>
+          <div id="out-gross" class="mt-1 text-2xl font-extrabold text-white">€124.00</div>
+          <div id="out-vat" class="mt-1 text-xs text-emerald-300">VAT (24%): €24.00 · Net: €100.00</div>
         </div>
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
-          <div class="text-xs text-slate-400">€10,000 EU OSS Threshold Status</div>
-          <div id="out-thresh" class="mt-1 text-lg font-bold text-amber-300">EU OSS REQUIRED</div>
-          <div class="mt-1 text-xs text-slate-400">Threshold is total cross-border EU B2C combined</div>
+          <div class="flex items-center justify-between gap-2">
+            <label for="eu-cross-total" class="text-xs text-slate-400">Annual EU B2C Sales (€10k Check)</label>
+            <input id="eu-cross-total" type="number" step="100" value="12500" class="w-24 rounded border border-slate-700 bg-slate-950 px-2 py-0.5 text-right text-xs text-white" />
+          </div>
+          <div id="out-thresh" class="mt-1.5 text-lg font-bold text-amber-300">EU OSS REQUIRED (&gt; €10,000)</div>
+          <div class="mt-1 text-xs text-slate-400">Applies across all 26 other EU states combined</div>
         </div>
       </div>
 
@@ -1214,7 +1233,7 @@ def _render_tool_eu_oss_rates(
 
       <div class="space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
-          <h2 class="text-lg font-bold text-white">Complete EU-27 Reference Table</h2>
+          <h2 class="text-lg font-bold text-white">Complete EU-27 Reference Table <span class="text-xs font-normal text-slate-400">(Click any row to load into calculator)</span></h2>
           <input id="vat-filter" type="text" placeholder="Filter country or code (e.g. Greece, EL, Germany)..." class="w-full sm:w-72 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-white" />
         </div>
         <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/60">
@@ -1231,6 +1250,8 @@ def _render_tool_eu_oss_rates(
     (function () {{
       const RATES = {rates_json};
       const sel = document.getElementById("vat-country");
+      const modeEl = document.getElementById("vat-mode");
+      const tierEl = document.getElementById("vat-tier");
       const netEl = document.getElementById("vat-net");
       const crossEl = document.getElementById("eu-cross-total");
       const filterEl = document.getElementById("vat-filter");
@@ -1244,27 +1265,70 @@ def _render_tool_eu_oss_rates(
         sel.appendChild(opt);
       }});
 
+      function firstReduced(row) {{
+        const m = String(row.red || "").match(/\\d+(?:\\.\\d+)?/);
+        return m ? Number(m[0]) : null;
+      }}
+
+      function syncTierOptions(row) {{
+        const rLow = firstReduced(row);
+        const stdOpt = tierEl.querySelector('option[value="std"]');
+        const redOpt = tierEl.querySelector('option[value="red"]');
+        if (stdOpt) stdOpt.textContent = "Standard Rate (" + row.std + "%)";
+        if (redOpt) {{
+          if (rLow !== null) {{
+            redOpt.disabled = false;
+            redOpt.textContent = "Reduced Rate (" + row.red + "%) — calc @ " + rLow + "%";
+          }} else {{
+            redOpt.disabled = true;
+            redOpt.textContent = "No Reduced Rate (uses Standard " + row.std + "%)";
+            tierEl.value = "std";
+          }}
+        }}
+      }}
+
       function updateCalc() {{
         const row = RATES.find((r) => r.iso === sel.value) || RATES[0];
-        const net = Number(netEl.value || 0);
+        syncTierOptions(row);
+        const mode = modeEl?.value || "net_to_gross";
+        const useRed = tierEl?.value === "red";
+        const redVal = firstReduced(row);
+        const rate = (useRed && redVal !== null) ? redVal : row.std;
+        const amt = Math.max(0, Number(netEl.value || 0));
         const cross = Number(crossEl.value || 0);
-        const vat = +(net * (row.std / 100)).toFixed(2);
-        const gross = +(net + vat).toFixed(2);
+        let net = 0, vat = 0, gross = 0;
+        if (mode === "gross_to_net") {{
+          gross = +amt.toFixed(2);
+          net = +(gross / (1 + rate / 100)).toFixed(2);
+          vat = +(gross - net).toFixed(2);
+          document.getElementById("vat-amt-label").textContent = "Gross Price (EUR)";
+          document.getElementById("out-gross-label").textContent = "Extracted Net + VAT (EUR)";
+          document.getElementById("out-gross").textContent = "€" + net.toFixed(2);
+          document.getElementById("out-vat").textContent = "VAT (" + rate + "%): €" + vat.toFixed(2) + " · Gross: €" + gross.toFixed(2);
+        }} else {{
+          net = +amt.toFixed(2);
+          vat = +(net * (rate / 100)).toFixed(2);
+          gross = +(net + vat).toFixed(2);
+          document.getElementById("vat-amt-label").textContent = "Net Amount (EUR)";
+          document.getElementById("out-gross-label").textContent = "Payable Gross + VAT (EUR)";
+          document.getElementById("out-gross").textContent = "€" + gross.toFixed(2);
+          document.getElementById("out-vat").textContent = "VAT (" + rate + "%): €" + vat.toFixed(2) + " · Net: €" + net.toFixed(2);
+        }}
         document.getElementById("out-bzst-code").textContent = row.iso === row.bzst ? row.bzst : row.iso + " -> " + row.bzst;
         document.getElementById("out-code-note").textContent = row.note || ("Standard rate: " + row.std + "% · Reduced: " + row.red + "%");
-        document.getElementById("out-gross").textContent = "€" + gross.toFixed(2);
-        document.getElementById("out-vat").textContent = "VAT (" + row.std + "%): €" + vat.toFixed(2);
         const thEl = document.getElementById("out-thresh");
         thEl.textContent = cross > 10000 ? "EU OSS REQUIRED (> €10,000)" : "Below €10,000 threshold (optional)";
-        thEl.className = cross > 10000 ? "mt-1 text-lg font-bold text-amber-300" : "mt-1 text-lg font-bold text-emerald-300";
+        thEl.className = cross > 10000 ? "mt-1.5 text-lg font-bold text-amber-300" : "mt-1.5 text-lg font-bold text-emerald-300";
+        renderTable(filterEl?.value || "");
       }}
 
       function renderTable(q) {{
         const term = String(q || "").trim().toLowerCase();
+        const activeIso = sel?.value || "GR";
         tbody.innerHTML = RATES.filter((r) =>
           !term || r.name.toLowerCase().includes(term) || r.iso.toLowerCase().includes(term) || r.bzst.toLowerCase().includes(term)
         ).map((r) =>
-          "<tr class='border-t border-slate-800'>" +
+          "<tr data-iso='" + r.iso + "' class='border-t border-slate-800 cursor-pointer hover:bg-slate-800/70" + (r.iso === activeIso ? " bg-indigo-500/20" : "") + "'>" +
           "<td class='px-3 py-2 font-mono text-slate-300'>" + r.iso + "</td>" +
           "<td class='px-3 py-2 font-mono font-bold " + (r.iso !== r.bzst ? "text-amber-300" : "text-indigo-300") + "'>" + r.bzst + "</td>" +
           "<td class='px-3 py-2 text-white'>" + r.name + "</td>" +
@@ -1273,13 +1337,19 @@ def _render_tool_eu_oss_rates(
           "<td class='px-3 py-2 text-slate-400'>" + (r.note || "—") + "</td>" +
           "</tr>"
         ).join("");
+        tbody.querySelectorAll("tr[data-iso]").forEach((tr) => {{
+          tr.addEventListener("click", () => {{
+            sel.value = tr.getAttribute("data-iso");
+            updateCalc();
+          }});
+        }});
       }}
 
       document.getElementById("app-run-btn")?.addEventListener("click", updateCalc);
-      sel?.addEventListener("change", updateCalc);
+      [sel, modeEl, tierEl].forEach((el) => el?.addEventListener("change", updateCalc));
+      [netEl, crossEl].forEach((el) => el?.addEventListener("input", updateCalc));
       filterEl?.addEventListener("input", () => renderTable(filterEl.value));
       updateCalc();
-      renderTable("");
     }})();
   </script>"""
     return _render_page_shell(
@@ -1398,7 +1468,7 @@ def _render_tool_datev_bu_lookup(
     legal_footer_html: str,
     analytics_renderer: Callable[..., str] | None,
 ) -> str:
-    main_html = """    <div class="text-xs text-slate-400"><a href="../index.html" class="text-indigo-300 hover:underline">&larr; All Free Calculators</a></div>
+    main_html = """    <div class="text-xs text-slate-400"><a href="../index.html" class="text-indigo-300 hover:underline">&larr; Alle kostenlosen Rechner</a></div>
     <section class="mt-4 space-y-6">
       <div>
         <span class="rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-300">DE / EN · EN 16931 &rarr; DATEV EXTF</span>
@@ -1414,7 +1484,8 @@ def _render_tool_datev_bu_lookup(
             <option value="S7">Inland Eingangsrechnung 7 % (Code S, 7%)</option>
             <option value="AE">EU / § 13b Reverse Charge (Code AE, 0%)</option>
             <option value="E0">Steuerfrei / Kleinunternehmer § 19 UStG (Code E / O / Z)</option>
-            <option value="K0">Innergemeinschaftlicher Erwerb (Code K, 19% fällig)</option>
+            <option value="K0">Innergemeinschaftlicher Erwerb 19 % (Code K)</option>
+            <option value="K7">Innergemeinschaftlicher Erwerb 7 % (Code K)</option>
           </select>
         </div>
         <div>
@@ -1433,12 +1504,12 @@ def _render_tool_datev_bu_lookup(
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
           <div class="text-xs text-slate-400">DATEV BU-Schlüssel</div>
           <div id="bu-out-key" class="mt-1 text-3xl font-extrabold text-indigo-300">9</div>
-          <div id="bu-out-label" class="mt-1 text-xs text-slate-300">19 % Vorsteuer</div>
+          <div id="bu-out-label" class="mt-1 text-xs text-slate-300">19 % abziehbare Vorsteuer</div>
         </div>
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
           <div class="text-xs text-slate-400">Standard-Aufwandskonto</div>
           <div id="bu-out-acct" class="mt-1 text-3xl font-extrabold text-white">3400</div>
-          <div id="bu-out-chart" class="mt-1 text-xs text-slate-400">SKR03 Standard</div>
+          <div id="bu-out-chart" class="mt-1 text-xs text-slate-400">SKR03 Kontenvorschlag</div>
         </div>
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
           <div class="text-xs text-slate-400">EN 16931 XML Tag (BT-151)</div>
@@ -1455,11 +1526,12 @@ def _render_tool_datev_bu_lookup(
     extra_script = """  <script>
     (function () {
       const MAP = {
-        S19: { key: "9", label: "19 % abziehbare Vorsteuer", SKR03: "3400", SKR04: "5400", xml: "CategoryCode: S (19%)" },
-        S7:  { key: "8", label: "7 % abziehbare Vorsteuer", SKR03: "3300", SKR04: "5300", xml: "CategoryCode: S (7%)" },
+        S19: { key: "9",  label: "19 % abziehbare Vorsteuer", SKR03: "3400", SKR04: "5400", xml: "CategoryCode: S (19%)" },
+        S7:  { key: "8",  label: "7 % abziehbare Vorsteuer", SKR03: "3300", SKR04: "5300", xml: "CategoryCode: S (7%)" },
         AE:  { key: "94", label: "§ 13b UStG Reverse Charge (19 % VSt + USt)", SKR03: "3123", SKR04: "5923", xml: "CategoryCode: AE (0%)" },
-        E0:  { key: "0", label: "Steuerfrei / Kein Vorsteuerabzug", SKR03: "3425", SKR04: "5200", xml: "CategoryCode: E / O / Z" },
-        K0:  { key: "19", label: "Innergemeinschaftlicher Erwerb (Standard 19 %)", SKR03: "3425", SKR04: "5425", xml: "CategoryCode: K (0%/19%)" }
+        E0:  { key: "0",  label: "Steuerfrei / Kein Vorsteuerabzug", SKR03: "3200", SKR04: "5200", xml: "CategoryCode: E / O / Z" },
+        K0:  { key: "91", label: "Innergemeinschaftlicher Erwerb (19 % VSt + USt)", SKR03: "3425", SKR04: "5425", xml: "CategoryCode: K (19% igE)" },
+        K7:  { key: "92", label: "Innergemeinschaftlicher Erwerb (7 % VSt + USt)", SKR03: "3420", SKR04: "5420", xml: "CategoryCode: K (7% igE)" }
       };
       function update() {
         const s = MAP[document.getElementById("bu-scenario").value] || MAP.S19;
@@ -1569,27 +1641,34 @@ def _write_sample_fixtures(samples_files_dir: Path) -> list[dict[str, str]]:
             "content": """<?xml version="1.0" encoding="UTF-8"?>
 <Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
   <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
-  <cbc:ID>PEP-SAMPLE-2026-3003</cbc:ID>
+  <cbc:ID>PEP-2026-3003</cbc:ID>
   <cbc:IssueDate>2026-11-20</cbc:IssueDate>
   <cbc:DueDate>2026-12-20</cbc:DueDate>
   <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
-  <cbc:BuyerReference>PO-BE-2026-09</cbc:BuyerReference>
-  <cac:AccountingSupplierParty><cac:Party><cac:PartyName><cbc:Name>Brussels Cloud BV</cbc:Name></cac:PartyName><cac:PartyTaxScheme><cbc:CompanyID>BE0999888777</cbc:CompanyID></cac:PartyTaxScheme></cac:Party></cac:AccountingSupplierParty>
-  <cac:AccountingCustomerParty><cac:Party><cac:PartyName><cbc:Name>Muster Handel GmbH</cbc:Name></cac:PartyName><cac:PartyTaxScheme><cbc:CompanyID>DE123456789</cbc:CompanyID></cac:PartyTaxScheme></cac:Party></cac:AccountingCustomerParty>
+  <cbc:BuyerReference>PO-2026-BE-44</cbc:BuyerReference>
+  <cac:AccountingSupplierParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>BE0897234567</cbc:CompanyID></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>Antwerp Logistics Systems BV</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>DE112233445</cbc:CompanyID></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>Mittelstand Ops GmbH</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingCustomerParty>
   <cac:PaymentMeans><cac:PayeeFinancialAccount><cbc:ID>BE68539007547034</cbc:ID></cac:PayeeFinancialAccount></cac:PaymentMeans>
   <cac:TaxTotal><cbc:TaxAmount currencyID="EUR">0.00</cbc:TaxAmount></cac:TaxTotal>
   <cac:LegalMonetaryTotal>
-    <cbc:LineExtensionAmount currencyID="EUR">450.00</cbc:LineExtensionAmount>
-    <cbc:TaxExclusiveAmount currencyID="EUR">450.00</cbc:TaxExclusiveAmount>
-    <cbc:TaxInclusiveAmount currencyID="EUR">450.00</cbc:TaxInclusiveAmount>
-    <cbc:PayableAmount currencyID="EUR">450.00</cbc:PayableAmount>
+    <cbc:LineExtensionAmount currencyID="EUR">240.00</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">240.00</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">240.00</cbc:TaxInclusiveAmount>
+    <cbc:PayableAmount currencyID="EUR">240.00</cbc:PayableAmount>
   </cac:LegalMonetaryTotal>
   <cac:InvoiceLine>
     <cbc:ID>1</cbc:ID>
     <cbc:InvoicedQuantity unitCode="EA">1.00</cbc:InvoicedQuantity>
-    <cbc:LineExtensionAmount currencyID="EUR">450.00</cbc:LineExtensionAmount>
-    <cac:Item><cbc:Name>Cross-border EU SaaS Consulting (Reverse Charge §13b)</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>AE</cbc:ID><cbc:Percent>0</cbc:Percent></cac:ClassifiedTaxCategory></cac:Item>
-    <cac:Price><cbc:PriceAmount currencyID="EUR">450.00</cbc:PriceAmount></cac:Price>
+    <cbc:LineExtensionAmount currencyID="EUR">180.00</cbc:LineExtensionAmount>
+    <cac:Item><cbc:Name>EU Peppol Access Point Gateway</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>AE</cbc:ID><cbc:Percent>0.00</cbc:Percent></cac:ClassifiedTaxCategory></cac:Item>
+    <cac:Price><cbc:PriceAmount currencyID="EUR">180.00</cbc:PriceAmount></cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>2</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="EA">3.00</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">60.00</cbc:LineExtensionAmount>
+    <cac:Item><cbc:Name>AS4 Message Routing Tier</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>AE</cbc:ID><cbc:Percent>0.00</cbc:Percent></cac:ClassifiedTaxCategory></cac:Item>
+    <cac:Price><cbc:PriceAmount currencyID="EUR">20.00</cbc:PriceAmount></cac:Price>
   </cac:InvoiceLine>
 </Invoice>
 """,
@@ -1823,16 +1902,18 @@ def build_growth_assets(
     bundle_checkout_url: str = BUNDLE_URL_DEFAULT,
     *,
     legal_footer_html: str = "",
+    legal_footer_de_html: str = "",
     analytics_renderer: Callable[..., str] | None = None,
 ) -> list[tuple[str, str]]:
     """Build /de/, /guides/, /tools/, /samples/, /partners/, and llms*.txt into docs/ and return sitemap entries."""
     sitemap_entries: list[tuple[str, str]] = []
+    de_legal = legal_footer_de_html or legal_footer_html
 
     # 1. German /de/ hub & 3 DACH pages
     de_dir = docs_dir / "de"
     de_dir.mkdir(parents=True, exist_ok=True)
     (de_dir / "index.html").write_text(
-        _render_de_hub(bundle_checkout_url, analytics_cfg, legal_footer_html, analytics_renderer),
+        _render_de_hub(bundle_checkout_url, analytics_cfg, de_legal, analytics_renderer),
         encoding="utf-8",
     )
     sitemap_entries.append((f"{SITE_BASE_URL}/de/", "0.9"))
@@ -1840,7 +1921,7 @@ def build_growth_assets(
         pdir = de_dir / spec["dir"]
         pdir.mkdir(parents=True, exist_ok=True)
         (pdir / "index.html").write_text(
-            _render_de_product_page(spec, bundle_checkout_url, analytics_cfg, legal_footer_html, analytics_renderer),
+            _render_de_product_page(spec, bundle_checkout_url, analytics_cfg, de_legal, analytics_renderer),
             encoding="utf-8",
         )
         sitemap_entries.append((f"{SITE_BASE_URL}/de/{spec['dir']}/", "0.9"))
@@ -1856,8 +1937,9 @@ def build_growth_assets(
     for g in GUIDES:
         gdir = guides_dir / g["slug"]
         gdir.mkdir(parents=True, exist_ok=True)
+        g_legal = de_legal if g.get("lang") == "de" else legal_footer_html
         (gdir / "index.html").write_text(
-            _render_single_guide(g, bundle_checkout_url, analytics_cfg, legal_footer_html, analytics_renderer),
+            _render_single_guide(g, bundle_checkout_url, analytics_cfg, g_legal, analytics_renderer),
             encoding="utf-8",
         )
         sitemap_entries.append((f"{SITE_BASE_URL}/guides/{g['slug']}/", "0.8"))
@@ -1871,15 +1953,15 @@ def build_growth_assets(
     )
     sitemap_entries.append((f"{SITE_BASE_URL}/tools/", "0.9"))
     tool_builders = [
-        ("eu-oss-vat-rates-2026", _render_tool_eu_oss_rates),
-        ("lemon-squeezy-shutdown-calculator", _render_tool_lemon_calc),
-        ("datev-bu-schluessel-lookup", _render_tool_datev_bu_lookup),
+        ("eu-oss-vat-rates-2026", _render_tool_eu_oss_rates, legal_footer_html),
+        ("lemon-squeezy-shutdown-calculator", _render_tool_lemon_calc, legal_footer_html),
+        ("datev-bu-schluessel-lookup", _render_tool_datev_bu_lookup, de_legal),
     ]
-    for tslug, builder in tool_builders:
+    for tslug, builder, t_legal in tool_builders:
         tdir = tools_dir / tslug
         tdir.mkdir(parents=True, exist_ok=True)
         (tdir / "index.html").write_text(
-            builder(bundle_checkout_url, analytics_cfg, legal_footer_html, analytics_renderer),
+            builder(bundle_checkout_url, analytics_cfg, t_legal, analytics_renderer),
             encoding="utf-8",
         )
         sitemap_entries.append((f"{SITE_BASE_URL}/tools/{tslug}/", "0.9"))

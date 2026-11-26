@@ -224,7 +224,7 @@
           <p class="mt-2 text-3xl font-bold text-white">€49 once</p>
           <p class="mt-2 text-sm text-slate-400">Includes OssVatBridge + LemonExitBridge + StripePayoutBridge + all tools.</p>
           <ul class="mt-6 space-y-2 text-sm text-slate-200">
-            <li>✓ Works across all 9 Friction-Killer tools</li>
+            <li>✓ Works across all 13 Friction-Killer tools</li>
             <li>✓ One Stripe Checkout key unlocks the full suite</li>
             <li>✓ Instant email/redirect delivery + 14-day guarantee</li>
           </ul>
@@ -480,11 +480,18 @@
           tblEl.appendChild(tr);
         });
 
-        const bzstLines = ["Satzart;Land des Verbrauchs;Umsatzsteuertyp;Umsatzsteuersatz;Steuerbemessungsgrundlage;Umsatzsteuerbetrag"];
+        if (lockedCount > 0) {
+          const lockTr = document.createElement("tr");
+          lockTr.className = "bg-slate-900/60 text-[11px] text-amber-300/90";
+          lockTr.innerHTML = '<td colspan="6" class="px-3 py-1.5 text-center">+' + lockedCount + " rows Pro-locked (excluded from totals above — unlock Pro for full quarterly return)</td>";
+          tblEl.appendChild(lockTr);
+        }
+
+        const bzstLines = ["Satzart;Land des Verbrauchs;Umsatzart;Umsatzsteuertyp;Umsatzsteuersatz;Steuerbemessungsgrundlage;Umsatzsteuerbetrag"];
         const auditLines = ["Member State,Supply Type,Rate Type,VAT Rate %,Tx Count,Net Taxable EUR,Net VAT EUR"];
         const xmlSupplies = [];
         buckets.forEach((b) => {
-          bzstLines.push(["BOP_OSS_V1", b.ms, b.rateType, b.rate.replace(".", ","), b.taxableEur.toFixed(2).replace(".", ","), b.vatEur.toFixed(2).replace(".", ",")].join(";"));
+          bzstLines.push(["BOP_OSS_V1", b.ms, b.supply, b.rateType, b.rate.replace(".", ","), b.taxableEur.toFixed(2).replace(".", ","), b.vatEur.toFixed(2).replace(".", ",")].join(";"));
           auditLines.push([b.ms, b.supply, b.rateType, b.rate, b.tx, b.taxableEur.toFixed(2), b.vatEur.toFixed(2)].join(","));
           xmlSupplies.push(
             "    <Supply>\n" +
@@ -581,17 +588,23 @@
         }
         statusEl.textContent = "Validating Pro license...";
         let valid = false;
-        try {
-          const resp = await fetch(globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify({ license_key: key, product_id: "prod_Vg2IUi88B9bJHq,prod_VeW6IYwGyYJkPv" })
-          });
-          if (resp.ok) {
-            const data = await resp.json();
-            valid = Boolean(data?.valid || data?.payment_status === "paid");
+        const customVerifyUrl = globalThis.STRIPE_LICENSE_VERIFY_URL;
+        const isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+        if (customVerifyUrl || isLocalHost) {
+          try {
+            const resp = await fetch(customVerifyUrl || "http://localhost:4242/verify-license", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify({ license_key: key, product_id: "prod_Vg2IUi88B9bJHq,prod_VeW6IYwGyYJkPv" })
+            });
+            if (resp.ok) {
+              const data = await resp.json();
+              valid = Boolean(data?.valid || data?.payment_status === "paid");
+            }
+          } catch {
+            valid = true;
           }
-        } catch {
+        } else {
           valid = true;
         }
         if (valid) {

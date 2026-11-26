@@ -15,7 +15,7 @@ SAMPLE_MULTI_BATCH_CSV = "\n".join(
         "payout_id,payout_date,type,gross,fee,fx_fee,tax,net,currency,description",
         "po_nov_01,2026-11-05,charge,121.00,3.80,1.20,21.00,116.00,EUR,SaaS Pro Seat A",
         "po_nov_01,2026-11-05,charge,242.00,7.25,0.00,42.00,234.75,EUR,SaaS Pro Seat B",
-        "po_nov_01,2026-11-05,refund,-60.50,0.00,0.00,0.00,-60.50,EUR,Partial Refund",
+        "po_nov_01,2026-11-05,refund,-60.50,0.00,0.00,-10.50,-60.50,EUR,Partial Refund (50% Seat A)",
         "po_nov_01,2026-11-05,dispute,-40.00,15.00,0.00,0.00,-55.00,EUR,Chargeback #102",
         "po_nov_02,2026-11-12,charge,363.00,10.50,2.50,63.00,350.00,EUR,Annual Plan",
     ]
@@ -34,10 +34,15 @@ def test_parse_and_free_tier_cap():
     assert free_res["processed_batches"] == FREE_BATCH_CAP
     assert free_res["truncated_batches"] == 1
     assert free_res["balanced"] is True
-    assert free_res["total_debits"] == free_res["total_credits"] == 363.0
+    assert free_res["total_debits"] == free_res["total_credits"] == 352.5
+    assert free_res["batches"][0]["tax_collected"] == 52.5
+    assert free_res["batches"][0]["refunds_gross"] == 50.0
     assert free_res["batches"][0]["drift"] == 0.0
     assert free_res["batches"][0]["expected_net"] == 235.25
     assert "*Narration,*Date,Description,*AccountCode,*TaxType,*Amount" in free_res["xero_csv"]
+    assert "NONE" in free_res["xero_csv"]
+    assert "OUTPUT2" not in free_res["xero_csv"]
+    assert "EXEMPTEXPENSES" not in free_res["xero_csv"]
     assert free_res["qbo_csv"] is None
     assert free_res["datev_csv"] is None
 
@@ -112,7 +117,7 @@ def test_stripe_license_activation_and_pro_exports():
         assert pro_res["processed_batches"] == 2
         assert pro_res["truncated_batches"] == 0
         assert pro_res["balanced"] is True
-        assert pro_res["total_debits"] == pro_res["total_credits"] == 726.0
+        assert pro_res["total_debits"] == pro_res["total_credits"] == 715.5
         assert "JournalNo,JournalDate,AccountName,Debits,Credits,Memo" in pro_res["qbo_csv"]
         assert "Umsatz;Soll/Haben-Kennzeichen;Konto;Gegenkonto" in pro_res["datev_csv"]
 

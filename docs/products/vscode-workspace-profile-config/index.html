@@ -41,8 +41,8 @@
         VS Code still lacks declarative repo-level extension toggling and ${env:VAR} interpolation inside .code-workspace files. ExtProfileLock audits drift, generates exact CLI toggle batches, and injects local .env variables automatically.
       </p>
       <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-        <a href="../../downloads/vscode-workspace-profile-config-v0.1.0.zip" download data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
-          Use Free Audit
+        <a href="../../downloads/vscode-workspace-profile-config-0.1.0.vsix" download data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
+          Download Free .vsix
         </a>
         <a href="https://buy.stripe.com/5kQ3cv52I11Wgdq2566sw01" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
           Unlock Pro License — €19 once
@@ -74,8 +74,8 @@
       <div class="mt-8 grid gap-6 md:grid-cols-3">
         <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
           <div class="text-xs font-bold text-indigo-400">STEP 1</div>
-          <h3 class="mt-2 font-semibold text-white">Add workspace-lock.json</h3>
-          <p class="mt-2 text-sm text-slate-400">List <code>required</code> and <code>disabled</code> extension IDs in your repo root.</p>
+          <h3 class="mt-2 font-semibold text-white">Install .vsix &amp; Add Lockfile</h3>
+          <p class="mt-2 text-sm text-slate-400">Run <code>code --install-extension vscode-workspace-profile-config-0.1.0.vsix</code> and list <code>required</code> / <code>disabled</code> extension IDs in <code>workspace-lock.json</code>.</p>
         </div>
         <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
           <div class="text-xs font-bold text-indigo-400">STEP 2</div>
@@ -101,8 +101,8 @@
             <li>✓ Audit <code>required</code> &amp; <code>disabled</code> extensions</li>
             <li>✓ Local <code>.env</code> parser with zero telemetry</li>
           </ul>
-          <a href="../../downloads/vscode-workspace-profile-config-v0.1.0.zip" download data-fk-cta="free-install" class="mt-8 block rounded-xl border border-slate-700 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800">
-            Install Free
+          <a href="../../downloads/vscode-workspace-profile-config-0.1.0.vsix" download data-fk-cta="free-install" class="mt-8 block rounded-xl border border-slate-700 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800">
+            Download .vsix (Free)
           </a>
         </div>
         <div class="rounded-2xl border border-indigo-500 bg-slate-900 p-8 shadow-lg shadow-indigo-500/10">
@@ -138,9 +138,9 @@
 
     <section id="fk-feedback-bar" class="mx-auto max-w-5xl px-6 pb-6 no-print">
     <div class="flex flex-col items-center justify-between gap-3 rounded-2xl border border-indigo-500/20 bg-slate-900/60 px-5 py-4 text-xs text-slate-300 sm:flex-row">
-      <span>Missing a bank, CSV format, or hit a snag with <strong>ExtProfileLock</strong>?</span>
+      <span>Hit a bug or missing an integration in <strong>ExtProfileLock</strong>?</span>
       <div class="flex flex-wrap items-center gap-3">
-        <a href="https://github.com/domstijn/friction-killer-suite/issues/new?title=Feedback%3A+ExtProfileLock&amp;body=Product+slug%3A+vscode-workspace-profile-config%0AWhat+format%2C+bank%2C+or+step+did+not+work+as+expected%3F%0A" target="_blank" rel="noopener noreferrer" data-fk-cta="feedback" class="rounded-lg border border-indigo-500/40 bg-indigo-500/15 px-3 py-1.5 font-semibold text-indigo-200 hover:bg-indigo-500/25">Missing a bank/format or hit a snag? Report it &rarr;</a>
+        <a href="https://github.com/domstijn/friction-killer-suite/issues/new?title=Feedback%3A+ExtProfileLock&amp;body=Product+slug%3A+vscode-workspace-profile-config%0AWhat+format%2C+bank%2C+or+step+did+not+work+as+expected%3F%0A" target="_blank" rel="noopener noreferrer" data-fk-cta="feedback" class="rounded-lg border border-indigo-500/40 bg-indigo-500/15 px-3 py-1.5 font-semibold text-indigo-200 hover:bg-indigo-500/25">Report bug or request feature &rarr;</a>
         <a href="mailto:dom.stijn99@gmail.com?subject=Feedback%3A%20ExtProfileLock" data-fk-cta="feedback" class="text-slate-400 underline hover:text-white">Email Stijn</a>
       </div>
     </div>
@@ -160,7 +160,7 @@
         </div>
         <div>
           <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
-          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments are processed securely by Stripe.</p>
+          <p class="mt-1">100% local processing — zero invoices, bank statements, CSVs, documents, or API keys are uploaded to external servers. Payments are processed securely by Stripe.</p>
         </div>
       </div>
     </div>

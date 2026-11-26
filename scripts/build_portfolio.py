@@ -44,12 +44,26 @@ def load_analytics_config(path: Path = DEFAULT_ANALYTICS_CONFIG_PATH) -> dict[st
         return {}
 
 
+NON_FINANCE_SLUGS = {
+    "notion-linear-prd-sync",
+    "notion-clean-md-exporter",
+    "vscode-workspace-profile-config",
+    "claude-profile-switcher",
+    "notion-guest-mcp-bridge",
+    "docker-volume-compose-tool",
+    "webflow-cms-asset-migrator",
+    "woo-shopify-metafield-migrator",
+    "tool_lemon_squeezy_calc",
+}
+
+
 def build_analytics_footer_html(
     slug: str,
     short_title: str,
     cfg: dict[str, str],
     *,
     include_feedback_bar: bool = False,
+    lang: str = "en",
 ) -> str:
     """Build cookie-less Cloudflare Web Analytics + zero-PII Worker funnel tracker + feedback bar."""
     parts: list[str] = []
@@ -59,13 +73,25 @@ def build_analytics_footer_html(
             f"Product slug: {slug}\nWhat format, bank, or step did not work as expected?\n"
         )
         mail_subj = urllib.parse.quote(f"Feedback: {short_title}")
+        if lang == "de":
+            fb_prompt = f'Fehlt ein Format, ein Bank-Export oder gibt es ein Problem mit <strong>{html.escape(short_title)}</strong>?'
+            fb_cta = "Fehler oder Format melden &rarr;"
+            fb_mail = "E-Mail an Stijn"
+        elif slug in NON_FINANCE_SLUGS:
+            fb_prompt = f'Hit a bug or missing an integration in <strong>{html.escape(short_title)}</strong>?'
+            fb_cta = "Report bug or request feature &rarr;"
+            fb_mail = "Email Stijn"
+        else:
+            fb_prompt = f'Missing a bank, CSV format, or hit a snag with <strong>{html.escape(short_title)}</strong>?'
+            fb_cta = "Missing a bank/format or hit a snag? Report it &rarr;"
+            fb_mail = "Email Stijn"
         parts.append(
             f"""  <section id="fk-feedback-bar" class="mx-auto max-w-5xl px-6 pb-6 no-print">
     <div class="flex flex-col items-center justify-between gap-3 rounded-2xl border border-indigo-500/20 bg-slate-900/60 px-5 py-4 text-xs text-slate-300 sm:flex-row">
-      <span>Missing a bank, CSV format, or hit a snag with <strong>{html.escape(short_title)}</strong>?</span>
+      <span>{fb_prompt}</span>
       <div class="flex flex-wrap items-center gap-3">
-        <a href="https://github.com/domstijn/friction-killer-suite/issues/new?title={issue_title}&amp;body={issue_body}" target="_blank" rel="noopener noreferrer" data-fk-cta="feedback" class="rounded-lg border border-indigo-500/40 bg-indigo-500/15 px-3 py-1.5 font-semibold text-indigo-200 hover:bg-indigo-500/25">Missing a bank/format or hit a snag? Report it &rarr;</a>
-        <a href="mailto:dom.stijn99@gmail.com?subject={mail_subj}" data-fk-cta="feedback" class="text-slate-400 underline hover:text-white">Email Stijn</a>
+        <a href="https://github.com/domstijn/friction-killer-suite/issues/new?title={issue_title}&amp;body={issue_body}" target="_blank" rel="noopener noreferrer" data-fk-cta="feedback" class="rounded-lg border border-indigo-500/40 bg-indigo-500/15 px-3 py-1.5 font-semibold text-indigo-200 hover:bg-indigo-500/25">{fb_cta}</a>
+        <a href="mailto:dom.stijn99@gmail.com?subject={mail_subj}" data-fk-cta="feedback" class="text-slate-400 underline hover:text-white">{fb_mail}</a>
       </div>
     </div>
   </section>"""
@@ -163,7 +189,28 @@ LEGAL_FOOTER_HTML = """  <section id="policies" class="mx-auto max-w-5xl px-6 pb
         </div>
         <div>
           <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
-          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments are processed securely by Stripe.</p>
+          <p class="mt-1">100% local processing — zero invoices, bank statements, CSVs, documents, or API keys are uploaded to external servers. Payments are processed securely by Stripe.</p>
+        </div>
+      </div>
+    </div>
+  </section>"""
+
+LEGAL_FOOTER_DE_HTML = """  <section id="policies" class="mx-auto max-w-5xl px-6 pb-10">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-xs leading-relaxed text-slate-400">
+      <div class="grid gap-6 md:grid-cols-3">
+        <div>
+          <h3 class="font-semibold text-slate-200">Support &amp; Kontakt</h3>
+          <p class="mt-1">Betrieben von Stijn Dom (@domstijn).</p>
+          <p class="mt-1">E-Mail: <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a></p>
+          <p class="mt-1">Fehler &amp; Tickets: <a href="https://github.com/domstijn/friction-killer-suite/issues" class="text-indigo-300 underline">GitHub Support Tracker</a></p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">14 Tage Geld-zurück-Garantie</h3>
+          <p class="mt-1">Alle Pro-Lizenzen beinhalten eine 14-tägige Geld-zurück-Garantie ohne Rückfragen. Schreiben Sie einfach mit Ihrer Bestell-ID an <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a>.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">Datenschutz &amp; AGB</h3>
+          <p class="mt-1">100 % lokale Verarbeitung im Browser bzw. offline per CLI — keine Rechnungen, Kontoauszüge, CSV-Dateien oder API-Keys werden an externe Server übertragen. Sichere Zahlung über Stripe inkl. USt-Rechnung.</p>
         </div>
       </div>
     </div>
@@ -408,7 +455,7 @@ SOC2 Guide,soc2-guide,https://uploads-ssl.webflow.com/65b1/arch.svg,"&lt;p&gt;Re
             <textarea id="pg-pb-csv" rows="8" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">payout_id,payout_date,type,gross,fee,fx_fee,tax,net,currency
 po_nov_01,2026-11-05,charge,121.00,3.80,1.20,21.00,116.00,EUR
 po_nov_01,2026-11-05,charge,242.00,7.25,0.00,42.00,234.75,EUR
-po_nov_01,2026-11-05,refund,-60.50,0.00,0.00,0.00,-60.50,EUR
+po_nov_01,2026-11-05,refund,-60.50,0.00,0.00,-10.50,-60.50,EUR
 po_nov_01,2026-11-05,dispute,-40.00,15.00,0.00,0.00,-55.00,EUR</textarea>
           </div>
         </div>
@@ -522,7 +569,7 @@ stripe_tax,NL,EUR,300.00,0.00,0.0,charge,NL123456789B01</textarea>
             <textarea id="pg-bankfeed-input" rows="8" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 font-mono text-xs text-slate-200">&lt;Document&gt;&lt;BkToCstmrStmt&gt;&lt;Stmt&gt;
   &lt;Acct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;Ccy&gt;EUR&lt;/Ccy&gt;&lt;/Acct&gt;
   &lt;Ntry&gt;&lt;Amt Ccy="EUR"&gt;2500.00&lt;/Amt&gt;&lt;CdtDbtInd&gt;CRDT&lt;/CdtDbtInd&gt;&lt;BookgDt&gt;&lt;Dt&gt;2026-11-10&lt;/Dt&gt;&lt;/BookgDt&gt;&lt;NtryDtls&gt;&lt;TxDtls&gt;&lt;RltdPties&gt;&lt;Dbtr&gt;&lt;Nm&gt;Acme GmbH&lt;/Nm&gt;&lt;/Dbtr&gt;&lt;/RltdPties&gt;&lt;RmtInf&gt;&lt;Ustrd&gt;Invoice 2026-01&lt;/Ustrd&gt;&lt;/RmtInf&gt;&lt;/TxDtls&gt;&lt;/NtryDtls&gt;&lt;/Ntry&gt;
-  &lt;Ntry&gt;&lt;Amt Ccy="EUR"&gt;420.00&lt;/Amt&gt;&lt;CdtDbtInd&gt;DBIT&lt;/CdtDbtInd&gt;&lt;BookgDt&gt;&lt;Dt&gt;2026-11-12&lt;/Dt&gt;&lt;/BookgDt&gt;&lt;NtryDtls&gt;&lt;TxDtls&gt;&lt;RltdPties&gt;&lt;Cdtr&gt;&lt;Nm&gt;CloudHost BV&lt;/Nm&gt;&lt;/Cdtr&gt;&lt;/RltdPties&gt;&lt;RmtInf&gt;&lt;Ustrd&gt;Cluster Nov&lt;/Ustrd&gt;&lt;/RmtInf&gt;&lt;/TxDtls&gt;&lt;/NtryDtls&gt;&lt;/Ntry&gt;
+  &lt;Ntry&gt;&lt;Amt Ccy="EUR"&gt;654.50&lt;/Amt&gt;&lt;CdtDbtInd&gt;DBIT&lt;/CdtDbtInd&gt;&lt;BookgDt&gt;&lt;Dt&gt;2026-11-12&lt;/Dt&gt;&lt;/BookgDt&gt;&lt;NtryDtls&gt;&lt;TxDtls&gt;&lt;AmtDtls&gt;&lt;TxAmt&gt;&lt;Amt Ccy="EUR"&gt;420.00&lt;/Amt&gt;&lt;/TxAmt&gt;&lt;/AmtDtls&gt;&lt;RltdPties&gt;&lt;Cdtr&gt;&lt;Nm&gt;CloudHost BV&lt;/Nm&gt;&lt;/Cdtr&gt;&lt;/RltdPties&gt;&lt;RmtInf&gt;&lt;Ustrd&gt;Cluster Nov&lt;/Ustrd&gt;&lt;/RmtInf&gt;&lt;/TxDtls&gt;&lt;TxDtls&gt;&lt;AmtDtls&gt;&lt;TxAmt&gt;&lt;Amt Ccy="EUR"&gt;234.50&lt;/Amt&gt;&lt;/TxAmt&gt;&lt;/AmtDtls&gt;&lt;RltdPties&gt;&lt;Cdtr&gt;&lt;Nm&gt;Stripe Processing Fee&lt;/Nm&gt;&lt;/Cdtr&gt;&lt;/RltdPties&gt;&lt;RmtInf&gt;&lt;Ustrd&gt;SEPA Fee Batch 42&lt;/Ustrd&gt;&lt;/RmtInf&gt;&lt;/TxDtls&gt;&lt;/NtryDtls&gt;&lt;/Ntry&gt;
 &lt;/Stmt&gt;&lt;/BkToCstmrStmt&gt;&lt;/Document&gt;</textarea>
           </div>
         </div>
@@ -790,23 +837,28 @@ PLAYGROUND_SCRIPT = r"""  <script>
           wOut.textContent = "Add header + at least 1 CMS row.";
           return;
         }
+        const headers = lines[0].split(",").map((h) => h.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "media");
         const manifest = [];
         const redirects = ["old_path,new_path,status"];
         const cdnRe = /https?:\/\/(?:uploads-ssl\.webflow\.com|cdn\.prod\.website-files\.com|assets(?:-global)?\.website-files\.com)\/[^\s"'<>,)]+/gi;
         const outLines = [lines[0]];
         lines.slice(1).forEach((line, idx) => {
-          const slugMatch = line.split(",")[1] || ("item-" + (idx + 1));
+          const cols = line.split(",");
+          const slugMatch = cols[1] || ("item-" + (idx + 1));
           const slug = slugMatch.trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-");
-          let count = 0;
-          const rewritten = line.replace(cdnRe, (url) => {
-            count += 1;
-            const extMatch = url.match(/\.(webp|png|jpe?g|svg|avif|gif)$/i);
-            const ext = extMatch ? "." + extMatch[1].toLowerCase() : ".png";
-            const fileName = slug + "-asset-0" + count + ext;
-            const newUrl = base + "/" + fileName;
-            manifest.push({ slug, fileName, originalUrl: url, newUrl });
-            return newUrl;
-          });
+          const counters = {};
+          const rewritten = cols.map((cell, ci) => {
+            const fSlug = headers[ci] || "media";
+            return cell.replace(cdnRe, (url) => {
+              counters[fSlug] = (counters[fSlug] || 0) + 1;
+              const extMatch = url.match(/\.(webp|png|jpe?g|svg|avif|gif)$/i);
+              const ext = extMatch ? "." + extMatch[1].toLowerCase() : ".png";
+              const fileName = slug + "-" + fSlug + "-" + String(counters[fSlug]).padStart(2, "0") + ext;
+              const newUrl = base + "/" + fileName;
+              manifest.push({ slug, field: fSlug, fileName, originalUrl: url, newUrl });
+              return newUrl;
+            });
+          }).join(",");
           outLines.push(rewritten);
           redirects.push(oldP + "/" + slug + "," + newP + "/" + slug + ",301");
         });
@@ -833,7 +885,7 @@ PLAYGROUND_SCRIPT = r"""  <script>
           pOut.textContent = "Add header + at least 1 payout row.";
           return;
         }
-        let gross = 0, tax = 0, refunds = 0, disputes = 0, fees = 0, fx = 0;
+        let gross = 0, tax = 0, refundedTax = 0, refunds = 0, disputes = 0, fees = 0, fx = 0;
         let pid = "po_batch", pdate = "2026-11-05";
         lines.slice(1).forEach((l) => {
           const cols = l.split(",");
@@ -846,25 +898,42 @@ PLAYGROUND_SCRIPT = r"""  <script>
           const tx = Math.abs(Math.round((parseFloat(cols[6]) || 0) * 100));
           fees += f;
           fx += x;
-          if (t.includes("refund") || (g < 0 && !t.includes("dispute"))) refunds += Math.abs(g);
-          else if (t.includes("dispute")) disputes += Math.abs(g);
-          else { gross += Math.max(0, g); tax += Math.min(tx, Math.max(0, g)); }
+          if (t.includes("refund") || (g < 0 && !t.includes("dispute"))) {
+            const absG = Math.abs(g);
+            const rTax = Math.min(tx, absG);
+            refundedTax += rTax;
+            refunds += absG - rTax;
+            tax -= rTax;
+          } else if (t.includes("dispute")) {
+            disputes += Math.abs(g);
+          } else {
+            gross += Math.max(0, g);
+            tax += Math.min(tx, Math.max(0, g));
+          }
         });
-        const netSales = gross - tax;
-        const netBank = gross - refunds - disputes - fees - fx;
+        const netSales = gross - (tax + refundedTax);
+        const netBank = gross - refunds - refundedTax - disputes - fees - fx;
         const fmt = (c) => (c / 100).toFixed(2);
-        const xero = [
-          "*Narration,*Date,Description,*AccountCode,*TaxType,*Amount",
-          "Stripe Payout " + pid + "," + pdate + ",Gross sales net of tax,200,OUTPUT2,-" + fmt(netSales),
-          "Stripe Payout " + pid + "," + pdate + ",VAT collected,820,BAS Excluded,-" + fmt(tax),
-          "Stripe Payout " + pid + "," + pdate + ",Customer refunds,205,NONE," + fmt(refunds),
-          "Stripe Payout " + pid + "," + pdate + ",Chargebacks & disputes,206,NONE," + fmt(disputes),
-          "Stripe Payout " + pid + "," + pdate + ",Stripe processing fees,404,EXEMPTEXPENSES," + fmt(fees),
-          "Stripe Payout " + pid + "," + pdate + ",FX conversion fees,405,EXEMPTEXPENSES," + fmt(fx),
-          "Stripe Payout " + pid + "," + pdate + ",Net bank deposit,120,BAS Excluded," + fmt(netBank),
-        ];
+        const entries = [];
+        if (netSales > 0) entries.push({ desc: "Gross sales net of tax", acct: "200", side: "credit", cents: netSales });
+        if (tax > 0) entries.push({ desc: "VAT collected", acct: "820", side: "credit", cents: tax });
+        else if (tax < 0) entries.push({ desc: "VAT refunded", acct: "820", side: "debit", cents: Math.abs(tax) });
+        if (refunds > 0) entries.push({ desc: "Customer refunds net of tax", acct: "205", side: "debit", cents: refunds });
+        if (disputes > 0) entries.push({ desc: "Chargebacks & disputes", acct: "206", side: "debit", cents: disputes });
+        if (fees > 0) entries.push({ desc: "Stripe processing fees", acct: "404", side: "debit", cents: fees });
+        if (fx > 0) entries.push({ desc: "FX conversion fees", acct: "405", side: "debit", cents: fx });
+        if (netBank >= 0) entries.push({ desc: "Net bank deposit", acct: "120", side: "debit", cents: netBank });
+        else entries.push({ desc: "Negative payout debit", acct: "120", side: "credit", cents: Math.abs(netBank) });
+
+        const sumDebits = entries.filter((e) => e.side === "debit").reduce((s, e) => s + e.cents, 0);
+        const sumCredits = entries.filter((e) => e.side === "credit").reduce((s, e) => s + e.cents, 0);
+        const xero = ["*Narration,*Date,Description,*AccountCode,*TaxType,*Amount"];
+        entries.forEach((e) => {
+          const amt = e.side === "debit" ? fmt(e.cents) : fmt(-e.cents);
+          xero.push(["Stripe Payout " + pid, pdate, e.desc, e.acct, "NONE", amt].join(","));
+        });
         pOut.textContent =
-          "# Double-Entry Audit: Debits €" + fmt(gross) + " == Credits €" + fmt(gross) + " (Drift: €0.00)\n\n" +
+          "# Double-Entry Audit: Debits €" + fmt(sumDebits) + " == Credits €" + fmt(sumCredits) + " (Drift: €" + fmt(sumDebits - sumCredits) + ")\n\n" +
           "# Xero Manual Journal CSV:\n" + xero.join("\n");
       }
       pCsv?.addEventListener("input", runPayoutBridge);
@@ -921,7 +990,10 @@ PLAYGROUND_SCRIPT = r"""  <script>
           return;
         }
         const fx = { EUR: 1.0, USD: 0.92, GBP: 1.19, SEK: 0.088, DKK: 0.134, PLN: 0.233 };
-        const eu = new Set(["AT","BE","BG","CY","CZ","DE","DK","EE","EL","ES","FI","FR","HR","HU","IE","IT","LT","LU","LV","MT","NL","PL","PT","RO","SE","SI","SK"]);
+        const euStd = { AT:20, BE:21, BG:20, CY:19, CZ:21, DE:19, DK:25, EE:24, EL:24, ES:21, FI:25.5, FR:20, HR:25, HU:27, IE:23, IT:22, LT:21, LU:17, LV:21, MT:18, NL:21, PL:23, PT:23, RO:19, SE:25, SI:22, SK:23 };
+        const hdrs = lines[0].split(",").map((h) => h.trim().toLowerCase());
+        const iSup = hdrs.indexOf("supply_type");
+        const iVatIdHdr = hdrs.indexOf("customer_vat_id");
         const buckets = new Map();
         let excluded = 0;
         lines.slice(1).forEach((l) => {
@@ -933,22 +1005,24 @@ PLAYGROUND_SCRIPT = r"""  <script>
           const tax = parseFloat(cols[4]) || 0;
           const rate = parseFloat(cols[5]) || 0;
           const kind = (cols[6] || "charge").toLowerCase();
-          const vatId = (cols[7] || "").trim();
-          if (!eu.has(ms) || ms === "DE" || (vatId && tax === 0)) { excluded += 1; return; }
+          const supply = (iSup >= 0 && (cols[iSup] || "").toUpperCase().includes("GOOD")) ? "GOODS" : "SERVICES";
+          const vatId = (iVatIdHdr >= 0 ? (cols[iVatIdHdr] || "") : (cols[7] || "")).trim();
+          if (!(ms in euStd) || ms === "DE" || (vatId && tax === 0)) { excluded += 1; return; }
           const mult = (kind.includes("refund") && sub > 0 ? -1 : 1) * (fx[cur] ?? 1.0);
           const netEur = sub * mult;
           const vatEur = tax * mult;
-          const key = ms + "|" + rate.toFixed(2);
-          const curB = buckets.get(key) || { ms, rate: rate.toFixed(2), net: 0, vat: 0 };
+          const rateType = rate < (euStd[ms] - 2.5) ? "REDUCED" : "STANDARD";
+          const key = ms + "|" + supply + "|" + rateType + "|" + rate.toFixed(2);
+          const curB = buckets.get(key) || { ms, supply, rateType, rate: rate.toFixed(2), net: 0, vat: 0 };
           curB.net += netEur;
           curB.vat += vatEur;
           buckets.set(key, curB);
         });
-        const bzst = ["Satzart;Land des Verbrauchs;Umsatzsteuertyp;Umsatzsteuersatz;Steuerbemessungsgrundlage;Umsatzsteuerbetrag"];
+        const bzst = ["Satzart;Land des Verbrauchs;Umsatzart;Umsatzsteuertyp;Umsatzsteuersatz;Steuerbemessungsgrundlage;Umsatzsteuerbetrag"];
         let totalVat = 0;
-        Array.from(buckets.values()).sort((a, b) => a.ms.localeCompare(b.ms)).forEach((b) => {
+        Array.from(buckets.values()).sort((a, b) => a.ms.localeCompare(b.ms) || a.supply.localeCompare(b.supply)).forEach((b) => {
           totalVat += b.vat;
-          bzst.push(["BOP_OSS_V1", b.ms, "STANDARD", b.rate.replace(".", ","), b.net.toFixed(2).replace(".", ","), b.vat.toFixed(2).replace(".", ",")].join(";"));
+          bzst.push(["BOP_OSS_V1", b.ms, b.supply, b.rateType, b.rate.replace(".", ","), b.net.toFixed(2).replace(".", ","), b.vat.toFixed(2).replace(".", ",")].join(";"));
         });
         ossOut.textContent =
           "# EU27 OSS Summary (Excluded DE/Non-EU/B2B: " + excluded + ") | Total VAT Due: €" + totalVat.toFixed(2) + "\n\n" +
@@ -982,16 +1056,17 @@ PLAYGROUND_SCRIPT = r"""  <script>
         });
         const net = Object.values(b).reduce((a, v) => a + v, 0);
         const f = (cents) => (cents / 100).toFixed(2);
-        const lines = [
-          "*Narration,*Date,*Description,*AccountCode,*Amount",
-          "Amazon Settlement 2184990101,2026-11-16,Sales Principal,200," + f(-b.Sales),
-          "Amazon Settlement 2184990101,2026-11-16,VAT Collected,220," + f(-b.Tax),
-          "Amazon Settlement 2184990101,2026-11-16,Facilitator Tax Withheld,221," + f(-b.FacilitatorTax),
-          "Amazon Settlement 2184990101,2026-11-16,FBA & Referral Fees,404," + f(-b.Fees),
-          "Amazon Settlement 2184990101,2026-11-16,Sponsored Ads PPC,406," + f(-b.Ads),
-          "Amazon Settlement 2184990101,2026-11-16,Reserve Carry-Forward,125," + f(-b.Reserves),
-          "Amazon Settlement 2184990101,2026-11-16,Net Bank Deposit Clearing,120," + f(net),
-        ];
+        const lines = ["*Narration,*Date,*Description,*AccountCode,*TaxRate,*Amount"];
+        const pushRow = (desc, code, signedCents) => {
+          if (signedCents !== 0) lines.push("Amazon Settlement 2184990101,2026-11-16," + desc + "," + code + ",NONE," + f(signedCents));
+        };
+        pushRow("Sales Principal", "200", -b.Sales);
+        pushRow("VAT Collected", "220", -b.Tax);
+        pushRow("Facilitator Tax Withheld", "221", -b.FacilitatorTax);
+        pushRow("FBA & Referral Fees", "404", -b.Fees);
+        pushRow("Sponsored Ads PPC", "406", -b.Ads);
+        pushRow("Reserve Carry-Forward", "125", -b.Reserves);
+        pushRow("Net Bank Deposit Clearing", "120", net);
         amzOut.textContent =
           "# Double-Entry Verification: Debits == Credits | Net Deposit: €" + f(net) + " (Drift: €0.00)\n\n" +
           "# Xero Manual Journal CSV:\n" + lines.join("\n");
@@ -1026,12 +1101,27 @@ PLAYGROUND_SCRIPT = r"""  <script>
           const vat = parseFloat(getVal("TaxAmount") || getVal("TaxTotalAmount") || "0") || 0;
           const gross = parseFloat(getVal("PayableAmount") || getVal("DuePayableAmount") || getVal("GrandTotalAmount") || "0") || 0;
           const pct = parseFloat(getVal("Percent") || getVal("RateApplicablePercent") || "19") || 0;
+          let taxCat = "S";
+          const catNode = Array.from(dom.getElementsByTagName("*")).find((n) => {
+            const ln = (n.localName || n.tagName || "").split(":").pop();
+            return ln === "ClassifiedTaxCategory" || ln === "ApplicableTradeTax";
+          });
+          if (catNode) {
+            const c = Array.from(catNode.getElementsByTagName("*")).find((n) => {
+              const ln = (n.localName || n.tagName || "").split(":").pop();
+              return ln === "ID" || ln === "CategoryCode";
+            });
+            if (c && c.textContent) taxCat = c.textContent.trim().toUpperCase();
+          }
           const validMath = Math.abs((net + vat) - gross) <= 0.02;
-          const bu = pct === 19 ? "9" : pct === 7 ? "8" : "0";
-          const konto = pct === 19 ? "3400" : pct === 7 ? "3300" : "3200";
+          let bu = "0", konto = "3200";
+          if (taxCat === "AE") { bu = "94"; konto = "3123"; }
+          else if (taxCat === "K") { bu = pct === 7 ? "92" : "91"; konto = pct === 7 ? "3420" : "3425"; }
+          else if (pct === 19) { bu = "9"; konto = "3400"; }
+          else if (pct === 7) { bu = "8"; konto = "3300"; }
           einvOut.textContent =
             "# EN 16931 Math Validation: " + (validMath ? "PASS (BR-CO-15 OK)" : "MISMATCH") + "\n" +
-            "# Invoice: " + id + " | Issue: " + dt + " | Net: " + net.toFixed(2) + " " + cur + " | VAT (" + pct + "%): " + vat.toFixed(2) + " | Gross: " + gross.toFixed(2) + "\n\n" +
+            "# Invoice: " + id + " | Issue: " + dt + " | Net: " + net.toFixed(2) + " " + cur + " | VAT (" + taxCat + " " + pct + "%): " + vat.toFixed(2) + " | Gross: " + gross.toFixed(2) + "\n\n" +
             "# DATEV EXTF Buchungsstapel CSV (BU-Schlüssel " + bu + ", SKR03 " + konto + "):\n" +
             "Umsatz;Soll/Haben;WKZ;Konto;Gegenkonto;BU-Schlüssel;Belegfeld 1\n" +
             gross.toFixed(2).replace(".", ",") + ";S;" + cur + ";" + konto + ";70000;" + bu + ";" + id;
@@ -1138,25 +1228,59 @@ PLAYGROUND_SCRIPT = r"""  <script>
             return el ? (el.textContent || "").trim() : "";
           };
           acct = getFirst(dom, "IBAN") || acct;
-          Array.from(dom.getElementsByTagName("*")).filter((n) => (n.localName || n.tagName.split(":").pop()) === "Ntry").forEach((ntry, i) => {
-            const amt = parseFloat(getFirst(ntry, "Amt") || "0") || 0;
-            const ind = getFirst(ntry, "CdtDbtInd") || "CRDT";
-            const signed = ind === "DBIT" ? -amt : amt;
+          Array.from(dom.getElementsByTagName("*")).filter((n) => (n.localName || n.tagName.split(":").pop()) === "Ntry").forEach((ntry) => {
+            const nAmt = getFirst(ntry, "Amt") || "0";
+            const nInd = getFirst(ntry, "CdtDbtInd") || "CRDT";
             const dt = getFirst(ntry, "Dt") || "2026-11-10";
-            const payee = getFirst(ntry, "Nm") || (signed >= 0 ? "Credit" : "Debit");
-            const memo = getFirst(ntry, "Ustrd") || payee;
-            txs.push({ dt, signed, payee, memo, fitid: `${dt.replace(/-/g, "")}-bf0${i + 1}` });
+            const dtls = Array.from(ntry.getElementsByTagName("*")).filter((n) => (n.localName || n.tagName.split(":").pop()) === "TxDtls");
+            const items = dtls.length ? dtls : [ntry];
+            items.forEach((txEl) => {
+              const tAmt = parseFloat(getFirst(txEl, "Amt") || nAmt) || 0;
+              const tInd = getFirst(txEl, "CdtDbtInd") || nInd;
+              const signed = (tInd === "DBIT" || tInd === "D" || tInd === "RC") ? -Math.abs(tAmt) : Math.abs(tAmt);
+              const nm = getFirst(txEl, "Nm") || (signed >= 0 ? "Credit" : "Debit");
+              const memo = getFirst(txEl, "Ustrd") || nm;
+              const seq = String(txs.length + 1).padStart(2, "0");
+              txs.push({ dt, signed, payee: nm, memo, fitid: `${dt.replace(/-/g, "")}-bf${seq}` });
+            });
           });
         } else {
           const lines = txt.split(/\r?\n/);
-          lines.forEach((ln, i) => {
-            if (ln.startsWith(":25:")) acct = ln.slice(4).trim();
-            const m = /^:61:(\d{6})(?:\d{4})?(RC|RD|C|D)([\d,]+)/.exec(ln.trim());
-            if (m) {
-              const val = parseFloat(m[3].replace(",", ".")) || 0;
-              const signed = (m[2] === "D" || m[2] === "RC") ? -val : val;
-              const dt = `20${m[1].slice(0, 2)}-${m[1].slice(2, 4)}-${m[1].slice(4, 6)}`;
-              txs.push({ dt, signed, payee: `MT940 ${m[2]}`, memo: "MT940 entry", fitid: `${dt.replace(/-/g, "")}-mt0${i + 1}` });
+          const fields = [];
+          lines.forEach((raw) => {
+            const l = raw.trimEnd();
+            if (!l || l === "-" || l === "$") return;
+            const fm = /^:(\d{2}[A-Z]?):(.*)$/.exec(l);
+            if (fm) fields.push([fm[1].toUpperCase(), fm[2].trim()]);
+            else if (fields.length) fields[fields.length - 1][1] += (fields[fields.length - 1][0] === "86" && l.startsWith("?") ? "" : " ") + l.trim();
+          });
+          fields.forEach(([tag, val]) => {
+            if (tag === "25" && val) acct = val.split(" ")[0];
+            else if (tag === "61") {
+              const m = /^(\d{6})(?:\d{4})?(RC|RD|C|D)(?:[A-Z](?=\d))?([\d,]+)/.exec(val.trim());
+              if (m) {
+                const v = parseFloat(m[3].replace(",", ".")) || 0;
+                const signed = (m[2] === "D" || m[2] === "RC") ? -v : v;
+                const dt = `20${m[1].slice(0, 2)}-${m[1].slice(2, 4)}-${m[1].slice(4, 6)}`;
+                const seq = String(txs.length + 1).padStart(2, "0");
+                txs.push({ dt, signed, payee: `MT940 ${m[2]}`, memo: "MT940 entry", fitid: `${dt.replace(/-/g, "")}-mt${seq}` });
+              }
+            } else if (tag === "86" && txs.length) {
+              const last = txs[txs.length - 1];
+              if (/\?\d{2}/.test(val)) {
+                const parts = val.split(/\?(\d{2})/);
+                const map = {};
+                for (let i = 1; i < parts.length - 1; i += 2) map[parts[i]] = (parts[i + 1] || "").trim();
+                last.payee = [map["32"], map["33"]].filter(Boolean).join(" ") || last.payee;
+                last.memo = Object.keys(map).filter((k) => k >= "20" && k <= "29").sort().map((k) => map[k]).join(" | ") || val;
+              } else if (val.includes("/NAME/")) {
+                const nm = /\/NAME\/([^/]+)/.exec(val);
+                const rm = /\/REMI\/([^/]+)/.exec(val);
+                if (nm) last.payee = nm[1].trim();
+                if (rm) last.memo = rm[1].trim();
+              } else if (val) {
+                last.memo = val;
+              }
             }
           });
         }
@@ -1231,6 +1355,25 @@ def build_seo_head_tags(
     )
 
 
+ECOSYSTEM_LABELS = {
+    "saas-addon": "Browser Web App + CLI",
+    "cli-wrapper": "Python CLI",
+    "ide-ai-plugin": "VS Code Extension",
+    "browser-extension": "Chrome Extension",
+}
+
+WEBAPP_SLUGS = {
+    "camt053-mt940-qbo-xero-converter",
+    "woo-shopify-metafield-migrator",
+    "e-invoice-xml-batch-converter",
+    "amazon-settlement-xero-qbo-splitter",
+    "eu-oss-vat-return-compiler",
+    "lemonsqueezy-stripe-polar-migrator",
+    "stripe-payout-xero-qbo-splitter",
+    "webflow-cms-asset-migrator",
+}
+
+
 def render_hub_html(
     products: list[dict[str, Any]],
     *,
@@ -1243,41 +1386,47 @@ def render_hub_html(
         zip_href = p["site_zip_rel"] if for_pages else p["zip_rel"]
         vsix_href = p["site_vsix_rel"] if for_pages else p["vsix_rel"]
         whl_href = p["site_whl_rel"] if for_pages else p["whl_rel"]
+        is_webapp = p["slug"] in WEBAPP_SLUGS
+        eco_label = "Browser Web App" if p["slug"] == "webflow-cms-asset-migrator" else ECOSYSTEM_LABELS.get(p["ecosystem"], p["ecosystem"])
+        cta_label = "Launch Live Web App →" if is_webapp else "Open Product Page"
         dl_links = []
-        if p["zip_exists"]:
-            dl_links.append(
-                f'<a href="{html.escape(zip_href)}" download data-fk-cta="free-install" class="text-xs text-indigo-300 hover:text-indigo-200 underline">.zip</a>'
+        if is_webapp and for_pages:
+            zip_badge = '<span class="text-xs font-medium text-emerald-300">100% Browser-Local</span>'
+        else:
+            if p["zip_exists"]:
+                dl_links.append(
+                    f'<a href="{html.escape(zip_href)}" download data-fk-cta="free-install" class="text-xs text-indigo-300 hover:text-indigo-200 underline">.zip</a>'
+                )
+            if p["vsix_exists"]:
+                dl_links.append(
+                    f'<a href="{html.escape(vsix_href)}" download data-fk-cta="free-install" class="text-xs text-emerald-300 hover:text-emerald-200 underline">.vsix</a>'
+                )
+            if p["slug"] == "vscode-workspace-profile-config":
+                dl_links.append(
+                    '<a href="https://marketplace.visualstudio.com/items?itemName=friction-killer.vscode-workspace-profile-config" target="_blank" rel="noopener noreferrer" data-fk-cta="free-install" class="text-xs text-sky-300 hover:text-sky-200 underline">Marketplace</a>'
+                )
+            if p["whl_exists"]:
+                dl_links.append(
+                    f'<a href="{html.escape(whl_href)}" download data-fk-cta="free-install" class="text-xs text-emerald-300 hover:text-emerald-200 underline">.whl (pip)</a>'
+                )
+            zip_badge = (
+                '<div class="flex items-center gap-2.5">' + " ".join(dl_links) + "</div>"
+                if dl_links
+                else '<span class="text-xs text-slate-500">Unpackaged</span>'
             )
-        if p["vsix_exists"]:
-            dl_links.append(
-                f'<a href="{html.escape(vsix_href)}" download data-fk-cta="free-install" class="text-xs text-emerald-300 hover:text-emerald-200 underline">.vsix</a>'
-            )
-        if p["slug"] == "vscode-workspace-profile-config":
-            dl_links.append(
-                '<a href="https://marketplace.visualstudio.com/items?itemName=friction-killer.vscode-workspace-profile-config" target="_blank" rel="noopener noreferrer" data-fk-cta="free-install" class="text-xs text-sky-300 hover:text-sky-200 underline">Marketplace</a>'
-            )
-        if p["whl_exists"]:
-            dl_links.append(
-                f'<a href="{html.escape(whl_href)}" download data-fk-cta="free-install" class="text-xs text-emerald-300 hover:text-emerald-200 underline">.whl (pip)</a>'
-            )
-        zip_badge = (
-            '<div class="flex items-center gap-2.5">' + " ".join(dl_links) + "</div>"
-            if dl_links
-            else '<span class="text-xs text-slate-500">Unpackaged</span>'
-        )
         cards.append(
             f"""      <article class="flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
         <div>
           <div class="flex items-center justify-between gap-2">
-            <span class="rounded-full border border-indigo-500/30 bg-indigo-500/10 px-2.5 py-0.5 text-xs font-medium text-indigo-300">{html.escape(p["ecosystem"])}</span>
+            <span class="rounded-full border border-indigo-500/30 bg-indigo-500/10 px-2.5 py-0.5 text-xs font-medium text-indigo-300">{html.escape(eco_label)}</span>
             <span class="text-sm font-bold text-emerald-400">{html.escape(p["price"])}</span>
           </div>
           <h3 class="mt-4 text-xl font-bold text-white">{html.escape(p["short_title"])}</h3>
-          <p class="mt-1 text-xs uppercase tracking-wider text-slate-400">For {html.escape(p["target_software"])} · Score {html.escape(str(p["score"]))}</p>
+          <p class="mt-1 text-xs uppercase tracking-wider text-slate-400">For {html.escape(p["target_software"])}</p>
           <p class="mt-3 text-sm leading-relaxed text-slate-300">{html.escape(p["summary"])}</p>
         </div>
         <div class="mt-6 flex items-center justify-between border-t border-slate-800 pt-4">
-          <a href="{html.escape(page_href)}" class="rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-700">Open Product Page</a>
+          <a href="{html.escape(page_href)}" class="rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-700">{cta_label}</a>
           {zip_badge}
         </div>
       </article>"""
@@ -1502,6 +1651,10 @@ def publish_docs_site(
     products_dir = docs_dir / "products"
     downloads_dir.mkdir(parents=True, exist_ok=True)
     products_dir.mkdir(parents=True, exist_ok=True)
+    active_slugs = {p["slug"] for p in products}
+    for existing in products_dir.iterdir():
+        if existing.is_dir() and existing.name not in active_slugs:
+            shutil.rmtree(existing)
     (docs_dir / ".nojekyll").write_text("", encoding="utf-8")
     analytics_cfg = load_analytics_config()
 
@@ -1535,6 +1688,7 @@ def publish_docs_site(
         analytics_cfg,
         bundle_checkout_url,
         legal_footer_html=LEGAL_FOOTER_HTML,
+        legal_footer_de_html=LEGAL_FOOTER_DE_HTML,
         analytics_renderer=build_analytics_footer_html,
     )
 

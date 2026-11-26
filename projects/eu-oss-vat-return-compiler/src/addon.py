@@ -390,6 +390,7 @@ def render_bzst_bop_csv(report: dict[str, Any]) -> str:
         [
             "Satzart",
             "Land des Verbrauchs",
+            "Umsatzart",
             "Umsatzsteuertyp",
             "Umsatzsteuersatz",
             "Steuerbemessungsgrundlage",
@@ -401,6 +402,7 @@ def render_bzst_bop_csv(report: dict[str, Any]) -> str:
             [
                 "BOP_OSS_V1",
                 b["mscon"],
+                b["supply_type"],
                 b["rate_type"],
                 _de_decimal(b["vat_rate"]),
                 _de_decimal(b["net_taxable_eur"]),

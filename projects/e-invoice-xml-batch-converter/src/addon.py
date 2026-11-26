@@ -118,6 +118,124 @@ SAMPLE_CII_ZUGFERD_XML = """<?xml version="1.0" encoding="UTF-8"?>
 """
 
 
+SAMPLE_PEPPOL_BIS3_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+         xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+         xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
+  <cbc:ID>PEP-2026-3003</cbc:ID>
+  <cbc:IssueDate>2026-11-20</cbc:IssueDate>
+  <cbc:DueDate>2026-12-20</cbc:DueDate>
+  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>PO-2026-BE-44</cbc:BuyerReference>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cac:PartyTaxScheme><cbc:CompanyID>BE0897234567</cbc:CompanyID></cac:PartyTaxScheme>
+      <cac:PartyLegalEntity><cbc:RegistrationName>Antwerp Logistics Systems BV</cbc:RegistrationName></cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cac:PartyTaxScheme><cbc:CompanyID>DE112233445</cbc:CompanyID></cac:PartyTaxScheme>
+      <cac:PartyLegalEntity><cbc:RegistrationName>Mittelstand Ops GmbH</cbc:RegistrationName></cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:PaymentMeans>
+    <cac:PayeeFinancialAccount><cbc:ID>BE68539007547034</cbc:ID></cac:PayeeFinancialAccount>
+  </cac:PaymentMeans>
+  <cac:TaxTotal><cbc:TaxAmount currencyID="EUR">0.00</cbc:TaxAmount></cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:TaxExclusiveAmount currencyID="EUR">240.00</cbc:TaxExclusiveAmount>
+    <cbc:PayableAmount currencyID="EUR">240.00</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="EA">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">180.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>EU Peppol Access Point Gateway</cbc:Name>
+      <cac:ClassifiedTaxCategory><cbc:ID>AE</cbc:ID><cbc:Percent>0.00</cbc:Percent></cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price><cbc:PriceAmount currencyID="EUR">180.00</cbc:PriceAmount></cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>2</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="EA">3</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">60.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>AS4 Message Routing Tier</cbc:Name>
+      <cac:ClassifiedTaxCategory><cbc:ID>AE</cbc:ID><cbc:Percent>0.00</cbc:Percent></cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price><cbc:PriceAmount currencyID="EUR">20.00</cbc:PriceAmount></cac:Price>
+  </cac:InvoiceLine>
+</Invoice>
+"""
+
+SAMPLE_CII_MIXED_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+                          xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
+                          xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
+  <rsm:ExchangedDocument>
+    <ram:ID>ZF-2026-4004</ram:ID>
+    <ram:TypeCode>380</ram:TypeCode>
+    <ram:IssueDateTime><udt:DateTimeString format="102">20261121</udt:DateTimeString></ram:IssueDateTime>
+  </rsm:ExchangedDocument>
+  <rsm:SupplyChainTradeTransaction>
+    <ram:IncludedSupplyChainTradeLineItem>
+      <ram:AssociatedDocumentLineDocument><ram:LineID>1</ram:LineID></ram:AssociatedDocumentLineDocument>
+      <ram:SpecifiedTradeProduct><ram:Name>Business Accommodation (2 Nights)</ram:Name></ram:SpecifiedTradeProduct>
+      <ram:SpecifiedLineTradeAgreement>
+        <ram:NetPriceProductTradePrice><ram:ChargeAmount>100.00</ram:ChargeAmount></ram:NetPriceProductTradePrice>
+      </ram:SpecifiedLineTradeAgreement>
+      <ram:SpecifiedLineTradeDelivery><ram:BilledQuantity unitCode="DAY">2</ram:BilledQuantity></ram:SpecifiedLineTradeDelivery>
+      <ram:SpecifiedLineTradeSettlement>
+        <ram:ApplicableTradeTax><ram:CategoryCode>S</ram:CategoryCode><ram:RateApplicablePercent>7.00</ram:RateApplicablePercent></ram:ApplicableTradeTax>
+        <ram:SpecifiedTradeSettlementLineMonetarySummation><ram:LineTotalAmount>200.00</ram:LineTotalAmount></ram:SpecifiedTradeSettlementLineMonetarySummation>
+      </ram:SpecifiedLineTradeSettlement>
+    </ram:IncludedSupplyChainTradeLineItem>
+    <ram:IncludedSupplyChainTradeLineItem>
+      <ram:AssociatedDocumentLineDocument><ram:LineID>2</ram:LineID></ram:AssociatedDocumentLineDocument>
+      <ram:SpecifiedTradeProduct><ram:Name>Conference Room &amp; Catering Package</ram:Name></ram:SpecifiedTradeProduct>
+      <ram:SpecifiedLineTradeAgreement>
+        <ram:NetPriceProductTradePrice><ram:ChargeAmount>100.00</ram:ChargeAmount></ram:NetPriceProductTradePrice>
+      </ram:SpecifiedLineTradeAgreement>
+      <ram:SpecifiedLineTradeDelivery><ram:BilledQuantity unitCode="EA">1</ram:BilledQuantity></ram:SpecifiedLineTradeDelivery>
+      <ram:SpecifiedLineTradeSettlement>
+        <ram:ApplicableTradeTax><ram:CategoryCode>S</ram:CategoryCode><ram:RateApplicablePercent>19.00</ram:RateApplicablePercent></ram:ApplicableTradeTax>
+        <ram:SpecifiedTradeSettlementLineMonetarySummation><ram:LineTotalAmount>100.00</ram:LineTotalAmount></ram:SpecifiedTradeSettlementLineMonetarySummation>
+      </ram:SpecifiedLineTradeSettlement>
+    </ram:IncludedSupplyChainTradeLineItem>
+    <ram:ApplicableHeaderTradeAgreement>
+      <ram:BuyerReference>CONF-MUC-2026</ram:BuyerReference>
+      <ram:SellerTradeParty>
+        <ram:Name>Tagungshotel München GmbH</ram:Name>
+        <ram:SpecifiedTaxRegistration><ram:ID schemeID="VA">DE276543219</ram:ID></ram:SpecifiedTaxRegistration>
+      </ram:SellerTradeParty>
+      <ram:BuyerTradeParty>
+        <ram:Name>Mittelstand Ops GmbH</ram:Name>
+        <ram:SpecifiedTaxRegistration><ram:ID schemeID="VA">DE112233445</ram:ID></ram:SpecifiedTaxRegistration>
+      </ram:BuyerTradeParty>
+    </ram:ApplicableHeaderTradeAgreement>
+    <ram:ApplicableHeaderTradeSettlement>
+      <ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>
+      <ram:SpecifiedTradeSettlementPaymentMeans>
+        <ram:PayeePartyCreditorFinancialAccount><ram:IBANID>DE12700202700015984000</ram:IBANID></ram:PayeePartyCreditorFinancialAccount>
+      </ram:SpecifiedTradeSettlementPaymentMeans>
+      <ram:SpecifiedTradePaymentTerms>
+        <ram:DueDateDateTime><udt:DateTimeString format="102">20261206</udt:DateTimeString></ram:DueDateDateTime>
+      </ram:SpecifiedTradePaymentTerms>
+      <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+        <ram:TaxBasisTotalAmount>300.00</ram:TaxBasisTotalAmount>
+        <ram:TaxTotalAmount currencyID="EUR">33.00</ram:TaxTotalAmount>
+        <ram:GrandTotalAmount>333.00</ram:GrandTotalAmount>
+        <ram:DuePayableAmount>333.00</ram:DuePayableAmount>
+      </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+    </ram:ApplicableHeaderTradeSettlement>
+  </rsm:SupplyChainTradeTransaction>
+</rsm:CrossIndustryInvoice>
+"""
+
+
 def _local(tag: str) -> str:
     return tag.rsplit("}", 1)[-1]
 
@@ -170,22 +288,44 @@ def _norm_date(raw: str) -> str:
     return clean[:10] if len(clean) >= 10 else clean
 
 
-def _map_datev_bu_and_account(lines: list[dict[str, Any]], tax_exclusive: Decimal, tax_total: Decimal) -> tuple[str, str]:
-    rates = {_dec(ln.get("vat_rate", 0)) for ln in lines} if lines else set()
-    cats = {str(ln.get("vat_category") or "").upper() for ln in lines} if lines else set()
-    if not rates and tax_exclusive > Decimal("0.00") and tax_total > Decimal("0.00"):
-        inferred = ((tax_total / tax_exclusive) * Decimal("100")).quantize(CENT, rounding=ROUND_HALF_UP)
-        rates.add(inferred)
+def _map_line_tax(vat_cat: str, vat_rate: Decimal) -> tuple[str, str, str, str]:
+    """Deterministically map EN 16931 tax category + rate to DATEV BU, SKR03, Xero TaxType, and QBO Account."""
+    cat = (vat_cat or "S").strip().upper()
+    rate = _dec(vat_rate)
+    if cat == "AE":
+        return "94", "3123", "Reverse Charge Expenses (0%)", "3123 EU Reverse Charge (§13b)"
+    if cat == "K":
+        if rate == Decimal("7.00"):
+            return "92", "3420", "EC Acquisitions (7%)", "3420 Intra-EU Acquisition (7%)"
+        return "91", "3425", "EC Acquisitions (19%)", "3425 Intra-EU Acquisition (19%)"
+    if rate == Decimal("19.00"):
+        return "9", "3400", "INPUT (19%)", "3400 Standard Purchases (19%)"
+    if rate == Decimal("7.00"):
+        return "8", "3300", "INPUT (7%)", "3300 Reduced Purchases (7%)"
+    if rate == Decimal("0.00") or cat in {"E", "Z", "O", "G"}:
+        return "0", "3200", "EXEMPTINPUT (0%)", "3200 Tax-Exempt Purchases (0%)"
+    return "0", "3425", f"INPUT ({rate:.0f}%)", "3425 General Purchases"
 
-    if "AE" in cats:
-        return "94", "3123"
-    if any(r == Decimal("19.00") for r in rates):
-        return "9", "3400"
-    if any(r == Decimal("7.00") for r in rates):
-        return "8", "3300"
-    if all(r == Decimal("0.00") for r in rates) or bool(cats & {"E", "Z", "K", "G"}):
-        return "0", "3200"
-    return "0", "3425"
+
+def _map_datev_bu_and_account(lines: list[dict[str, Any]], tax_exclusive: Decimal, tax_total: Decimal) -> tuple[str, str]:
+    if lines:
+        seen_bu: list[str] = []
+        seen_acct: list[str] = []
+        for ln in lines:
+            bu = str(ln.get("datev_bu_key") or "")
+            acct = str(ln.get("datev_account") or "")
+            if bu and bu not in seen_bu:
+                seen_bu.append(bu)
+            if acct and acct not in seen_acct:
+                seen_acct.append(acct)
+        if seen_bu and seen_acct:
+            return "+".join(seen_bu), ",".join(seen_acct)
+
+    if tax_exclusive > Decimal("0.00") and tax_total > Decimal("0.00"):
+        inferred = ((tax_total / tax_exclusive) * Decimal("100")).quantize(CENT, rounding=ROUND_HALF_UP)
+        bu, acct, _, _ = _map_line_tax("S", inferred)
+        return bu, acct
+    return "0", "3200"
 
 
 def parse_einvoice_xml(xml_text: str, filename: str = "invoice.xml") -> dict[str, Any]:
@@ -226,14 +366,22 @@ def parse_einvoice_xml(xml_text: str, filename: str = "invoice.xml") -> dict[str
             tax_cat = _path(item_el, "Item", "ClassifiedTaxCategory")
             vat_rate = _dec(_text(tax_cat, "Percent"))
             vat_cat = (_text(tax_cat, "ID") or "S").upper()
+            eff_rate = Decimal("0.00") if vat_cat in {"AE", "K"} else vat_rate
+            line_tax = ((line_net * eff_rate) / Decimal("100")).quantize(CENT, rounding=ROUND_HALF_UP)
+            bu_l, acct_l, xero_tax_l, qbo_acct_l = _map_line_tax(vat_cat, vat_rate)
             lines.append(
                 {
                     "name": name,
                     "qty": f"{qty:.2f}",
                     "unit_price": f"{unit_price:.2f}",
                     "line_net": f"{line_net:.2f}",
+                    "line_tax": f"{line_tax:.2f}",
                     "vat_rate": f"{vat_rate:.2f}",
                     "vat_category": vat_cat,
+                    "datev_bu_key": bu_l,
+                    "datev_account": acct_l,
+                    "xero_tax_type": xero_tax_l,
+                    "qbo_account": qbo_acct_l,
                 }
             )
     elif root_name == "CrossIndustryInvoice":
@@ -275,14 +423,22 @@ def parse_einvoice_xml(xml_text: str, filename: str = "invoice.xml") -> dict[str
             t_el = _child(li_set, "ApplicableTradeTax")
             vat_rate = _dec(_text(t_el, "RateApplicablePercent"))
             vat_cat = (_text(t_el, "CategoryCode") or "S").upper()
+            eff_rate = Decimal("0.00") if vat_cat in {"AE", "K"} else vat_rate
+            line_tax = ((line_net * eff_rate) / Decimal("100")).quantize(CENT, rounding=ROUND_HALF_UP)
+            bu_l, acct_l, xero_tax_l, qbo_acct_l = _map_line_tax(vat_cat, vat_rate)
             lines.append(
                 {
                     "name": name,
                     "qty": f"{qty:.2f}",
                     "unit_price": f"{unit_price:.2f}",
                     "line_net": f"{line_net:.2f}",
+                    "line_tax": f"{line_tax:.2f}",
                     "vat_rate": f"{vat_rate:.2f}",
                     "vat_category": vat_cat,
+                    "datev_bu_key": bu_l,
+                    "datev_account": acct_l,
+                    "xero_tax_type": xero_tax_l,
+                    "qbo_account": qbo_acct_l,
                 }
             )
     else:
@@ -301,12 +457,21 @@ def parse_einvoice_xml(xml_text: str, filename: str = "invoice.xml") -> dict[str
 
     if lines:
         sum_lines = sum((Decimal(ln["line_net"]) for ln in lines), Decimal("0.00"))
-        if abs(sum_lines - tax_exclusive) > Decimal("0.01"):
+        if abs(sum_lines - tax_exclusive) > Decimal("0.02"):
             validation_errors.append(
                 f"BR-CO-10: Sum of line net amounts ({sum_lines:.2f}) differs from TaxExclusiveAmount ({tax_exclusive:.2f})."
             )
+        sum_line_vat = sum((Decimal(ln["line_tax"]) for ln in lines), Decimal("0.00"))
+        diff_vat = tax_total - sum_line_vat
+        if abs(diff_vat) > Decimal("0.05"):
+            validation_errors.append(
+                f"BR-CO-14: Sum of line VAT amounts ({sum_line_vat:.2f}) differs from TaxTotal ({tax_total:.2f})."
+            )
+        elif diff_vat != Decimal("0.00"):
+            adj_target = next((ln for ln in reversed(lines) if Decimal(ln["line_tax"]) > Decimal("0.00")), lines[-1])
+            adj_target["line_tax"] = f"{(Decimal(adj_target['line_tax']) + diff_vat):.2f}"
 
-    if abs((tax_exclusive + tax_total) - payable_gross) > Decimal("0.01"):
+    if abs((tax_exclusive + tax_total) - payable_gross) > Decimal("0.02"):
         validation_errors.append(
             f"BR-CO-15: TaxExclusiveAmount + TaxTotal ({tax_exclusive + tax_total:.2f}) differs from PayableAmount ({payable_gross:.2f})."
         )
@@ -426,19 +591,49 @@ def render_datev_extf_csv(batch: dict[str, Any]) -> str:
     for inv in batch.get("invoices", []):
         parts = str(inv.get("issue_date") or "").split("-")
         ddmm = f"{parts[2]}{parts[1]}" if len(parts) == 3 else "1811"
-        writer.writerow(
-            [
-                _de_num(inv["payable_gross_total"]),
-                "S",
-                inv["currency"],
-                inv["datev_account"],
-                "70000",
-                inv["datev_bu_key"],
-                ddmm,
-                inv["invoice_id"],
-                f"{inv['seller_name']} ({inv['syntax']})",
-            ]
-        )
+        lines = inv.get("lines") or []
+        if not lines:
+            writer.writerow(
+                [
+                    _de_num(inv["payable_gross_total"]),
+                    "S",
+                    inv["currency"],
+                    inv["datev_account"],
+                    "70000",
+                    inv["datev_bu_key"],
+                    ddmm,
+                    inv["invoice_id"],
+                    f"{inv['seller_name']} ({inv['syntax']})",
+                ]
+            )
+            continue
+
+        buckets: dict[tuple[str, str, str], Decimal] = {}
+        for ln in lines:
+            bkey = (
+                str(ln.get("datev_bu_key") or inv["datev_bu_key"]),
+                str(ln.get("datev_account") or inv["datev_account"]),
+                str(ln.get("vat_rate") or "0.00"),
+            )
+            gross_l = Decimal(str(ln["line_net"])) + Decimal(str(ln.get("line_tax") or "0.00"))
+            buckets[bkey] = buckets.get(bkey, Decimal("0.00")) + gross_l
+
+        multi = len(buckets) > 1
+        for (bu_b, acct_b, _rate_b), gross_b in buckets.items():
+            text = f"{inv['seller_name']} ({inv['syntax']} · BU {bu_b})" if multi else f"{inv['seller_name']} ({inv['syntax']})"
+            writer.writerow(
+                [
+                    _de_num(gross_b),
+                    "S",
+                    inv["currency"],
+                    acct_b,
+                    "70000",
+                    bu_b,
+                    ddmm,
+                    inv["invoice_id"],
+                    text,
+                ]
+            )
     return buf.getvalue().rstrip("\n")
 
 
@@ -458,20 +653,26 @@ def render_xero_bills_csv(batch: dict[str, Any]) -> str:
             "*UnitAmount",
             "*AccountCode",
             "*TaxType",
+            "TaxAmount",
             "Currency",
         ]
     )
     for inv in batch.get("invoices", []):
+        fallback_bu, fallback_acct, fallback_xtax, _ = _map_line_tax("S", Decimal("0.00"))
         for ln in inv.get("lines") or [
             {
                 "name": inv["invoice_id"],
                 "qty": "1.00",
                 "unit_price": inv["tax_exclusive_total"],
+                "line_tax": inv["tax_total"],
                 "vat_rate": "0.00",
+                "datev_account": inv.get("datev_account") or fallback_acct,
+                "xero_tax_type": fallback_xtax,
             }
         ]:
-            rate = Decimal(str(ln.get("vat_rate") or "0"))
-            tax_type = f"Tax on Purchases ({rate:.0f}%)" if rate > 0 else "Tax Exempt"
+            acct = str(ln.get("datev_account") or fallback_acct)
+            tax_type = str(ln.get("xero_tax_type") or fallback_xtax)
+            line_tax = str(ln.get("line_tax") or "0.00")
             writer.writerow(
                 [
                     inv["seller_name"],
@@ -481,8 +682,9 @@ def render_xero_bills_csv(batch: dict[str, Any]) -> str:
                     ln["name"],
                     ln["qty"],
                     ln["unit_price"],
-                    "400",
+                    acct,
                     tax_type,
+                    line_tax,
                     inv["currency"],
                 ]
             )
@@ -502,23 +704,40 @@ def render_qbo_bills_csv(batch: dict[str, Any]) -> str:
             "DueDate",
             "Account",
             "LineDescription",
+            "Quantity",
+            "UnitPrice",
             "LineAmount",
+            "TaxCode",
             "TaxAmount",
             "Currency",
         ]
     )
     for inv in batch.get("invoices", []):
-        writer.writerow(
-            [
-                inv["invoice_id"],
-                inv["seller_name"],
-                inv["issue_date"],
-                inv["due_date"],
-                "Accounts Payable Expenses",
-                f"{inv['syntax']} Invoice {inv['invoice_id']}",
-                inv["tax_exclusive_total"],
-                inv["tax_total"],
-                inv["currency"],
-            ]
-        )
+        for ln in inv.get("lines") or [
+            {
+                "name": f"{inv['syntax']} Invoice {inv['invoice_id']}",
+                "qty": "1.00",
+                "unit_price": inv["tax_exclusive_total"],
+                "line_net": inv["tax_exclusive_total"],
+                "line_tax": inv["tax_total"],
+                "datev_bu_key": inv.get("datev_bu_key") or "0",
+                "qbo_account": "3425 General Purchases",
+            }
+        ]:
+            writer.writerow(
+                [
+                    inv["invoice_id"],
+                    inv["seller_name"],
+                    inv["issue_date"],
+                    inv["due_date"],
+                    ln.get("qbo_account") or "3425 General Purchases",
+                    ln["name"],
+                    ln["qty"],
+                    ln["unit_price"],
+                    ln["line_net"],
+                    f"BU {ln.get('datev_bu_key') or inv.get('datev_bu_key', '0')}",
+                    ln.get("line_tax") or "0.00",
+                    inv["currency"],
+                ]
+            )
     return buf.getvalue().rstrip("\n")

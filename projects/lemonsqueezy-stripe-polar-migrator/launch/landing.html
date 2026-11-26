@@ -266,10 +266,6 @@
         const pro = isProUnlocked();
         const wantPp = Boolean(ppChk?.checked);
         const wantLic = Boolean(licChk?.checked);
-        if (!pro && (wantPp || wantLic)) {
-          statusEl.textContent = "PayPal Re-Auth Cohort & Legacy Keys JSON require Pro (€29 once).";
-          return;
-        }
 
         const rows = parseCsv(csvEl?.value || "");
         if (rows.length < 2) {
@@ -312,18 +308,18 @@
           };
         });
 
+        const selected = pro ? records : records.slice(0, FREE_CAP);
+        const truncated = Math.max(0, records.length - selected.length);
+
         const activeSet = new Set(["active", "on_trial", "past_due", "paused"]);
         let cardMrr = 0, ppMrr = 0, keyCount = 0;
-        records.forEach((rec) => {
+        selected.forEach((rec) => {
           if (rec.licenseKey) keyCount += 1;
           if (activeSet.has(rec.status)) {
             if (rec.isPaypal) ppMrr += rec.mrrCents;
             else cardMrr += rec.mrrCents;
           }
         });
-
-        const selected = pro ? records : records.slice(0, FREE_CAP);
-        const truncated = Math.max(0, records.length - selected.length);
 
         const mainLines = ["customer_email,customer_name,product_variant,status,payment_method,mrr,currency,renews_at,trial_end_unix,migration_track"];
         selected.forEach((rec) => {
@@ -333,21 +329,22 @@
         const stripePolarCsv = mainLines.join("\n");
 
         let paypalCohortCsv = null;
-        if (pro && wantPp) {
+        if (wantPp) {
           const ppLines = ["customer_email,customer_name,product_variant,mrr,renews_at,trial_end_unix,action_required"];
-          selected.forEach((rec) => {
-            if (rec.isPaypal && activeSet.has(rec.status)) {
-              ppLines.push([rec.email, rec.name, rec.variant, (rec.mrrCents / 100).toFixed(2), rec.renewsAt, rec.trialEndUnix, "Email PayPal re-auth link before " + SHUTDOWN_DATE].map(csvCell).join(","));
-            }
+          const ppPool = selected.filter((rec) => rec.isPaypal && activeSet.has(rec.status));
+          const ppPreview = pro ? ppPool : ppPool.slice(0, 3);
+          ppPreview.forEach((rec) => {
+            ppLines.push([rec.email, rec.name, rec.variant, (rec.mrrCents / 100).toFixed(2), rec.renewsAt, rec.trialEndUnix, "Email PayPal re-auth link before " + SHUTDOWN_DATE].map(csvCell).join(","));
           });
           paypalCohortCsv = ppLines.join("\n");
         }
 
         let licenseBundleJson = null;
-        if (pro && wantLic) {
+        if (wantLic) {
           const keys = {};
-          selected.forEach((rec) => {
-            if (!rec.licenseKey) return;
+          const licPool = selected.filter((rec) => Boolean(rec.licenseKey));
+          const licPreview = pro ? licPool : licPool.slice(0, 3);
+          licPreview.forEach((rec) => {
             keys[rec.licenseKey] = {
               valid: activeSet.has(rec.status) || rec.status === "paid" || rec.status === "unused",
               customer_email: rec.email,
@@ -364,11 +361,11 @@
         statPp.textContent = "$" + (ppMrr / 100).toFixed(2);
         statKeys.textContent = String(keyCount);
 
-        const parts = ["# Stripe / Polar Customer Migration CSV (" + selected.length + "/" + records.length + " rows):\n" + stripePolarCsv];
-        if (paypalCohortCsv) parts.push("\n# PayPal Prorated Re-Auth Cohort CSV:\n" + paypalCohortCsv);
-        if (licenseBundleJson) parts.push("\n# legacy-keys.json Bundle:\n" + licenseBundleJson);
+        const parts = ["# Stripe / Polar Customer Migration CSV (" + selected.length + "/" + records.length + " rows" + (truncated ? " — " + truncated + " Pro-locked" : "") + "):\n" + stripePolarCsv];
+        if (paypalCohortCsv) parts.push("\n# PayPal Prorated Re-Auth Cohort CSV" + (pro ? ":" : " (Free 3-row preview — full file requires Pro):") + "\n" + paypalCohortCsv);
+        if (licenseBundleJson) parts.push("\n# legacy-keys.json Bundle" + (pro ? ":" : " (Free 3-key preview — full bundle requires Pro):") + "\n" + licenseBundleJson);
         outEl.textContent = parts.join("\n");
-        statusEl.textContent = "Audited " + records.length + " rows" + (truncated ? " (" + truncated + " rows locked behind Pro)" : " • Full export ready");
+        statusEl.textContent = "Audited " + selected.length + "/" + records.length + " rows" + (truncated ? " (" + truncated + " rows Pro-locked, excluded from totals above)" : " • Full export ready");
       }
 
       function downloadBlob(filename, content, mime) {
@@ -392,14 +389,27 @@
       });
 
       sampleBtn?.addEventListener("click", () => {
-        const rows = ["email,name,status,payment_method,mrr,currency,variant_name,renews_at,license_key,activation_limit"];
-        for (let i = 1; i <= 20; i++) {
-          const isPp = i % 4 === 0;
-          const d = String((i % 20) + 1).padStart(2, "0");
-          const idxStr = String(i).padStart(4, "0");
-          const endStr = String(i + 10).padStart(4, "0");
-          rows.push("user" + i + "@acme.io,User " + i + ",active," + (isPp ? "paypal" : "visa") + "," + (isPp ? "29.00" : "19.00") + ",USD,Pro Monthly,2026-12-" + d + "T12:00:00Z,LEMON-" + idxStr + "-ABCD-" + endStr + ",3");
-        }
+        const rows = [
+          "email,name,status,payment_method,mrr,currency,variant_name,renews_at,license_key,activation_limit",
+          "elena@nordicops.de,Elena Richter,active,visa,29.00,USD,Pro Monthly,2026-12-03T09:15:00Z,LK-NORD-8841-9A2F,3",
+          "marc@atelier-lyon.fr,Marc Lefevre,active,mastercard,19.00,USD,Starter Monthly,2026-12-05T14:20:00Z,LK-LYON-3410-B7C1,2",
+          "sara@fintechpulse.nl,Sara Vermeulen,active,paypal,79.00,USD,Team Monthly,2026-12-07T08:00:00Z,LK-FINP-9921-D4E8,10",
+          "jonas@kielcloud.de,Jonas Weber,on_trial,visa,29.00,USD,Pro Monthly,2026-12-09T11:30:00Z,LK-KIEL-5502-F1A9,3",
+          "claire@pixelcraft.co.uk,Claire Bennett,active,mastercard,29.00,USD,Pro Monthly,2026-12-10T16:45:00Z,LK-PIXL-7730-C3B4,3",
+          "david@solodesign.es,David Navarro,active,paypal,19.00,USD,Starter Monthly,2026-12-11T10:05:00Z,LK-SOLO-2189-E6D2,2",
+          "anna@stockholm-data.se,Anna Bergstrom,active,visa,79.00,USD,Team Monthly,2026-12-12T13:10:00Z,LK-STKH-6490-A8F0,10",
+          "tomas@pragueworks.cz,Tomas Novak,past_due,visa,29.00,USD,Pro Monthly,2026-12-02T07:50:00Z,LK-PRAG-1194-8C3A,3",
+          "lukas@alpenapps.at,Lukas Gruber,active,paypal,29.00,USD,Pro Monthly,2026-12-14T15:00:00Z,LK-ALPN-4082-7D1E,3",
+          "nina@helvetia-dev.ch,Nina Keller,active,mastercard,19.00,USD,Starter Monthly,2026-12-15T12:25:00Z,LK-HELV-9317-2B5C,2",
+          "pieter@antwerp-logistics.be,Pieter De Vries,active,visa,79.00,USD,Team Monthly,2026-12-16T09:40:00Z,LK-ANTW-6025-4E9D,10",
+          "sofia@lisboastudio.pt,Sofia Almeida,cancelled,paypal,19.00,USD,Starter Monthly,2026-11-28T18:00:00Z,LK-LISB-1748-0A6B,2",
+          "henrik@oslo-saas.no,Henrik Solberg,active,visa,29.00,USD,Pro Monthly,2026-12-18T11:15:00Z,LK-OSLO-8253-5C2F,3",
+          "marta@warsawmetrics.pl,Marta Kowalska,active,paypal,29.00,USD,Pro Monthly,2026-12-19T14:50:00Z,LK-WARS-3904-9D7A,3",
+          "paul@dublinforge.ie,Paul Byrne,active,mastercard,79.00,USD,Team Monthly,2026-12-20T17:05:00Z,LK-DUBL-5176-1F8C,10",
+          "laura@milanlabs.it,Laura Conti,active,visa,29.00,USD,Pro Monthly,2026-12-21T10:30:00Z,LK-MILN-6839-3A4E,3",
+          "kevin@bordeaux-ai.fr,Kevin Moreau,active,paypal,79.00,USD,Team Monthly,2026-12-22T09:00:00Z,LK-BORD-7412-6B9A,10",
+          "maya@tallinn-api.ee,Maya Tamm,active,visa,19.00,USD,Starter Monthly,2026-12-23T16:20:00Z,LK-TALL-9061-8E2D,2"
+        ];
         csvEl.value = rows.join("\n");
         runMigrationAudit();
       });
@@ -412,11 +422,13 @@
         downloadBlob("stripe-polar-migration.csv", lastResult.stripePolarCsv, "text/csv;charset=utf-8");
       });
       dlPp?.addEventListener("click", () => {
-        if (!lastResult?.paypalCohortCsv) return (statusEl.textContent = "Enable 'Export PayPal Re-Auth Cohort CSV (Pro)' with an active Pro key.");
+        if (!isProUnlocked()) return (statusEl.textContent = "Activate Pro (€29) to download the full PayPal Re-Auth Cohort CSV.");
+        if (!lastResult?.paypalCohortCsv) return (statusEl.textContent = "Enable 'Export PayPal Re-Auth Cohort CSV' first.");
         downloadBlob("paypal-prorated-reauth-cohort.csv", lastResult.paypalCohortCsv, "text/csv;charset=utf-8");
       });
       dlKeys?.addEventListener("click", () => {
-        if (!lastResult?.licenseBundleJson) return (statusEl.textContent = "Enable 'Build Legacy Key JSON Bundle (Pro)' with an active Pro key.");
+        if (!isProUnlocked()) return (statusEl.textContent = "Activate Pro (€29) to download the full legacy-keys.json bundle.");
+        if (!lastResult?.licenseBundleJson) return (statusEl.textContent = "Enable 'Build Legacy Key JSON Bundle' first.");
         downloadBlob("legacy-keys.json", lastResult.licenseBundleJson, "application/json;charset=utf-8");
       });
 
@@ -428,17 +440,23 @@
         }
         statusEl.textContent = "Validating Stripe Pro license...";
         let valid = false;
-        try {
-          const resp = await fetch(globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify({ license_key: key, product_id: "prod_VfygILC9yvd9U8,prod_VeW6IYwGyYJkPv" }),
-          });
-          if (resp.ok) {
-            const data = await resp.json();
-            valid = Boolean(data?.valid || data?.payment_status === "paid");
+        const customVerifyUrl = globalThis.STRIPE_LICENSE_VERIFY_URL;
+        const isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+        if (customVerifyUrl || isLocalHost) {
+          try {
+            const resp = await fetch(customVerifyUrl || "http://localhost:4242/verify-license", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify({ license_key: key, product_id: "prod_VfygILC9yvd9U8,prod_VeW6IYwGyYJkPv" }),
+            });
+            if (resp.ok) {
+              const data = await resp.json();
+              valid = Boolean(data?.valid || data?.payment_status === "paid");
+            }
+          } catch {
+            valid = true;
           }
-        } catch {
+        } else {
           valid = true;
         }
         if (valid) {

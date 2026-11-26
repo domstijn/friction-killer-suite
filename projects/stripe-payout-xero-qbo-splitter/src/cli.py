@@ -21,13 +21,13 @@ FREE_BATCH_CAP = 1
 FREE_TX_CAP = 25
 
 ACCOUNT_MAP = {
-    "clearing": ("120", "Bank / Stripe Clearing Settlement", "BAS Excluded"),
-    "sales": ("200", "Sales Revenue (Net)", "OUTPUT2"),
+    "clearing": ("120", "Bank / Stripe Clearing Settlement", "NONE"),
+    "sales": ("200", "Sales Revenue (Net)", "NONE"),
     "refunds": ("205", "Refunds & Returns", "NONE"),
     "disputes": ("206", "Chargebacks & Disputes", "NONE"),
-    "fees": ("404", "Stripe Processing Fees", "EXEMPTEXPENSES"),
-    "fx_fees": ("405", "FX Conversion Fees", "EXEMPTEXPENSES"),
-    "tax": ("820", "Sales Tax / VAT Payable", "BAS Excluded"),
+    "fees": ("404", "Stripe Processing Fees", "NONE"),
+    "fx_fees": ("405", "FX Conversion Fees", "NONE"),
+    "tax": ("820", "Sales Tax / VAT Payable", "NONE"),
 }
 
 DATEV_ACCOUNTS = {
@@ -121,7 +121,8 @@ def _build_batch_journal(batch_id: str, rows: list[dict[str, Any]]) -> dict[str,
 
     gross_sales_cents = 0
     tax_collected_cents = 0
-    refunds_gross_cents = 0
+    refunds_net_cents = 0
+    refunded_tax_cents = 0
     disputes_gross_cents = 0
     processing_fees_cents = 0
     fx_fees_cents = 0
@@ -134,17 +135,22 @@ def _build_batch_journal(batch_id: str, rows: list[dict[str, Any]]) -> dict[str,
         reported_net_cents += row["net_cents"]
 
         if "refund" in tx_type or (tx_type in ("charge", "payment", "sale") and row["gross_cents"] < 0):
-            refunds_gross_cents += abs(row["gross_cents"])
+            abs_gross = abs(row["gross_cents"])
+            ref_tax = min(max(0, row["tax_cents"]), abs_gross)
+            refunded_tax_cents += ref_tax
+            refunds_net_cents += abs_gross - ref_tax
+            tax_collected_cents -= ref_tax
         elif "dispute" in tx_type or "chargeback" in tx_type:
             disputes_gross_cents += abs(row["gross_cents"])
         else:
             gross_sales_cents += max(0, row["gross_cents"])
             tax_collected_cents += min(max(0, row["tax_cents"]), max(0, row["gross_cents"]))
 
-    net_sales_cents = gross_sales_cents - tax_collected_cents
+    net_sales_cents = gross_sales_cents - (tax_collected_cents + refunded_tax_cents)
     expected_net_cents = (
         gross_sales_cents
-        - refunds_gross_cents
+        - refunds_net_cents
+        - refunded_tax_cents
         - disputes_gross_cents
         - processing_fees_cents
         - fx_fees_cents
@@ -172,8 +178,11 @@ def _build_batch_journal(batch_id: str, rows: list[dict[str, Any]]) -> dict[str,
         )
 
     add_line("sales", "credit", net_sales_cents, f"Stripe gross sales net of tax ({batch_id})")
-    add_line("tax", "credit", tax_collected_cents, f"VAT/Sales tax collected ({batch_id})")
-    add_line("refunds", "debit", refunds_gross_cents, f"Customer refunds ({batch_id})")
+    if tax_collected_cents >= 0:
+        add_line("tax", "credit", tax_collected_cents, f"VAT/Sales tax collected ({batch_id})")
+    else:
+        add_line("tax", "debit", abs(tax_collected_cents), f"VAT/Sales tax refunded ({batch_id})")
+    add_line("refunds", "debit", refunds_net_cents, f"Customer refunds net of tax ({batch_id})")
     add_line("disputes", "debit", disputes_gross_cents, f"Chargebacks & disputes ({batch_id})")
     add_line("fees", "debit", processing_fees_cents, f"Processing fees ({batch_id})")
     add_line("fx_fees", "debit", fx_fees_cents, f"Multi-currency FX fees ({batch_id})")
@@ -196,7 +205,7 @@ def _build_batch_journal(batch_id: str, rows: list[dict[str, Any]]) -> dict[str,
         "gross_sales": _from_cents(gross_sales_cents),
         "tax_collected": _from_cents(tax_collected_cents),
         "net_sales": _from_cents(net_sales_cents),
-        "refunds_gross": _from_cents(refunds_gross_cents),
+        "refunds_gross": _from_cents(refunds_net_cents),
         "disputes_gross": _from_cents(disputes_gross_cents),
         "processing_fees": _from_cents(processing_fees_cents),
         "fx_fees": _from_cents(fx_fees_cents),

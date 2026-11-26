@@ -353,7 +353,7 @@ def render_xero_journal_csv(report: dict[str, Any]) -> str:
             debit = Decimal(ln["debit"])
             credit = Decimal(ln["credit"])
             signed_xero = debit - credit
-            tax_rate = "Tax on Sales" if ln["bucket"] == "sales_principal" else "BAS Excluded"
+            tax_rate = "NONE"
             writer.writerow(
                 [
                     f"Amazon Settlement {st['settlement_id']}",

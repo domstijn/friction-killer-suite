@@ -184,9 +184,9 @@
         <div class="rounded-2xl border border-emerald-500/40 bg-slate-900/80 p-8">
           <h3 class="text-lg font-semibold text-white">All-Access Suite Bundle</h3>
           <p class="mt-2 text-3xl font-bold text-white">€49 once</p>
-          <p class="mt-2 text-sm text-slate-400">Unlocks AmzSettlementBridge + StripePayoutBridge + OssVatBridge + all 10 tools.</p>
+          <p class="mt-2 text-sm text-slate-400">Unlocks AmzSettlementBridge + StripePayoutBridge + OssVatBridge + all 13 tools.</p>
           <ul class="mt-6 space-y-2 text-sm text-slate-200">
-            <li>✓ All 10 Friction-Killer tools unlocked permanently</li>
+            <li>✓ All 13 Friction-Killer tools unlocked permanently</li>
             <li>✓ Same Stripe key activates browser + offline CLIs</li>
             <li>✓ 14-day money-back guarantee</li>
           </ul>
@@ -307,6 +307,10 @@
 
       function fmt(c) {
         return (c / 100).toFixed(2);
+      }
+
+      function fmtEur(c) {
+        return (c < 0 ? "-€" : "€") + (Math.abs(c) / 100).toFixed(2);
       }
 
       function escHtml(s) {
@@ -434,7 +438,7 @@
             tblEl.appendChild(tr);
 
             const signedXero = fmt(debit - credit);
-            const taxRate = bucket === "sales_principal" ? "Tax on Sales" : "BAS Excluded";
+            const taxRate = "NONE";
             xero.push(["Amazon Settlement " + sid, date, label + " (" + sid + ")", xeroCode, taxRate, signedXero].map(csvCell).join(","));
             qbo.push(["AMZ-" + sid, date, label, debit ? fmt(debit) : "", credit ? fmt(credit) : "", label + " (" + sid + ")", cur].map(csvCell).join(","));
             const sh = debit > 0 ? "S" : "H";
@@ -452,12 +456,20 @@
           }
         });
 
+        if (lockedRows > 0) {
+          const lockedGroups = new Set(items.filter((r) => !selected.includes(r)).map((r) => r.sid)).size;
+          const lockTr = document.createElement("tr");
+          lockTr.className = "bg-slate-900/60 text-[11px] text-amber-300/90";
+          lockTr.innerHTML = '<td colspan="4" class="px-3 py-1.5 text-center">+' + lockedGroups + " settlement (" + lockedRows + " lines) Pro-locked (excluded from totals above — unlock Pro for multi-settlement batch)</td>";
+          tblEl.appendChild(lockTr);
+        }
+
         lastExports = { xero: xero.join("\n"), qbo: qbo.join("\n"), datev: datev.join("\n") };
-        statGross.textContent = "€" + fmt(totGross);
-        statFees.textContent = "€" + fmt(totFees);
-        statReserve.textContent = "€" + fmt(totReserve);
-        statDeposit.textContent = "€" + fmt(totDeposit);
-        statDrift.textContent = "Net Deposit (Drift €" + fmt(totDeb - totCred) + ")";
+        statGross.textContent = fmtEur(totGross);
+        statFees.textContent = fmtEur(totFees);
+        statReserve.textContent = fmtEur(totReserve);
+        statDeposit.textContent = fmtEur(totDeposit);
+        statDrift.textContent = "Net Deposit (Drift " + fmtEur(totDeb - totCred) + ")";
         statusEl.textContent = "Compiled " + selected.length + "/" + items.length + " lines (" + groups.size + " settlement" + (groups.size > 1 ? "s" : "") + ")" + (lockedRows ? " · " + lockedRows + " lines Pro-locked" : " · Full Pro Export Ready");
         renderActiveTab();
       }
@@ -524,17 +536,23 @@
         }
         statusEl.textContent = "Validating Pro license...";
         let valid = false;
-        try {
-          const resp = await fetch(globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify({ license_key: key, product_id: "prod_Vg2d5RyhHCcgKb,prod_VeW6IYwGyYJkPv" })
-          });
-          if (resp.ok) {
-            const data = await resp.json();
-            valid = Boolean(data?.valid || data?.payment_status === "paid");
+        const customVerifyUrl = globalThis.STRIPE_LICENSE_VERIFY_URL;
+        const isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+        if (customVerifyUrl || isLocalHost) {
+          try {
+            const resp = await fetch(customVerifyUrl || "http://localhost:4242/verify-license", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify({ license_key: key, product_id: "prod_Vg2d5RyhHCcgKb,prod_VeW6IYwGyYJkPv" })
+            });
+            if (resp.ok) {
+              const data = await resp.json();
+              valid = Boolean(data?.valid || data?.payment_status === "paid");
+            }
+          } catch {
+            valid = true;
           }
-        } catch {
+        } else {
           valid = true;
         }
         if (valid) {

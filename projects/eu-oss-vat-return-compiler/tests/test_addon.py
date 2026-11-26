@@ -90,7 +90,7 @@ class TestOssVatCompiler(unittest.TestCase):
         bzst = render_bzst_bop_csv(report)
         lines = bzst.splitlines()
         self.assertTrue(lines[0].startswith("Satzart;Land des Verbrauchs;"))
-        self.assertTrue(any(ln.startswith("BOP_OSS_V1;EL;STANDARD;24,00;") for ln in lines))
+        self.assertTrue(any(ln.startswith("BOP_OSS_V1;EL;SERVICES;STANDARD;24,00;") for ln in lines))
         self.assertFalse(any(";GR;" in ln for ln in lines))
 
         ros_xml = render_ros_xml(report, seller_vat_id="DE998877665")

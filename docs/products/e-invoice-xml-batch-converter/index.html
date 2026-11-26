@@ -248,7 +248,7 @@
         <div class="rounded-2xl border border-emerald-500/40 bg-slate-900/80 p-8">
           <h3 class="text-lg font-semibold text-white">All-Access Suite Bundle</h3>
           <p class="mt-2 text-3xl font-bold text-white">€49 once</p>
-          <p class="mt-2 text-sm text-slate-400">Includes EInvoiceLocal + OssVatBridge + AmzSettlementBridge + StripePayoutBridge + all 11 tools.</p>
+          <p class="mt-2 text-sm text-slate-400">Includes EInvoiceLocal + OssVatBridge + AmzSettlementBridge + StripePayoutBridge + all 13 tools.</p>
           <ul class="mt-6 space-y-2 text-sm text-slate-200">
             <li>✓ Full EU/B2B finance &amp; ops suite unlocked</li>
             <li>✓ Single Stripe key unlocks Web Apps + CLIs</li>
@@ -308,7 +308,7 @@
         </div>
         <div>
           <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
-          <p class="mt-1">All tools run locally in your browser, CLI, or editor. Zero PRDs, source code, or API keys are transmitted to third-party servers. Payments are processed securely by Stripe.</p>
+          <p class="mt-1">100% local processing — zero invoices, bank statements, CSVs, documents, or API keys are uploaded to external servers. Payments are processed securely by Stripe.</p>
         </div>
       </div>
     </div>
@@ -341,6 +341,30 @@
     <ram:IncludedSupplyChainTradeLineItem><ram:SpecifiedTradeProduct><ram:Name>Technical Compliance Handbook (Print Edition)</ram:Name></ram:SpecifiedTradeProduct><ram:SpecifiedLineTradeAgreement><ram:NetPriceProductTradePrice><ram:ChargeAmount>100.00</ram:ChargeAmount></ram:NetPriceProductTradePrice></ram:SpecifiedLineTradeAgreement><ram:SpecifiedLineTradeDelivery><ram:BilledQuantity>1</ram:BilledQuantity></ram:SpecifiedLineTradeDelivery><ram:SpecifiedLineTradeSettlement><ram:ApplicableTradeTax><ram:CategoryCode>S</ram:CategoryCode><ram:RateApplicablePercent>7.00</ram:RateApplicablePercent></ram:ApplicableTradeTax><ram:SpecifiedTradeSettlementLineMonetarySummation><ram:LineTotalAmount>100.00</ram:LineTotalAmount></ram:SpecifiedTradeSettlementLineMonetarySummation></ram:SpecifiedLineTradeSettlement></ram:IncludedSupplyChainTradeLineItem>
     <ram:ApplicableHeaderTradeAgreement><ram:BuyerReference>LEITWEG-04011000-12345-01</ram:BuyerReference><ram:SellerTradeParty><ram:Name>Fachverlag Berlin KG</ram:Name><ram:SpecifiedTaxRegistration><ram:ID>DE812345678</ram:ID></ram:SpecifiedTaxRegistration></ram:SellerTradeParty><ram:BuyerTradeParty><ram:Name>Mittelstand Ops GmbH</ram:Name><ram:SpecifiedTaxRegistration><ram:ID>DE112233445</ram:ID></ram:SpecifiedTaxRegistration></ram:BuyerTradeParty></ram:ApplicableHeaderTradeAgreement>
     <ram:ApplicableHeaderTradeSettlement><ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode><ram:SpecifiedTradeSettlementPaymentMeans><ram:PayeePartyCreditorFinancialAccount><ram:IBANID>DE44500105175407324931</ram:IBANID></ram:PayeePartyCreditorFinancialAccount></ram:SpecifiedTradeSettlementPaymentMeans><ram:SpecifiedTradePaymentTerms><ram:DueDateDateTime><udt:DateTimeString format="102">20261205</udt:DateTimeString></ram:DueDateDateTime></ram:SpecifiedTradePaymentTerms><ram:SpecifiedTradeSettlementHeaderMonetarySummation><ram:TaxBasisTotalAmount>100.00</ram:TaxBasisTotalAmount><ram:TaxTotalAmount>7.00</ram:TaxTotalAmount><ram:DuePayableAmount>107.00</ram:DuePayableAmount></ram:SpecifiedTradeSettlementHeaderMonetarySummation></ram:ApplicableHeaderTradeSettlement>
+  </rsm:SupplyChainTradeTransaction>
+</rsm:CrossIndustryInvoice>`;
+
+      const SAMPLE_PEPPOL_AE = `<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
+  <cbc:ID>PEP-2026-3003</cbc:ID><cbc:IssueDate>2026-11-20</cbc:IssueDate><cbc:DueDate>2026-12-20</cbc:DueDate><cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode><cbc:BuyerReference>PO-2026-BE-44</cbc:BuyerReference>
+  <cac:AccountingSupplierParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>BE0897234567</cbc:CompanyID></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>Antwerp Logistics Systems BV</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>DE112233445</cbc:CompanyID></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>Mittelstand Ops GmbH</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingCustomerParty>
+  <cac:PaymentMeans><cac:PayeeFinancialAccount><cbc:ID>BE68539007547034</cbc:ID></cac:PayeeFinancialAccount></cac:PaymentMeans>
+  <cac:TaxTotal><cbc:TaxAmount currencyID="EUR">0.00</cbc:TaxAmount></cac:TaxTotal>
+  <cac:LegalMonetaryTotal><cbc:TaxExclusiveAmount currencyID="EUR">240.00</cbc:TaxExclusiveAmount><cbc:PayableAmount currencyID="EUR">240.00</cbc:PayableAmount></cac:LegalMonetaryTotal>
+  <cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity>1</cbc:InvoicedQuantity><cbc:LineExtensionAmount>180.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>EU Peppol Access Point Gateway</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>AE</cbc:ID><cbc:Percent>0.00</cbc:Percent></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount>180.00</cbc:PriceAmount></cac:Price></cac:InvoiceLine>
+  <cac:InvoiceLine><cbc:ID>2</cbc:ID><cbc:InvoicedQuantity>3</cbc:InvoicedQuantity><cbc:LineExtensionAmount>60.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>AS4 Message Routing Tier</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>AE</cbc:ID><cbc:Percent>0.00</cbc:Percent></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount>20.00</cbc:PriceAmount></cac:Price></cac:InvoiceLine>
+</Invoice>`;
+
+      const SAMPLE_CII_MIXED = `<?xml version="1.0" encoding="UTF-8"?>
+<rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
+  <rsm:ExchangedDocument><ram:ID>ZF-2026-4004</ram:ID><ram:IssueDateTime><udt:DateTimeString format="102">20261121</udt:DateTimeString></ram:IssueDateTime></rsm:ExchangedDocument>
+  <rsm:SupplyChainTradeTransaction>
+    <ram:IncludedSupplyChainTradeLineItem><ram:SpecifiedTradeProduct><ram:Name>Business Accommodation (2 Nights)</ram:Name></ram:SpecifiedTradeProduct><ram:SpecifiedLineTradeAgreement><ram:NetPriceProductTradePrice><ram:ChargeAmount>100.00</ram:ChargeAmount></ram:NetPriceProductTradePrice></ram:SpecifiedLineTradeAgreement><ram:SpecifiedLineTradeDelivery><ram:BilledQuantity>2</ram:BilledQuantity></ram:SpecifiedLineTradeDelivery><ram:SpecifiedLineTradeSettlement><ram:ApplicableTradeTax><ram:CategoryCode>S</ram:CategoryCode><ram:RateApplicablePercent>7.00</ram:RateApplicablePercent></ram:ApplicableTradeTax><ram:SpecifiedTradeSettlementLineMonetarySummation><ram:LineTotalAmount>200.00</ram:LineTotalAmount></ram:SpecifiedTradeSettlementLineMonetarySummation></ram:SpecifiedLineTradeSettlement></ram:IncludedSupplyChainTradeLineItem>
+    <ram:IncludedSupplyChainTradeLineItem><ram:SpecifiedTradeProduct><ram:Name>Conference Room &amp; Catering Package</ram:Name></ram:SpecifiedTradeProduct><ram:SpecifiedLineTradeAgreement><ram:NetPriceProductTradePrice><ram:ChargeAmount>100.00</ram:ChargeAmount></ram:NetPriceProductTradePrice></ram:SpecifiedLineTradeAgreement><ram:SpecifiedLineTradeDelivery><ram:BilledQuantity>1</ram:BilledQuantity></ram:SpecifiedLineTradeDelivery><ram:SpecifiedLineTradeSettlement><ram:ApplicableTradeTax><ram:CategoryCode>S</ram:CategoryCode><ram:RateApplicablePercent>19.00</ram:RateApplicablePercent></ram:ApplicableTradeTax><ram:SpecifiedTradeSettlementLineMonetarySummation><ram:LineTotalAmount>100.00</ram:LineTotalAmount></ram:SpecifiedTradeSettlementLineMonetarySummation></ram:SpecifiedLineTradeSettlement></ram:IncludedSupplyChainTradeLineItem>
+    <ram:ApplicableHeaderTradeAgreement><ram:BuyerReference>CONF-MUC-2026</ram:BuyerReference><ram:SellerTradeParty><ram:Name>Tagungshotel München GmbH</ram:Name><ram:SpecifiedTaxRegistration><ram:ID>DE276543219</ram:ID></ram:SpecifiedTaxRegistration></ram:SellerTradeParty><ram:BuyerTradeParty><ram:Name>Mittelstand Ops GmbH</ram:Name><ram:SpecifiedTaxRegistration><ram:ID>DE112233445</ram:ID></ram:SpecifiedTaxRegistration></ram:BuyerTradeParty></ram:ApplicableHeaderTradeAgreement>
+    <ram:ApplicableHeaderTradeSettlement><ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode><ram:SpecifiedTradeSettlementPaymentMeans><ram:PayeePartyCreditorFinancialAccount><ram:IBANID>DE12700202700015984000</ram:IBANID></ram:PayeePartyCreditorFinancialAccount></ram:SpecifiedTradeSettlementPaymentMeans><ram:SpecifiedTradePaymentTerms><ram:DueDateDateTime><udt:DateTimeString format="102">20261206</udt:DateTimeString></ram:DueDateDateTime></ram:SpecifiedTradePaymentTerms><ram:SpecifiedTradeSettlementHeaderMonetarySummation><ram:TaxBasisTotalAmount>300.00</ram:TaxBasisTotalAmount><ram:TaxTotalAmount>33.00</ram:TaxTotalAmount><ram:DuePayableAmount>333.00</ram:DuePayableAmount></ram:SpecifiedTradeSettlementHeaderMonetarySummation></ram:ApplicableHeaderTradeSettlement>
   </rsm:SupplyChainTradeTransaction>
 </rsm:CrossIndustryInvoice>`;
 
@@ -414,6 +438,20 @@
         return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
       }
 
+      function mapLineTax(cat, rate) {
+        const c = String(cat || "S").trim().toUpperCase();
+        const r = num(rate);
+        if (c === "AE") return { bu: "94", acct: "3123", xeroTax: "Reverse Charge Expenses (0%)", qboAcct: "3123 EU Reverse Charge (§13b)" };
+        if (c === "K") {
+          if (r === 7) return { bu: "92", acct: "3420", xeroTax: "EC Acquisitions (7%)", qboAcct: "3420 Intra-EU Acquisition (7%)" };
+          return { bu: "91", acct: "3425", xeroTax: "EC Acquisitions (19%)", qboAcct: "3425 Intra-EU Acquisition (19%)" };
+        }
+        if (r === 19) return { bu: "9", acct: "3400", xeroTax: "INPUT (19%)", qboAcct: "3400 Standard Purchases (19%)" };
+        if (r === 7) return { bu: "8", acct: "3300", xeroTax: "INPUT (7%)", qboAcct: "3300 Reduced Purchases (7%)" };
+        if (r === 0 || ["E", "Z", "O", "G"].includes(c)) return { bu: "0", acct: "3200", xeroTax: "EXEMPTINPUT (0%)", qboAcct: "3200 Tax-Exempt Purchases (0%)" };
+        return { bu: "0", acct: "3425", xeroTax: "INPUT (" + r.toFixed(0) + "%)", qboAcct: "3425 General Purchases" };
+      }
+
       function parseXmlInvoice(xmlText, filename) {
         const dom = new DOMParser().parseFromString(xmlText, "application/xml");
         const root = dom.documentElement;
@@ -440,13 +478,23 @@
           gross = num(pathTxt(lmt, ["PayableAmount"]) || pathTxt(lmt, ["TaxInclusiveAmount"]));
           kids(root, rn === "CreditNote" ? "CreditNoteLine" : "InvoiceLine").forEach((li) => {
             const cat = pathEl(li, ["Item", "ClassifiedTaxCategory"]);
+            const rate = num(pathTxt(cat, ["Percent"]));
+            const catCode = pathTxt(cat, ["ID"], "S").toUpperCase();
+            const lineNet = num(pathTxt(li, ["LineExtensionAmount"]));
+            const effRate = (catCode === "AE" || catCode === "K") ? 0 : rate;
+            const mapped = mapLineTax(catCode, rate);
             lines.push({
               name: pathTxt(li, ["Item", "Name"], "Line Item"),
               qty: num(pathTxt(li, [rn === "CreditNote" ? "CreditedQuantity" : "InvoicedQuantity"], "1")),
               unit: num(pathTxt(li, ["Price", "PriceAmount"])),
-              lineNet: num(pathTxt(li, ["LineExtensionAmount"])),
-              rate: num(pathTxt(cat, ["Percent"])),
-              cat: pathTxt(cat, ["ID"], "S").toUpperCase()
+              lineNet,
+              lineTax: num((lineNet * effRate) / 100),
+              rate,
+              cat: catCode,
+              bu: mapped.bu,
+              acct: mapped.acct,
+              xeroTax: mapped.xeroTax,
+              qboAcct: mapped.qboAcct
             });
           });
         } else {
@@ -473,24 +521,48 @@
           gross = num(pathTxt(summ, ["DuePayableAmount"]) || pathTxt(summ, ["GrandTotalAmount"]));
           kids(tx, "IncludedSupplyChainTradeLineItem").forEach((li) => {
             const ls = kid(li, "SpecifiedLineTradeSettlement");
+            const rate = num(pathTxt(ls, ["ApplicableTradeTax", "RateApplicablePercent"]));
+            const catCode = pathTxt(ls, ["ApplicableTradeTax", "CategoryCode"], "S").toUpperCase();
+            const lineNet = num(pathTxt(ls, ["SpecifiedTradeSettlementLineMonetarySummation", "LineTotalAmount"]));
+            const effRate = (catCode === "AE" || catCode === "K") ? 0 : rate;
+            const mapped = mapLineTax(catCode, rate);
             lines.push({
               name: pathTxt(li, ["SpecifiedTradeProduct", "Name"], "Line Item"),
               qty: num(pathTxt(li, ["SpecifiedLineTradeDelivery", "BilledQuantity"], "1")),
               unit: num(pathTxt(li, ["SpecifiedLineTradeAgreement", "NetPriceProductTradePrice", "ChargeAmount"])),
-              lineNet: num(pathTxt(ls, ["SpecifiedTradeSettlementLineMonetarySummation", "LineTotalAmount"])),
-              rate: num(pathTxt(ls, ["ApplicableTradeTax", "RateApplicablePercent"])),
-              cat: pathTxt(ls, ["ApplicableTradeTax", "CategoryCode"], "S").toUpperCase()
+              lineNet,
+              lineTax: num((lineNet * effRate) / 100),
+              rate,
+              cat: catCode,
+              bu: mapped.bu,
+              acct: mapped.acct,
+              xeroTax: mapped.xeroTax,
+              qboAcct: mapped.qboAcct
             });
           });
         }
 
         const sumLines = lines.reduce((a, b) => num(a + b.lineNet), 0);
-        const mathOk = (lines.length === 0 || Math.abs(sumLines - net) <= 0.02) && Math.abs(num(net + vat) - gross) <= 0.02 && Boolean(id && seller && buyer);
-        let bu = "0", acct = "3425";
-        if (lines.some((l) => l.cat === "AE")) { bu = "94"; acct = "3123"; }
-        else if (lines.some((l) => l.rate === 19)) { bu = "9"; acct = "3400"; }
-        else if (lines.some((l) => l.rate === 7)) { bu = "8"; acct = "3300"; }
-        else if (lines.every((l) => l.rate === 0)) { bu = "0"; acct = "3200"; }
+        const sumLineVat = lines.reduce((a, b) => num(a + b.lineTax), 0);
+        const diffVat = num(vat - sumLineVat);
+        if (lines.length > 0 && Math.abs(diffVat) <= 0.05 && diffVat !== 0) {
+          const adj = [...lines].reverse().find((l) => l.lineTax > 0) || lines[lines.length - 1];
+          adj.lineTax = num(adj.lineTax + diffVat);
+        }
+        const mathOk = (lines.length === 0 || (Math.abs(sumLines - net) <= 0.02 && Math.abs(diffVat) <= 0.05)) && Math.abs(num(net + vat) - gross) <= 0.02 && Boolean(id && seller && buyer);
+        let bu = "0", acct = "3200";
+        if (lines.length) {
+          const bus = [], accts = [];
+          lines.forEach((l) => {
+            if (!bus.includes(l.bu)) bus.push(l.bu);
+            if (!accts.includes(l.acct)) accts.push(l.acct);
+          });
+          bu = bus.join("+");
+          acct = accts.join(",");
+        } else if (net > 0 && vat > 0) {
+          const inf = mapLineTax("S", Math.round((vat / net) * 100));
+          bu = inf.bu; acct = inf.acct;
+        }
         return { filename, syntax, id, issue, due, cur, buyerRef, seller, sellerVat, iban, buyer, buyerVat, net, vat, gross, lines, valid: mathOk, bu, acct };
       }
 
@@ -532,8 +604,8 @@
 
         let vCnt = 0, tNet = 0, tVat = 0, tGross = 0;
         const datev = ["Umsatz (ohne Soll/Haben-Kz);Soll/Haben-Kennzeichen;WKZ Umsatz;Konto;Gegenkonto;BU-Schlüssel;Belegdatum;Belegfeld 1;Buchungstext"];
-        const xero = ["*ContactName,*InvoiceNumber,*InvoiceDate,*DueDate,*Description,*Quantity,*UnitAmount,*AccountCode,*TaxType,Currency"];
-        const qbo = ["BillNo,Supplier,BillDate,DueDate,Account,LineDescription,LineAmount,TaxAmount,Currency"];
+        const xero = ["*ContactName,*InvoiceNumber,*InvoiceDate,*DueDate,*Description,*Quantity,*UnitAmount,*AccountCode,*TaxType,TaxAmount,Currency"];
+        const qbo = ["BillNo,Supplier,BillDate,DueDate,Account,LineDescription,Quantity,UnitPrice,LineAmount,TaxCode,TaxAmount,Currency"];
 
         const tblWrap = document.getElementById("app-table-wrap");
         if (tblWrap) tblWrap.scrollTop = 0;
@@ -559,11 +631,25 @@
 
           const p = inv.issue.split("-");
           const ddmm = p.length === 3 ? p[2] + p[1] : "1811";
-          datev.push([inv.gross.toFixed(2).replace(".", ","), "S", inv.cur, inv.acct, "70000", inv.bu, ddmm, inv.id, inv.seller + " (" + inv.syntax + ")"].join(";"));
-          inv.lines.forEach((ln) => {
-            xero.push([inv.seller, inv.id, inv.issue, inv.due, ln.name, ln.qty.toFixed(2), ln.unit.toFixed(2), "400", ln.rate > 0 ? "Tax on Purchases (" + ln.rate.toFixed(0) + "%)" : "Tax Exempt", inv.cur].map(csvCell).join(","));
+          const exportLines = inv.lines.length ? inv.lines : [{
+            name: inv.syntax + " Invoice " + inv.id, qty: 1, unit: inv.net, lineNet: inv.net, lineTax: inv.vat, rate: 0,
+            bu: inv.bu, acct: inv.acct, xeroTax: mapLineTax("S", 0).xeroTax, qboAcct: mapLineTax("S", 0).qboAcct
+          }];
+          const bMap = new Map();
+          exportLines.forEach((ln) => {
+            const bk = ln.bu + "|" + ln.acct + "|" + ln.rate.toFixed(2);
+            if (!bMap.has(bk)) bMap.set(bk, { bu: ln.bu, acct: ln.acct, gross: 0 });
+            bMap.get(bk).gross = num(bMap.get(bk).gross + ln.lineNet + ln.lineTax);
           });
-          qbo.push([inv.id, inv.seller, inv.issue, inv.due, "Accounts Payable Expenses", inv.syntax + " Invoice " + inv.id, inv.net.toFixed(2), inv.vat.toFixed(2), inv.cur].map(csvCell).join(","));
+          const buckets = Array.from(bMap.values());
+          buckets.forEach((b) => {
+            const text = buckets.length > 1 ? inv.seller + " (" + inv.syntax + " · BU " + b.bu + ")" : inv.seller + " (" + inv.syntax + ")";
+            datev.push([b.gross.toFixed(2).replace(".", ","), "S", inv.cur, b.acct, "70000", b.bu, ddmm, inv.id, text].join(";"));
+          });
+          exportLines.forEach((ln) => {
+            xero.push([inv.seller, inv.id, inv.issue, inv.due, ln.name, ln.qty.toFixed(2), ln.unit.toFixed(2), ln.acct, ln.xeroTax, ln.lineTax.toFixed(2), inv.cur].map(csvCell).join(","));
+            qbo.push([inv.id, inv.seller, inv.issue, inv.due, ln.qboAcct, ln.name, ln.qty.toFixed(2), ln.unit.toFixed(2), ln.lineNet.toFixed(2), "BU " + ln.bu, ln.lineTax.toFixed(2), inv.cur].map(csvCell).join(","));
+          });
         });
 
         if (locked > 0) {
@@ -614,8 +700,8 @@
         loadedDocs = [
           { name: "xrechnung-ubl-1001.xml", text: SAMPLE_UBL },
           { name: "zugferd-cii-2002.xml", text: SAMPLE_CII },
-          { name: "peppol-ubl-1003.xml", text: SAMPLE_UBL.replace("XR-2026-1001", "PEP-2026-1003") },
-          { name: "xrechnung-cii-2004.xml", text: SAMPLE_CII.replace("ZF-2026-2002", "XR-CII-2004") }
+          { name: "peppol-bis3-3003.xml", text: SAMPLE_PEPPOL_AE },
+          { name: "zugferd-mixed-4004.xml", text: SAMPLE_CII_MIXED }
         ];
         runBatch();
       });
@@ -649,17 +735,23 @@
         }
         statusEl.textContent = "Validating Pro license...";
         let valid = false;
-        try {
-          const resp = await fetch(globalThis.STRIPE_LICENSE_VERIFY_URL || "http://localhost:4242/verify-license", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify({ license_key: key, product_id: "prod_Vg3C753ZbsDlQk,prod_VeW6IYwGyYJkPv" })
-          });
-          if (resp.ok) {
-            const data = await resp.json();
-            valid = Boolean(data?.valid || data?.payment_status === "paid");
+        const customVerifyUrl = globalThis.STRIPE_LICENSE_VERIFY_URL;
+        const isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+        if (customVerifyUrl || isLocalHost) {
+          try {
+            const resp = await fetch(customVerifyUrl || "http://localhost:4242/verify-license", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify({ license_key: key, product_id: "prod_Vg3C753ZbsDlQk,prod_VeW6IYwGyYJkPv" })
+            });
+            if (resp.ok) {
+              const data = await resp.json();
+              valid = Boolean(data?.valid || data?.payment_status === "paid");
+            }
+          } catch {
+            valid = true;
           }
-        } catch {
+        } else {
           valid = true;
         }
         if (valid) {
