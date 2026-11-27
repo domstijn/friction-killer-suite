@@ -64,6 +64,7 @@ def build_analytics_footer_html(
     *,
     include_feedback_bar: bool = False,
     lang: str = "en",
+    include_rum: bool = True,
 ) -> str:
     """Build cookie-less Cloudflare Web Analytics + zero-PII Worker funnel tracker + feedback bar."""
     parts: list[str] = []
@@ -98,7 +99,7 @@ def build_analytics_footer_html(
         )
 
     rum_token = cfg.get("rum_site_token", "").strip()
-    if rum_token:
+    if rum_token and include_rum:
         parts.append(
             f'  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon=\'{{"token": "{html.escape(rum_token)}"}}\'></script>'
         )
@@ -189,7 +190,7 @@ LEGAL_FOOTER_HTML = """  <section id="policies" class="mx-auto max-w-5xl px-6 pb
         </div>
         <div>
           <h3 class="font-semibold text-slate-200">Terms &amp; Privacy</h3>
-          <p class="mt-1">100% local processing — zero invoices, bank statements, CSVs, documents, or API keys are uploaded to external servers. Payments are processed securely by Stripe.</p>
+          <p class="mt-1">100% local processing — zero invoices, bank statements, CSVs, documents, or API keys are uploaded to external servers. Pages use a cookieless anonymous counter (<code>fk-funnel-beacon</code>) logging only page/button event counts with 0 cookies and 0 file data (opt out: <code>localStorage.fk_ignore_telemetry='1'</code>); <code>/embed/xrechnung-viewer/</code> makes 0 network calls. Payments are processed securely by Stripe.</p>
         </div>
       </div>
     </div>
@@ -210,7 +211,7 @@ LEGAL_FOOTER_DE_HTML = """  <section id="policies" class="mx-auto max-w-5xl px-6
         </div>
         <div>
           <h3 class="font-semibold text-slate-200">Datenschutz &amp; AGB</h3>
-          <p class="mt-1">100 % lokale Verarbeitung im Browser bzw. offline per CLI — keine Rechnungen, Kontoauszüge, CSV-Dateien oder API-Keys werden an externe Server übertragen. Sichere Zahlung über Stripe inkl. USt-Rechnung.</p>
+          <p class="mt-1">100 % lokale Dateiverarbeitung — keine Rechnungen, XMLs, Kontoauszüge oder CSVs verlassen Ihren Browser. Landingpages zählen anonymisierte Klick-Events über unseren cookielosen EU-Endpunkt (<code>fk-funnel-beacon</code>, 0 Cookies, 0 Dateidaten; Opt-out über <code>localStorage.fk_ignore_telemetry='1'</code>); das Embed-Widget arbeitet komplett ohne Netzwerkanfragen. Sichere Zahlung über Stripe inkl. USt-Rechnung.</p>
         </div>
       </div>
     </div>
@@ -1074,7 +1075,7 @@ PLAYGROUND_SCRIPT = r"""  <script>
       amzCsv?.addEventListener("input", runAmzSettlement);
       runAmzSettlement();
 
-      // 11. EInvoiceLocal live UBL/CII XML validator & DATEV BU-Schlüssel converter
+      // 11. EInvoiceLocal live UBL/CII XML validator & DATEV BU-Schlüssel converter (canonical EInvoiceCore)
       const einvXml = document.getElementById("pg-einv-xml");
       const einvOut = document.getElementById("pg-einv-output");
       function runEInvoice() {
@@ -1084,50 +1085,22 @@ PLAYGROUND_SCRIPT = r"""  <script>
           einvOut.textContent = "Paste UBL 2.1 or CII XML above.";
           return;
         }
-        try {
-          const dom = new DOMParser().parseFromString(xmlStr, "application/xml");
-          const getVal = (tag) => {
-            const matches = dom.getElementsByTagName("*");
-            for (let i = 0; i < matches.length; i++) {
-              const ln = (matches[i].localName || matches[i].tagName || "").split(":").pop();
-              if (ln === tag && matches[i].textContent) return matches[i].textContent.trim();
-            }
-            return "";
-          };
-          const id = getVal("ID") || "UNKNOWN";
-          const dt = getVal("IssueDate") || getVal("DateTimeString") || "2026-11-18";
-          const cur = getVal("DocumentCurrencyCode") || getVal("InvoiceCurrencyCode") || "EUR";
-          const net = parseFloat(getVal("TaxExclusiveAmount") || getVal("TaxBasisTotalAmount") || "0") || 0;
-          const vat = parseFloat(getVal("TaxAmount") || getVal("TaxTotalAmount") || "0") || 0;
-          const gross = parseFloat(getVal("PayableAmount") || getVal("DuePayableAmount") || getVal("GrandTotalAmount") || "0") || 0;
-          const pct = parseFloat(getVal("Percent") || getVal("RateApplicablePercent") || "19") || 0;
-          let taxCat = "S";
-          const catNode = Array.from(dom.getElementsByTagName("*")).find((n) => {
-            const ln = (n.localName || n.tagName || "").split(":").pop();
-            return ln === "ClassifiedTaxCategory" || ln === "ApplicableTradeTax";
-          });
-          if (catNode) {
-            const c = Array.from(catNode.getElementsByTagName("*")).find((n) => {
-              const ln = (n.localName || n.tagName || "").split(":").pop();
-              return ln === "ID" || ln === "CategoryCode";
-            });
-            if (c && c.textContent) taxCat = c.textContent.trim().toUpperCase();
-          }
-          const validMath = Math.abs((net + vat) - gross) <= 0.02;
-          let bu = "0", konto = "3200";
-          if (taxCat === "AE") { bu = "94"; konto = "3123"; }
-          else if (taxCat === "K") { bu = pct === 7 ? "92" : "91"; konto = pct === 7 ? "3420" : "3425"; }
-          else if (pct === 19) { bu = "9"; konto = "3400"; }
-          else if (pct === 7) { bu = "8"; konto = "3300"; }
-          einvOut.textContent =
-            "# EN 16931 Math Validation: " + (validMath ? "PASS (BR-CO-15 OK)" : "MISMATCH") + "\n" +
-            "# Invoice: " + id + " | Issue: " + dt + " | Net: " + net.toFixed(2) + " " + cur + " | VAT (" + taxCat + " " + pct + "%): " + vat.toFixed(2) + " | Gross: " + gross.toFixed(2) + "\n\n" +
-            "# DATEV EXTF Buchungsstapel CSV (BU-Schlüssel " + bu + ", SKR03 " + konto + "):\n" +
-            "Umsatz;Soll/Haben;WKZ;Konto;Gegenkonto;BU-Schlüssel;Belegfeld 1\n" +
-            gross.toFixed(2).replace(".", ",") + ";S;" + cur + ";" + konto + ";70000;" + bu + ";" + id;
-        } catch {
-          einvOut.textContent = "Invalid XML structure.";
+        const CORE = globalThis.EInvoiceCore;
+        const inv = CORE.parseXmlInvoice(xmlStr, "playground.xml", globalThis.DOMParser);
+        if (inv.syntax === "UNKNOWN") {
+          einvOut.textContent = "Invalid XML structure: " + (inv.errors || []).join("; ");
+          return;
         }
+        const exp = CORE.buildExports([inv]);
+        const mathStatus = inv.valid ? "PASS (EN 16931 BR-CO-10/14/15 OK)" : "WARNING: " + inv.errors.join("; ");
+        einvOut.textContent =
+          "# EN 16931 Validation: " + mathStatus + "\n" +
+          "# " + (inv.isCreditNote ? "Credit Note" : "Invoice") + ": " + inv.id +
+          " | Syntax: " + inv.syntax + " | Issue: " + (inv.issue || "—") +
+          " | Net: " + inv.net.toFixed(2) + " " + inv.cur +
+          " | VAT: " + inv.vat.toFixed(2) + " | Gross: " + inv.gross.toFixed(2) + "\n\n" +
+          "# DATEV EXTF Buchungsstapel CSV (BU-Schlüssel " + inv.bu + ", SKR03 " + inv.acct + "):\n" +
+          exp.datev;
       }
       einvXml?.addEventListener("input", runEInvoice);
       runEInvoice();
@@ -1456,6 +1429,13 @@ def render_hub_html(
         if for_pages
         else ""
     )
+    einv_core_js = (
+        Path(__file__).resolve().parent.parent
+        / "projects"
+        / "e-invoice-xml-batch-converter"
+        / "src"
+        / "einvoice_core.js"
+    ).read_text(encoding="utf-8")
     res_prefix = "./" if for_pages else "../docs/"
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -1547,6 +1527,9 @@ def render_hub_html(
       }});
     }});
   </script>
+  <script>
+{einv_core_js}
+  </script>
 {PLAYGROUND_SCRIPT}
 {analytics_footer}
 </body>
@@ -1568,18 +1551,30 @@ def render_product_page_for_docs(
     page_html = page_html.replace('href="#install"', f'href="{zip_href}" download')
 
     # Inject suite navigation back-link inside header <nav>
-    page_html = page_html.replace(
-        '<nav class="flex items-center gap-6 text-sm text-slate-300">',
-        '<nav class="flex items-center gap-6 text-sm text-slate-300">\n      <a href="../../index.html" class="text-indigo-300 hover:text-white">&larr; All Suite Tools</a>',
-        1,
-    )
+    if '<nav class="flex items-center gap-6 text-sm text-slate-300">' in page_html:
+        page_html = page_html.replace(
+            '<nav class="flex items-center gap-6 text-sm text-slate-300">',
+            '<nav class="flex items-center gap-6 text-sm text-slate-300">\n      <a href="../../index.html" class="text-indigo-300 hover:text-white">&larr; All Suite Tools</a>',
+            1,
+        )
+    elif '<nav class="site-nav">' in page_html:
+        page_html = page_html.replace(
+            '<nav class="site-nav">',
+            '<nav class="site-nav">\n      <a href="../../index.html" style="color:#a5b4fc;">&larr; All Suite Tools</a>',
+            1,
+        )
 
     # Inject SEO, OpenGraph, canonical, and JSON-LD SoftwareApplication structured data
     if 'rel="canonical"' not in page_html and "</head>" in page_html:
         price_match = re.search(r"(\d+(?:\.\d+)?)", str(product.get("price", "29")))
         price_num = f"{float(price_match.group(1)):.2f}" if price_match else "29.00"
+        seo_title = (
+            product["title"]
+            if str(product["title"]).startswith(product["short_title"])
+            else f"{product['short_title']} — {product['title']}"
+        )
         seo_tags = build_seo_head_tags(
-            title=f"{product['short_title']} — {product['title']}",
+            title=seo_title,
             description=product["summary"],
             canonical_url=f"{SITE_BASE_URL}/products/{slug}/",
             app_name=product["short_title"],
@@ -1603,6 +1598,9 @@ def render_product_page_for_docs(
             0,
             f'<a href="{html.escape(de_rel)}" class="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-200 hover:bg-emerald-500/20">Deutsche Version (DE) &rarr;</a>',
         )
+    if slug == "e-invoice-xml-batch-converter":
+        guide_links.append('<a href="../../tools/xrechnung-viewer-dsgvo-test-2026/index.html" class="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-200 hover:bg-emerald-500/20">DevTools Privacy Audit 2026 &rarr;</a>')
+        guide_links.append('<a href="../../embed/xrechnung-viewer/index.html" class="rounded-lg border border-indigo-500/40 bg-indigo-500/10 px-3 py-1.5 text-xs font-semibold text-indigo-200 hover:bg-indigo-500/20">Embed Free Widget (&lt;iframe&gt;) &rarr;</a>')
     if slug in ("e-invoice-xml-batch-converter", "camt053-mt940-qbo-xero-converter", "eu-oss-vat-return-compiler", "lemonsqueezy-stripe-polar-migrator"):
         guide_links.append('<a href="../../tools/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 hover:border-indigo-400">Free Calculators</a>')
         guide_links.append('<a href="../../samples/index.html" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 hover:border-indigo-400">Sample Test Files</a>')
@@ -1622,7 +1620,11 @@ def render_product_page_for_docs(
 
     # Inject 1-click feedback bar above footer & cookie-less Cloudflare Web Analytics + D1 funnel tracker
     feedback_and_scripts = build_analytics_footer_html(
-        slug, product["short_title"], cfg, include_feedback_bar=True
+        slug,
+        product["short_title"],
+        cfg,
+        include_feedback_bar=True,
+        include_rum=(slug != "e-invoice-xml-batch-converter"),
     )
     feedback_section, _, analytics_scripts = feedback_and_scripts.partition("</section>")
     feedback_html = f"{feedback_section}</section>\n" if feedback_section and "</section>" in feedback_and_scripts else ""

@@ -273,12 +273,25 @@ def _text(node: ET.Element | None, *parts: str, default: str = "") -> str:
 
 def _dec(raw: Any, default: str = "0.00") -> Decimal:
     text = str(raw if raw is not None else "").strip()
-    if not text:
+    if not text or not re.fullmatch(r"[+-]?\s*\d+(?:\.\d+)?", text):
         return Decimal(default)
     try:
-        return Decimal(text).quantize(CENT, rounding=ROUND_HALF_UP)
+        return Decimal(text.replace(" ", "")).quantize(CENT, rounding=ROUND_HALF_UP)
     except InvalidOperation:
         return Decimal(default)
+
+
+def _fmt_rate(val: Decimal) -> str:
+    norm = val.quantize(CENT, rounding=ROUND_HALF_UP).normalize()
+    s = format(norm, "f")
+    return s.rstrip("0").rstrip(".") if "." in s else s
+
+
+def _csv_safe_cell(val: Any) -> str:
+    s = str(val if val is not None else "")
+    if re.match(r"^[=+\-@\t\r]", s) and not re.fullmatch(r"-?\d+(?:[.,]\d+)?", s):
+        return "'" + s
+    return s
 
 
 def _norm_date(raw: str) -> str:
@@ -295,16 +308,16 @@ def _map_line_tax(vat_cat: str, vat_rate: Decimal) -> tuple[str, str, str, str]:
     if cat == "AE":
         return "94", "3123", "Reverse Charge Expenses (0%)", "3123 EU Reverse Charge (§13b)"
     if cat == "K":
-        if rate == Decimal("7.00"):
+        if abs(rate - Decimal("7.00")) <= Decimal("0.05"):
             return "92", "3420", "EC Acquisitions (7%)", "3420 Intra-EU Acquisition (7%)"
         return "91", "3425", "EC Acquisitions (19%)", "3425 Intra-EU Acquisition (19%)"
-    if rate == Decimal("19.00"):
+    if abs(rate - Decimal("19.00")) <= Decimal("0.05"):
         return "9", "3400", "INPUT (19%)", "3400 Standard Purchases (19%)"
-    if rate == Decimal("7.00"):
+    if abs(rate - Decimal("7.00")) <= Decimal("0.05"):
         return "8", "3300", "INPUT (7%)", "3300 Reduced Purchases (7%)"
     if rate == Decimal("0.00") or cat in {"E", "Z", "O", "G"}:
         return "0", "3200", "EXEMPTINPUT (0%)", "3200 Tax-Exempt Purchases (0%)"
-    return "0", "3425", f"INPUT ({rate:.0f}%)", "3425 General Purchases"
+    return "0", "3425", f"INPUT ({_fmt_rate(rate)}%)", "3425 General Purchases"
 
 
 def _map_datev_bu_and_account(lines: list[dict[str, Any]], tax_exclusive: Decimal, tax_total: Decimal) -> tuple[str, str]:
@@ -321,21 +334,110 @@ def _map_datev_bu_and_account(lines: list[dict[str, Any]], tax_exclusive: Decima
         if seen_bu and seen_acct:
             return "+".join(seen_bu), ",".join(seen_acct)
 
-    if tax_exclusive > Decimal("0.00") and tax_total > Decimal("0.00"):
-        inferred = ((tax_total / tax_exclusive) * Decimal("100")).quantize(CENT, rounding=ROUND_HALF_UP)
+    if abs(tax_exclusive) > Decimal("0.00") and abs(tax_total) > Decimal("0.00"):
+        inferred = ((abs(tax_total) / abs(tax_exclusive)) * Decimal("100")).quantize(CENT, rounding=ROUND_HALF_UP)
         bu, acct, _, _ = _map_line_tax("S", inferred)
         return bu, acct
     return "0", "3200"
 
 
+def _pick_ubl_vat_id(party: ET.Element | None) -> str:
+    if party is None:
+        return ""
+    fallback = ""
+    for pts in _children(party, "PartyTaxScheme"):
+        cid = _text(pts, "CompanyID")
+        if not cid:
+            continue
+        scheme = _text(pts, "TaxScheme", "ID").upper()
+        if scheme == "VAT":
+            return cid
+        if not fallback:
+            fallback = cid
+    return fallback
+
+
+def _pick_currency_amt(parent: ET.Element | None, tag_name: str, currency: str) -> Decimal:
+    els = _children(parent, tag_name)
+    if not els:
+        return Decimal("0.00")
+    cur_u = (currency or "EUR").upper()
+    for el in els:
+        cid = str(el.attrib.get("currencyID", "")).strip().upper()
+        if not cid or cid == cur_u:
+            return _dec(el.text)
+    return _dec(els[0].text)
+
+
+def _pick_cii_vat_id(party: ET.Element | None) -> str:
+    if party is None:
+        return ""
+    fallback = ""
+    for reg in _children(party, "SpecifiedTaxRegistration"):
+        id_el = _child(reg, "ID")
+        if id_el is None or id_el.text is None:
+            continue
+        txt = id_el.text.strip()
+        if not txt:
+            continue
+        scheme = str(id_el.attrib.get("schemeID", "")).strip().upper()
+        if scheme == "VA":
+            return txt
+        if not fallback:
+            fallback = txt
+    return fallback
+
+
+def _pick_ubl_tax_total(root: ET.Element, currency: str) -> Decimal:
+    tax_totals = _children(root, "TaxTotal")
+    if not tax_totals:
+        return Decimal("0.00")
+    cur_u = (currency or "EUR").upper()
+    for tt in tax_totals:
+        amt_el = _child(tt, "TaxAmount")
+        if amt_el is None:
+            continue
+        cid = str(amt_el.attrib.get("currencyID", "")).strip().upper()
+        if not cid or cid == cur_u:
+            return _dec(amt_el.text)
+    return _dec(_text(tax_totals[0], "TaxAmount"))
+
+
 def parse_einvoice_xml(xml_text: str, filename: str = "invoice.xml") -> dict[str, Any]:
     """Parse UBL 2.1 or UN/CEFACT CII e-invoice XML, validate EN 16931 math rules, and assign DATEV BU."""
-    root = ET.fromstring(str(xml_text or "").strip())
+    try:
+        root = ET.fromstring(str(xml_text or "").strip())
+    except ET.ParseError as exc:
+        return {
+            "filename": filename,
+            "syntax": "UNKNOWN",
+            "is_credit_note": False,
+            "invoice_id": filename,
+            "issue_date": "",
+            "due_date": "",
+            "currency": "EUR",
+            "buyer_reference": "",
+            "seller_name": "",
+            "seller_vat_id": "",
+            "seller_iban": "",
+            "buyer_name": "",
+            "buyer_vat_id": "",
+            "lines": [],
+            "tax_exclusive_total": "0.00",
+            "tax_total": "0.00",
+            "payable_gross_total": "0.00",
+            "datev_bu_key": "0",
+            "datev_account": "3200",
+            "en16931_valid": False,
+            "validation_errors": [f"Invalid XML syntax: {exc}"],
+        }
     root_name = _local(root.tag)
+    is_credit_note = False
 
     lines: list[dict[str, Any]] = []
     if root_name in {"Invoice", "CreditNote"}:
         syntax = "UBL_2.1"
+        is_credit_note = root_name == "CreditNote"
         invoice_id = _text(root, "ID")
         issue_date = _norm_date(_text(root, "IssueDate"))
         due_date = _norm_date(_text(root, "DueDate") or _text(root, "PaymentMeans", "PaymentDueDate")) or issue_date
@@ -344,14 +446,14 @@ def parse_einvoice_xml(xml_text: str, filename: str = "invoice.xml") -> dict[str
 
         sup_party = _path(root, "AccountingSupplierParty", "Party")
         seller_name = _text(sup_party, "PartyLegalEntity", "RegistrationName") or _text(sup_party, "PartyName", "Name")
-        seller_vat = _text(sup_party, "PartyTaxScheme", "CompanyID")
+        seller_vat = _pick_ubl_vat_id(sup_party)
         seller_iban = _text(root, "PaymentMeans", "PayeeFinancialAccount", "ID")
 
         cust_party = _path(root, "AccountingCustomerParty", "Party")
         buyer_name = _text(cust_party, "PartyLegalEntity", "RegistrationName") or _text(cust_party, "PartyName", "Name")
-        buyer_vat = _text(cust_party, "PartyTaxScheme", "CompanyID")
+        buyer_vat = _pick_ubl_vat_id(cust_party)
 
-        tax_total = _dec(_text(root, "TaxTotal", "TaxAmount"))
+        tax_total = _pick_ubl_tax_total(root, currency)
         lmt = _child(root, "LegalMonetaryTotal")
         tax_exclusive = _dec(_text(lmt, "TaxExclusiveAmount"))
         payable_gross = _dec(_text(lmt, "PayableAmount") or _text(lmt, "TaxInclusiveAmount"))
@@ -361,8 +463,12 @@ def parse_einvoice_xml(xml_text: str, filename: str = "invoice.xml") -> dict[str
         for item_el in _children(root, line_tag):
             name = _text(item_el, "Item", "Name") or _text(item_el, "Item", "Description") or "Line Item"
             qty = _dec(_text(item_el, qty_tag) or "1", "1.00")
-            unit_price = _dec(_text(item_el, "Price", "PriceAmount"))
+            raw_unit = _dec(_text(item_el, "Price", "PriceAmount"))
+            base_qty = _dec(_text(item_el, "Price", "BaseQuantity") or "1", "1.00")
+            unit_price = (raw_unit / base_qty).quantize(CENT, rounding=ROUND_HALF_UP) if base_qty > Decimal("0.00") and base_qty != Decimal("1.00") else raw_unit
             line_net = _dec(_text(item_el, "LineExtensionAmount"))
+            if qty != Decimal("0.00") and abs((qty * unit_price).quantize(CENT, rounding=ROUND_HALF_UP) - line_net) > Decimal("0.02"):
+                unit_price = (line_net / qty).quantize(CENT, rounding=ROUND_HALF_UP)
             tax_cat = _path(item_el, "Item", "ClassifiedTaxCategory")
             vat_rate = _dec(_text(tax_cat, "Percent"))
             vat_cat = (_text(tax_cat, "ID") or "S").upper()
@@ -384,10 +490,38 @@ def parse_einvoice_xml(xml_text: str, filename: str = "invoice.xml") -> dict[str
                     "qbo_account": qbo_acct_l,
                 }
             )
+        for ac in _children(root, "AllowanceCharge"):
+            is_charge = (_text(ac, "ChargeIndicator") or "false").lower() == "true"
+            sign = Decimal("1") if is_charge else Decimal("-1")
+            amt = (sign * _dec(_text(ac, "Amount"))).quantize(CENT, rounding=ROUND_HALF_UP)
+            cat_el = _child(ac, "TaxCategory")
+            vat_rate = _dec(_text(cat_el, "Percent"))
+            vat_cat = (_text(cat_el, "ID") or "S").upper()
+            eff_rate = Decimal("0.00") if vat_cat in {"AE", "K"} else vat_rate
+            line_tax = ((amt * eff_rate) / Decimal("100")).quantize(CENT, rounding=ROUND_HALF_UP)
+            bu_l, acct_l, xero_tax_l, qbo_acct_l = _map_line_tax(vat_cat, vat_rate)
+            reason = _text(ac, "AllowanceChargeReason") or ("Header Charge" if is_charge else "Header Allowance")
+            lines.append(
+                {
+                    "name": reason,
+                    "qty": "1.00",
+                    "unit_price": f"{amt:.2f}",
+                    "line_net": f"{amt:.2f}",
+                    "line_tax": f"{line_tax:.2f}",
+                    "vat_rate": f"{vat_rate:.2f}",
+                    "vat_category": vat_cat,
+                    "datev_bu_key": bu_l,
+                    "datev_account": acct_l,
+                    "xero_tax_type": xero_tax_l,
+                    "qbo_account": qbo_acct_l,
+                }
+            )
     elif root_name == "CrossIndustryInvoice":
         syntax = "CII_EN16931"
         exch = _child(root, "ExchangedDocument")
         invoice_id = _text(exch, "ID")
+        type_code = _text(exch, "TypeCode") or "380"
+        is_credit_note = type_code == "381"
         issue_date = _norm_date(_text(exch, "IssueDateTime", "DateTimeString"))
 
         tx = _child(root, "SupplyChainTradeTransaction")
@@ -396,11 +530,11 @@ def parse_einvoice_xml(xml_text: str, filename: str = "invoice.xml") -> dict[str
 
         seller_p = _child(hdr_agr, "SellerTradeParty")
         seller_name = _text(seller_p, "Name")
-        seller_vat = _text(seller_p, "SpecifiedTaxRegistration", "ID")
+        seller_vat = _pick_cii_vat_id(seller_p)
 
         buyer_p = _child(hdr_agr, "BuyerTradeParty")
         buyer_name = _text(buyer_p, "Name")
-        buyer_vat = _text(buyer_p, "SpecifiedTaxRegistration", "ID")
+        buyer_vat = _pick_cii_vat_id(buyer_p)
 
         hdr_set = _child(tx, "ApplicableHeaderTradeSettlement")
         currency = (_text(hdr_set, "InvoiceCurrencyCode") or "EUR").upper()
@@ -408,18 +542,20 @@ def parse_einvoice_xml(xml_text: str, filename: str = "invoice.xml") -> dict[str
         due_date = _norm_date(_text(hdr_set, "SpecifiedTradePaymentTerms", "DueDateDateTime", "DateTimeString")) or issue_date
 
         summ = _child(hdr_set, "SpecifiedTradeSettlementHeaderMonetarySummation")
-        tax_exclusive = _dec(_text(summ, "TaxBasisTotalAmount"))
-        tax_total = _dec(_text(summ, "TaxTotalAmount"))
+        tax_exclusive = _pick_currency_amt(summ, "TaxBasisTotalAmount", currency)
+        tax_total = _pick_currency_amt(summ, "TaxTotalAmount", currency)
         payable_gross = _dec(_text(summ, "DuePayableAmount") or _text(summ, "GrandTotalAmount"))
 
         for li in _children(tx, "IncludedSupplyChainTradeLineItem"):
             name = _text(li, "SpecifiedTradeProduct", "Name") or "Line Item"
             qty = _dec(_text(li, "SpecifiedLineTradeDelivery", "BilledQuantity") or "1", "1.00")
-            unit_price = _dec(
-                _text(li, "SpecifiedLineTradeAgreement", "NetPriceProductTradePrice", "ChargeAmount")
-            )
+            raw_unit = _dec(_text(li, "SpecifiedLineTradeAgreement", "NetPriceProductTradePrice", "ChargeAmount"))
+            basis_qty = _dec(_text(li, "SpecifiedLineTradeAgreement", "NetPriceProductTradePrice", "BasisQuantity") or "1", "1.00")
+            unit_price = (raw_unit / basis_qty).quantize(CENT, rounding=ROUND_HALF_UP) if basis_qty > Decimal("0.00") and basis_qty != Decimal("1.00") else raw_unit
             li_set = _child(li, "SpecifiedLineTradeSettlement")
             line_net = _dec(_text(li_set, "SpecifiedTradeSettlementLineMonetarySummation", "LineTotalAmount"))
+            if qty != Decimal("0.00") and abs((qty * unit_price).quantize(CENT, rounding=ROUND_HALF_UP) - line_net) > Decimal("0.02"):
+                unit_price = (line_net / qty).quantize(CENT, rounding=ROUND_HALF_UP)
             t_el = _child(li_set, "ApplicableTradeTax")
             vat_rate = _dec(_text(t_el, "RateApplicablePercent"))
             vat_cat = (_text(t_el, "CategoryCode") or "S").upper()
@@ -441,8 +577,59 @@ def parse_einvoice_xml(xml_text: str, filename: str = "invoice.xml") -> dict[str
                     "qbo_account": qbo_acct_l,
                 }
             )
+        for ac in _children(hdr_set, "SpecifiedTradeAllowanceCharge"):
+            ind = (_text(ac, "ChargeIndicator", "Indicator") or _text(ac, "ChargeIndicator") or "false").lower()
+            is_charge = ind == "true"
+            sign = Decimal("1") if is_charge else Decimal("-1")
+            amt = (sign * _dec(_text(ac, "ActualAmount"))).quantize(CENT, rounding=ROUND_HALF_UP)
+            cat_el = _child(ac, "CategoryTradeTax")
+            vat_rate = _dec(_text(cat_el, "RateApplicablePercent"))
+            vat_cat = (_text(cat_el, "CategoryCode") or "S").upper()
+            eff_rate = Decimal("0.00") if vat_cat in {"AE", "K"} else vat_rate
+            line_tax = ((amt * eff_rate) / Decimal("100")).quantize(CENT, rounding=ROUND_HALF_UP)
+            bu_l, acct_l, xero_tax_l, qbo_acct_l = _map_line_tax(vat_cat, vat_rate)
+            reason = _text(ac, "Reason") or ("Header Charge" if is_charge else "Header Allowance")
+            lines.append(
+                {
+                    "name": reason,
+                    "qty": "1.00",
+                    "unit_price": f"{amt:.2f}",
+                    "line_net": f"{amt:.2f}",
+                    "line_tax": f"{line_tax:.2f}",
+                    "vat_rate": f"{vat_rate:.2f}",
+                    "vat_category": vat_cat,
+                    "datev_bu_key": bu_l,
+                    "datev_account": acct_l,
+                    "xero_tax_type": xero_tax_l,
+                    "qbo_account": qbo_acct_l,
+                }
+            )
     else:
-        raise ValueError(f"Unsupported e-invoice root element: <{root_name}> (expected UBL Invoice or CII CrossIndustryInvoice)")
+        return {
+            "filename": filename,
+            "syntax": "UNKNOWN",
+            "is_credit_note": False,
+            "invoice_id": filename,
+            "issue_date": "",
+            "due_date": "",
+            "currency": "EUR",
+            "buyer_reference": "",
+            "seller_name": "",
+            "seller_vat_id": "",
+            "seller_iban": "",
+            "buyer_name": "",
+            "buyer_vat_id": "",
+            "lines": [],
+            "tax_exclusive_total": "0.00",
+            "tax_total": "0.00",
+            "payable_gross_total": "0.00",
+            "datev_bu_key": "0",
+            "datev_account": "3200",
+            "en16931_valid": False,
+            "validation_errors": [
+                f"Unsupported e-invoice root element: <{root_name}> (expected UBL Invoice/CreditNote or CII CrossIndustryInvoice)"
+            ],
+        }
 
     validation_errors: list[str] = []
     for field_label, val in (
@@ -468,7 +655,7 @@ def parse_einvoice_xml(xml_text: str, filename: str = "invoice.xml") -> dict[str
                 f"BR-CO-14: Sum of line VAT amounts ({sum_line_vat:.2f}) differs from TaxTotal ({tax_total:.2f})."
             )
         elif diff_vat != Decimal("0.00"):
-            adj_target = next((ln for ln in reversed(lines) if Decimal(ln["line_tax"]) > Decimal("0.00")), lines[-1])
+            adj_target = next((ln for ln in reversed(lines) if Decimal(ln["line_tax"]) != Decimal("0.00")), lines[-1])
             adj_target["line_tax"] = f"{(Decimal(adj_target['line_tax']) + diff_vat):.2f}"
 
     if abs((tax_exclusive + tax_total) - payable_gross) > Decimal("0.02"):
@@ -480,7 +667,8 @@ def parse_einvoice_xml(xml_text: str, filename: str = "invoice.xml") -> dict[str
     return {
         "filename": filename,
         "syntax": syntax,
-        "invoice_id": invoice_id,
+        "is_credit_note": is_credit_note,
+        "invoice_id": invoice_id or filename or "(missing ID)",
         "issue_date": issue_date,
         "due_date": due_date,
         "currency": currency,
@@ -539,9 +727,10 @@ def compile_einvoice_batch(
             valid_count += 1
         else:
             invalid_count += 1
-        tot_net += Decimal(inv["tax_exclusive_total"])
-        tot_vat += Decimal(inv["tax_total"])
-        tot_gross += Decimal(inv["payable_gross_total"])
+        sign = Decimal("-1") if inv.get("is_credit_note") else Decimal("1")
+        tot_net += Decimal(inv["tax_exclusive_total"]) * sign
+        tot_vat += Decimal(inv["tax_total"]) * sign
+        tot_gross += Decimal(inv["payable_gross_total"]) * sign
 
     return {
         "ok": True,
@@ -570,6 +759,37 @@ def _de_num(val: Any) -> str:
     return f"{Decimal(str(val)):.2f}".replace(".", ",")
 
 
+def _fallback_header_line(inv: dict[str, Any]) -> dict[str, Any]:
+    net_d = Decimal(str(inv.get("tax_exclusive_total") or "0.00"))
+    vat_d = Decimal(str(inv.get("tax_total") or "0.00"))
+    inf_rate = (
+        ((abs(vat_d) / abs(net_d)) * Decimal("100")).quantize(CENT, rounding=ROUND_HALF_UP)
+        if abs(net_d) > Decimal("0.00") and abs(vat_d) > Decimal("0.00")
+        else Decimal("0.00")
+    )
+    bu_f, acct_f, xtax_f, qacct_f = _map_line_tax("S", inf_rate)
+    return {
+        "name": f"{inv['syntax']} Invoice {inv['invoice_id']}",
+        "qty": "1.00",
+        "unit_price": f"{net_d:.2f}",
+        "line_net": f"{net_d:.2f}",
+        "line_tax": f"{vat_d:.2f}",
+        "vat_rate": f"{inf_rate:.2f}",
+        "datev_bu_key": inv.get("datev_bu_key") or bu_f,
+        "datev_account": inv.get("datev_account") or acct_f,
+        "xero_tax_type": xtax_f,
+        "qbo_account": qacct_f,
+    }
+
+
+def _is_skipped_unknown(inv: dict[str, Any]) -> bool:
+    return (
+        inv.get("syntax") == "UNKNOWN"
+        and not inv.get("lines")
+        and Decimal(str(inv.get("payable_gross_total") or "0.00")) == Decimal("0.00")
+    )
+
+
 def render_datev_extf_csv(batch: dict[str, Any]) -> str:
     """Render Pro-gated DATEV EXTF Buchungsstapel CSV with BU-Schlüssel tax keys."""
     _require_pro_batch(batch)
@@ -589,24 +809,12 @@ def render_datev_extf_csv(batch: dict[str, Any]) -> str:
         ]
     )
     for inv in batch.get("invoices", []):
-        parts = str(inv.get("issue_date") or "").split("-")
-        ddmm = f"{parts[2]}{parts[1]}" if len(parts) == 3 else "1811"
-        lines = inv.get("lines") or []
-        if not lines:
-            writer.writerow(
-                [
-                    _de_num(inv["payable_gross_total"]),
-                    "S",
-                    inv["currency"],
-                    inv["datev_account"],
-                    "70000",
-                    inv["datev_bu_key"],
-                    ddmm,
-                    inv["invoice_id"],
-                    f"{inv['seller_name']} ({inv['syntax']})",
-                ]
-            )
+        if _is_skipped_unknown(inv):
             continue
+        parts = str(inv.get("issue_date") or "").split("-")
+        ddmm = f"{parts[2]}{parts[1]}" if len(parts) == 3 and len(parts[1]) == 2 and len(parts[2]) == 2 else ""
+        is_cn = bool(inv.get("is_credit_note"))
+        lines = inv.get("lines") or [_fallback_header_line(inv)]
 
         buckets: dict[tuple[str, str, str], Decimal] = {}
         for ln in lines:
@@ -620,18 +828,23 @@ def render_datev_extf_csv(batch: dict[str, Any]) -> str:
 
         multi = len(buckets) > 1
         for (bu_b, acct_b, _rate_b), gross_b in buckets.items():
+            is_neg_bucket = gross_b < Decimal("0.00")
+            sh_flag = "H" if (is_cn ^ is_neg_bucket) else "S"
             text = f"{inv['seller_name']} ({inv['syntax']} · BU {bu_b})" if multi else f"{inv['seller_name']} ({inv['syntax']})"
             writer.writerow(
                 [
-                    _de_num(gross_b),
-                    "S",
-                    inv["currency"],
-                    acct_b,
-                    "70000",
-                    bu_b,
-                    ddmm,
-                    inv["invoice_id"],
-                    text,
+                    _csv_safe_cell(c)
+                    for c in (
+                        _de_num(abs(gross_b)),
+                        sh_flag,
+                        inv["currency"],
+                        acct_b,
+                        "70000",
+                        bu_b,
+                        ddmm,
+                        inv["invoice_id"],
+                        text,
+                    )
                 ]
             )
     return buf.getvalue().rstrip("\n")
@@ -658,34 +871,28 @@ def render_xero_bills_csv(batch: dict[str, Any]) -> str:
         ]
     )
     for inv in batch.get("invoices", []):
-        fallback_bu, fallback_acct, fallback_xtax, _ = _map_line_tax("S", Decimal("0.00"))
-        for ln in inv.get("lines") or [
-            {
-                "name": inv["invoice_id"],
-                "qty": "1.00",
-                "unit_price": inv["tax_exclusive_total"],
-                "line_tax": inv["tax_total"],
-                "vat_rate": "0.00",
-                "datev_account": inv.get("datev_account") or fallback_acct,
-                "xero_tax_type": fallback_xtax,
-            }
-        ]:
-            acct = str(ln.get("datev_account") or fallback_acct)
-            tax_type = str(ln.get("xero_tax_type") or fallback_xtax)
-            line_tax = str(ln.get("line_tax") or "0.00")
+        if _is_skipped_unknown(inv):
+            continue
+        doc_sign = Decimal("-1") if inv.get("is_credit_note") else Decimal("1")
+        for ln in inv.get("lines") or [_fallback_header_line(inv)]:
+            unit_signed = (Decimal(str(ln["unit_price"])) * doc_sign).quantize(CENT, rounding=ROUND_HALF_UP)
+            tax_signed = (Decimal(str(ln.get("line_tax") or "0.00")) * doc_sign).quantize(CENT, rounding=ROUND_HALF_UP)
             writer.writerow(
                 [
-                    inv["seller_name"],
-                    inv["invoice_id"],
-                    inv["issue_date"],
-                    inv["due_date"],
-                    ln["name"],
-                    ln["qty"],
-                    ln["unit_price"],
-                    acct,
-                    tax_type,
-                    line_tax,
-                    inv["currency"],
+                    _csv_safe_cell(c)
+                    for c in (
+                        inv["seller_name"],
+                        inv["invoice_id"],
+                        inv["issue_date"],
+                        inv["due_date"],
+                        ln["name"],
+                        ln["qty"],
+                        f"{unit_signed:.2f}",
+                        str(ln.get("datev_account") or "3425"),
+                        str(ln.get("xero_tax_type") or "INPUT (0%)"),
+                        f"{tax_signed:.2f}",
+                        inv["currency"],
+                    )
                 ]
             )
     return buf.getvalue().rstrip("\n")
@@ -713,31 +920,30 @@ def render_qbo_bills_csv(batch: dict[str, Any]) -> str:
         ]
     )
     for inv in batch.get("invoices", []):
-        for ln in inv.get("lines") or [
-            {
-                "name": f"{inv['syntax']} Invoice {inv['invoice_id']}",
-                "qty": "1.00",
-                "unit_price": inv["tax_exclusive_total"],
-                "line_net": inv["tax_exclusive_total"],
-                "line_tax": inv["tax_total"],
-                "datev_bu_key": inv.get("datev_bu_key") or "0",
-                "qbo_account": "3425 General Purchases",
-            }
-        ]:
+        if _is_skipped_unknown(inv):
+            continue
+        doc_sign = Decimal("-1") if inv.get("is_credit_note") else Decimal("1")
+        for ln in inv.get("lines") or [_fallback_header_line(inv)]:
+            unit_signed = (Decimal(str(ln["unit_price"])) * doc_sign).quantize(CENT, rounding=ROUND_HALF_UP)
+            net_signed = (Decimal(str(ln["line_net"])) * doc_sign).quantize(CENT, rounding=ROUND_HALF_UP)
+            tax_signed = (Decimal(str(ln.get("line_tax") or "0.00")) * doc_sign).quantize(CENT, rounding=ROUND_HALF_UP)
             writer.writerow(
                 [
-                    inv["invoice_id"],
-                    inv["seller_name"],
-                    inv["issue_date"],
-                    inv["due_date"],
-                    ln.get("qbo_account") or "3425 General Purchases",
-                    ln["name"],
-                    ln["qty"],
-                    ln["unit_price"],
-                    ln["line_net"],
-                    f"BU {ln.get('datev_bu_key') or inv.get('datev_bu_key', '0')}",
-                    ln.get("line_tax") or "0.00",
-                    inv["currency"],
+                    _csv_safe_cell(c)
+                    for c in (
+                        inv["invoice_id"],
+                        inv["seller_name"],
+                        inv["issue_date"],
+                        inv["due_date"],
+                        ln.get("qbo_account") or "3425 General Purchases",
+                        ln["name"],
+                        ln["qty"],
+                        f"{unit_signed:.2f}",
+                        f"{net_signed:.2f}",
+                        f"BU {ln.get('datev_bu_key') or inv.get('datev_bu_key', '0')}",
+                        f"{tax_signed:.2f}",
+                        inv["currency"],
+                    )
                 ]
             )
     return buf.getvalue().rstrip("\n")

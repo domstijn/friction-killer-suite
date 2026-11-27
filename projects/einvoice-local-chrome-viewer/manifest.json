@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "EInvoiceLocal — XRechnung & ZUGFeRD Local Viewer (0 Uploads)",
+  "short_name": "EInvoiceLocal",
+  "version": "1.0.0",
+  "description": "Validate and view XRechnung (UBL 2.1), ZUGFeRD (CII-XML) & Peppol XML invoices 100% locally in Chrome with DATEV BU-Schlüssel & A4 PDF print.",
+  "permissions": [],
+  "host_permissions": [],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "Open XRechnung / ZUGFeRD Local Viewer",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

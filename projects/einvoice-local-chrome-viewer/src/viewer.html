@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EInvoiceLocal — Lokaler XRechnung &amp; ZUGFeRD XML Viewer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="viewer-body">
+  <header class="viewer-header no-print">
+    <div>
+      <span class="eyebrow">100 % LOKAL IN CHROME · 0 PERMISSIONS · 0 UPLOADS</span>
+      <h1>EInvoiceLocal — XRechnung, ZUGFeRD &amp; Peppol Viewer</h1>
+    </div>
+    <div class="header-actions">
+      <button id="sample-btn" type="button" class="btn-secondary">Beispiel-XMLs laden (4 Formate)</button>
+      <button id="print-btn" type="button" class="btn-white">A4 PDF drucken</button>
+      <a href="https://domstijn.github.io/friction-killer-suite/de/xrechnung-zugferd-konverter/?ref=src.cws-viewer" target="_blank" rel="noopener noreferrer" class="btn-primary">
+        DATEV EXTF / Xero Batch (€29) &rarr;
+      </a>
+    </div>
+  </header>
+
+  <main class="viewer-main">
+    <section class="panel no-print">
+      <div class="drop-row">
+        <label for="xml-files"><strong>XML-Dateien wählen oder ablegen</strong> (UBL 2.1 Invoice/CreditNote &amp; UN/CEFACT CII)</label>
+        <input id="xml-files" type="file" accept=".xml,text/xml,application/xml" multiple />
+      </div>
+      <div class="stats-row">
+        <div class="stat"><span id="stat-valid">0 / 0</span><small>EN 16931 Gültig</small></div>
+        <div class="stat"><span id="stat-net">€0.00</span><small>Netto</small></div>
+        <div class="stat"><span id="stat-vat">€0.00</span><small>MwSt</small></div>
+        <div class="stat"><span id="stat-gross">€0.00</span><small>Brutto</small></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Beleg-Nr.</th>
+              <th>Syntax</th>
+              <th>Aussteller</th>
+              <th>BU / Konto</th>
+              <th class="right">Brutto</th>
+              <th class="center">EN 16931</th>
+            </tr>
+          </thead>
+          <tbody id="batch-body">
+            <tr><td colspan="6" class="empty">Wählen Sie .xml Dateien aus oder laden Sie die 4 Beispiel-XMLs.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pro-cta-strip">
+        <span>Mehrere XMLs als <strong>DATEV EXTF (;-CSV)</strong>, <strong>Xero Bills</strong> oder <strong>QuickBooks Bills CSV</strong> verbuchen?</span>
+        <a href="https://domstijn.github.io/friction-killer-suite/products/e-invoice-xml-batch-converter/?ref=src.cws-viewer" target="_blank" rel="noopener noreferrer" class="btn-primary">Zum Pro Batch-Converter &rarr;</a>
+      </div>
+    </section>
+
+    <section id="a4-sheet" class="a4-sheet">
+      <div class="a4-head">
+        <div>
+          <div id="a4-syntax" class="a4-syntax">EN 16931 ANSICHT</div>
+          <h2 id="a4-id">Rechnung auswählen</h2>
+          <div id="a4-dates" class="a4-muted">Datum: — · Fällig: — · Leitweg/Ref: —</div>
+        </div>
+        <div class="a4-right">
+          <div id="a4-seller" class="bold">Lieferant</div>
+          <div id="a4-seller-vat" class="a4-muted">USt-IdNr: —</div>
+          <div id="a4-iban" class="mono a4-muted">IBAN: —</div>
+        </div>
+      </div>
+      <div class="a4-buyer-row">
+        <div><strong>Empfänger:</strong> <span id="a4-buyer">—</span> (<span id="a4-buyer-vat">—</span>)</div>
+        <span id="a4-pill" class="a4-pill">Bereit</span>
+      </div>
+      <table class="a4-lines-tbl">
+        <thead>
+          <tr>
+            <th>Position</th>
+            <th class="right">Menge</th>
+            <th class="right">Einzel</th>
+            <th class="right">MwSt</th>
+            <th class="right">Netto</th>
+          </tr>
+        </thead>
+        <tbody id="a4-lines">
+          <tr><td colspan="5" class="empty-light">Noch keine XML-Datei geladen.</td></tr>
+        </tbody>
+      </table>
+      <div class="a4-totals">
+        <div>Netto: <strong id="a4-net">€0.00</strong></div>
+        <div>MwSt: <strong id="a4-vat">€0.00</strong></div>
+        <div class="a4-gross">Bruttobetrag: <span id="a4-gross">€0.00</span></div>
+      </div>
+      <div id="a4-stamp" class="a4-stamp">
+        EN 16931 geprüft (BR-CO-10/15) · 100 % lokal in Chrome ohne Cloud-Upload — EInvoiceLocal
+      </div>
+    </section>
+  </main>
+
+  <script src="einvoice_core.js"></script>
+  <script src="viewer.js"></script>
+</body>
+</html>

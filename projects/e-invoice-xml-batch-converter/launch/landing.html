@@ -4,273 +4,1361 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EInvoiceLocal — Offline XRechnung, ZUGFeRD &amp; Peppol XML Validator, A4 PDF &amp; DATEV/Xero Batch Converter</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :root {
+      color-scheme: dark;
+      --bg: #020617;
+      --card: rgba(15, 23, 42, 0.9);
+      --card-soft: rgba(15, 23, 42, 0.55);
+      --panel: #020617;
+      --border: #1e293b;
+      --border-strong: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --indigo: #6366f1;
+      --indigo-soft: #818cf8;
+      --emerald: #34d399;
+      --amber: #fcd34d;
+      --rose: #fb7185;
+    }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    code, pre, .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    code { background: rgba(30, 41, 59, 0.7); padding: 0.1rem 0.35rem; border-radius: 0.3rem; font-size: 0.85em; }
+    button { font-family: inherit; cursor: pointer; }
+    .hidden { display: none !important; }
+    .wrap { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* Header */
+    .site-header {
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .brand { font-size: 1.125rem; font-weight: 700; letter-spacing: -0.02em; color: #fff; }
+    .site-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; font-size: 0.875rem; color: #cbd5e1; }
+    .site-nav a:hover { color: #fff; }
+    .nav-cta {
+      border-radius: 0.5rem;
+      background: var(--indigo);
+      padding: 0.5rem 1rem;
+      font-weight: 600;
+      color: #fff !important;
+    }
+    .nav-cta:hover { background: var(--indigo-soft); }
+
+    /* Hero */
+    .hero { padding: 3.25rem 0; text-align: center; }
+    .pill-badge {
+      display: inline-block;
+      border-radius: 9999px;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      background: rgba(16, 185, 129, 0.1);
+      padding: 0.25rem 0.85rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #6ee7b7;
+    }
+    .hero h1 {
+      margin: 1.25rem auto 0;
+      font-size: clamp(2rem, 4.5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      color: #fff;
+      max-width: 58rem;
+    }
+    .hero h1 span { color: var(--indigo-soft); }
+    .hero p.lead {
+      margin: 1.25rem auto 0;
+      max-width: 44rem;
+      font-size: 1.075rem;
+      color: #cbd5e1;
+    }
+    .hero-actions {
+      margin-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.9rem;
+    }
+    .btn-white {
+      display: inline-block;
+      border-radius: 0.75rem;
+      background: #fff;
+      color: #020617;
+      padding: 0.75rem 1.4rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+    .btn-white:hover { background: #e2e8f0; }
+    .btn-indigo {
+      display: inline-block;
+      border-radius: 0.75rem;
+      background: var(--indigo);
+      color: #fff;
+      padding: 0.75rem 1.4rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      border: none;
+    }
+    .btn-indigo:hover { background: var(--indigo-soft); }
+    .trust-strip {
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: #6ee7b7;
+    }
+
+    /* Live App Card */
+    .app-shell {
+      border-radius: 1.5rem;
+      border: 1px solid rgba(99, 102, 241, 0.45);
+      background: var(--card);
+      padding: 1.75rem;
+      box-shadow: 0 20px 50px rgba(99, 102, 241, 0.08);
+    }
+    .app-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.15rem;
+    }
+    .eyebrow {
+      display: inline-block;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.14);
+      padding: 0.2rem 0.65rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #6ee7b7;
+      letter-spacing: 0.03em;
+    }
+    .app-header h2 { margin: 0.5rem 0 0; font-size: 1.4rem; font-weight: 700; color: #fff; }
+    .app-header p { margin: 0.35rem 0 0; font-size: 0.78rem; color: var(--muted); }
+    .tier-badge {
+      border-radius: 9999px;
+      border: 1px solid var(--border-strong);
+      background: var(--panel);
+      padding: 0.3rem 0.8rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      white-space: nowrap;
+    }
+    .tier-badge.pro {
+      border-color: var(--indigo);
+      background: rgba(99, 102, 241, 0.2);
+      color: #c7d2fe;
+    }
+
+    .app-grid {
+      margin-top: 1.4rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 1024px) {
+      .app-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .pane-stack { display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
+    .row-between { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; }
+    .sample-btn {
+      border-radius: 0.5rem;
+      border: 1px solid var(--border-strong);
+      background: #1e293b;
+      padding: 0.38rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #a5b4fc;
+    }
+    .sample-btn:hover { background: #334155; }
+    .file-input {
+      width: 100%;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border-strong);
+      background: var(--panel);
+      padding: 0.55rem 0.75rem;
+      font-size: 0.75rem;
+      color: #cbd5e1;
+    }
+    .file-input::file-selector-button {
+      margin-right: 0.75rem;
+      border: 0;
+      border-radius: 0.5rem;
+      background: var(--indigo);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      text-align: center;
+    }
+    @media (min-width: 640px) {
+      .stats-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    .stat-box {
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      padding: 0.65rem 0.5rem;
+    }
+    .stat-val { font-size: 0.92rem; font-weight: 700; color: #fff; }
+    .stat-val.em { color: #6ee7b7; }
+    .stat-val.in { color: #a5b4fc; }
+    .stat-lbl { font-size: 0.68rem; color: var(--muted); }
+
+    /* Table */
+    .table-wrap {
+      max-height: 19rem;
+      overflow: auto;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      background: var(--panel);
+    }
+    table.batch-tbl { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.75rem; }
+    table.batch-tbl thead {
+      position: sticky;
+      top: 0;
+      background: #0f172a;
+      color: var(--muted);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+    }
+    table.batch-tbl th, table.batch-tbl td { padding: 0.5rem 0.65rem; border-bottom: 1px solid rgba(30, 41, 59, 0.85); }
+    .einv-row { cursor: pointer; }
+    .einv-row:hover { background: #0f172a; }
+    .einv-row.active { background: rgba(99, 102, 241, 0.16); }
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    .trunc-cell { max-width: 9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pass-txt { color: #6ee7b7; font-weight: 700; }
+    .err-txt { color: #fb7185; font-weight: 700; }
+
+    /* Tabs + Output */
+    .tab-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .einv-tab {
+      border: 0;
+      border-radius: 0.5rem;
+      background: #1e293b;
+      padding: 0.38rem 0.7rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+    .einv-tab.on { background: var(--indigo); color: #fff; }
+    .einv-tab:hover:not(.on) { background: #334155; }
+    .csv-pre {
+      height: 8.5rem;
+      overflow: auto;
+      margin: 0;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      padding: 0.75rem;
+      font-size: 0.74rem;
+      color: #6ee7b7;
+      white-space: pre;
+    }
+
+    /* Value-First Pro Banner */
+    .pro-banner {
+      border-radius: 0.85rem;
+      border: 1px solid rgba(99, 102, 241, 0.55);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.18), rgba(16, 185, 129, 0.1));
+      padding: 0.85rem 1rem;
+      font-size: 0.76rem;
+    }
+    .pro-banner-title { font-weight: 700; color: #fff; }
+    .pro-banner-sub { margin-top: 0.2rem; color: #cbd5e1; }
+    .pro-banner-actions { margin-top: 0.65rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .btn-sm-indigo {
+      border-radius: 0.5rem;
+      background: var(--indigo);
+      color: #fff;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 0;
+    }
+    .btn-sm-ghost {
+      border-radius: 0.5rem;
+      border: 1px solid var(--border-strong);
+      background: var(--panel);
+      color: #e2e8f0;
+      padding: 0.42rem 0.8rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+    }
+
+    .dl-grid { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
+    @media (min-width: 640px) { .dl-grid { grid-template-columns: repeat(3, 1fr); } }
+    .dl-btn {
+      border-radius: 0.75rem;
+      border: 1px solid var(--border-strong);
+      background: #1e293b;
+      padding: 0.55rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .dl-btn:hover { background: #334155; }
+
+    .license-box {
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      background: rgba(2, 6, 23, 0.72);
+      padding: 0.75rem;
+      font-size: 0.75rem;
+    }
+    .license-row { margin-top: 0.5rem; display: flex; gap: 0.5rem; }
+    .license-input {
+      flex: 1;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border-strong);
+      background: #0f172a;
+      padding: 0.42rem 0.7rem;
+      font-family: ui-monospace, monospace;
+      font-size: 0.75rem;
+      color: #e2e8f0;
+    }
+
+    /* Printable A4 Sheet */
+    .a4-card {
+      flex: 1;
+      border-radius: 1rem;
+      border: 1px solid var(--border-strong);
+      background: #ffffff;
+      color: #0f172a;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .a4-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 0.9rem;
+    }
+    .a4-tbl { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.75rem; }
+    .a4-tbl th { border-bottom: 1px solid #cbd5e1; padding: 0.4rem 0; font-size: 0.68rem; text-transform: uppercase; color: #64748b; text-align: left; }
+    .a4-tbl th.text-right, .a4-tbl td.text-right { text-align: right; }
+    .a4-tbl td { border-bottom: 1px solid #f1f5f9; padding: 0.42rem 0; color: #1e293b; }
+    .a4-totals { margin-top: 1.25rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem; text-align: right; font-size: 0.78rem; }
+    .a4-stamp {
+      margin-top: 1rem;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 0.55rem;
+      font-size: 0.66rem;
+      color: #475569;
+    }
+
+    /* Lower Sections */
+    .two-col { display: grid; grid-template-columns: 1fr; gap: 1.5rem; padding: 3rem 0; }
+    @media (min-width: 768px) { .two-col { grid-template-columns: 1fr 1fr; } }
+    .panel-rose { border-radius: 1rem; border: 1px solid rgba(244, 63, 94, 0.25); background: var(--card-soft); padding: 1.8rem; }
+    .panel-em { border-radius: 1rem; border: 1px solid rgba(16, 185, 129, 0.35); background: #0f172a; padding: 1.8rem; }
+    .three-col { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 2rem; }
+    @media (min-width: 768px) { .three-col { grid-template-columns: repeat(3, 1fr); } }
+    .price-card { border-radius: 1rem; border: 1px solid var(--border); background: var(--card-soft); padding: 1.8rem; }
+    .price-card.featured { border-color: var(--indigo); background: #0f172a; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.14); }
+    .price-card.bundle { border-color: rgba(16, 185, 129, 0.45); background: rgba(15, 23, 42, 0.85); }
+    .faq-box { border-radius: 0.75rem; border: 1px solid var(--border); padding: 1.2rem; background: var(--card-soft); }
+    footer.site-footer, footer {
+      max-width: 72rem;
+      margin: 0 auto;
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+    /* Compatibility rules for injected resource, feedback & policy strips (0-CDN safe) */
+    .mx-auto.max-w-5xl { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem 1.5rem; }
+    .mx-auto.max-w-5xl .rounded-2xl { border-radius: 1rem; border: 1px solid var(--border); background: var(--card-soft); padding: 1.25rem; }
+    .mx-auto.max-w-5xl .grid { display: grid; gap: 1.25rem; grid-template-columns: 1fr; font-size: 0.78rem; color: var(--muted); }
+    @media (min-width: 768px) { .mx-auto.max-w-5xl .grid.md\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); } }
+    .mx-auto.max-w-5xl .flex { display: flex; flex-wrap: wrap; align-items: center; gap: 0.65rem; }
+    .mx-auto.max-w-5xl .justify-between { justify-content: space-between; }
+    .mx-auto.max-w-5xl a { border-radius: 0.5rem; padding: 0.35rem 0.65rem; font-size: 0.75rem; border: 1px solid var(--border-strong); color: #c7d2fe; background: var(--panel); display: inline-block; }
+    .mx-auto.max-w-5xl a.underline { border: none; background: transparent; padding: 0; color: #818cf8; text-decoration: underline; }
+    .mx-auto.max-w-5xl h3 { margin: 0 0 0.35rem; font-size: 0.82rem; font-weight: 700; color: #e2e8f0; }
+    .mx-auto.max-w-5xl p { margin: 0.25rem 0 0; }
+    .mx-auto.max-w-5xl .text-xs { font-size: 0.75rem; color: var(--muted); }
+    .mx-auto.max-w-5xl .uppercase { text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+    .mx-auto.max-w-5xl .mt-3 { margin-top: 0.75rem; }
+
     @media print {
       body { background: #ffffff !important; color: #0f172a !important; }
       header, section:not(#live-app), footer, #live-app-controls, #app-batch-pane, #app-export-pane, .no-print { display: none !important; }
       #live-app { border: none !important; background: #ffffff !important; padding: 0 !important; box-shadow: none !important; }
-      #a4-print-area { display: block !important; border: none !important; box-shadow: none !important; width: 100% !important; color: #000000 !important; background: #ffffff !important; }
+      .app-grid { display: block !important; margin: 0 !important; }
+      #a4-print-area { display: block !important; border: none !important; box-shadow: none !important; width: 100% !important; color: #000000 !important; background: #ffffff !important; padding: 0 !important; }
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
-  <header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6 no-print">
-    <div class="text-lg font-bold tracking-tight text-white">EInvoiceLocal</div>
-    <nav class="flex items-center gap-6 text-sm text-slate-300">
-      <a href="#live-app" class="hover:text-white">Web App</a>
-      <a href="#comparison" class="hover:text-white">Why it works</a>
-      <a href="#pricing" class="hover:text-white">Pricing</a>
-      <a href="https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-lg bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-400">Get Pro — €29</a>
+<body>
+  <header class="site-header no-print">
+    <div class="brand">EInvoiceLocal</div>
+    <nav class="site-nav">
+      <a href="#live-app">Web App</a>
+      <a href="#comparison">Why it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c" data-fk-cta="pro-checkout" class="stripe-checkout-button nav-cta">Get Pro — €29</a>
     </nav>
   </header>
 
-  <main class="mx-auto max-w-6xl px-6">
-    <section class="py-14 text-center no-print">
-      <span class="inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
-        GDPR / GoBD Safe · 100% Browser-Local XML DOMParser · UBL 2.1 + CII EN 16931
-      </span>
-      <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+  <main class="wrap">
+    <section class="hero no-print">
+      <span class="pill-badge">GDPR / GoBD Safe · 0 Third-Party CDNs · Browser-Local UBL 2.1 + CII EN 16931</span>
+      <h1>
         XRechnung, ZUGFeRD &amp; Peppol XML to A4 PDF &amp; DATEV/Xero<br />
-        <span class="text-indigo-400">without €19–€79/mo ERPs or cloud uploads.</span>
+        <span>without €19–€79/mo ERPs or cloud uploads.</span>
       </h1>
-      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
-        Drop raw B2B e-invoice XML batches right into Chrome: validate EN 16931 line-net &amp; gross math locally, render a clean printable A4 PDF invoice, and batch-export DATEV EXTF (with automatic <code>BU-Schlüssel</code>), Xero Bills, and QuickBooks CSVs with zero server uploads.
+      <p class="lead">
+        Drop unlimited B2B e-invoice XML batches right into Chrome: validate every EN 16931 math rule and DATEV <code>BU-Schlüssel</code> locally for free, print your first A4 PDF invoice, preview your converted rows, and unlock complete DATEV EXTF, Xero, and QuickBooks CSV batch downloads once for €29.
       </p>
-      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-        <a href="#live-app" data-fk-cta="free-install" class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">
-          Validate &amp; Print Free (3 XMLs)
-        </a>
-        <a href="https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c" data-fk-cta="pro-checkout" class="stripe-checkout-button rounded-xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400">
-          Unlock Pro Batch License — €29 once
-        </a>
+      <div class="hero-actions">
+        <a href="#live-app" data-fk-cta="free-install" class="btn-white">Validate Full Batch Free in Browser</a>
+        <a href="https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c" data-fk-cta="pro-checkout" class="stripe-checkout-button btn-indigo">Unlock Pro CSV Export — €29 once</a>
+      </div>
+      <div class="trust-strip">
+        ✓ 0 KB XML leave your browser (verify in DevTools Network tab) · ✓ Automatic Stripe PDF VAT invoice · ✓ 14-day refund
       </div>
     </section>
 
-    <!-- Standalone Zero-Install In-Browser Web App -->
-    <section id="live-app" class="rounded-3xl border border-indigo-500/40 bg-slate-900/90 p-6 shadow-2xl shadow-indigo-500/10 sm:p-8">
-      <div id="live-app-controls" class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-5 md:flex-row md:items-center no-print">
+    <section id="live-app" class="app-shell">
+      <div id="live-app-controls" class="app-header no-print">
         <div>
-          <span class="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">ZERO-INSTALL IN-BROWSER WEB APP · DUAL UBL 2.1 + UN/CEFACT CII</span>
-          <h2 class="mt-2 text-2xl font-bold text-white">Validate XML Batch, Print A4 PDF &amp; Export DATEV / Xero / QBO</h2>
-          <p class="mt-1 text-xs text-slate-400">Free validates EN 16931 math &amp; renders printable A4 invoices for up to 3 XMLs; Pro unlocks unlimited XML batches &amp; DATEV EXTF / Xero / QBO CSV downloads.</p>
+          <span class="eyebrow">ZERO-CDN IN-BROWSER WEB APP · UBL 2.1 INVOICE/CREDITNOTE + CII EN 16931</span>
+          <h2>Validate Full XML Batch, Print A4 PDF &amp; Export DATEV / Xero / QBO</h2>
+          <p>Validate unlimited XML files locally &amp; preview 2 converted CSV rows free; unlock complete batch CSV downloads + multi-invoice A4 print for €29 once.</p>
         </div>
-        <span id="app-tier-badge" class="self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300">Free Tier (3 XMLs)</span>
+        <span id="app-tier-badge" class="tier-badge">Free Value Preview</span>
       </div>
 
-      <div class="mt-6 grid gap-6 lg:grid-cols-12">
-        <div id="app-batch-pane" class="space-y-4 lg:col-span-6 no-print">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <label class="text-xs font-semibold text-slate-300" for="app-xml-files">Drop/Select One or More E-Invoice <code>.xml</code> Files</label>
-            <button id="app-sample-btn" type="button" class="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs font-medium text-indigo-300 hover:bg-slate-700">Load Sample Batch (4 XMLs: XRechnung UBL + Peppol + ZUGFeRD CII)</button>
+      <div class="app-grid">
+        <div id="app-batch-pane" class="pane-stack no-print">
+          <div class="row-between">
+            <label for="app-xml-files" style="font-size:0.76rem;font-weight:600;color:#cbd5e1;">Drop/Select Any Number of E-Invoice <code>.xml</code> Files</label>
+            <button id="app-sample-btn" type="button" class="sample-btn">Load Sample Batch (4 XMLs: XRechnung UBL + Peppol + ZUGFeRD CII)</button>
           </div>
-          <input id="app-xml-files" type="file" accept=".xml,text/xml,application/xml" multiple class="block w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-500 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-white" />
+          <input id="app-xml-files" type="file" accept=".xml,text/xml,application/xml" multiple class="file-input" />
 
-          <div class="grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
-            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
-              <div id="stat-valid" class="text-sm font-bold text-emerald-300">0 / 0</div>
-              <div class="text-[11px] text-slate-400">EN 16931 Valid</div>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div id="stat-valid" class="stat-val em">0 / 0</div>
+              <div class="stat-lbl">EN 16931 Valid</div>
             </div>
-            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
-              <div id="stat-net" class="text-sm font-bold text-white">€0.00</div>
-              <div class="text-[11px] text-slate-400">Total Net</div>
+            <div class="stat-box">
+              <div id="stat-net" class="stat-val">€0.00</div>
+              <div class="stat-lbl">Total Net</div>
             </div>
-            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
-              <div id="stat-vat" class="text-sm font-bold text-indigo-300">€0.00</div>
-              <div class="text-[11px] text-slate-400">Total VAT</div>
+            <div class="stat-box">
+              <div id="stat-vat" class="stat-val in">€0.00</div>
+              <div class="stat-lbl">Total VAT</div>
             </div>
-            <div class="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
-              <div id="stat-gross" class="text-sm font-bold text-emerald-300">€0.00</div>
-              <div class="text-[11px] text-slate-400">Total Gross</div>
+            <div class="stat-box">
+              <div id="stat-gross" class="stat-val em">€0.00</div>
+              <div class="stat-lbl">Total Gross</div>
             </div>
           </div>
 
-          <div id="app-table-wrap" class="max-h-80 overflow-auto rounded-xl border border-slate-800 bg-slate-950">
-            <table class="w-full text-left text-xs">
-              <thead class="sticky top-0 bg-slate-900 text-[11px] uppercase text-slate-400">
+          <div id="app-table-wrap" class="table-wrap">
+            <table class="batch-tbl">
+              <thead>
                 <tr>
-                  <th class="px-3 py-2">Invoice #</th>
-                  <th class="px-3 py-2">Syntax</th>
-                  <th class="px-3 py-2">Supplier</th>
-                  <th class="px-3 py-2">BU / Acct</th>
-                  <th class="px-3 py-2 text-right">Gross</th>
-                  <th class="px-3 py-2 text-center">EN 16931</th>
+                  <th>Invoice #</th>
+                  <th>Syntax</th>
+                  <th>Supplier</th>
+                  <th>BU / Acct</th>
+                  <th class="text-right">Gross</th>
+                  <th class="text-center">EN 16931</th>
                 </tr>
               </thead>
-              <tbody id="app-table-body" class="divide-y divide-slate-800/80 text-slate-200">
-                <tr><td colspan="6" class="px-3 py-4 text-center text-slate-500">Click "Load Sample Batch (4 XMLs...)" or drop your XRechnung/ZUGFeRD/Peppol XML files.</td></tr>
+              <tbody id="app-table-body">
+                <tr><td colspan="6" class="text-center" style="padding:1rem;color:#64748b;">Click "Load Sample Batch (4 XMLs...)" or drop your own XRechnung/ZUGFeRD/Peppol XML files.</td></tr>
               </tbody>
             </table>
           </div>
 
-          <div id="app-export-pane" class="space-y-2">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex gap-1.5" role="tablist">
-                <button type="button" data-einv-tab="datev" class="einv-tab rounded-lg bg-indigo-500 px-2.5 py-1 text-xs font-semibold text-white">DATEV EXTF (;-CSV)</button>
-                <button type="button" data-einv-tab="xero" class="einv-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700">Xero Bills CSV</button>
-                <button type="button" data-einv-tab="qbo" class="einv-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700">QuickBooks Bills CSV</button>
+          <div id="app-export-pane" class="pane-stack">
+            <div class="row-between">
+              <div class="tab-row" role="tablist">
+                <button type="button" data-einv-tab="datev" class="einv-tab on">DATEV EXTF (;-CSV)</button>
+                <button type="button" data-einv-tab="xero" class="einv-tab">Xero Bills CSV</button>
+                <button type="button" data-einv-tab="qbo" class="einv-tab">QuickBooks Bills CSV</button>
               </div>
-              <span id="app-status" class="text-xs text-indigo-300">Ready</span>
+              <span id="app-status" style="font-size:0.75rem;color:#a5b4fc;">Ready</span>
             </div>
-            <pre id="app-output" class="h-32 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3 font-mono text-xs text-emerald-300">Load sample XML batch to preview DATEV BU-Schlüssel, Xero Bills, and QuickBooks Bills CSVs.</pre>
-            <div class="grid gap-2 sm:grid-cols-3">
-              <button id="app-dl-datev" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download DATEV EXTF (Pro)</button>
-              <button id="app-dl-xero" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download Xero Bills (Pro)</button>
-              <button id="app-dl-qbo" type="button" class="rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-semibold text-white hover:bg-slate-700">Download QBO Bills (Pro)</button>
+
+            <pre id="app-output" class="csv-pre">Load sample or local XML files to preview DATEV BU-Schlüssel, Xero Bills, and QuickBooks Bills CSVs.</pre>
+
+            <div id="pro-unlock-banner" class="pro-banner hidden">
+              <div id="pro-banner-title" class="pro-banner-title">Batch validated — full CSV export ready to download</div>
+              <div class="pro-banner-sub">Automatic Stripe PDF VAT invoice · 14-day refund · 0 XML bytes uploaded</div>
+              <div class="pro-banner-actions">
+                <a href="https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c" data-fk-cta="pro-checkout" class="stripe-checkout-button btn-sm-indigo">Download Full CSVs — €29 once &rarr;</a>
+                <button id="app-copy-expense-btn" type="button" class="btn-sm-ghost">Copy €29 Expense Request</button>
+              </div>
+            </div>
+
+            <div class="dl-grid">
+              <button id="app-dl-datev" type="button" class="dl-btn">Download DATEV EXTF (Pro)</button>
+              <button id="app-dl-xero" type="button" class="dl-btn">Download Xero Bills (Pro)</button>
+              <button id="app-dl-qbo" type="button" class="dl-btn">Download QBO Bills (Pro)</button>
             </div>
           </div>
 
-          <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-3">
-            <div class="flex items-center justify-between text-xs">
-              <label class="font-semibold text-slate-300" for="app-license-key">Unlock Pro Batch License (Stripe Session or EINVOICE Key)</label>
-              <a href="https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c" data-fk-cta="pro-checkout" target="_blank" class="stripe-checkout-button font-semibold text-indigo-400 hover:text-indigo-300">Buy Pro — €29 &rarr;</a>
+          <div class="license-box">
+            <div class="row-between">
+              <label for="app-license-key" style="font-weight:600;color:#cbd5e1;">Unlock Pro Batch License (Stripe Session or EINVOICE Key)</label>
+              <a href="https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c" data-fk-cta="pro-checkout" target="_blank" rel="noopener noreferrer" class="stripe-checkout-button" style="font-weight:700;color:#818cf8;">Buy Pro — €29 &rarr;</a>
             </div>
-            <div class="mt-2 flex gap-2">
-              <input id="app-license-key" placeholder="Paste cs_live_... or EINVOICE-... key" class="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 font-mono text-xs text-slate-200" />
-              <button id="app-activate-btn" type="button" class="rounded-lg bg-slate-800 px-4 py-1.5 text-xs font-semibold text-white hover:bg-slate-700">Activate</button>
+            <div class="license-row">
+              <input id="app-license-key" placeholder="Paste cs_live_... or EINVOICE-... key" class="license-input" />
+              <button id="app-activate-btn" type="button" class="btn-sm-ghost">Activate</button>
             </div>
           </div>
         </div>
 
-        <!-- Printable A4 Invoice Preview -->
-        <div class="flex flex-col space-y-3 lg:col-span-6">
-          <div class="flex items-center justify-between no-print">
-            <span class="text-xs font-semibold text-emerald-300">Clean Printable A4 Invoice Preview (Click any batch row)</span>
-            <button id="app-print-btn" type="button" class="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-slate-950 hover:bg-slate-200">Print / Save A4 PDF</button>
+        <div class="pane-stack">
+          <div class="row-between no-print">
+            <span style="font-size:0.75rem;font-weight:600;color:#6ee7b7;">Printable A4 Invoice Preview (Click any row)</span>
+            <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+              <span id="a4-print-hint" style="font-size:0.72rem;color:#fb7185;"></span>
+              <button id="app-print-btn" type="button" class="btn-white" style="padding:0.42rem 0.85rem;font-size:0.75rem;">Print / Save A4 PDF</button>
+            </div>
           </div>
-          <div id="a4-print-area" class="flex-1 rounded-2xl border border-slate-700 bg-white p-6 text-slate-900 shadow-inner">
-            <div class="flex items-start justify-between border-b border-slate-200 pb-4">
-              <div>
-                <div class="text-xs font-semibold uppercase tracking-wider text-indigo-600" id="a4-syntax">EN 16931 E-INVOICE VIEW</div>
-                <h3 class="mt-1 text-xl font-bold text-slate-900" id="a4-id">Select or Load XML Invoice</h3>
-                <p class="text-xs text-slate-500" id="a4-dates">Issue Date: — · Due Date: — · Leitweg/Ref: —</p>
+          <div id="a4-print-area" class="a4-card">
+            <div>
+              <div class="a4-top">
+                <div>
+                  <div id="a4-syntax" style="font-size:0.72rem;font-weight:700;text-transform:uppercase;color:#4f46e5;">EN 16931 E-INVOICE VIEW</div>
+                  <h3 id="a4-id" style="margin:0.25rem 0 0;font-size:1.25rem;font-weight:800;color:#0f172a;">Select or Load XML Invoice</h3>
+                  <p id="a4-dates" style="margin:0.2rem 0 0;font-size:0.75rem;color:#64748b;">Issue Date: — · Due Date: — · Leitweg/Ref: —</p>
+                </div>
+                <div style="text-align:right;font-size:0.75rem;">
+                  <div id="a4-seller" style="font-weight:700;color:#1e293b;">Supplier Name</div>
+                  <div id="a4-seller-vat" style="color:#64748b;">VAT: —</div>
+                  <div id="a4-iban" class="font-mono" style="color:#64748b;">IBAN: —</div>
+                </div>
               </div>
-              <div class="text-right text-xs">
-                <div class="font-semibold text-slate-700" id="a4-seller">Supplier Name</div>
-                <div class="text-slate-500" id="a4-seller-vat">VAT: —</div>
-                <div class="font-mono text-slate-500" id="a4-iban">IBAN: —</div>
+              <div class="row-between" style="margin-top:0.85rem;font-size:0.75rem;color:#475569;">
+                <div><strong>Bill To:</strong> <span id="a4-buyer">Buyer Name</span> (<span id="a4-buyer-vat">—</span>)</div>
+                <div id="a4-valid-pill" style="border-radius:9999px;background:#f1f5f9;padding:0.2rem 0.65rem;font-weight:700;color:#334155;">Ready</div>
+              </div>
+              <table class="a4-tbl">
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                    <th class="text-right">Qty</th>
+                    <th class="text-right">Unit</th>
+                    <th class="text-right">VAT</th>
+                    <th class="text-right">Net</th>
+                  </tr>
+                </thead>
+                <tbody id="a4-lines">
+                  <tr><td colspan="5" class="text-center" style="padding:1.5rem 0;color:#94a3b8;">Load the 4-XML sample batch or drop local XMLs to inspect line items &amp; totals.</td></tr>
+                </tbody>
+              </table>
+              <div class="a4-totals">
+                <div>Net Total: <strong id="a4-net">€0.00</strong></div>
+                <div>VAT Total: <strong id="a4-vat">€0.00</strong></div>
+                <div style="margin-top:0.35rem;font-size:1rem;font-weight:800;color:#020617;">Payable Gross: <span id="a4-gross">€0.00</span></div>
               </div>
             </div>
-            <div class="mt-3 flex items-center justify-between text-xs text-slate-600">
-              <div><strong>Bill To:</strong> <span id="a4-buyer">Buyer Name</span> (<span id="a4-buyer-vat">—</span>)</div>
-              <div id="a4-valid-pill" class="rounded-full bg-slate-100 px-2.5 py-0.5 font-semibold text-slate-700">Ready</div>
-            </div>
-            <table class="mt-4 w-full text-left text-xs">
-              <thead class="border-b border-slate-200 text-[11px] uppercase text-slate-500">
-                <tr>
-                  <th class="py-1.5">Description</th>
-                  <th class="py-1.5 text-right">Qty</th>
-                  <th class="py-1.5 text-right">Unit</th>
-                  <th class="py-1.5 text-right">VAT</th>
-                  <th class="py-1.5 text-right">Net</th>
-                </tr>
-              </thead>
-              <tbody id="a4-lines" class="divide-y divide-slate-100 text-slate-800">
-                <tr><td colspan="5" class="py-6 text-center text-slate-400">Load the 4-XML sample batch to inspect rendered UBL/CII line items &amp; totals.</td></tr>
-              </tbody>
-            </table>
-            <div class="mt-5 border-t border-slate-200 pt-3 text-right text-xs">
-              <div>Net Total: <strong id="a4-net">€0.00</strong></div>
-              <div>VAT Total: <strong id="a4-vat">€0.00</strong></div>
-              <div class="mt-1 text-base font-extrabold text-slate-950">Payable Gross: <span id="a4-gross">€0.00</span></div>
-            </div>
-            <div id="a4-free-stamp" class="mt-4 border-t border-slate-100 pt-2 text-[10px] text-slate-400">
-              EN 16931 locally validated via EInvoiceLocal (0 cloud uploads) — domstijn.github.io/friction-killer-suite
+            <div id="a4-free-stamp" class="a4-stamp">
+              EN 16931 geprüft (BR-CO-10/15) · 100 % lokal im Browser ohne Cloud-Upload — EInvoiceLocal (domstijn.github.io/friction-killer-suite/de/xrechnung-zugferd-konverter/)
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="comparison" class="grid gap-6 py-12 md:grid-cols-2 no-print">
-      <div class="rounded-2xl border border-rose-500/20 bg-slate-900/60 p-8">
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-rose-400">Why Raw XML E-Invoices Slow Teams Down</h2>
-        <ul class="mt-4 space-y-3 text-slate-300">
-          <li>• B2B suppliers send both <strong>UBL 2.1</strong> (Peppol BIS 3.0 / XRechnung) and <strong>UN/CEFACT CII</strong> (ZUGFeRD) XML files—raw Excel dumps unreadable tags</li>
-          <li>• Uploading confidential supplier IBANs, pricing, and client VAT IDs to random online XML viewers conflicts with strict EU GDPR &amp; German GoBD rules</li>
-          <li>• Accounting SaaS tools lock simple XML validation &amp; batch DATEV <code>EXTF</code> export behind €19–€79/mo recurring plans</li>
+    <section id="comparison" class="two-col no-print">
+      <div class="panel-rose">
+        <h2 style="margin:0;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.06em;color:#fb7185;">Why Raw XML E-Invoices Slow Teams Down</h2>
+        <ul style="margin:1rem 0 0;padding-left:1.1rem;color:#cbd5e1;font-size:0.9rem;display:grid;gap:0.6rem;">
+          <li>Suppliers send both <strong>UBL 2.1</strong> (XRechnung / Peppol BIS 3.0) and <strong>UN/CEFACT CII</strong> (ZUGFeRD) XML files—spreadsheets flatten tags poorly.</li>
+          <li>Uploading confidential supplier IBANs and client VAT IDs to public online XML viewers triggers Art. 28 GDPR / AVV &amp; GoBD compliance hurdles.</li>
+          <li>ERP add-ons lock simple XML verification &amp; batch DATEV <code>EXTF</code> export behind €19–€79/mo subscriptions.</li>
         </ul>
       </div>
-      <div class="rounded-2xl border border-emerald-500/30 bg-slate-900 p-8">
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-emerald-400">With EInvoiceLocal</h2>
-        <ul class="mt-4 space-y-3 text-slate-200">
-          <li>• Unified local parser for XRechnung, ZUGFeRD, and Peppol BIS 3.0 XML with explicit <code>BR-CO-10</code> &amp; <code>BR-CO-15</code> EN 16931 math verification</li>
-          <li>• Instant readable A4 HTML/PDF invoice view plus automatic German DATEV <code>BU-Schlüssel</code> (<code>9</code>/<code>8</code>/<code>94</code>/<code>0</code>) &amp; SKR03 mapping</li>
-          <li>• Batch-export DATEV EXTF, Xero Bills, and QuickBooks Bills CSVs locally in Chrome or via offline Python CLI folder scanning</li>
+      <div class="panel-em">
+        <h2 style="margin:0;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.06em;color:#34d399;">With EInvoiceLocal</h2>
+        <ul style="margin:1rem 0 0;padding-left:1.1rem;color:#e2e8f0;font-size:0.9rem;display:grid;gap:0.6rem;">
+          <li>Unified zero-CDN local engine for UBL 2.1 (<code>Invoice</code> &amp; <code>CreditNote</code>) and CII (<code>380</code>/<code>381</code>) with <code>BR-CO-10/14/15</code> checks.</li>
+          <li>Printable A4 view with German DATEV <code>BU-Schlüssel</code> (<code>9</code>/<code>8</code>/<code>94</code>/<code>91</code>/<code>92</code>/<code>0</code>) &amp; SKR03 mapping.</li>
+          <li>Download complete DATEV EXTF, Xero Bills, and QuickBooks Bills CSVs locally or run the offline Python <code>.whl</code> CLI.</li>
         </ul>
       </div>
     </section>
 
-    <section id="pricing" class="py-12 no-print">
-      <h2 class="text-center text-2xl font-bold text-white">One-time GDPR-safe license — zero recurring SaaS bill</h2>
-      <div class="mt-8 grid gap-6 md:grid-cols-3">
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-8">
-          <h3 class="text-lg font-semibold text-white">Free Validator &amp; Viewer</h3>
-          <p class="mt-2 text-3xl font-bold text-white">€0</p>
-          <p class="mt-2 text-sm text-slate-400">Instant browser-local XML check &amp; A4 print.</p>
-          <ul class="mt-6 space-y-2 text-sm text-slate-300">
-            <li>✓ Validate &amp; print up to 3 XML invoices/batch</li>
-            <li>✓ Dual UBL 2.1 + CII EN 16931 math check</li>
-            <li>✓ Automatic DATEV <code>BU-Schlüssel</code> preview</li>
+    <section id="pricing" class="no-print" style="padding:2.5rem 0;">
+      <h2 style="text-align:center;font-size:1.65rem;font-weight:800;color:#fff;margin:0;">One-time GDPR-safe license — zero recurring SaaS bill</h2>
+      <div class="three-col">
+        <div class="price-card">
+          <h3 style="margin:0;font-size:1.1rem;color:#fff;">Free Value Validator</h3>
+          <p style="margin:0.5rem 0 0;font-size:1.9rem;font-weight:800;color:#fff;">€0</p>
+          <p style="margin:0.4rem 0 0;font-size:0.84rem;color:var(--muted);">Unlimited local check + 2-row CSV preview.</p>
+          <ul style="margin:1.25rem 0;padding-left:1.1rem;font-size:0.85rem;color:#cbd5e1;display:grid;gap:0.45rem;">
+            <li>Validate unlimited XMLs in Chrome memory</li>
+            <li>Print 1st A4 PDF invoice free</li>
+            <li>Inspect DATEV <code>BU-Schlüssel</code> &amp; 2 preview rows</li>
           </ul>
-          <a href="#live-app" data-fk-cta="free-install" class="mt-8 block rounded-xl border border-slate-700 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800">
-            Validate Free Now
-          </a>
+          <a href="#live-app" data-fk-cta="free-install" class="btn-sm-ghost" style="display:block;text-align:center;padding:0.75rem;">Validate Free Now</a>
         </div>
-        <div class="rounded-2xl border border-indigo-500 bg-slate-900 p-8 shadow-lg shadow-indigo-500/10">
-          <h3 class="text-lg font-semibold text-white">EInvoiceLocal Pro</h3>
-          <p class="mt-2 text-3xl font-bold text-white">€29 once</p>
-          <p class="mt-2 text-sm text-slate-400">Unlimited XML batches &amp; accounting exports.</p>
-          <ul class="mt-6 space-y-2 text-sm text-slate-200">
-            <li>✓ Unlimited XRechnung / ZUGFeRD / Peppol XMLs</li>
-            <li>✓ DATEV EXTF (<code>;</code>-CSV) + Xero Bills + QBO Bills</li>
-            <li>✓ Offline Python <code>.whl</code> CLI directory batcher</li>
-            <li>✓ Automatic Stripe PDF VAT invoice + 14-day refund</li>
-            <li>✓ 0 uploads — verify in DevTools</li>
+
+        <div class="price-card featured">
+          <h3 style="margin:0;font-size:1.1rem;color:#fff;">EInvoiceLocal Pro</h3>
+          <p style="margin:0.5rem 0 0;font-size:1.9rem;font-weight:800;color:#fff;">€29 once</p>
+          <p style="margin:0.4rem 0 0;font-size:0.84rem;color:var(--muted);">Full batch CSV downloads &amp; offline CLI.</p>
+          <ul style="margin:1.25rem 0;padding-left:1.1rem;font-size:0.85rem;color:#e2e8f0;display:grid;gap:0.45rem;">
+            <li>Complete DATEV EXTF + Xero + QBO downloads</li>
+            <li>Unlimited multi-invoice A4 PDF printing</li>
+            <li>Offline Python <code>.whl</code> CLI folder batcher</li>
+            <li>Automatic Stripe PDF VAT invoice + 14-day refund</li>
+            <li>0 XML bytes uploaded — verify in DevTools</li>
           </ul>
-          <a href="https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-indigo-500 py-3 text-center text-sm font-semibold text-white hover:bg-indigo-400">
-            Buy Pro License Key — €29
-          </a>
+          <a href="https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c" data-fk-cta="pro-checkout" class="stripe-checkout-button btn-indigo" style="display:block;text-align:center;">Buy Pro License Key — €29</a>
         </div>
-        <div class="rounded-2xl border border-emerald-500/40 bg-slate-900/80 p-8">
-          <h3 class="text-lg font-semibold text-white">All-Access Suite Bundle</h3>
-          <p class="mt-2 text-3xl font-bold text-white">€49 once</p>
-          <p class="mt-2 text-sm text-slate-400">Includes EInvoiceLocal + OssVatBridge + AmzSettlementBridge + StripePayoutBridge + all 13 tools.</p>
-          <ul class="mt-6 space-y-2 text-sm text-slate-200">
-            <li>✓ Full EU/B2B finance &amp; ops suite unlocked</li>
-            <li>✓ Single Stripe key unlocks Web Apps + CLIs</li>
-            <li>✓ 14-day money-back guarantee</li>
+
+        <div class="price-card bundle">
+          <h3 style="margin:0;font-size:1.1rem;color:#fff;">All-Access Suite Bundle</h3>
+          <p style="margin:0.5rem 0 0;font-size:1.9rem;font-weight:800;color:#fff;">€49 once</p>
+          <p style="margin:0.4rem 0 0;font-size:0.84rem;color:var(--muted);">EInvoiceLocal + BankFeedBridge + OssVatBridge + StripePayoutBridge + all 13 tools.</p>
+          <ul style="margin:1.25rem 0;padding-left:1.1rem;font-size:0.85rem;color:#e2e8f0;display:grid;gap:0.45rem;">
+            <li>Full EU/B2B finance &amp; ops suite unlocked</li>
+            <li>Single Stripe key unlocks Web Apps + CLIs</li>
+            <li>Automatic Stripe PDF VAT invoice + 14-day refund</li>
           </ul>
-          <a href="https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03" data-fk-cta="pro-checkout" class="stripe-checkout-button mt-8 block rounded-xl bg-emerald-600 py-3 text-center text-sm font-semibold text-white hover:bg-emerald-500">
-            Get All-Access Bundle — €49
-          </a>
+          <a href="https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03" data-fk-cta="pro-checkout" class="stripe-checkout-button" style="display:block;text-align:center;border-radius:0.75rem;background:#059669;color:#fff;padding:0.75rem 1.4rem;font-size:0.875rem;font-weight:700;">Get All-Access Bundle — €49</a>
         </div>
       </div>
     </section>
 
-    <section id="faq" class="py-12 no-print">
-      <h2 class="text-2xl font-bold text-white">FAQ</h2>
-      <div class="mt-6 space-y-4 text-sm text-slate-300">
-        <div class="rounded-xl border border-slate-800 p-5">
-          <h3 class="font-semibold text-white">Are my confidential B2B XML invoices uploaded anywhere?</h3>
-          <p class="mt-1 text-slate-400">Never. Browser <code>DOMParser</code> reads your XML files 100% locally in memory—you can even test offline once the page is open, or use our Python <code>.whl</code> CLI in air-gapped accounting environments.</p>
+    <section id="faq" class="no-print" style="padding:2rem 0 3rem;">
+      <h2 style="font-size:1.5rem;font-weight:800;color:#fff;margin:0 0 1.25rem;">FAQ</h2>
+      <div style="display:grid;gap:0.9rem;">
+        <div class="faq-box">
+          <h3 style="margin:0;font-size:0.95rem;color:#fff;">Do my confidential B2B XML invoices ever leave Chrome?</h3>
+          <p style="margin:0.4rem 0 0;font-size:0.85rem;color:var(--muted);">Never. All CSS and XML parsing code is self-contained inside this page with zero third-party CDNs. Browser <code>DOMParser</code> processes files locally in memory—verify zero XML network uploads directly in Chrome DevTools.</p>
         </div>
-        <div class="rounded-xl border border-slate-800 p-5">
-          <h3 class="font-semibold text-white">Which formats are supported?</h3>
-          <p class="mt-1 text-slate-400">Both EU EN 16931 syntaxes: OASIS <strong>UBL 2.1</strong> (XRechnung &amp; Belgian/EU Peppol BIS Billing 3.0) and UN/CEFACT <strong>CII</strong> (ZUGFeRD 2.x / Factur-X XML).</p>
+        <div class="faq-box">
+          <h3 style="margin:0;font-size:0.95rem;color:#fff;">Which EU e-invoice formats and German DATEV keys are supported?</h3>
+          <p style="margin:0.4rem 0 0;font-size:0.85rem;color:var(--muted);">OASIS <strong>UBL 2.1</strong> (XRechnung <code>Invoice</code> &amp; <code>CreditNote</code>, Peppol BIS 3.0) and UN/CEFACT <strong>CII</strong> (ZUGFeRD 2.x <code>380</code>/<code>381</code>), mapping tax categories to DATEV EXTF <code>S</code>/<code>H</code> and <code>BU-Schlüssel</code> <code>9</code>, <code>8</code>, <code>94</code>, <code>91</code>, <code>92</code>, and <code>0</code>.</p>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="mx-auto max-w-6xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500 no-print">
+  <footer class="site-footer no-print">
     EInvoiceLocal (<code>e-invoice-xml-batch-converter</code>) — Local-first EU XRechnung, ZUGFeRD &amp; Peppol XML tool.
   </footer>
 
   <script>
+// <einvoice_core.js>
+(function (root) {
+  "use strict";
+
+  function toCents(raw) {
+    if (typeof raw === "number") {
+      if (!Number.isFinite(raw)) return 0;
+      return raw >= 0 ? Math.floor(raw * 100 + 0.5000001) : -Math.floor(-raw * 100 + 0.5000001);
+    }
+    const s = String(raw ?? "").trim();
+    const m = s.match(/^([+-]?)\s*(\d+)(?:\.(\d+))?$/);
+    if (!m) return 0;
+    const sign = m[1] === "-" ? -1 : 1;
+    const whole = parseInt(m[2], 10);
+    const frac = (m[3] || "") + "000";
+    let cents = whole * 100 + parseInt(frac.slice(0, 2), 10);
+    if (parseInt(frac[2], 10) >= 5) cents += 1;
+    return sign * cents;
+  }
+
+  function num(v) {
+    return toCents(v) / 100;
+  }
+
+  function fmtRate(r) {
+    return Number(num(r).toFixed(2)).toString();
+  }
+
+  function escHtml(s) {
+    return String(s ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function sanitizeCsvVal(v) {
+    const s = String(v ?? "");
+    if (/^[=+\-@\t\r]/.test(s) && !/^-?\d+([.,]\d+)?$/.test(s)) {
+      return "'" + s;
+    }
+    return s;
+  }
+
+  function csvCellSemi(v) {
+    const s = sanitizeCsvVal(v);
+    return /[;"\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  function csvCellComma(v) {
+    const s = sanitizeCsvVal(v);
+    return /[,"\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  function localName(el) {
+    return (el?.localName || el?.tagName || "").split(":").pop();
+  }
+
+  function kids(parent, name) {
+    return parent ? Array.from(parent.children || []).filter((c) => localName(c) === name) : [];
+  }
+
+  function kid(parent, name) {
+    return kids(parent, name)[0] || null;
+  }
+
+  function pathEl(node, parts) {
+    let cur = node;
+    for (const p of parts) {
+      cur = kid(cur, p);
+      if (!cur) return null;
+    }
+    return cur;
+  }
+
+  function pathTxt(node, parts, defVal = "") {
+    const el = parts.length ? pathEl(node, parts) : node;
+    return (el?.textContent || defVal).trim();
+  }
+
+  function normDate(s) {
+    const c = String(s || "").trim();
+    if (/^\d{8}$/.test(c)) return c.slice(0, 4) + "-" + c.slice(4, 6) + "-" + c.slice(6, 8);
+    return c.slice(0, 10);
+  }
+
+  function mapLineTax(cat, rate) {
+    const c = String(cat || "S").trim().toUpperCase();
+    const r = num(rate);
+    if (c === "AE") {
+      return {
+        bu: "94",
+        acct: "3123",
+        xeroTax: "Reverse Charge Expenses (0%)",
+        qboAcct: "3123 EU Reverse Charge (§13b)",
+      };
+    }
+    if (c === "K") {
+      if (Math.abs(r - 7) <= 0.05) {
+        return {
+          bu: "92",
+          acct: "3420",
+          xeroTax: "EC Acquisitions (7%)",
+          qboAcct: "3420 Intra-EU Acquisition (7%)",
+        };
+      }
+      return {
+        bu: "91",
+        acct: "3425",
+        xeroTax: "EC Acquisitions (19%)",
+        qboAcct: "3425 Intra-EU Acquisition (19%)",
+      };
+    }
+    if (Math.abs(r - 19) <= 0.05) {
+      return {
+        bu: "9",
+        acct: "3400",
+        xeroTax: "INPUT (19%)",
+        qboAcct: "3400 Standard Purchases (19%)",
+      };
+    }
+    if (Math.abs(r - 7) <= 0.05) {
+      return {
+        bu: "8",
+        acct: "3300",
+        xeroTax: "INPUT (7%)",
+        qboAcct: "3300 Reduced Purchases (7%)",
+      };
+    }
+    if (r === 0 || ["E", "Z", "O", "G"].includes(c)) {
+      return {
+        bu: "0",
+        acct: "3200",
+        xeroTax: "EXEMPTINPUT (0%)",
+        qboAcct: "3200 Tax-Exempt Purchases (0%)",
+      };
+    }
+    return {
+      bu: "0",
+      acct: "3425",
+      xeroTax: "INPUT (" + fmtRate(r) + "%)",
+      qboAcct: "3425 General Purchases",
+    };
+  }
+
+  function pickUblVatId(partyEl) {
+    if (!partyEl) return "";
+    const schemes = kids(partyEl, "PartyTaxScheme");
+    let fallback = "";
+    for (const sc of schemes) {
+      const cid = pathTxt(sc, ["CompanyID"]);
+      if (!cid) continue;
+      const schemeId = pathTxt(sc, ["TaxScheme", "ID"]).toUpperCase();
+      if (schemeId === "VAT") return cid;
+      if (!fallback) fallback = cid;
+    }
+    return fallback;
+  }
+
+  function pickCiiVatId(partyEl) {
+    if (!partyEl) return "";
+    const regs = kids(partyEl, "SpecifiedTaxRegistration");
+    let fallback = "";
+    for (const reg of regs) {
+      const idEl = kid(reg, "ID");
+      if (!idEl) continue;
+      const txt = (idEl.textContent || "").trim();
+      if (!txt) continue;
+      const scheme = (idEl.getAttribute?.("schemeID") || "").trim().toUpperCase();
+      if (scheme === "VA") return txt;
+      if (!fallback) fallback = txt;
+    }
+    return fallback;
+  }
+
+  function pickCurrencyAmt(parent, tagName, cur) {
+    const els = kids(parent, tagName);
+    if (!els.length) return 0;
+    const match = els.find((el) => {
+      const cid = (el.getAttribute?.("currencyID") || "").trim().toUpperCase();
+      return !cid || cid === cur;
+    });
+    return num((match || els[0]).textContent);
+  }
+
+  function pickUblTaxTotal(root, cur) {
+    const taxTotals = kids(root, "TaxTotal");
+    if (!taxTotals.length) return 0;
+    const match = taxTotals.find((tt) => {
+      const amtEl = kid(tt, "TaxAmount");
+      const cid = (amtEl?.getAttribute?.("currencyID") || "").trim().toUpperCase();
+      return amtEl && (!cid || cid === cur);
+    });
+    return num(pathTxt(match || taxTotals[0], ["TaxAmount"]));
+  }
+
+  function hasParserError(dom, root) {
+    if (!root) return true;
+    const rn = localName(root).toLowerCase();
+    if (rn === "parsererror" || rn === "html") return true;
+    if (typeof dom?.getElementsByTagName === "function") {
+      const errs = dom.getElementsByTagName("parsererror");
+      if (errs && errs.length > 0) return true;
+    }
+    return false;
+  }
+
+  function parseXmlInvoice(xmlText, filename, DOMParserCtor) {
+    const Parser = DOMParserCtor || root.DOMParser;
+    const errors = [];
+    let dom;
+    try {
+      dom = new Parser().parseFromString(String(xmlText || "").trim(), "application/xml");
+    } catch (err) {
+      return {
+        filename: filename || "invoice.xml",
+        syntax: "UNKNOWN",
+        isCreditNote: false,
+        id: filename || "(invalid)",
+        issue: "",
+        due: "",
+        cur: "EUR",
+        buyerRef: "",
+        seller: "",
+        sellerVat: "",
+        iban: "",
+        buyer: "",
+        buyerVat: "",
+        net: 0,
+        vat: 0,
+        gross: 0,
+        lines: [],
+        valid: false,
+        errors: ["Invalid XML syntax: " + (err?.message || "parse failed")],
+        bu: "0",
+        acct: "3200",
+      };
+    }
+
+    const xmlRoot = dom?.documentElement;
+    if (hasParserError(dom, xmlRoot)) {
+      return {
+        filename: filename || "invoice.xml",
+        syntax: "UNKNOWN",
+        isCreditNote: false,
+        id: filename || "(invalid XML)",
+        issue: "",
+        due: "",
+        cur: "EUR",
+        buyerRef: "",
+        seller: "",
+        sellerVat: "",
+        iban: "",
+        buyer: "",
+        buyerVat: "",
+        net: 0,
+        vat: 0,
+        gross: 0,
+        lines: [],
+        valid: false,
+        errors: ["Invalid XML syntax (parsererror)."],
+        bu: "0",
+        acct: "3200",
+      };
+    }
+
+    const rn = localName(xmlRoot);
+    let syntax = "UBL_2.1";
+    let isCreditNote = false;
+    let id = "";
+    let issue = "";
+    let due = "";
+    let cur = "EUR";
+    let buyerRef = "";
+    let seller = "";
+    let sellerVat = "";
+    let iban = "";
+    let buyer = "";
+    let buyerVat = "";
+    let net = 0;
+    let vat = 0;
+    let gross = 0;
+    const lines = [];
+
+    if (rn === "Invoice" || rn === "CreditNote") {
+      isCreditNote = rn === "CreditNote";
+      id = pathTxt(xmlRoot, ["ID"]);
+      issue = normDate(pathTxt(xmlRoot, ["IssueDate"]));
+      due = normDate(pathTxt(xmlRoot, ["DueDate"]) || pathTxt(xmlRoot, ["PaymentMeans", "PaymentDueDate"])) || issue;
+      cur = pathTxt(xmlRoot, ["DocumentCurrencyCode"], "EUR").toUpperCase() || "EUR";
+      buyerRef = pathTxt(xmlRoot, ["BuyerReference"]);
+
+      const sp = pathEl(xmlRoot, ["AccountingSupplierParty", "Party"]);
+      seller = pathTxt(sp, ["PartyLegalEntity", "RegistrationName"]) || pathTxt(sp, ["PartyName", "Name"]);
+      sellerVat = pickUblVatId(sp);
+      iban = pathTxt(xmlRoot, ["PaymentMeans", "PayeeFinancialAccount", "ID"]);
+
+      const cp = pathEl(xmlRoot, ["AccountingCustomerParty", "Party"]);
+      buyer = pathTxt(cp, ["PartyLegalEntity", "RegistrationName"]) || pathTxt(cp, ["PartyName", "Name"]);
+      buyerVat = pickUblVatId(cp);
+
+      vat = pickUblTaxTotal(xmlRoot, cur);
+      const lmt = kid(xmlRoot, "LegalMonetaryTotal");
+      net = num(pathTxt(lmt, ["TaxExclusiveAmount"]));
+      gross = num(pathTxt(lmt, ["PayableAmount"]) || pathTxt(lmt, ["TaxInclusiveAmount"]));
+
+      const lineTag = isCreditNote ? "CreditNoteLine" : "InvoiceLine";
+      const qtyTag = isCreditNote ? "CreditedQuantity" : "InvoicedQuantity";
+      kids(xmlRoot, lineTag).forEach((li) => {
+        const cat = pathEl(li, ["Item", "ClassifiedTaxCategory"]);
+        const rate = num(pathTxt(cat, ["Percent"]));
+        const catCode = pathTxt(cat, ["ID"], "S").toUpperCase();
+        const qty = num(pathTxt(li, [qtyTag], "1"));
+        const rawUnit = num(pathTxt(li, ["Price", "PriceAmount"]));
+        const baseQty = num(pathTxt(li, ["Price", "BaseQuantity"], "1"));
+        let unit = baseQty > 0 && baseQty !== 1 ? num(rawUnit / baseQty) : rawUnit;
+        const lineNet = num(pathTxt(li, ["LineExtensionAmount"]));
+        if (qty !== 0 && Math.abs(num(qty * unit) - lineNet) > 0.02) {
+          unit = num(lineNet / qty);
+        }
+        const effRate = catCode === "AE" || catCode === "K" ? 0 : rate;
+        const mapped = mapLineTax(catCode, rate);
+        lines.push({
+          name: pathTxt(li, ["Item", "Name"]) || pathTxt(li, ["Item", "Description"]) || "Line Item",
+          qty,
+          unit,
+          lineNet,
+          lineTax: num((lineNet * effRate) / 100),
+          rate,
+          cat: catCode,
+          bu: mapped.bu,
+          acct: mapped.acct,
+          xeroTax: mapped.xeroTax,
+          qboAcct: mapped.qboAcct,
+        });
+      });
+
+      kids(xmlRoot, "AllowanceCharge").forEach((ac) => {
+        const isCharge = pathTxt(ac, ["ChargeIndicator"], "false").toLowerCase() === "true";
+        const sign = isCharge ? 1 : -1;
+        const amt = num(sign * num(pathTxt(ac, ["Amount"])));
+        const cat = kid(ac, "TaxCategory");
+        const rate = num(pathTxt(cat, ["Percent"]));
+        const catCode = pathTxt(cat, ["ID"], "S").toUpperCase();
+        const effRate = catCode === "AE" || catCode === "K" ? 0 : rate;
+        const mapped = mapLineTax(catCode, rate);
+        const reason = pathTxt(ac, ["AllowanceChargeReason"]) || (isCharge ? "Header Charge" : "Header Allowance");
+        lines.push({
+          name: reason,
+          qty: 1,
+          unit: amt,
+          lineNet: amt,
+          lineTax: num((amt * effRate) / 100),
+          rate,
+          cat: catCode,
+          bu: mapped.bu,
+          acct: mapped.acct,
+          xeroTax: mapped.xeroTax,
+          qboAcct: mapped.qboAcct,
+        });
+      });
+    } else if (rn === "CrossIndustryInvoice") {
+      syntax = "CII_EN16931";
+      const ex = kid(xmlRoot, "ExchangedDocument");
+      id = pathTxt(ex, ["ID"]);
+      const typeCode = pathTxt(ex, ["TypeCode"], "380");
+      isCreditNote = typeCode === "381";
+      issue = normDate(pathTxt(ex, ["IssueDateTime", "DateTimeString"]));
+
+      const tx = kid(xmlRoot, "SupplyChainTradeTransaction");
+      const agr = kid(tx, "ApplicableHeaderTradeAgreement");
+      buyerRef = pathTxt(agr, ["BuyerReference"]);
+      const sp = kid(agr, "SellerTradeParty");
+      seller = pathTxt(sp, ["Name"]);
+      sellerVat = pickCiiVatId(sp);
+
+      const cp = kid(agr, "BuyerTradeParty");
+      buyer = pathTxt(cp, ["Name"]);
+      buyerVat = pickCiiVatId(cp);
+
+      const setEl = kid(tx, "ApplicableHeaderTradeSettlement");
+      cur = pathTxt(setEl, ["InvoiceCurrencyCode"], "EUR").toUpperCase() || "EUR";
+      iban = pathTxt(setEl, ["SpecifiedTradeSettlementPaymentMeans", "PayeePartyCreditorFinancialAccount", "IBANID"]);
+      due = normDate(pathTxt(setEl, ["SpecifiedTradePaymentTerms", "DueDateDateTime", "DateTimeString"])) || issue;
+
+      const summ = kid(setEl, "SpecifiedTradeSettlementHeaderMonetarySummation");
+      net = pickCurrencyAmt(summ, "TaxBasisTotalAmount", cur);
+      vat = pickCurrencyAmt(summ, "TaxTotalAmount", cur);
+      gross = num(pathTxt(summ, ["DuePayableAmount"]) || pathTxt(summ, ["GrandTotalAmount"]));
+
+      kids(tx, "IncludedSupplyChainTradeLineItem").forEach((li) => {
+        const ls = kid(li, "SpecifiedLineTradeSettlement");
+        const rate = num(pathTxt(ls, ["ApplicableTradeTax", "RateApplicablePercent"]));
+        const catCode = pathTxt(ls, ["ApplicableTradeTax", "CategoryCode"], "S").toUpperCase();
+        const qty = num(pathTxt(li, ["SpecifiedLineTradeDelivery", "BilledQuantity"], "1"));
+        const rawUnit = num(pathTxt(li, ["SpecifiedLineTradeAgreement", "NetPriceProductTradePrice", "ChargeAmount"]));
+        const basisQty = num(pathTxt(li, ["SpecifiedLineTradeAgreement", "NetPriceProductTradePrice", "BasisQuantity"], "1"));
+        let unit = basisQty > 0 && basisQty !== 1 ? num(rawUnit / basisQty) : rawUnit;
+        const lineNet = num(pathTxt(ls, ["SpecifiedTradeSettlementLineMonetarySummation", "LineTotalAmount"]));
+        if (qty !== 0 && Math.abs(num(qty * unit) - lineNet) > 0.02) {
+          unit = num(lineNet / qty);
+        }
+        const effRate = catCode === "AE" || catCode === "K" ? 0 : rate;
+        const mapped = mapLineTax(catCode, rate);
+        lines.push({
+          name: pathTxt(li, ["SpecifiedTradeProduct", "Name"]) || "Line Item",
+          qty,
+          unit,
+          lineNet,
+          lineTax: num((lineNet * effRate) / 100),
+          rate,
+          cat: catCode,
+          bu: mapped.bu,
+          acct: mapped.acct,
+          xeroTax: mapped.xeroTax,
+          qboAcct: mapped.qboAcct,
+        });
+      });
+
+      kids(setEl, "SpecifiedTradeAllowanceCharge").forEach((ac) => {
+        const indTxt = pathTxt(ac, ["ChargeIndicator", "Indicator"], "") || pathTxt(ac, ["ChargeIndicator"], "false");
+        const isCharge = indTxt.toLowerCase() === "true";
+        const sign = isCharge ? 1 : -1;
+        const amt = num(sign * num(pathTxt(ac, ["ActualAmount"])));
+        const cat = kid(ac, "CategoryTradeTax");
+        const rate = num(pathTxt(cat, ["RateApplicablePercent"]));
+        const catCode = pathTxt(cat, ["CategoryCode"], "S").toUpperCase();
+        const effRate = catCode === "AE" || catCode === "K" ? 0 : rate;
+        const mapped = mapLineTax(catCode, rate);
+        const reason = pathTxt(ac, ["Reason"]) || (isCharge ? "Header Charge" : "Header Allowance");
+        lines.push({
+          name: reason,
+          qty: 1,
+          unit: amt,
+          lineNet: amt,
+          lineTax: num((amt * effRate) / 100),
+          rate,
+          cat: catCode,
+          bu: mapped.bu,
+          acct: mapped.acct,
+          xeroTax: mapped.xeroTax,
+          qboAcct: mapped.qboAcct,
+        });
+      });
+    } else {
+      return {
+        filename: filename || "invoice.xml",
+        syntax: "UNKNOWN",
+        isCreditNote: false,
+        id: filename || "(unsupported XML)",
+        issue: "",
+        due: "",
+        cur: "EUR",
+        buyerRef: "",
+        seller: "",
+        sellerVat: "",
+        iban: "",
+        buyer: "",
+        buyerVat: "",
+        net: 0,
+        vat: 0,
+        gross: 0,
+        lines: [],
+        valid: false,
+        errors: ["Unsupported XML root <" + rn + "> (expected UBL Invoice/CreditNote or CII CrossIndustryInvoice)."],
+        bu: "0",
+        acct: "3200",
+      };
+    }
+
+    if (!id) errors.push("BR-CO-13: Missing invoice_id");
+    if (!issue) errors.push("BR-CO-13: Missing issue_date");
+    if (!seller) errors.push("BR-CO-13: Missing seller_name");
+    if (!buyer) errors.push("BR-CO-13: Missing buyer_name");
+
+    const sumLines = num(lines.reduce((a, b) => a + toCents(b.lineNet), 0) / 100);
+    const sumLineVat = num(lines.reduce((a, b) => a + toCents(b.lineTax), 0) / 100);
+    const diffVat = num(vat - sumLineVat);
+
+    if (lines.length > 0 && Math.abs(sumLines - net) > 0.02) {
+      errors.push("BR-CO-10: Sum of line net (" + sumLines.toFixed(2) + ") != TaxExclusiveAmount (" + net.toFixed(2) + ")");
+    }
+    if (lines.length > 0 && Math.abs(diffVat) > 0.05) {
+      errors.push("BR-CO-14: Sum of line VAT (" + sumLineVat.toFixed(2) + ") != TaxTotal (" + vat.toFixed(2) + ")");
+    } else if (lines.length > 0 && diffVat !== 0) {
+      const adj = [...lines].reverse().find((l) => l.lineTax !== 0) || lines[lines.length - 1];
+      adj.lineTax = num(adj.lineTax + diffVat);
+    }
+    if (Math.abs(num(net + vat) - gross) > 0.02) {
+      errors.push("BR-CO-15: Net + VAT (" + num(net + vat).toFixed(2) + ") != PayableAmount (" + gross.toFixed(2) + ")");
+    }
+
+    let bu = "0";
+    let acct = "3200";
+    if (lines.length) {
+      const bus = [];
+      const accts = [];
+      lines.forEach((l) => {
+        if (!bus.includes(l.bu)) bus.push(l.bu);
+        if (!accts.includes(l.acct)) accts.push(l.acct);
+      });
+      bu = bus.join("+");
+      acct = accts.join(",");
+    } else if (Math.abs(net) > 0 && Math.abs(vat) > 0) {
+      const inf = mapLineTax("S", (Math.abs(vat) / Math.abs(net)) * 100);
+      bu = inf.bu;
+      acct = inf.acct;
+    }
+
+    return {
+      filename: filename || "invoice.xml",
+      syntax,
+      isCreditNote,
+      id: id || filename || "(missing ID)",
+      issue,
+      due,
+      cur,
+      buyerRef,
+      seller,
+      sellerVat,
+      iban,
+      buyer,
+      buyerVat,
+      net,
+      vat,
+      gross,
+      lines,
+      valid: errors.length === 0,
+      errors,
+      bu,
+      acct,
+    };
+  }
+
+  function buildExports(parsedInvoices) {
+    const datevHeader = "Umsatz (ohne Soll/Haben-Kz);Soll/Haben-Kennzeichen;WKZ Umsatz;Konto;Gegenkonto;BU-Schlüssel;Belegdatum;Belegfeld 1;Buchungstext";
+    const xeroHeader = "*ContactName,*InvoiceNumber,*InvoiceDate,*DueDate,*Description,*Quantity,*UnitAmount,*AccountCode,*TaxType,TaxAmount,Currency";
+    const qboHeader = "BillNo,Supplier,BillDate,DueDate,Account,LineDescription,Quantity,UnitPrice,LineAmount,TaxCode,TaxAmount,Currency";
+
+    const datevRows = [];
+    const xeroRows = [];
+    const qboRows = [];
+
+    parsedInvoices.forEach((inv) => {
+      if (!inv || (inv.syntax === "UNKNOWN" && inv.lines.length === 0 && inv.gross === 0)) return;
+      const p = String(inv.issue || "").split("-");
+      const ddmm = p.length === 3 && p[1].length === 2 && p[2].length === 2 ? p[2] + p[1] : "";
+      const infRate = Math.abs(inv.net) > 0 && Math.abs(inv.vat) > 0 ? (Math.abs(inv.vat) / Math.abs(inv.net)) * 100 : 0;
+      const fallbackMapped = mapLineTax("S", infRate);
+
+      const exportLines = inv.lines.length
+        ? inv.lines
+        : [
+            {
+              name: inv.syntax + " Invoice " + inv.id,
+              qty: 1,
+              unit: inv.net,
+              lineNet: inv.net,
+              lineTax: inv.vat,
+              rate: num(infRate),
+              bu: inv.bu || fallbackMapped.bu,
+              acct: inv.acct || fallbackMapped.acct,
+              xeroTax: fallbackMapped.xeroTax,
+              qboAcct: fallbackMapped.qboAcct,
+            },
+          ];
+
+      const bMap = new Map();
+      exportLines.forEach((ln) => {
+        const bk = ln.bu + "|" + ln.acct + "|" + ln.rate.toFixed(2);
+        if (!bMap.has(bk)) bMap.set(bk, { bu: ln.bu, acct: ln.acct, gross: 0 });
+        bMap.get(bk).gross = num(bMap.get(bk).gross + ln.lineNet + ln.lineTax);
+      });
+      const buckets = Array.from(bMap.values());
+      buckets.forEach((b) => {
+        const isNegBucket = b.gross < 0;
+        const sh = (inv.isCreditNote ? !isNegBucket : isNegBucket) ? "H" : "S";
+        const text = buckets.length > 1 ? inv.seller + " (" + inv.syntax + " · BU " + b.bu + ")" : inv.seller + " (" + inv.syntax + ")";
+        datevRows.push(
+          [
+            Math.abs(b.gross).toFixed(2).replace(".", ","),
+            sh,
+            inv.cur,
+            b.acct,
+            "70000",
+            b.bu,
+            ddmm,
+            inv.id,
+            text,
+          ]
+            .map(csvCellSemi)
+            .join(";")
+        );
+      });
+
+      const docSign = inv.isCreditNote ? -1 : 1;
+      exportLines.forEach((ln) => {
+        const signedUnit = num(ln.unit * docSign);
+        const signedNet = num(ln.lineNet * docSign);
+        const signedTax = num(ln.lineTax * docSign);
+        xeroRows.push(
+          [
+            inv.seller,
+            inv.id,
+            inv.issue,
+            inv.due,
+            ln.name,
+            ln.qty.toFixed(2),
+            signedUnit.toFixed(2),
+            ln.acct,
+            ln.xeroTax,
+            signedTax.toFixed(2),
+            inv.cur,
+          ]
+            .map(csvCellComma)
+            .join(",")
+        );
+        qboRows.push(
+          [
+            inv.id,
+            inv.seller,
+            inv.issue,
+            inv.due,
+            ln.qboAcct,
+            ln.name,
+            ln.qty.toFixed(2),
+            signedUnit.toFixed(2),
+            signedNet.toFixed(2),
+            "BU " + ln.bu,
+            signedTax.toFixed(2),
+            inv.cur,
+          ]
+            .map(csvCellComma)
+            .join(",")
+        );
+      });
+    });
+
+    return {
+      datev: [datevHeader, ...datevRows].join("\n"),
+      xero: [xeroHeader, ...xeroRows].join("\n"),
+      qbo: [qboHeader, ...qboRows].join("\n"),
+      datevRows,
+      xeroRows,
+      qboRows,
+      headers: { datev: datevHeader, xero: xeroHeader, qbo: qboHeader },
+    };
+  }
+
+  const api = {
+    toCents,
+    num,
+    fmtRate,
+    escHtml,
+    sanitizeCsvVal,
+    csvCellSemi,
+    csvCellComma,
+    normDate,
+    mapLineTax,
+    parseXmlInvoice,
+    buildExports,
+  };
+
+  root.EInvoiceCore = api;
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = api;
+  }
+})(typeof globalThis !== "undefined" ? globalThis : window);
+// </einvoice_core.js>
+
     (function () {
+      const CORE = globalThis.EInvoiceCore;
+      const esc = CORE.escHtml;
       const STORAGE_KEY = "fk_einvoice_pro_state";
-      const FREE_CAP = 3;
+      const FREE_PREVIEW_ROWS = 2;
 
       const SAMPLE_UBL = `<?xml version="1.0" encoding="UTF-8"?>
 <Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
@@ -289,7 +1377,7 @@
   <rsm:ExchangedDocument><ram:ID>ZF-2026-2002</ram:ID><ram:IssueDateTime><udt:DateTimeString format="102">20261119</udt:DateTimeString></ram:IssueDateTime></rsm:ExchangedDocument>
   <rsm:SupplyChainTradeTransaction>
     <ram:IncludedSupplyChainTradeLineItem><ram:SpecifiedTradeProduct><ram:Name>Technical Compliance Handbook (Print Edition)</ram:Name></ram:SpecifiedTradeProduct><ram:SpecifiedLineTradeAgreement><ram:NetPriceProductTradePrice><ram:ChargeAmount>100.00</ram:ChargeAmount></ram:NetPriceProductTradePrice></ram:SpecifiedLineTradeAgreement><ram:SpecifiedLineTradeDelivery><ram:BilledQuantity>1</ram:BilledQuantity></ram:SpecifiedLineTradeDelivery><ram:SpecifiedLineTradeSettlement><ram:ApplicableTradeTax><ram:CategoryCode>S</ram:CategoryCode><ram:RateApplicablePercent>7.00</ram:RateApplicablePercent></ram:ApplicableTradeTax><ram:SpecifiedTradeSettlementLineMonetarySummation><ram:LineTotalAmount>100.00</ram:LineTotalAmount></ram:SpecifiedTradeSettlementLineMonetarySummation></ram:SpecifiedLineTradeSettlement></ram:IncludedSupplyChainTradeLineItem>
-    <ram:ApplicableHeaderTradeAgreement><ram:BuyerReference>LEITWEG-04011000-12345-01</ram:BuyerReference><ram:SellerTradeParty><ram:Name>Fachverlag Berlin KG</ram:Name><ram:SpecifiedTaxRegistration><ram:ID>DE812345678</ram:ID></ram:SpecifiedTaxRegistration></ram:SellerTradeParty><ram:BuyerTradeParty><ram:Name>Mittelstand Ops GmbH</ram:Name><ram:SpecifiedTaxRegistration><ram:ID>DE112233445</ram:ID></ram:SpecifiedTaxRegistration></ram:BuyerTradeParty></ram:ApplicableHeaderTradeAgreement>
+    <ram:ApplicableHeaderTradeAgreement><ram:BuyerReference>LEITWEG-04011000-12345-01</ram:BuyerReference><ram:SellerTradeParty><ram:Name>Fachverlag Berlin KG</ram:Name><ram:SpecifiedTaxRegistration><ram:ID schemeID="VA">DE812345678</ram:ID></ram:SpecifiedTaxRegistration></ram:SellerTradeParty><ram:BuyerTradeParty><ram:Name>Mittelstand Ops GmbH</ram:Name><ram:SpecifiedTaxRegistration><ram:ID schemeID="VA">DE112233445</ram:ID></ram:SpecifiedTaxRegistration></ram:BuyerTradeParty></ram:ApplicableHeaderTradeAgreement>
     <ram:ApplicableHeaderTradeSettlement><ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode><ram:SpecifiedTradeSettlementPaymentMeans><ram:PayeePartyCreditorFinancialAccount><ram:IBANID>DE44500105175407324931</ram:IBANID></ram:PayeePartyCreditorFinancialAccount></ram:SpecifiedTradeSettlementPaymentMeans><ram:SpecifiedTradePaymentTerms><ram:DueDateDateTime><udt:DateTimeString format="102">20261205</udt:DateTimeString></ram:DueDateDateTime></ram:SpecifiedTradePaymentTerms><ram:SpecifiedTradeSettlementHeaderMonetarySummation><ram:TaxBasisTotalAmount>100.00</ram:TaxBasisTotalAmount><ram:TaxTotalAmount>7.00</ram:TaxTotalAmount><ram:DuePayableAmount>107.00</ram:DuePayableAmount></ram:SpecifiedTradeSettlementHeaderMonetarySummation></ram:ApplicableHeaderTradeSettlement>
   </rsm:SupplyChainTradeTransaction>
 </rsm:CrossIndustryInvoice>`;
@@ -313,7 +1401,7 @@
   <rsm:SupplyChainTradeTransaction>
     <ram:IncludedSupplyChainTradeLineItem><ram:SpecifiedTradeProduct><ram:Name>Business Accommodation (2 Nights)</ram:Name></ram:SpecifiedTradeProduct><ram:SpecifiedLineTradeAgreement><ram:NetPriceProductTradePrice><ram:ChargeAmount>100.00</ram:ChargeAmount></ram:NetPriceProductTradePrice></ram:SpecifiedLineTradeAgreement><ram:SpecifiedLineTradeDelivery><ram:BilledQuantity>2</ram:BilledQuantity></ram:SpecifiedLineTradeDelivery><ram:SpecifiedLineTradeSettlement><ram:ApplicableTradeTax><ram:CategoryCode>S</ram:CategoryCode><ram:RateApplicablePercent>7.00</ram:RateApplicablePercent></ram:ApplicableTradeTax><ram:SpecifiedTradeSettlementLineMonetarySummation><ram:LineTotalAmount>200.00</ram:LineTotalAmount></ram:SpecifiedTradeSettlementLineMonetarySummation></ram:SpecifiedLineTradeSettlement></ram:IncludedSupplyChainTradeLineItem>
     <ram:IncludedSupplyChainTradeLineItem><ram:SpecifiedTradeProduct><ram:Name>Conference Room &amp; Catering Package</ram:Name></ram:SpecifiedTradeProduct><ram:SpecifiedLineTradeAgreement><ram:NetPriceProductTradePrice><ram:ChargeAmount>100.00</ram:ChargeAmount></ram:NetPriceProductTradePrice></ram:SpecifiedLineTradeAgreement><ram:SpecifiedLineTradeDelivery><ram:BilledQuantity>1</ram:BilledQuantity></ram:SpecifiedLineTradeDelivery><ram:SpecifiedLineTradeSettlement><ram:ApplicableTradeTax><ram:CategoryCode>S</ram:CategoryCode><ram:RateApplicablePercent>19.00</ram:RateApplicablePercent></ram:ApplicableTradeTax><ram:SpecifiedTradeSettlementLineMonetarySummation><ram:LineTotalAmount>100.00</ram:LineTotalAmount></ram:SpecifiedTradeSettlementLineMonetarySummation></ram:SpecifiedLineTradeSettlement></ram:IncludedSupplyChainTradeLineItem>
-    <ram:ApplicableHeaderTradeAgreement><ram:BuyerReference>CONF-MUC-2026</ram:BuyerReference><ram:SellerTradeParty><ram:Name>Tagungshotel München GmbH</ram:Name><ram:SpecifiedTaxRegistration><ram:ID>DE276543219</ram:ID></ram:SpecifiedTaxRegistration></ram:SellerTradeParty><ram:BuyerTradeParty><ram:Name>Mittelstand Ops GmbH</ram:Name><ram:SpecifiedTaxRegistration><ram:ID>DE112233445</ram:ID></ram:SpecifiedTaxRegistration></ram:BuyerTradeParty></ram:ApplicableHeaderTradeAgreement>
+    <ram:ApplicableHeaderTradeAgreement><ram:BuyerReference>CONF-MUC-2026</ram:BuyerReference><ram:SellerTradeParty><ram:Name>Tagungshotel München GmbH</ram:Name><ram:SpecifiedTaxRegistration><ram:ID schemeID="VA">DE276543219</ram:ID></ram:SpecifiedTaxRegistration></ram:SellerTradeParty><ram:BuyerTradeParty><ram:Name>Mittelstand Ops GmbH</ram:Name><ram:SpecifiedTaxRegistration><ram:ID schemeID="VA">DE112233445</ram:ID></ram:SpecifiedTaxRegistration></ram:BuyerTradeParty></ram:ApplicableHeaderTradeAgreement>
     <ram:ApplicableHeaderTradeSettlement><ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode><ram:SpecifiedTradeSettlementPaymentMeans><ram:PayeePartyCreditorFinancialAccount><ram:IBANID>DE12700202700015984000</ram:IBANID></ram:PayeePartyCreditorFinancialAccount></ram:SpecifiedTradeSettlementPaymentMeans><ram:SpecifiedTradePaymentTerms><ram:DueDateDateTime><udt:DateTimeString format="102">20261206</udt:DateTimeString></ram:DueDateDateTime></ram:SpecifiedTradePaymentTerms><ram:SpecifiedTradeSettlementHeaderMonetarySummation><ram:TaxBasisTotalAmount>300.00</ram:TaxBasisTotalAmount><ram:TaxTotalAmount>33.00</ram:TaxTotalAmount><ram:DuePayableAmount>333.00</ram:DuePayableAmount></ram:SpecifiedTradeSettlementHeaderMonetarySummation></ram:ApplicableHeaderTradeSettlement>
   </rsm:SupplyChainTradeTransaction>
 </rsm:CrossIndustryInvoice>`;
@@ -334,11 +1422,16 @@
       const dlDatev = document.getElementById("app-dl-datev");
       const dlXero = document.getElementById("app-dl-xero");
       const dlQbo = document.getElementById("app-dl-qbo");
+      const proBanner = document.getElementById("pro-unlock-banner");
+      const proBannerTitle = document.getElementById("pro-banner-title");
+      const copyExpenseBtn = document.getElementById("app-copy-expense-btn");
       const tabBtns = document.querySelectorAll("[data-einv-tab]");
 
       let loadedDocs = [];
       let activeTab = "datev";
       let lastExports = null;
+      let lastBatchMeta = { count: 0, gross: 0 };
+      let selectedIdx = 0;
 
       function isProUnlocked() {
         try {
@@ -350,278 +1443,159 @@
 
       function refreshBadge() {
         if (isProUnlocked()) {
-          badgeEl.textContent = "Pro Unlocked";
-          badgeEl.className = "self-start rounded-full border border-indigo-500 bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300";
+          badgeEl.textContent = "Pro Unlocked (Unlimited)";
+          badgeEl.className = "tier-badge pro";
         } else {
-          badgeEl.textContent = "Free Tier (3 XMLs)";
-          badgeEl.className = "self-start rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-semibold text-slate-300";
+          badgeEl.textContent = "Free Value Preview";
+          badgeEl.className = "tier-badge";
         }
-      }
-
-      function localName(el) {
-        return (el?.localName || el?.tagName || "").split(":").pop();
-      }
-      function kids(parent, name) {
-        return parent ? Array.from(parent.children).filter((c) => localName(c) === name) : [];
-      }
-      function kid(parent, name) {
-        return kids(parent, name)[0] || null;
-      }
-      function pathEl(node, parts) {
-        let cur = node;
-        for (const p of parts) { cur = kid(cur, p); if (!cur) return null; }
-        return cur;
-      }
-      function pathTxt(node, parts, defVal = "") {
-        const el = parts.length ? pathEl(node, parts) : node;
-        return (el?.textContent || defVal).trim();
-      }
-      function normDate(s) {
-        const c = String(s || "").trim();
-        if (/^\d{8}$/.test(c)) return c.slice(0, 4) + "-" + c.slice(4, 6) + "-" + c.slice(6, 8);
-        return c.slice(0, 10);
-      }
-      function num(v) { return Math.round((parseFloat(v) || 0) * 100) / 100; }
-      function esc(s) { return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-      function csvCell(v) {
-        const s = String(v ?? "");
-        return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
-      }
-
-      function mapLineTax(cat, rate) {
-        const c = String(cat || "S").trim().toUpperCase();
-        const r = num(rate);
-        if (c === "AE") return { bu: "94", acct: "3123", xeroTax: "Reverse Charge Expenses (0%)", qboAcct: "3123 EU Reverse Charge (§13b)" };
-        if (c === "K") {
-          if (r === 7) return { bu: "92", acct: "3420", xeroTax: "EC Acquisitions (7%)", qboAcct: "3420 Intra-EU Acquisition (7%)" };
-          return { bu: "91", acct: "3425", xeroTax: "EC Acquisitions (19%)", qboAcct: "3425 Intra-EU Acquisition (19%)" };
-        }
-        if (r === 19) return { bu: "9", acct: "3400", xeroTax: "INPUT (19%)", qboAcct: "3400 Standard Purchases (19%)" };
-        if (r === 7) return { bu: "8", acct: "3300", xeroTax: "INPUT (7%)", qboAcct: "3300 Reduced Purchases (7%)" };
-        if (r === 0 || ["E", "Z", "O", "G"].includes(c)) return { bu: "0", acct: "3200", xeroTax: "EXEMPTINPUT (0%)", qboAcct: "3200 Tax-Exempt Purchases (0%)" };
-        return { bu: "0", acct: "3425", xeroTax: "INPUT (" + r.toFixed(0) + "%)", qboAcct: "3425 General Purchases" };
-      }
-
-      function parseXmlInvoice(xmlText, filename) {
-        const dom = new DOMParser().parseFromString(xmlText, "application/xml");
-        const root = dom.documentElement;
-        const rn = localName(root);
-        let syntax = "UBL_2.1", id = "", issue = "", due = "", cur = "EUR", buyerRef = "", seller = "", sellerVat = "", iban = "", buyer = "", buyerVat = "", net = 0, vat = 0, gross = 0;
-        const lines = [];
-
-        if (rn === "Invoice" || rn === "CreditNote") {
-          id = pathTxt(root, ["ID"]);
-          issue = normDate(pathTxt(root, ["IssueDate"]));
-          due = normDate(pathTxt(root, ["DueDate"])) || issue;
-          cur = pathTxt(root, ["DocumentCurrencyCode"], "EUR").toUpperCase();
-          buyerRef = pathTxt(root, ["BuyerReference"]);
-          const sp = pathEl(root, ["AccountingSupplierParty", "Party"]);
-          seller = pathTxt(sp, ["PartyLegalEntity", "RegistrationName"]) || pathTxt(sp, ["PartyName", "Name"]);
-          sellerVat = pathTxt(sp, ["PartyTaxScheme", "CompanyID"]);
-          iban = pathTxt(root, ["PaymentMeans", "PayeeFinancialAccount", "ID"]);
-          const cp = pathEl(root, ["AccountingCustomerParty", "Party"]);
-          buyer = pathTxt(cp, ["PartyLegalEntity", "RegistrationName"]) || pathTxt(cp, ["PartyName", "Name"]);
-          buyerVat = pathTxt(cp, ["PartyTaxScheme", "CompanyID"]);
-          vat = num(pathTxt(root, ["TaxTotal", "TaxAmount"]));
-          const lmt = kid(root, "LegalMonetaryTotal");
-          net = num(pathTxt(lmt, ["TaxExclusiveAmount"]));
-          gross = num(pathTxt(lmt, ["PayableAmount"]) || pathTxt(lmt, ["TaxInclusiveAmount"]));
-          kids(root, rn === "CreditNote" ? "CreditNoteLine" : "InvoiceLine").forEach((li) => {
-            const cat = pathEl(li, ["Item", "ClassifiedTaxCategory"]);
-            const rate = num(pathTxt(cat, ["Percent"]));
-            const catCode = pathTxt(cat, ["ID"], "S").toUpperCase();
-            const lineNet = num(pathTxt(li, ["LineExtensionAmount"]));
-            const effRate = (catCode === "AE" || catCode === "K") ? 0 : rate;
-            const mapped = mapLineTax(catCode, rate);
-            lines.push({
-              name: pathTxt(li, ["Item", "Name"], "Line Item"),
-              qty: num(pathTxt(li, [rn === "CreditNote" ? "CreditedQuantity" : "InvoicedQuantity"], "1")),
-              unit: num(pathTxt(li, ["Price", "PriceAmount"])),
-              lineNet,
-              lineTax: num((lineNet * effRate) / 100),
-              rate,
-              cat: catCode,
-              bu: mapped.bu,
-              acct: mapped.acct,
-              xeroTax: mapped.xeroTax,
-              qboAcct: mapped.qboAcct
-            });
-          });
-        } else {
-          syntax = "CII_EN16931";
-          const ex = kid(root, "ExchangedDocument");
-          id = pathTxt(ex, ["ID"]);
-          issue = normDate(pathTxt(ex, ["IssueDateTime", "DateTimeString"]));
-          const tx = kid(root, "SupplyChainTradeTransaction");
-          const agr = kid(tx, "ApplicableHeaderTradeAgreement");
-          buyerRef = pathTxt(agr, ["BuyerReference"]);
-          const sp = kid(agr, "SellerTradeParty");
-          seller = pathTxt(sp, ["Name"]);
-          sellerVat = pathTxt(sp, ["SpecifiedTaxRegistration", "ID"]);
-          const cp = kid(agr, "BuyerTradeParty");
-          buyer = pathTxt(cp, ["Name"]);
-          buyerVat = pathTxt(cp, ["SpecifiedTaxRegistration", "ID"]);
-          const setEl = kid(tx, "ApplicableHeaderTradeSettlement");
-          cur = pathTxt(setEl, ["InvoiceCurrencyCode"], "EUR").toUpperCase();
-          iban = pathTxt(setEl, ["SpecifiedTradeSettlementPaymentMeans", "PayeePartyCreditorFinancialAccount", "IBANID"]);
-          due = normDate(pathTxt(setEl, ["SpecifiedTradePaymentTerms", "DueDateDateTime", "DateTimeString"])) || issue;
-          const summ = kid(setEl, "SpecifiedTradeSettlementHeaderMonetarySummation");
-          net = num(pathTxt(summ, ["TaxBasisTotalAmount"]));
-          vat = num(pathTxt(summ, ["TaxTotalAmount"]));
-          gross = num(pathTxt(summ, ["DuePayableAmount"]) || pathTxt(summ, ["GrandTotalAmount"]));
-          kids(tx, "IncludedSupplyChainTradeLineItem").forEach((li) => {
-            const ls = kid(li, "SpecifiedLineTradeSettlement");
-            const rate = num(pathTxt(ls, ["ApplicableTradeTax", "RateApplicablePercent"]));
-            const catCode = pathTxt(ls, ["ApplicableTradeTax", "CategoryCode"], "S").toUpperCase();
-            const lineNet = num(pathTxt(ls, ["SpecifiedTradeSettlementLineMonetarySummation", "LineTotalAmount"]));
-            const effRate = (catCode === "AE" || catCode === "K") ? 0 : rate;
-            const mapped = mapLineTax(catCode, rate);
-            lines.push({
-              name: pathTxt(li, ["SpecifiedTradeProduct", "Name"], "Line Item"),
-              qty: num(pathTxt(li, ["SpecifiedLineTradeDelivery", "BilledQuantity"], "1")),
-              unit: num(pathTxt(li, ["SpecifiedLineTradeAgreement", "NetPriceProductTradePrice", "ChargeAmount"])),
-              lineNet,
-              lineTax: num((lineNet * effRate) / 100),
-              rate,
-              cat: catCode,
-              bu: mapped.bu,
-              acct: mapped.acct,
-              xeroTax: mapped.xeroTax,
-              qboAcct: mapped.qboAcct
-            });
-          });
-        }
-
-        const sumLines = lines.reduce((a, b) => num(a + b.lineNet), 0);
-        const sumLineVat = lines.reduce((a, b) => num(a + b.lineTax), 0);
-        const diffVat = num(vat - sumLineVat);
-        if (lines.length > 0 && Math.abs(diffVat) <= 0.05 && diffVat !== 0) {
-          const adj = [...lines].reverse().find((l) => l.lineTax > 0) || lines[lines.length - 1];
-          adj.lineTax = num(adj.lineTax + diffVat);
-        }
-        const mathOk = (lines.length === 0 || (Math.abs(sumLines - net) <= 0.02 && Math.abs(diffVat) <= 0.05)) && Math.abs(num(net + vat) - gross) <= 0.02 && Boolean(id && seller && buyer);
-        let bu = "0", acct = "3200";
-        if (lines.length) {
-          const bus = [], accts = [];
-          lines.forEach((l) => {
-            if (!bus.includes(l.bu)) bus.push(l.bu);
-            if (!accts.includes(l.acct)) accts.push(l.acct);
-          });
-          bu = bus.join("+");
-          acct = accts.join(",");
-        } else if (net > 0 && vat > 0) {
-          const inf = mapLineTax("S", Math.round((vat / net) * 100));
-          bu = inf.bu; acct = inf.acct;
-        }
-        return { filename, syntax, id, issue, due, cur, buyerRef, seller, sellerVat, iban, buyer, buyerVat, net, vat, gross, lines, valid: mathOk, bu, acct };
       }
 
       function renderA4(inv) {
         if (!inv) return;
+        const docLabel = inv.isCreditNote ? "Credit Note " : "Invoice ";
         document.getElementById("a4-syntax").textContent = inv.syntax + " · EN 16931 COMPLIANT VIEW";
-        document.getElementById("a4-id").textContent = "Invoice " + inv.id;
-        document.getElementById("a4-dates").textContent = "Issue: " + inv.issue + " · Due: " + inv.due + (inv.buyerRef ? " · Ref: " + inv.buyerRef : "");
-        document.getElementById("a4-seller").textContent = inv.seller;
+        document.getElementById("a4-id").textContent = docLabel + inv.id;
+        document.getElementById("a4-dates").textContent = "Issue: " + (inv.issue || "—") + " · Due: " + (inv.due || "—") + (inv.buyerRef ? " · Ref: " + inv.buyerRef : "");
+        document.getElementById("a4-seller").textContent = inv.seller || "—";
         document.getElementById("a4-seller-vat").textContent = "VAT: " + (inv.sellerVat || "—");
         document.getElementById("a4-iban").textContent = "IBAN: " + (inv.iban || "—");
-        document.getElementById("a4-buyer").textContent = inv.buyer;
+        document.getElementById("a4-buyer").textContent = inv.buyer || "—";
         document.getElementById("a4-buyer-vat").textContent = inv.buyerVat || "—";
         const pill = document.getElementById("a4-valid-pill");
-        pill.textContent = inv.valid ? "EN 16931 PASS · BU " + inv.bu : "MATH WARNING";
-        pill.className = inv.valid ? "rounded-full bg-emerald-100 px-2.5 py-0.5 font-semibold text-emerald-800" : "rounded-full bg-rose-100 px-2.5 py-0.5 font-semibold text-rose-800";
+        if (inv.valid) {
+          pill.textContent = "EN 16931 PASS · BU " + inv.bu;
+          pill.style.background = "#dcfce7";
+          pill.style.color = "#166534";
+        } else {
+          pill.textContent = "MATH / XML ERR";
+          pill.style.background = "#ffe4e6";
+          pill.style.color = "#9f1239";
+        }
         const tbody = document.getElementById("a4-lines");
-        tbody.innerHTML = inv.lines.map((l) =>
-          "<tr><td class='py-1.5'>" + esc(l.name) + "</td><td class='py-1.5 text-right'>" + l.qty.toFixed(2) + "</td><td class='py-1.5 text-right'>" + l.unit.toFixed(2) + "</td><td class='py-1.5 text-right'>" + l.rate.toFixed(0) + "%</td><td class='py-1.5 text-right font-mono'>" + l.lineNet.toFixed(2) + " " + esc(inv.cur) + "</td></tr>"
-        ).join("");
+        tbody.innerHTML = inv.lines.length
+          ? inv.lines.map((l) =>
+              "<tr><td>" + esc(l.name) + "</td><td class='text-right'>" + l.qty.toFixed(2) + "</td><td class='text-right'>" + l.unit.toFixed(2) + "</td><td class='text-right'>" + CORE.fmtRate(l.rate) + "%</td><td class='text-right font-mono'>" + l.lineNet.toFixed(2) + " " + esc(inv.cur) + "</td></tr>"
+            ).join("")
+          : "<tr><td colspan='5' style='color:#9f1239;'>" + esc((inv.errors || []).join("; ") || "No line items parsed.") + "</td></tr>";
         document.getElementById("a4-net").textContent = inv.net.toFixed(2) + " " + inv.cur;
         document.getElementById("a4-vat").textContent = inv.vat.toFixed(2) + " " + inv.cur;
         document.getElementById("a4-gross").textContent = inv.gross.toFixed(2) + " " + inv.cur;
+
         const stamp = document.getElementById("a4-free-stamp");
-        if (stamp) stamp.style.display = isProUnlocked() ? "none" : "block";
+        if (stamp) {
+          if (isProUnlocked()) {
+            stamp.style.display = "none";
+          } else {
+            stamp.style.display = "block";
+            stamp.textContent =
+              "EN 16931 geprüft (" + (inv.valid ? "BR-CO-10/15 PASS" : "CHECK WARNINGS") + ") · DATEV BU " + inv.bu + " / SKR03 " + inv.acct +
+              " · 100 % lokal ohne XML-Upload — EInvoiceLocal (domstijn.github.io/friction-killer-suite/de/xrechnung-zugferd-konverter/)";
+          }
+        }
+      }
+
+      const printHintEl = document.getElementById("a4-print-hint");
+
+      function formatSignedSummary(cents, cursSet) {
+        const list = Array.from(cursSet);
+        const absVal = (Math.abs(cents) / 100).toFixed(2);
+        const sign = cents < 0 ? "-" : "";
+        if (list.length > 1) return sign + absVal + " (" + list.join("/") + ")";
+        if (list.length === 1 && list[0] !== "EUR") return sign + absVal + " " + list[0];
+        return sign + "€" + absVal;
       }
 
       function renderActiveTab() {
         if (!lastExports) return;
-        outEl.textContent = lastExports[activeTab] || "";
+        const pro = isProUnlocked();
+        if (pro) {
+          outEl.textContent = lastExports[activeTab] || "";
+          return;
+        }
+        const header = lastExports.headers[activeTab] || "";
+        const rows = activeTab === "datev" ? lastExports.datevRows : activeTab === "xero" ? lastExports.xeroRows : lastExports.qboRows;
+        const preview = rows.slice(0, FREE_PREVIEW_ROWS);
+        const hiddenCount = Math.max(0, rows.length - preview.length);
+        const lines = [header, ...preview];
+        if (hiddenCount > 0) {
+          lines.push("# ... +" + hiddenCount + " more row(s) ready in browser memory (Full batch gross: " + (lastBatchMeta.grossDisplay || "€0.00") + ") — Unlock Pro (€29 once) to download complete DATEV EXTF / Xero / QBO CSV");
+        } else if (rows.length > 0) {
+          lines.push("# Previewing all " + rows.length + " row(s) · Unlock Pro (€29 once) to download CSV files");
+        }
+        outEl.textContent = lines.join("\n");
       }
 
-      function runBatch() {
+      function runBatch(preserveIdx = false) {
         if (!loadedDocs.length) return;
         const pro = isProUnlocked();
-        const selected = pro ? loadedDocs : loadedDocs.slice(0, FREE_CAP);
-        const locked = Math.max(0, loadedDocs.length - selected.length);
-        const parsed = selected.map((d) => parseXmlInvoice(d.text, d.name));
+        const parsed = loadedDocs.map((d) => CORE.parseXmlInvoice(d.text, d.name, globalThis.DOMParser));
+        const activeIdx = preserveIdx && selectedIdx >= 0 && selectedIdx < parsed.length ? selectedIdx : 0;
+        selectedIdx = activeIdx;
+        if (printHintEl) printHintEl.textContent = "";
 
-        let vCnt = 0, tNet = 0, tVat = 0, tGross = 0;
-        const datev = ["Umsatz (ohne Soll/Haben-Kz);Soll/Haben-Kennzeichen;WKZ Umsatz;Konto;Gegenkonto;BU-Schlüssel;Belegdatum;Belegfeld 1;Buchungstext"];
-        const xero = ["*ContactName,*InvoiceNumber,*InvoiceDate,*DueDate,*Description,*Quantity,*UnitAmount,*AccountCode,*TaxType,TaxAmount,Currency"];
-        const qbo = ["BillNo,Supplier,BillDate,DueDate,Account,LineDescription,Quantity,UnitPrice,LineAmount,TaxCode,TaxAmount,Currency"];
-
+        let vCnt = 0, netCents = 0, vatCents = 0, grossCents = 0;
+        const curs = new Set();
         const tblWrap = document.getElementById("app-table-wrap");
-        if (tblWrap) tblWrap.scrollTop = 0;
+        if (tblWrap && !preserveIdx) tblWrap.scrollTop = 0;
         tblEl.innerHTML = "";
+
         parsed.forEach((inv, idx) => {
           if (inv.valid) vCnt += 1;
-          tNet += inv.net; tVat += inv.vat; tGross += inv.gross;
+          const docSign = inv.isCreditNote ? -1 : 1;
+          netCents += CORE.toCents(inv.net) * docSign;
+          vatCents += CORE.toCents(inv.vat) * docSign;
+          grossCents += CORE.toCents(inv.gross) * docSign;
+          if (inv.cur && inv.syntax !== "UNKNOWN") curs.add(inv.cur);
+
           const tr = document.createElement("tr");
-          tr.className = "einv-row cursor-pointer hover:bg-slate-900" + (idx === 0 ? " bg-indigo-500/15" : "");
+          tr.className = "einv-row" + (idx === activeIdx ? " active" : "");
+          const rowGross = (inv.isCreditNote ? "-" : "") + (inv.cur === "EUR" ? "€" + inv.gross.toFixed(2) : inv.gross.toFixed(2) + " " + inv.cur);
           tr.innerHTML =
-            '<td class="whitespace-nowrap px-3 py-2 font-mono text-indigo-300">' + esc(inv.id) + "</td>" +
-            '<td class="whitespace-nowrap px-3 py-2">' + esc(inv.syntax) + "</td>" +
-            '<td class="px-3 py-2 truncate max-w-[140px]">' + esc(inv.seller) + "</td>" +
-            '<td class="whitespace-nowrap px-3 py-2 font-mono">BU ' + esc(inv.bu) + " / " + esc(inv.acct) + "</td>" +
-            '<td class="whitespace-nowrap px-3 py-2 text-right font-mono">€' + inv.gross.toFixed(2) + "</td>" +
-            '<td class="whitespace-nowrap px-3 py-2 text-center">' + (inv.valid ? '<span class="text-emerald-300 font-semibold">PASS</span>' : '<span class="text-rose-400 font-semibold">ERR</span>') + "</td>";
+            '<td class="font-mono" style="white-space:nowrap;color:#a5b4fc;">' + esc(inv.id) + (inv.isCreditNote ? ' <span style="color:#fcd34d;font-size:10px;">(CN)</span>' : "") + "</td>" +
+            '<td style="white-space:nowrap;">' + esc(inv.syntax) + "</td>" +
+            '<td class="trunc-cell">' + esc(inv.seller || "—") + "</td>" +
+            '<td class="font-mono" style="white-space:nowrap;">BU ' + esc(inv.bu) + " / " + esc(inv.acct) + "</td>" +
+            '<td class="text-right font-mono" style="white-space:nowrap;">' + esc(rowGross) + "</td>" +
+            '<td class="text-center" style="white-space:nowrap;">' + (inv.valid ? '<span class="pass-txt">PASS</span>' : '<span class="err-txt">ERR</span>') + "</td>";
           tr.addEventListener("click", () => {
-            tblEl.querySelectorAll(".einv-row").forEach((r) => r.classList.remove("bg-indigo-500/15"));
-            tr.classList.add("bg-indigo-500/15");
+            selectedIdx = idx;
+            if (printHintEl) printHintEl.textContent = "";
+            tblEl.querySelectorAll(".einv-row").forEach((r) => r.classList.remove("active"));
+            tr.classList.add("active");
             renderA4(inv);
           });
           tblEl.appendChild(tr);
-
-          const p = inv.issue.split("-");
-          const ddmm = p.length === 3 ? p[2] + p[1] : "1811";
-          const exportLines = inv.lines.length ? inv.lines : [{
-            name: inv.syntax + " Invoice " + inv.id, qty: 1, unit: inv.net, lineNet: inv.net, lineTax: inv.vat, rate: 0,
-            bu: inv.bu, acct: inv.acct, xeroTax: mapLineTax("S", 0).xeroTax, qboAcct: mapLineTax("S", 0).qboAcct
-          }];
-          const bMap = new Map();
-          exportLines.forEach((ln) => {
-            const bk = ln.bu + "|" + ln.acct + "|" + ln.rate.toFixed(2);
-            if (!bMap.has(bk)) bMap.set(bk, { bu: ln.bu, acct: ln.acct, gross: 0 });
-            bMap.get(bk).gross = num(bMap.get(bk).gross + ln.lineNet + ln.lineTax);
-          });
-          const buckets = Array.from(bMap.values());
-          buckets.forEach((b) => {
-            const text = buckets.length > 1 ? inv.seller + " (" + inv.syntax + " · BU " + b.bu + ")" : inv.seller + " (" + inv.syntax + ")";
-            datev.push([b.gross.toFixed(2).replace(".", ","), "S", inv.cur, b.acct, "70000", b.bu, ddmm, inv.id, text].join(";"));
-          });
-          exportLines.forEach((ln) => {
-            xero.push([inv.seller, inv.id, inv.issue, inv.due, ln.name, ln.qty.toFixed(2), ln.unit.toFixed(2), ln.acct, ln.xeroTax, ln.lineTax.toFixed(2), inv.cur].map(csvCell).join(","));
-            qbo.push([inv.id, inv.seller, inv.issue, inv.due, ln.qboAcct, ln.name, ln.qty.toFixed(2), ln.unit.toFixed(2), ln.lineNet.toFixed(2), "BU " + ln.bu, ln.lineTax.toFixed(2), inv.cur].map(csvCell).join(","));
-          });
         });
 
-        if (locked > 0) {
-          const lockTr = document.createElement("tr");
-          lockTr.className = "bg-slate-900/60 text-[11px] text-amber-300/90";
-          lockTr.innerHTML = '<td colspan="6" class="px-3 py-1.5 text-center">+' + locked + " XML Pro-locked (excluded from totals above — unlock Pro for unlimited batches)</td>";
-          tblEl.appendChild(lockTr);
-        }
+        renderA4(parsed[activeIdx]);
+        lastExports = CORE.buildExports(parsed);
+        const netDisplay = formatSignedSummary(netCents, curs);
+        const vatDisplay = formatSignedSummary(vatCents, curs);
+        const grossDisplay = formatSignedSummary(grossCents, curs);
+        lastBatchMeta = { count: parsed.length, gross: grossCents / 100, grossDisplay };
 
-        renderA4(parsed[0]);
-        lastExports = { datev: datev.join("\n"), xero: xero.join("\n"), qbo: qbo.join("\n") };
         statValid.textContent = vCnt + " / " + parsed.length;
-        statNet.textContent = "€" + tNet.toFixed(2);
-        statVat.textContent = "€" + tVat.toFixed(2);
-        statGross.textContent = "€" + tGross.toFixed(2);
-        statusEl.textContent = "Validated " + parsed.length + "/" + loadedDocs.length + " XMLs" + (locked ? " (" + locked + " XML Pro-locked)" : " · Full Pro Export Ready");
+        statNet.textContent = netDisplay;
+        statVat.textContent = vatDisplay;
+        statGross.textContent = grossDisplay;
+
+        if (pro) {
+          proBanner?.classList.add("hidden");
+          statusEl.textContent = "Validated " + parsed.length + " XML(s) · Full Pro CSV Exports Ready";
+        } else {
+          proBanner?.classList.remove("hidden");
+          if (proBannerTitle) {
+            proBannerTitle.textContent = parsed.length + " XML(s) validated (" + grossDisplay + " net batch total) — Complete DATEV EXTF, Xero & QuickBooks CSV ready to download";
+          }
+          statusEl.textContent = "Validated all " + parsed.length + " XMLs locally (Free 2-row CSV preview)";
+        }
         renderActiveTab();
       }
 
       function downloadPro(filename, content) {
         if (!isProUnlocked()) {
-          statusEl.textContent = "Batch exports require Pro (€29 once). Enter your Stripe cs_live_... key to unlock.";
+          statusEl.textContent = "Batch CSV download requires Pro (€29 once) — your full batch is already processed in memory.";
           return;
         }
         if (!content) {
@@ -642,8 +1616,12 @@
       filesEl?.addEventListener("change", async (e) => {
         const list = Array.from(e.target.files || []);
         if (!list.length) return;
-        loadedDocs = await Promise.all(list.map(async (f) => ({ name: f.name, text: await f.text() })));
-        runBatch();
+        try {
+          loadedDocs = await Promise.all(list.map(async (f) => ({ name: f.name, text: await f.text() })));
+          runBatch();
+        } catch {
+          statusEl.textContent = "Could not read one or more selected files.";
+        }
       });
 
       sampleBtn?.addEventListener("click", () => {
@@ -656,16 +1634,43 @@
         runBatch();
       });
 
-      printBtn?.addEventListener("click", () => window.print());
+      printBtn?.addEventListener("click", () => {
+        if (!isProUnlocked() && selectedIdx > 0) {
+          const msg = "Free A4 PDF print covers row #1. Unlock Pro (€29) to print all rows.";
+          statusEl.textContent = msg;
+          if (printHintEl) printHintEl.textContent = msg;
+          return;
+        }
+        if (printHintEl) printHintEl.textContent = "";
+        window.print();
+      });
+
+      copyExpenseBtn?.addEventListener("click", async () => {
+        const grossLabel = lastBatchMeta.count > 0 ? lastBatchMeta.grossDisplay : "€918.00";
+        const text =
+          "Hi, I need a one-time €29 Pro license for EInvoiceLocal (zero-XML-upload browser tool) to export " +
+          (lastBatchMeta.count > 0 ? lastBatchMeta.count : 4) +
+          " XRechnung/ZUGFeRD XML invoices (" +
+          grossLabel +
+          " total) directly into DATEV EXTF / Xero / QuickBooks CSV.\n\n" +
+          "Details: One-time €29 (no subscription), 0 XML uploads (GDPR/GoBD compliant), automatic Stripe VAT PDF invoice & 14-day refund.\n" +
+          "Checkout: https://buy.stripe.com/bJe5kD8eU8uobXa5hi6sw0c";
+        try {
+          if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+            await navigator.clipboard.writeText(text);
+          }
+          statusEl.textContent = "Copied €29 expense request to clipboard!";
+        } catch {
+          statusEl.textContent = "Copy ready: €29 one-time + Stripe VAT invoice.";
+        }
+      });
 
       tabBtns.forEach((btn) => {
         btn.addEventListener("click", () => {
           activeTab = btn.getAttribute("data-einv-tab") || "datev";
           tabBtns.forEach((b) => {
             const on = b.getAttribute("data-einv-tab") === activeTab;
-            b.className = on
-              ? "einv-tab rounded-lg bg-indigo-500 px-2.5 py-1 text-xs font-semibold text-white"
-              : "einv-tab rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700";
+            b.className = on ? "einv-tab on" : "einv-tab";
           });
           renderActiveTab();
         });
@@ -705,10 +1710,12 @@
           valid = true;
         }
         if (valid) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify({ valid: true, key, verifiedAt: Date.now() }));
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ valid: true, key, verifiedAt: Date.now() }));
+          } catch {}
           refreshBadge();
           statusEl.textContent = "Pro License unlocked!";
-          runBatch();
+          runBatch(true);
         } else {
           statusEl.textContent = "Key could not be verified — check your Stripe checkout key.";
         }

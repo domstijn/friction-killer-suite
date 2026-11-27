@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>9 kostenlose XRechnung-Viewer im DSGVO &amp; DevTools-Test (2026) | Friction-Killer Suite</title>
+  <meta name="description" content="Reproduzierbarer Chrome DevTools Netzwerk-Test vom 27.11.2026: Bei 3 von 9 öffentlichen XRechnung-Viewern wird die XML per HTTP POST hochgeladen." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://domstijn.github.io/friction-killer-suite/tools/xrechnung-viewer-dsgvo-test-2026/" />
+  <meta property="og:title" content="9 kostenlose XRechnung-Viewer im DSGVO &amp; DevTools-Test (2026) | Friction-Killer Suite" />
+  <meta property="og:description" content="Reproduzierbarer Chrome DevTools Netzwerk-Test vom 27.11.2026: Bei 3 von 9 öffentlichen XRechnung-Viewern wird die XML per HTTP POST hochgeladen." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://domstijn.github.io/friction-killer-suite/tools/xrechnung-viewer-dsgvo-test-2026/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="9 kostenlose XRechnung-Viewer im DSGVO &amp; DevTools-Test (2026) | Friction-Killer Suite" />
+  <meta name="twitter:description" content="Reproduzierbarer Chrome DevTools Netzwerk-Test vom 27.11.2026: Bei 3 von 9 öffentlichen XRechnung-Viewern wird die XML per HTTP POST hochgeladen." />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #020617; color: #f1f5f9; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    code { background: rgba(30,41,59,0.75); padding: 0.1rem 0.35rem; border-radius: 0.25rem; font-size: 0.85em; }
+    button { font-family: inherit; cursor: pointer; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .max-w-5xl { max-width: 64rem; }
+    .max-w-3xl { max-width: 48rem; }
+    .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+    .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+    .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+    .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+    .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+    .pb-14 { padding-bottom: 3.5rem; }
+    .pb-10 { padding-bottom: 2.5rem; }
+    .pb-6 { padding-bottom: 1.5rem; }
+    .p-6 { padding: 1.5rem; }
+    .p-5 { padding: 1.25rem; }
+    .p-4 { padding: 1rem; }
+    .mt-1 { margin-top: 0.25rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mt-3 { margin-top: 0.75rem; }
+    .mt-4 { margin-top: 1rem; }
+    .mt-6 { margin-top: 1.5rem; }
+    .my-8 { margin-top: 2rem; margin-bottom: 2rem; }
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .shrink-0 { flex-shrink: 0; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+    .gap-5 { gap: 1.25rem; }
+    .gap-6 { gap: 1.5rem; }
+    .grid { display: grid; }
+    .space-y-4 > * + * { margin-top: 1rem; }
+    .space-y-6 > * + * { margin-top: 1.5rem; }
+    @media (min-width: 640px) { .sm\:flex-row { flex-direction: row; } .sm\:items-center { align-items: center; } .sm\:justify-between { justify-content: space-between; } .sm\:text-4xl { font-size: 2.25rem; line-height: 1.15; } .sm\:text-sm { font-size: 0.875rem; } }
+    @media (min-width: 768px) { .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .inline-block { display: inline-block; }
+    .block { display: block; }
+    .w-full { width: 100%; }
+    .overflow-x-auto { overflow-x: auto; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .rounded-full { border-radius: 9999px; }
+    .rounded { border-radius: 0.25rem; }
+    .border { border: 1px solid #1e293b; }
+    .border-t { border-top: 1px solid #1e293b; }
+    .border-slate-800 { border-color: #1e293b; }
+    .border-slate-700 { border-color: #334155; }
+    .border-indigo-500\/30, .border-indigo-500\/20, .border-indigo-500\/40 { border-color: rgba(99, 102, 241, 0.35); }
+    .border-emerald-500\/30, .border-emerald-500\/40 { border-color: rgba(16, 185, 129, 0.35); }
+    .bg-slate-950 { background-color: #020617; }
+    .bg-slate-900\/50, .bg-slate-900\/60, .bg-slate-900\/70 { background-color: rgba(15, 23, 42, 0.7); }
+    .bg-slate-800 { background-color: #1e293b; }
+    .bg-white { background-color: #ffffff; }
+    .bg-indigo-500 { background-color: #6366f1; }
+    .bg-indigo-500\/15 { background-color: rgba(99, 102, 241, 0.16); }
+    .bg-emerald-500\/10 { background-color: rgba(16, 185, 129, 0.12); }
+    .bg-rose-500\/10 { background-color: rgba(244, 63, 94, 0.12); }
+    .text-white { color: #ffffff; }
+    .text-slate-950 { color: #020617; }
+    .text-slate-100 { color: #f1f5f9; }
+    .text-slate-200 { color: #e2e8f0; }
+    .text-slate-300 { color: #cbd5e1; }
+    .text-slate-400 { color: #94a3b8; }
+    .text-slate-500 { color: #64748b; }
+    .text-indigo-200 { color: #c7d2fe; }
+    .text-indigo-300 { color: #a5b4fc; }
+    .text-emerald-200 { color: #a7f3d0; }
+    .text-emerald-300 { color: #6ee7b7; }
+    .text-amber-300 { color: #fcd34d; }
+    .text-rose-300 { color: #fda4af; }
+    .text-3xl { font-size: 1.875rem; line-height: 1.2; }
+    .text-2xl { font-size: 1.5rem; line-height: 1.25; }
+    .text-lg { font-size: 1.125rem; }
+    .text-base { font-size: 1rem; }
+    .text-sm { font-size: 0.875rem; }
+    .text-xs { font-size: 0.75rem; }
+    .font-extrabold { font-weight: 800; }
+    .font-bold { font-weight: 700; }
+    .font-semibold { font-weight: 600; }
+    .uppercase { text-transform: uppercase; }
+    .tracking-wider { letter-spacing: 0.05em; }
+    .leading-relaxed { line-height: 1.625; }
+    .text-center { text-align: center; }
+    .underline { text-decoration: underline; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    th, td { padding: 0.65rem 0.75rem; border-bottom: 1px solid #1e293b; text-align: left; }
+    th { color: #94a3b8; font-size: 0.72rem; text-transform: uppercase; background: #0f172a; }
+    @media print { .no-print { display: none !important; } }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <header class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-6 no-print">
+    <a href="../../index.html" class="text-base font-bold tracking-tight text-white hover:text-indigo-300">Friction-Killer Suite</a>
+    <nav class="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-slate-300">
+      <a href="../../index.html" class="hover:text-white">Alle Tools</a>
+      <a href="../../tools/index.html" class="hover:text-white">Rechner (Kostenlos)</a>
+      <a href="../../guides/index.html" class="hover:text-white">Ratgeber</a>
+      <a href="../../samples/index.html" class="hover:text-white">Beispieldateien</a>
+      <a href="../../partners/index.html" class="hover:text-white">Kanzleien</a>
+      <a href="../../de/index.html" class="rounded border border-slate-700 px-2 py-0.5 text-xs text-slate-200 hover:border-indigo-400">DE</a>
+      <a href="https://buy.stripe.com/eVq3cvfHmcKEe5idNO6sw03" data-fk-cta="pro-checkout" class="rounded-lg bg-indigo-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-400">Bundle — €49</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6 pb-14">
+    <div class="text-xs text-slate-400"><a href="../index.html" class="text-indigo-300 underline">&larr; Alle kostenlosen Tools</a> · <a href="../../de/xrechnung-zugferd-konverter/index.html" class="text-indigo-300 underline">EInvoiceLocal (DE)</a></div>
+    <section class="py-6 space-y-6">
+      <div>
+        <span class="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">REPRODUZIERBARER CHROME DEVTOOLS NETZWERK-TEST · STAND 27.11.2026</span>
+        <h1 class="mt-3 text-3xl sm:text-4xl font-extrabold text-white">9 kostenlose XRechnung Online-Viewer im DevTools-Test (DSGVO &amp; Upload-Verhalten 2026)</h1>
+        <p class="mt-3 max-w-3xl text-sm leading-relaxed text-slate-300">
+          Rechnungs-XMLs enthalten Lieferanten-IBANs, Steuernummern, Einzelpreise und Ansprechpartner. Am <strong>27.11.2026</strong> haben wir 9 frei zugängliche deutsche Online-Viewer unter Chrome mit geöffnetem Netzwerk-Protokoll und einer rein synthetischen Test-XRechnung (<code>XR-SAMPLE-2026-1001</code>) getestet. Ergebnis: <strong>3 von 9 Viewern</strong> übertragen die XML-Datei per HTTP-<code>POST</code> an einen Server (erfordert i.&nbsp;d.&nbsp;R. eine AVV-/Datenschutzprüfung nach Art. 28 DSGVO), 2 parsen lokal mit aktivem Analytics-Tracking und 4 arbeiten rein lokal im Browser.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-xs text-slate-300 space-y-2">
+        <div class="font-bold text-white">Reproduzierbare Testmethodik (selbst nachprüfbar)</div>
+        <div>1. Chrome Inkognito öffnen &rarr; <strong>DevTools &rarr; Network (Netzwerk)</strong> aktivieren (optional Cookie-Banner auf <em>„Nur notwendige“</em>).</div>
+        <div>2. Synthetische Test-XML herunterladen: <a href="../../samples/files/sample-xrechnung-3.0-ubl.xml" download class="text-indigo-300 underline">sample-xrechnung-3.0-ubl.xml (2,1 KB, fiktive Demodaten)</a>.</div>
+        <div>3. XML-Datei auswählen und prüfen, ob ein HTTP-<code>POST</code> (<code>multipart/form-data</code>) ausgelöst wird und welche Drittanbieter-Hosts aktiv sind. Hinweis: Serverseitige Validierung (z. B. KoSIT 1.5.0) kann fachlich gewollt sein — maßgeblich für Kanzleien sind Transparenz &amp; ggf. AVV nach Art. 28 DSGVO.</div>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950">
+        <table>
+          <thead>
+            <tr>
+              <th>Online-Viewer</th>
+              <th>Beobachtetes Übertragungsverhalten</th>
+              <th>Direkt beobachtete Netzwerk-Requests (27.11.2026)</th>
+              <th>Einordnung / Kanzlei-Hinweis</th>
+            </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><strong>XRechnung-Online.de</strong><br /><span class="text-xs text-slate-400">https://xrechnung-online.de/</span></td>
+            <td><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold bg-rose-500/10 text-rose-300">Server-Upload (HTTP POST)</span></td>
+            <td class="text-xs text-slate-300">Form POST /visualisierung (HTTP 200) an Server (KoSIT Validator 1.5.0). Keine Drittanbieter-Tracker beobachtet.</td>
+            <td class="text-xs text-slate-200">AVV / Datenschutzhinweise vor Mandanten-Einsatz prüfen</td>
+          </tr>
+          <tr>
+            <td><strong>RechneX</strong><br /><span class="text-xs text-slate-400">https://rechnex.de/viewer</span></td>
+            <td><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold bg-rose-500/10 text-rose-300">Server-Upload (HTTP POST)</span></td>
+            <td class="text-xs text-slate-300">POST https://rechnex.de/api/view-xrechnung (multipart/form-data, 2.375 B, HTTP 200) + Matomo-Ping (analytics.ttt-digital.de).</td>
+            <td class="text-xs text-slate-200">AVV-Prüfung (Art. 28 DSGVO) empfohlen</td>
+          </tr>
+          <tr>
+            <td><strong>sevdesk E-Rechnung Viewer</strong><br /><span class="text-xs text-slate-400">https://sevdesk.de/e-rechnung-viewer/</span></td>
+            <td><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold bg-rose-500/10 text-rose-300">Server-Upload (HTTP POST)</span></td>
+            <td class="text-xs text-slate-300">Iframe toolkits.sevdesk.de sendet POST /api/toolkits/eInvoiceViewer (multipart/form-data, 2.375 B; im Test HTTP 500). GTM, Cookiebot, New Relic, Typeform geladen.</td>
+            <td class="text-xs text-slate-200">AVV- &amp; Tracking-Prüfung (Art. 28 DSGVO) empfohlen</td>
+          </tr>
+          <tr>
+            <td><strong>RechnungScanner.de</strong><br /><span class="text-xs text-slate-400">https://www.rechnungscanner.de/e-rechnung-viewer</span></td>
+            <td><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold bg-emerald-500/10 text-emerald-300">Lokal (0 XML-Uploads)</span></td>
+            <td class="text-xs text-slate-300">0 Netzwerk-Requests bei XML-Auswahl; Google Tag Manager / GA4 (googletagmanager.com) auf Seite aktiv.</td>
+            <td class="text-xs text-slate-200">Lokal geparst (Analytics aktiv)</td>
+          </tr>
+          <tr>
+            <td><strong>RechnungApp.de</strong><br /><span class="text-xs text-slate-400">https://www.rechnungapp.de/xrechnung-anzeigen</span></td>
+            <td><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold bg-emerald-500/10 text-emerald-300">Lokal (0 XML-Uploads)</span></td>
+            <td class="text-xs text-slate-300">0 XML-Upload-Bytes; Event-Beacon POST analytics.northerndynamic.org/api/event bei Dateiauswahl.</td>
+            <td class="text-xs text-slate-200">Lokal geparst (Analytics-Event bei Drop)</td>
+          </tr>
+          <tr>
+            <td><strong>ELSTER E-Rechnung Viewer</strong><br /><span class="text-xs text-slate-400">https://www.elster.de/eportal/e-rechnung</span></td>
+            <td><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold bg-emerald-500/10 text-emerald-300">Lokal (0 XML-Uploads)</span></td>
+            <td class="text-xs text-slate-300">Client-seitiges Saxon-JS XSLT (nur statische XSLT/.sef.json-GETs von www.elster.de; 0 Dritt-Hosts).</td>
+            <td class="text-xs text-slate-200">Rein lokal (ohne DATEV-CSV-Export)</td>
+          </tr>
+          <tr>
+            <td><strong>Belegviewer.de</strong><br /><span class="text-xs text-slate-400">https://belegviewer.de/</span></td>
+            <td><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold bg-emerald-500/10 text-emerald-300">Lokal (0 XML-Uploads)</span></td>
+            <td class="text-xs text-slate-300">0 Requests nach Seitenaufruf; ein einzelner Document-GET ohne Dritt-Tracker.</td>
+            <td class="text-xs text-slate-200">Rein lokal (ohne DATEV-CSV-Export)</td>
+          </tr>
+          <tr>
+            <td><strong>XRechnungs.de</strong><br /><span class="text-xs text-slate-400">https://www.xrechnungs.de/de/xrechnung-viewer-kostenlos</span></td>
+            <td><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold bg-emerald-500/10 text-emerald-300">Lokal (0 XML-Uploads)</span></td>
+            <td class="text-xs text-slate-300">0 neue Requests beim Datei-Drop (nur Erstanbieter-Host www.xrechnungs.de beobachtet).</td>
+            <td class="text-xs text-slate-200">Rein lokal (ohne DATEV-CSV-Export)</td>
+          </tr>
+          <tr>
+            <td><strong>RechnungsWächter</strong><br /><span class="text-xs text-slate-400">https://rechnungswaechter.de/xrechnung-viewer/</span></td>
+            <td><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold bg-emerald-500/10 text-emerald-300">Lokal (0 XML-Uploads)</span></td>
+            <td class="text-xs text-slate-300">0 neue Requests beim Datei-Drop; vor Consent keine Dritt-Hosts geladen.</td>
+            <td class="text-xs text-slate-200">Rein lokal (ohne DATEV-CSV-Export)</td>
+          </tr>
+          <tr>
+            <td><strong>EInvoiceLocal Embed Widget</strong><br /><span class="text-xs text-slate-400">https://domstijn.github.io/friction-killer-suite/embed/xrechnung-viewer/</span></td>
+            <td><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold bg-emerald-500/10 text-emerald-300">Luftdicht lokal (0 Requests)</span></td>
+            <td class="text-xs text-slate-300">0 XML-Uploads, 0 CDNs, 0 Cookies, 0 Analytics-Pings + optional DATEV EXTF / Xero / QBO CSV in EInvoiceLocal Pro.</td>
+            <td class="text-xs text-slate-200">Referenz (0 Third-Party / Open Embed)</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="rounded-2xl border border-emerald-500/30 bg-slate-900/70 p-6 space-y-4">
+        <div>
+          <span class="rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">DER FEHLENDE SCHRITT: VOM VIEWER ZUR DATEV-BUCHHALTUNG</span>
+          <h2 class="mt-2 text-lg font-bold text-white">1. Kostenloses 0-Upload Embed-Widget · 2. Batch DATEV EXTF / Xero CSV</h2>
+          <p class="mt-1 text-xs text-slate-300">Keiner der 9 getesteten kostenlosen Viewer exportiert geprüfte XRechnung- und ZUGFeRD-Stapel lokal in <strong>DATEV EXTF (;-CSV inkl. SKR03 &amp; BU-Schlüssel)</strong>. Nutzen Sie unsere Web-App (ganzer Batch lokal validierbar + 2 Vorschauzeilen frei) oder betten Sie unseren luftdichten Viewer kostenlos ein:</p>
+        </div>
+        <pre id="bench-embed-code" class="overflow-x-auto rounded-lg border border-slate-800 bg-slate-950 p-3 text-xs text-emerald-300">&lt;iframe src=&quot;https://domstijn.github.io/friction-killer-suite/embed/xrechnung-viewer/&quot; width=&quot;100%&quot; height=&quot;620&quot; style=&quot;border:1px solid #cbd5e1;border-radius:12px;&quot; loading=&quot;lazy&quot; title=&quot;XRechnung &amp;amp; ZUGFeRD XML Viewer (100% lokal)&quot;&gt;&lt;/iframe&gt;</pre>
+        <div class="flex flex-wrap gap-3">
+          <button id="bench-copy-btn" type="button" class="rounded-lg bg-indigo-500 px-4 py-2 text-xs font-semibold text-white">Iframe-Code kopieren</button>
+          <a href="../../embed/xrechnung-viewer/index.html" class="rounded-lg border border-slate-700 px-4 py-2 text-xs font-semibold text-white">Widget direkt öffnen &rarr;</a>
+          <a href="../../products/e-invoice-xml-batch-converter/index.html?ref=src.privacy-bench#live-app" class="rounded-lg bg-white px-4 py-2 text-xs font-semibold text-slate-950">EInvoiceLocal (DATEV Batch) testen &rarr;</a>
+        </div>
+        <div id="bench-copy-status" class="text-xs text-emerald-300"></div>
+      </div>
+    </section>
+  </main>
+
+  <section id="policies" class="mx-auto max-w-5xl px-6 pb-10">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-xs leading-relaxed text-slate-400">
+      <div class="grid gap-6 md:grid-cols-3">
+        <div>
+          <h3 class="font-semibold text-slate-200">Support &amp; Kontakt</h3>
+          <p class="mt-1">Betrieben von Stijn Dom (@domstijn).</p>
+          <p class="mt-1">E-Mail: <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a></p>
+          <p class="mt-1">Fehler &amp; Tickets: <a href="https://github.com/domstijn/friction-killer-suite/issues" class="text-indigo-300 underline">GitHub Support Tracker</a></p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">14 Tage Geld-zurück-Garantie</h3>
+          <p class="mt-1">Alle Pro-Lizenzen beinhalten eine 14-tägige Geld-zurück-Garantie ohne Rückfragen. Schreiben Sie einfach mit Ihrer Bestell-ID an <a href="mailto:dom.stijn99@gmail.com" class="text-indigo-300 underline">dom.stijn99@gmail.com</a>.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-200">Datenschutz &amp; AGB</h3>
+          <p class="mt-1">100 % lokale Dateiverarbeitung — keine Rechnungen, XMLs, Kontoauszüge oder CSVs verlassen Ihren Browser. Landingpages zählen anonymisierte Klick-Events über unseren cookielosen EU-Endpunkt (<code>fk-funnel-beacon</code>, 0 Cookies, 0 Dateidaten; Opt-out über <code>localStorage.fk_ignore_telemetry='1'</code>); das Embed-Widget arbeitet komplett ohne Netzwerkanfragen. Sichere Zahlung über Stripe inkl. USt-Rechnung.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="mx-auto max-w-5xl border-t border-slate-800 px-6 py-8 text-center text-xs text-slate-500 no-print">
+    Friction-Killer Suite by Stijn Dom (@domstijn) · 100 % lokale Browser-Verarbeitung · <a href="../../sitemap.xml" class="underline">Sitemap</a> · <a href="../../llms.txt" class="underline">llms.txt</a> · <a href="mailto:dom.stijn99@gmail.com" class="underline">dom.stijn99@gmail.com</a>
+  </footer>
+  <script>
+    (function(){
+      const btn = document.getElementById("bench-copy-btn");
+      const code = document.getElementById("bench-embed-code");
+      const st = document.getElementById("bench-copy-status");
+      btn?.addEventListener("click", async () => {
+        try {
+          if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+            await navigator.clipboard.writeText(code.textContent || "");
+          }
+          st.textContent = "Iframe-Code kopiert (0 Cookies, 0 Server-Uploads, 0 CDNs).";
+        } catch {
+          st.textContent = "Bitte Code markieren und kopieren.";
+        }
+      });
+    })();
+  </script>
+  <section id="fk-feedback-bar" class="mx-auto max-w-5xl px-6 pb-6 no-print">
+    <div class="flex flex-col items-center justify-between gap-3 rounded-2xl border border-indigo-500/20 bg-slate-900/60 px-5 py-4 text-xs text-slate-300 sm:flex-row">
+      <span>Fehlt ein Format, ein Bank-Export oder gibt es ein Problem mit <strong>XRechnung Viewer DevTools-Test 2026</strong>?</span>
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="https://github.com/domstijn/friction-killer-suite/issues/new?title=Feedback%3A+XRechnung+Viewer+DevTools-Test+2026&amp;body=Product+slug%3A+tool_xrechnung_privacy_2026%0AWhat+format%2C+bank%2C+or+step+did+not+work+as+expected%3F%0A" target="_blank" rel="noopener noreferrer" data-fk-cta="feedback" class="rounded-lg border border-indigo-500/40 bg-indigo-500/15 px-3 py-1.5 font-semibold text-indigo-200 hover:bg-indigo-500/25">Fehler oder Format melden &rarr;</a>
+        <a href="mailto:dom.stijn99@gmail.com?subject=Feedback%3A%20XRechnung%20Viewer%20DevTools-Test%202026" data-fk-cta="feedback" class="text-slate-400 underline hover:text-white">E-Mail an Stijn</a>
+      </div>
+    </div>
+  </section>
+  <script>
+    (function () {
+      let ignore = false;
+      try { ignore = localStorage.getItem("fk_ignore_telemetry") === "1"; } catch {}
+      if (navigator.webdriver || location.protocol === "file:" || ignore) return;
+      const EP = "https://fk-funnel-beacon.dom-stijn99.workers.dev/e";
+      const SLUG = "tool_xrechnung_privacy_2026";
+      let refHost = "direct";
+      try {
+        const qs = new URLSearchParams(location.search);
+        const rawRef = (qs.get("ref") || qs.get("utm_source") || "").trim().toLowerCase();
+        if (rawRef) {
+          const normalized = rawRef.replace(/[^a-z0-9.-]/g, "-").replace(/^-+|-+$/g, "");
+          if (normalized) {
+            refHost = (normalized.startsWith("src.") ? normalized : "src." + normalized).slice(0, 64);
+          }
+        } else if (document.referrer) {
+          const u = new URL(document.referrer);
+          if (u.hostname && u.hostname !== location.hostname) refHost = u.hostname.toLowerCase();
+        }
+      } catch {}
+      const seen = new Set();
+      function send(ev, onceKey) {
+        if (onceKey) {
+          if (seen.has(onceKey)) return;
+          seen.add(onceKey);
+        }
+        try {
+          fetch(EP, {
+            method: "POST",
+            mode: "cors",
+            keepalive: true,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ slug: SLUG, event: ev, ref_host: refHost })
+          }).catch(() => {});
+        } catch {}
+      }
+      send("page_view", "pv");
+      document.addEventListener("change", (e) => {
+        if (e.target && e.target.matches('input[type="file"]')) send("file_upload", "fu");
+      }, true);
+      document.addEventListener("click", (e) => {
+        const t = e.target && e.target.closest ? e.target.closest("a,button") : null;
+        if (!t) return;
+        if (t.matches("#app-sample-btn,#app-sample-camt-btn,#app-sample-mt-btn,#app-run-btn,.pg-tab")) {
+          send("tool_run", "tr:" + (t.id || t.getAttribute("data-pg-tab") || "btn"));
+        }
+        if (t.matches('[id^="app-dl-"],#dl-matrixify,#dl-redirects,#dl-audit,#dl-qbo,#dl-ofx,#dl-datev,#app-activate-btn')) {
+          send("paywall_hit", "pw:" + (t.id || "btn"));
+        }
+        const cta = t.getAttribute("data-fk-cta");
+        if (cta === "pro-checkout") send("checkout_click");
+        else if (cta === "feedback") send("feedback_click");
+      }, true);
+    })();
+  </script>
+</body>
+</html>

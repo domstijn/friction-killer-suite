@@ -33,6 +33,114 @@ def _json_ld_script(payload: dict[str, Any]) -> str:
     return f'  <script type="application/ld+json">{safe}</script>'
 
 
+ZERO_CDN_SHELL_CSS = """  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #020617; color: #f1f5f9; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    code { background: rgba(30,41,59,0.75); padding: 0.1rem 0.35rem; border-radius: 0.25rem; font-size: 0.85em; }
+    button { font-family: inherit; cursor: pointer; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .max-w-5xl { max-width: 64rem; }
+    .max-w-3xl { max-width: 48rem; }
+    .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+    .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+    .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+    .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .py-1\\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+    .py-0\\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+    .pb-14 { padding-bottom: 3.5rem; }
+    .pb-10 { padding-bottom: 2.5rem; }
+    .pb-6 { padding-bottom: 1.5rem; }
+    .p-6 { padding: 1.5rem; }
+    .p-5 { padding: 1.25rem; }
+    .p-4 { padding: 1rem; }
+    .mt-1 { margin-top: 0.25rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mt-3 { margin-top: 0.75rem; }
+    .mt-4 { margin-top: 1rem; }
+    .mt-6 { margin-top: 1.5rem; }
+    .my-8 { margin-top: 2rem; margin-bottom: 2rem; }
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .shrink-0 { flex-shrink: 0; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+    .gap-5 { gap: 1.25rem; }
+    .gap-6 { gap: 1.5rem; }
+    .grid { display: grid; }
+    .space-y-4 > * + * { margin-top: 1rem; }
+    .space-y-6 > * + * { margin-top: 1.5rem; }
+    @media (min-width: 640px) { .sm\\:flex-row { flex-direction: row; } .sm\\:items-center { align-items: center; } .sm\\:justify-between { justify-content: space-between; } .sm\\:text-4xl { font-size: 2.25rem; line-height: 1.15; } .sm\\:text-sm { font-size: 0.875rem; } }
+    @media (min-width: 768px) { .md\\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } .md\\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .inline-block { display: inline-block; }
+    .block { display: block; }
+    .w-full { width: 100%; }
+    .overflow-x-auto { overflow-x: auto; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .rounded-full { border-radius: 9999px; }
+    .rounded { border-radius: 0.25rem; }
+    .border { border: 1px solid #1e293b; }
+    .border-t { border-top: 1px solid #1e293b; }
+    .border-slate-800 { border-color: #1e293b; }
+    .border-slate-700 { border-color: #334155; }
+    .border-indigo-500\\/30, .border-indigo-500\\/20, .border-indigo-500\\/40 { border-color: rgba(99, 102, 241, 0.35); }
+    .border-emerald-500\\/30, .border-emerald-500\\/40 { border-color: rgba(16, 185, 129, 0.35); }
+    .bg-slate-950 { background-color: #020617; }
+    .bg-slate-900\\/50, .bg-slate-900\\/60, .bg-slate-900\\/70 { background-color: rgba(15, 23, 42, 0.7); }
+    .bg-slate-800 { background-color: #1e293b; }
+    .bg-white { background-color: #ffffff; }
+    .bg-indigo-500 { background-color: #6366f1; }
+    .bg-indigo-500\\/15 { background-color: rgba(99, 102, 241, 0.16); }
+    .bg-emerald-500\\/10 { background-color: rgba(16, 185, 129, 0.12); }
+    .bg-rose-500\\/10 { background-color: rgba(244, 63, 94, 0.12); }
+    .text-white { color: #ffffff; }
+    .text-slate-950 { color: #020617; }
+    .text-slate-100 { color: #f1f5f9; }
+    .text-slate-200 { color: #e2e8f0; }
+    .text-slate-300 { color: #cbd5e1; }
+    .text-slate-400 { color: #94a3b8; }
+    .text-slate-500 { color: #64748b; }
+    .text-indigo-200 { color: #c7d2fe; }
+    .text-indigo-300 { color: #a5b4fc; }
+    .text-emerald-200 { color: #a7f3d0; }
+    .text-emerald-300 { color: #6ee7b7; }
+    .text-amber-300 { color: #fcd34d; }
+    .text-rose-300 { color: #fda4af; }
+    .text-3xl { font-size: 1.875rem; line-height: 1.2; }
+    .text-2xl { font-size: 1.5rem; line-height: 1.25; }
+    .text-lg { font-size: 1.125rem; }
+    .text-base { font-size: 1rem; }
+    .text-sm { font-size: 0.875rem; }
+    .text-xs { font-size: 0.75rem; }
+    .font-extrabold { font-weight: 800; }
+    .font-bold { font-weight: 700; }
+    .font-semibold { font-weight: 600; }
+    .uppercase { text-transform: uppercase; }
+    .tracking-wider { letter-spacing: 0.05em; }
+    .leading-relaxed { line-height: 1.625; }
+    .text-center { text-align: center; }
+    .underline { text-decoration: underline; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    th, td { padding: 0.65rem 0.75rem; border-bottom: 1px solid #1e293b; text-align: left; }
+    th { color: #94a3b8; font-size: 0.72rem; text-transform: uppercase; background: #0f172a; }
+    @media print { .no-print { display: none !important; } }
+  </style>"""
+
+
 def _render_page_shell(
     *,
     title: str,
@@ -50,6 +158,7 @@ def _render_page_shell(
     extra_head: str = "",
     extra_script: str = "",
     include_feedback: bool = True,
+    zero_cdn: bool = False,
 ) -> str:
     safe_title = html.escape(title, quote=True)
     safe_desc = html.escape(description, quote=True)
@@ -61,10 +170,12 @@ def _render_page_shell(
             analytics_cfg,
             include_feedback_bar=include_feedback,
             lang=lang,
+            include_rum=not zero_cdn,
         )
         if analytics_renderer
         else ""
     )
+    css_or_cdn = ZERO_CDN_SHELL_CSS if zero_cdn else '  <script src="https://cdn.tailwindcss.com"></script>'
     de_label = "Alle Tools" if lang == "de" else "All Tools"
     guides_label = "Ratgeber" if lang == "de" else "Guides"
     tools_label = "Rechner (Kostenlos)" if lang == "de" else "Free Tools"
@@ -93,7 +204,7 @@ def _render_page_shell(
   <meta name="twitter:title" content="{safe_title}" />
   <meta name="twitter:description" content="{safe_desc}" />
 {extra_head}
-  <script src="https://cdn.tailwindcss.com"></script>
+{css_or_cdn}
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
   <header class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-6 no-print">
@@ -132,10 +243,10 @@ DE_PAGES: list[dict[str, Any]] = [
         "en_canonical": f"{SITE_BASE_URL}/products/e-invoice-xml-batch-converter/",
         "title": "XRechnung & ZUGFeRD XML zu A4-PDF & DATEV EXTF — EInvoiceLocal (100 % lokal)",
         "description": "XRechnung (UBL 2.1), ZUGFeRD 2.x (CII) und Peppol BIS 3.0 XML direkt im Browser nach EN 16931 prüfen, als A4-PDF drucken und mit DATEV BU-Schlüssel (EXTF CSV) exportieren. Ohne Cloud-Upload.",
-        "badge": "DSGVO & GoBD · KEIN CLOUD-UPLOAD",
+        "badge": "DSGVO & GoBD · 0 CDN · KEIN CLOUD-UPLOAD",
         "h1": "XRechnung & ZUGFeRD XML lokal prüfen, als A4-PDF drucken & zu DATEV EXTF exportieren",
-        "sub": "Keine sensiblen Lieferanten-IBANs oder USt-IDs auf fremde Server hochladen: EInvoiceLocal parst OASIS UBL 2.1 und UN/CEFACT CII direkt im Chrome-Speicher (im DevTools-Netzwerk-Tab nachprüfbar) und mappt BT-118/BT-151 automatisch auf DATEV BU-Schlüssel 9, 8, 94 und 0.",
-        "primary_cta": "Jetzt im Browser starten (3 XMLs kostenlos)",
+        "sub": "Keine sensiblen Lieferanten-IBANs oder USt-IDs auf fremde Server hochladen: EInvoiceLocal parst beliebig viele UBL-2.1- und CII-XMLs direkt im Chrome-Speicher (0 dritte CDNs, 0 XML-Uploads im DevTools-Netzwerk-Tab; nur anonymer Seitenaufruf-Zähler ohne Cookies/Dateidaten) und zeigt eine 2-Zeilen-Vorschau für DATEV EXTF, Xero & QuickBooks vorab kostenlos.",
+        "primary_cta": "Ganzen Batch kostenlos im Browser prüfen",
         "secondary_cta": "DATEV BU-Schlüssel Rechner öffnen",
         "secondary_href": "../../tools/datev-bu-schluessel-lookup/index.html",
         "guide_href": "../../guides/xrechnung-xml-zu-pdf-und-datev-extf/index.html",
@@ -911,7 +1022,7 @@ def _render_de_product_page(
         <a href="{html.escape(checkout_url)}" data-fk-cta="pro-checkout" class="rounded-xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-400">Pro-Lizenz kaufen — €29 einmalig</a>
         <a href="{html.escape(spec["secondary_href"])}" class="rounded-xl border border-slate-700 px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-slate-800">{html.escape(spec["secondary_cta"])}</a>
       </div>
-      <p class="mt-3 text-xs text-emerald-300">✓ Automatische Stripe USt-Rechnung (PDF) · ✓ 14 Tage Geld-zurück-Garantie · ✓ 0 Server-Uploads (im Chrome Netzwerk-Tab verifizierbar)</p>
+      <p class="mt-3 text-xs text-emerald-300">✓ Automatische Stripe USt-Rechnung (PDF) · ✓ 14 Tage Geld-zurück-Garantie · ✓ 0 XML-Uploads (im Chrome Netzwerk-Tab verifizierbar)</p>
     </section>
 
     <section class="grid gap-5 md:grid-cols-3 py-4">
@@ -933,13 +1044,59 @@ def _render_de_product_page(
       <h2 class="text-2xl font-bold text-white">Häufige Fragen (DE / EU)</h2>
 {faq_html}
     </section>"""
+    embed_box_html = ""
+    extra_script = ""
+    is_einv = spec["dir"] == "xrechnung-zugferd-konverter"
+    if is_einv:
+        embed_code = (
+            '<iframe src="https://domstijn.github.io/friction-killer-suite/embed/xrechnung-viewer/" '
+            'width="100%" height="620" style="border:1px solid #cbd5e1;border-radius:12px;" loading="lazy" '
+            'title="XRechnung &amp; ZUGFeRD XML Viewer (100% lokal)"></iframe>'
+        )
+        embed_box_html = f"""
+    <section class="my-8 rounded-2xl border border-emerald-500/30 bg-slate-900/70 p-6 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <span class="rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">KOSTENLOSES WEBSITE- &amp; KANZLEI-WIDGET · 0 COOKIES · KEIN AVV NÖTIG</span>
+          <h2 class="mt-2 text-lg font-bold text-white">1-Zeilen-XRechnung-Viewer für Ihr Blog oder Ihre Kanzlei-Website einbetten</h2>
+          <p class="mt-1 text-xs text-slate-300">Das Embed-Widget läuft zu 100 % luftdicht ohne externe Skripte, CDNs, Tracker oder Server-Uploads.</p>
+        </div>
+        <div class="flex flex-wrap gap-2 shrink-0">
+          <a href="../../embed/xrechnung-viewer/index.html" class="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-slate-950">Widget live ansehen &rarr;</a>
+          <a href="../../tools/xrechnung-viewer-dsgvo-test-2026/index.html" class="rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold text-emerald-200">DSGVO DevTools-Test 2026 &rarr;</a>
+        </div>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-2 items-center">
+        <pre id="embed-snippet" class="w-full overflow-x-auto rounded-lg border border-slate-800 bg-slate-950 p-3 text-xs text-emerald-300">{html.escape(embed_code)}</pre>
+        <button id="copy-embed-btn" type="button" class="shrink-0 rounded-lg bg-indigo-500 px-4 py-2 text-xs font-semibold text-white">HTML-Code kopieren</button>
+      </div>
+      <div id="copy-embed-status" class="text-xs text-indigo-300"></div>
+    </section>"""
+        extra_script = """  <script>
+    (function(){
+      const btn = document.getElementById("copy-embed-btn");
+      const snip = document.getElementById("embed-snippet");
+      const st = document.getElementById("copy-embed-status");
+      btn?.addEventListener("click", async () => {
+        try {
+          if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+            await navigator.clipboard.writeText(snip.textContent || "");
+          }
+          st.textContent = "Iframe-Code kopiert — einfach in WordPress, Webflow, Ghost oder Hugo einfügen.";
+        } catch {
+          st.textContent = "Code oben markieren und kopieren.";
+        }
+      });
+    })();
+  </script>"""
+
     return _render_page_shell(
         title=spec["title"],
         description=spec["description"],
         canonical_url=de_url,
         lang="de",
         rel_root="../../",
-        main_html=main_html,
+        main_html=main_html.replace('<section class="py-6 space-y-4">', f"{embed_box_html}\n\n    <section class=\"py-6 space-y-4\">", 1),
         analytics_slug=spec["slug"],
         analytics_title=spec["h1"],
         analytics_cfg=analytics_cfg,
@@ -947,6 +1104,8 @@ def _render_de_product_page(
         legal_footer_html=legal_footer_html,
         analytics_renderer=analytics_renderer,
         extra_head=extra_head,
+        extra_script=extra_script,
+        zero_cdn=is_einv,
     )
 
 
@@ -1123,6 +1282,7 @@ def _render_tools_index(
         ("eu-oss-vat-rates-2026", "2026 EU-27 OSS VAT Rates & BZSt GR→EL Checker", "Instant filterable Member-State VAT table, net/VAT/gross calculator, €10,000 threshold reminder, and Greece GR→EL warning.", "OssVatBridge"),
         ("lemon-squeezy-shutdown-calculator", "Lemon Squeezy March 31, 2027 Shutdown & PayPal MRR Calculator", "Compute exact PayPal revenue at churn risk, live shutdown countdown, and Stripe/Polar migration checklist.", "LemonExitBridge"),
         ("datev-bu-schluessel-lookup", "DATEV BU-Schlüssel & EN 16931 VAT Code Lookup (DE/EN)", "Interactive SKR03/SKR04 mapping between EN 16931 BT-118/BT-151 tax codes (S, AE, E, Z) and DATEV BU-Schlüssel (9, 8, 94, 0).", "EInvoiceLocal"),
+        ("xrechnung-viewer-dsgvo-test-2026", "XRechnung Online-Viewer DSGVO & DevTools-Test 2026 (DE)", "Reproduzierbarer Chrome DevTools Netzwerk-Test öffentlicher XRechnung-Viewer + kostenloses 0-Upload Embed-Widget.", "EInvoiceLocal"),
     ]
     cards = "\n".join(
         f"""      <article class="rounded-2xl border border-slate-800 bg-slate-900/70 p-6 flex flex-col justify-between">
@@ -1565,6 +1725,277 @@ def _render_tool_datev_bu_lookup(
     )
 
 
+def _render_tool_xrechnung_privacy_2026(
+    bundle_checkout_url: str,
+    analytics_cfg: dict[str, str],
+    legal_footer_html: str,
+    analytics_renderer: Callable[..., str] | None,
+) -> str:
+    rows = [
+        ("XRechnung-Online.de", "https://xrechnung-online.de/", "Server-Upload (HTTP POST)", "Form POST /visualisierung (HTTP 200) an Server (KoSIT Validator 1.5.0). Keine Drittanbieter-Tracker beobachtet.", "AVV / Datenschutzhinweise vor Mandanten-Einsatz prüfen"),
+        ("RechneX", "https://rechnex.de/viewer", "Server-Upload (HTTP POST)", "POST https://rechnex.de/api/view-xrechnung (multipart/form-data, 2.375 B, HTTP 200) + Matomo-Ping (analytics.ttt-digital.de).", "AVV-Prüfung (Art. 28 DSGVO) empfohlen"),
+        ("sevdesk E-Rechnung Viewer", "https://sevdesk.de/e-rechnung-viewer/", "Server-Upload (HTTP POST)", "Iframe toolkits.sevdesk.de sendet POST /api/toolkits/eInvoiceViewer (multipart/form-data, 2.375 B; im Test HTTP 500). GTM, Cookiebot, New Relic, Typeform geladen.", "AVV- & Tracking-Prüfung (Art. 28 DSGVO) empfohlen"),
+        ("RechnungScanner.de", "https://www.rechnungscanner.de/e-rechnung-viewer", "Lokal (0 XML-Uploads)", "0 Netzwerk-Requests bei XML-Auswahl; Google Tag Manager / GA4 (googletagmanager.com) auf Seite aktiv.", "Lokal geparst (Analytics aktiv)"),
+        ("RechnungApp.de", "https://www.rechnungapp.de/xrechnung-anzeigen", "Lokal (0 XML-Uploads)", "0 XML-Upload-Bytes; Event-Beacon POST analytics.northerndynamic.org/api/event bei Dateiauswahl.", "Lokal geparst (Analytics-Event bei Drop)"),
+        ("ELSTER E-Rechnung Viewer", "https://www.elster.de/eportal/e-rechnung", "Lokal (0 XML-Uploads)", "Client-seitiges Saxon-JS XSLT (nur statische XSLT/.sef.json-GETs von www.elster.de; 0 Dritt-Hosts).", "Rein lokal (ohne DATEV-CSV-Export)"),
+        ("Belegviewer.de", "https://belegviewer.de/", "Lokal (0 XML-Uploads)", "0 Requests nach Seitenaufruf; ein einzelner Document-GET ohne Dritt-Tracker.", "Rein lokal (ohne DATEV-CSV-Export)"),
+        ("XRechnungs.de", "https://www.xrechnungs.de/de/xrechnung-viewer-kostenlos", "Lokal (0 XML-Uploads)", "0 neue Requests beim Datei-Drop (nur Erstanbieter-Host www.xrechnungs.de beobachtet).", "Rein lokal (ohne DATEV-CSV-Export)"),
+        ("RechnungsWächter", "https://rechnungswaechter.de/xrechnung-viewer/", "Lokal (0 XML-Uploads)", "0 neue Requests beim Datei-Drop; vor Consent keine Dritt-Hosts geladen.", "Rein lokal (ohne DATEV-CSV-Export)"),
+        ("EInvoiceLocal Embed Widget", f"{SITE_BASE_URL}/embed/xrechnung-viewer/", "Luftdicht lokal (0 Requests)", "0 XML-Uploads, 0 CDNs, 0 Cookies, 0 Analytics-Pings + optional DATEV EXTF / Xero / QBO CSV in EInvoiceLocal Pro.", "Referenz (0 Third-Party / Open Embed)"),
+    ]
+    rows_html = "\n".join(
+        f"""          <tr>
+            <td><strong>{html.escape(name)}</strong><br /><span class="text-xs text-slate-400">{html.escape(url)}</span></td>
+            <td><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold {'bg-rose-500/10 text-rose-300' if 'Server-Upload' in mode else 'bg-emerald-500/10 text-emerald-300'}">{html.escape(mode)}</span></td>
+            <td class="text-xs text-slate-300">{html.escape(obs)}</td>
+            <td class="text-xs text-slate-200">{html.escape(note)}</td>
+          </tr>"""
+        for name, url, mode, obs, note in rows
+    )
+    embed_code = (
+        '<iframe src="https://domstijn.github.io/friction-killer-suite/embed/xrechnung-viewer/" '
+        'width="100%" height="620" style="border:1px solid #cbd5e1;border-radius:12px;" loading="lazy" '
+        'title="XRechnung &amp; ZUGFeRD XML Viewer (100% lokal)"></iframe>'
+    )
+    main_html = f"""    <div class="text-xs text-slate-400"><a href="../index.html" class="text-indigo-300 underline">&larr; Alle kostenlosen Tools</a> · <a href="../../de/xrechnung-zugferd-konverter/index.html" class="text-indigo-300 underline">EInvoiceLocal (DE)</a></div>
+    <section class="py-6 space-y-6">
+      <div>
+        <span class="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">REPRODUZIERBARER CHROME DEVTOOLS NETZWERK-TEST · STAND 27.11.2026</span>
+        <h1 class="mt-3 text-3xl sm:text-4xl font-extrabold text-white">9 kostenlose XRechnung Online-Viewer im DevTools-Test (DSGVO &amp; Upload-Verhalten 2026)</h1>
+        <p class="mt-3 max-w-3xl text-sm leading-relaxed text-slate-300">
+          Rechnungs-XMLs enthalten Lieferanten-IBANs, Steuernummern, Einzelpreise und Ansprechpartner. Am <strong>27.11.2026</strong> haben wir 9 frei zugängliche deutsche Online-Viewer unter Chrome mit geöffnetem Netzwerk-Protokoll und einer rein synthetischen Test-XRechnung (<code>XR-SAMPLE-2026-1001</code>) getestet. Ergebnis: <strong>3 von 9 Viewern</strong> übertragen die XML-Datei per HTTP-<code>POST</code> an einen Server (erfordert i.&nbsp;d.&nbsp;R. eine AVV-/Datenschutzprüfung nach Art. 28 DSGVO), 2 parsen lokal mit aktivem Analytics-Tracking und 4 arbeiten rein lokal im Browser.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-xs text-slate-300 space-y-2">
+        <div class="font-bold text-white">Reproduzierbare Testmethodik (selbst nachprüfbar)</div>
+        <div>1. Chrome Inkognito öffnen &rarr; <strong>DevTools &rarr; Network (Netzwerk)</strong> aktivieren (optional Cookie-Banner auf <em>„Nur notwendige“</em>).</div>
+        <div>2. Synthetische Test-XML herunterladen: <a href="../../samples/files/sample-xrechnung-3.0-ubl.xml" download class="text-indigo-300 underline">sample-xrechnung-3.0-ubl.xml (2,1 KB, fiktive Demodaten)</a>.</div>
+        <div>3. XML-Datei auswählen und prüfen, ob ein HTTP-<code>POST</code> (<code>multipart/form-data</code>) ausgelöst wird und welche Drittanbieter-Hosts aktiv sind. Hinweis: Serverseitige Validierung (z. B. KoSIT 1.5.0) kann fachlich gewollt sein — maßgeblich für Kanzleien sind Transparenz &amp; ggf. AVV nach Art. 28 DSGVO.</div>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950">
+        <table>
+          <thead>
+            <tr>
+              <th>Online-Viewer</th>
+              <th>Beobachtetes Übertragungsverhalten</th>
+              <th>Direkt beobachtete Netzwerk-Requests (27.11.2026)</th>
+              <th>Einordnung / Kanzlei-Hinweis</th>
+            </tr>
+          </thead>
+          <tbody>
+{rows_html}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="rounded-2xl border border-emerald-500/30 bg-slate-900/70 p-6 space-y-4">
+        <div>
+          <span class="rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">DER FEHLENDE SCHRITT: VOM VIEWER ZUR DATEV-BUCHHALTUNG</span>
+          <h2 class="mt-2 text-lg font-bold text-white">1. Kostenloses 0-Upload Embed-Widget · 2. Batch DATEV EXTF / Xero CSV</h2>
+          <p class="mt-1 text-xs text-slate-300">Keiner der 9 getesteten kostenlosen Viewer exportiert geprüfte XRechnung- und ZUGFeRD-Stapel lokal in <strong>DATEV EXTF (;-CSV inkl. SKR03 &amp; BU-Schlüssel)</strong>. Nutzen Sie unsere Web-App (ganzer Batch lokal validierbar + 2 Vorschauzeilen frei) oder betten Sie unseren luftdichten Viewer kostenlos ein:</p>
+        </div>
+        <pre id="bench-embed-code" class="overflow-x-auto rounded-lg border border-slate-800 bg-slate-950 p-3 text-xs text-emerald-300">{html.escape(embed_code)}</pre>
+        <div class="flex flex-wrap gap-3">
+          <button id="bench-copy-btn" type="button" class="rounded-lg bg-indigo-500 px-4 py-2 text-xs font-semibold text-white">Iframe-Code kopieren</button>
+          <a href="../../embed/xrechnung-viewer/index.html" class="rounded-lg border border-slate-700 px-4 py-2 text-xs font-semibold text-white">Widget direkt öffnen &rarr;</a>
+          <a href="../../products/e-invoice-xml-batch-converter/index.html?ref=src.privacy-bench#live-app" class="rounded-lg bg-white px-4 py-2 text-xs font-semibold text-slate-950">EInvoiceLocal (DATEV Batch) testen &rarr;</a>
+        </div>
+        <div id="bench-copy-status" class="text-xs text-emerald-300"></div>
+      </div>
+    </section>"""
+    extra_script = """  <script>
+    (function(){
+      const btn = document.getElementById("bench-copy-btn");
+      const code = document.getElementById("bench-embed-code");
+      const st = document.getElementById("bench-copy-status");
+      btn?.addEventListener("click", async () => {
+        try {
+          if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+            await navigator.clipboard.writeText(code.textContent || "");
+          }
+          st.textContent = "Iframe-Code kopiert (0 Cookies, 0 Server-Uploads, 0 CDNs).";
+        } catch {
+          st.textContent = "Bitte Code markieren und kopieren.";
+        }
+      });
+    })();
+  </script>"""
+    return _render_page_shell(
+        title="9 kostenlose XRechnung-Viewer im DSGVO & DevTools-Test (2026) | Friction-Killer Suite",
+        description="Reproduzierbarer Chrome DevTools Netzwerk-Test vom 27.11.2026: Bei 3 von 9 öffentlichen XRechnung-Viewern wird die XML per HTTP POST hochgeladen.",
+        canonical_url=f"{SITE_BASE_URL}/tools/xrechnung-viewer-dsgvo-test-2026/",
+        lang="de",
+        rel_root="../../",
+        main_html=main_html,
+        analytics_slug="tool_xrechnung_privacy_2026",
+        analytics_title="XRechnung Viewer DevTools-Test 2026",
+        analytics_cfg=analytics_cfg,
+        bundle_checkout_url=bundle_checkout_url,
+        legal_footer_html=legal_footer_html,
+        analytics_renderer=analytics_renderer,
+        extra_script=extra_script,
+        zero_cdn=True,
+    )
+
+
+def _render_embed_xrechnung_viewer() -> str:
+    """Render 100% air-gapped zero-network embeddable XRechnung / ZUGFeRD XML viewer widget."""
+    core_js_path = Path(__file__).resolve().parent.parent / "projects" / "e-invoice-xml-batch-converter" / "src" / "einvoice_core.js"
+    core_js = core_js_path.read_text(encoding="utf-8")
+    return f"""<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XRechnung &amp; ZUGFeRD XML Viewer (100 % lokal) — EInvoiceLocal Embed</title>
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="{SITE_BASE_URL}/embed/xrechnung-viewer/" />
+  <style>
+    *, *::before, *::after {{ box-sizing: border-box; }}
+    body {{ margin: 0; font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f8fafc; color: #0f172a; line-height: 1.45; }}
+    .wrap {{ max-width: 900px; margin: 0 auto; padding: 14px; }}
+    .top-bar {{ display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; background: #0f172a; color: #f8fafc; padding: 12px 14px; border-radius: 10px; }}
+    .badge {{ font-size: 11px; font-weight: 700; color: #6ee7b7; background: rgba(16,185,129,0.16); border: 1px solid rgba(16,185,129,0.35); border-radius: 999px; padding: 2px 9px; }}
+    .controls {{ margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 12px; }}
+    .controls input[type=file] {{ flex: 1; font-size: 12px; min-width: 210px; }}
+    button {{ cursor: pointer; font-family: inherit; border-radius: 7px; font-size: 12px; font-weight: 600; padding: 7px 11px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #0f172a; }}
+    button.primary {{ background: #4f46e5; border-color: #4f46e5; color: #ffffff; }}
+    .sheet {{ margin-top: 10px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 16px; }}
+    .head {{ display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }}
+    .mono {{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }}
+    .muted {{ font-size: 11px; color: #64748b; }}
+    .pill {{ border-radius: 999px; padding: 2px 10px; font-size: 11px; font-weight: 700; background: #f1f5f9; color: #334155; }}
+    table {{ width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }}
+    th {{ text-align: left; font-size: 10px; text-transform: uppercase; color: #64748b; border-bottom: 1px solid #cbd5e1; padding: 5px 4px; }}
+    td {{ border-bottom: 1px solid #f1f5f9; padding: 6px 4px; }}
+    .right {{ text-align: right; }}
+    .totals {{ margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 8px; text-align: right; font-size: 12px; }}
+    .foot {{ margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; font-size: 11px; color: #475569; padding: 8px 4px; }}
+    .foot a {{ color: #4f46e5; font-weight: 700; text-decoration: none; }}
+    .foot a:hover {{ text-decoration: underline; }}
+    @media print {{ .no-print {{ display: none !important; }} body {{ background: #fff; }} .sheet {{ border: none; padding: 0; }} }}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top-bar no-print">
+      <strong style="font-size:13px;">XRechnung / ZUGFeRD / Peppol XML Viewer</strong>
+      <span class="badge">100 % lokal · 0 Uploads · 0 Cookies</span>
+    </div>
+
+    <div class="controls no-print">
+      <input id="embed-file" type="file" accept=".xml,text/xml,application/xml" />
+      <button id="embed-sample" type="button">Beispiel-XRechnung laden</button>
+      <button id="embed-print" type="button" class="primary">A4 PDF drucken</button>
+    </div>
+
+    <div class="sheet">
+      <div class="head">
+        <div>
+          <div id="emb-syntax" style="font-size:11px;font-weight:700;color:#4f46e5;">EN 16931 VORSCHAU</div>
+          <h2 id="emb-id" style="margin:3px 0;font-size:18px;">XML-Datei oben auswählen</h2>
+          <div id="emb-dates" class="muted">Datum: — · Fällig: — · Ref: —</div>
+        </div>
+        <div class="right" style="font-size:12px;">
+          <div id="emb-seller" style="font-weight:700;">Lieferant</div>
+          <div id="emb-seller-vat" class="muted">USt-IdNr: —</div>
+          <div id="emb-iban" class="mono muted">IBAN: —</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;font-size:12px;">
+        <div><strong>Empfänger:</strong> <span id="emb-buyer">—</span> (<span id="emb-buyer-vat">—</span>)</div>
+        <span id="emb-pill" class="pill">Bereit</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Position</th><th class="right">Menge</th><th class="right">Einzel</th><th class="right">MwSt</th><th class="right">Netto</th></tr>
+        </thead>
+        <tbody id="emb-lines">
+          <tr><td colspan="5" class="muted" style="text-align:center;padding:16px 0;">Keine Datei gewählt — läuft komplett lokal im Chrome-Speicher ohne Server-Anfrage.</td></tr>
+        </tbody>
+      </table>
+      <div class="totals">
+        <div>Netto: <strong id="emb-net">€0.00</strong> · MwSt: <strong id="emb-vat">€0.00</strong></div>
+        <div style="font-size:15px;font-weight:800;margin-top:3px;">Brutto: <span id="emb-gross">€0.00</span></div>
+        <div id="emb-datev" class="muted mono" style="margin-top:4px;">DATEV BU-Schlüssel: —</div>
+      </div>
+    </div>
+
+    <div class="foot no-print">
+      <span>100 % lokal im Browser (0 Uploads, kein AVV nötig)</span>
+      <a href="{SITE_BASE_URL}/de/xrechnung-zugferd-konverter/?ref=src.embed" target="_blank" rel="noopener noreferrer">Powered by EInvoiceLocal — DATEV EXTF Batch-Export &rarr;</a>
+    </div>
+  </div>
+  <script>
+{core_js}
+    (function () {{
+      "use strict";
+      const CORE = globalThis.EInvoiceCore;
+      const esc = CORE.escHtml;
+      const SAMPLE_XML = `<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:ID>XR-2026-1001</cbc:ID><cbc:IssueDate>2026-11-18</cbc:IssueDate><cbc:DueDate>2026-12-18</cbc:DueDate><cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode><cbc:BuyerReference>991-12345-67</cbc:BuyerReference>
+  <cac:AccountingSupplierParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>DE298765432</cbc:CompanyID></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>Nordic Cloud Infrastructure GmbH</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>DE112233445</cbc:CompanyID></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>Mittelstand Ops GmbH</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingCustomerParty>
+  <cac:PaymentMeans><cac:PayeeFinancialAccount><cbc:ID>DE89370400440532013000</cbc:ID></cac:PayeeFinancialAccount></cac:PaymentMeans>
+  <cac:TaxTotal><cbc:TaxAmount currencyID="EUR">38.00</cbc:TaxAmount></cac:TaxTotal>
+  <cac:LegalMonetaryTotal><cbc:TaxExclusiveAmount currencyID="EUR">200.00</cbc:TaxExclusiveAmount><cbc:PayableAmount currencyID="EUR">238.00</cbc:PayableAmount></cac:LegalMonetaryTotal>
+  <cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity>2</cbc:InvoicedQuantity><cbc:LineExtensionAmount>150.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>Dedicated PostgreSQL Nodes</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>19.00</cbc:Percent></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount>75.00</cbc:PriceAmount></cac:Price></cac:InvoiceLine>
+  <cac:InvoiceLine><cbc:ID>2</cbc:ID><cbc:InvoicedQuantity>1</cbc:InvoicedQuantity><cbc:LineExtensionAmount>50.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>Daily Encrypted Snapshots</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>19.00</cbc:Percent></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount>50.00</cbc:PriceAmount></cac:Price></cac:InvoiceLine>
+</Invoice>`;
+
+      function renderInvoice(inv) {{
+        document.getElementById("emb-syntax").textContent = inv.syntax + " · EN 16931 ANSICHT";
+        document.getElementById("emb-id").textContent = (inv.isCreditNote ? "Gutschrift " : "Rechnung ") + inv.id;
+        document.getElementById("emb-dates").textContent = "Datum: " + (inv.issue || "—") + " · Fällig: " + (inv.due || "—") + (inv.buyerRef ? " · Ref: " + inv.buyerRef : "");
+        document.getElementById("emb-seller").textContent = inv.seller || "—";
+        document.getElementById("emb-seller-vat").textContent = "USt-IdNr: " + (inv.sellerVat || "—");
+        document.getElementById("emb-iban").textContent = "IBAN: " + (inv.iban || "—");
+        document.getElementById("emb-buyer").textContent = inv.buyer || "—";
+        document.getElementById("emb-buyer-vat").textContent = inv.buyerVat || "—";
+        const pill = document.getElementById("emb-pill");
+        if (inv.valid) {{
+          pill.textContent = "EN 16931 PASS";
+          pill.style.background = "#dcfce7";
+          pill.style.color = "#166534";
+        }} else {{
+          pill.textContent = "XML / RECHENFEHLER";
+          pill.style.background = "#ffe4e6";
+          pill.style.color = "#9f1239";
+        }}
+        document.getElementById("emb-lines").innerHTML = inv.lines.length
+          ? inv.lines.map((l) =>
+              "<tr><td>" + esc(l.name) + "</td><td class='right'>" + l.qty.toFixed(2) + "</td><td class='right'>" + l.unit.toFixed(2) + "</td><td class='right'>" + CORE.fmtRate(l.rate) + "%</td><td class='right mono'>" + l.lineNet.toFixed(2) + " " + esc(inv.cur) + "</td></tr>"
+            ).join("")
+          : "<tr><td colspan='5' style='color:#9f1239;'>" + esc((inv.errors || []).join("; ") || "Keine Positionen geparst.") + "</td></tr>";
+        document.getElementById("emb-net").textContent = inv.net.toFixed(2) + " " + inv.cur;
+        document.getElementById("emb-vat").textContent = inv.vat.toFixed(2) + " " + inv.cur;
+        document.getElementById("emb-gross").textContent = inv.gross.toFixed(2) + " " + inv.cur;
+        document.getElementById("emb-datev").textContent = "DATEV BU-Schlüssel: BU " + inv.bu + " / SKR03 " + inv.acct + (inv.isCreditNote ? " (Haben)" : " (Soll)");
+      }}
+
+      document.getElementById("embed-sample")?.addEventListener("click", () => {{
+        renderInvoice(CORE.parseXmlInvoice(SAMPLE_XML, "sample-xrechnung.xml", globalThis.DOMParser));
+      }});
+      document.getElementById("embed-print")?.addEventListener("click", () => window.print());
+      document.getElementById("embed-file")?.addEventListener("change", async (e) => {{
+        const f = e.target.files?.[0];
+        if (!f) return;
+        try {{
+          const txt = await f.text();
+          renderInvoice(CORE.parseXmlInvoice(txt, f.name, globalThis.DOMParser));
+        }} catch {{
+          document.getElementById("emb-lines").innerHTML = "<tr><td colspan='5' style='color:#9f1239;'>Fehler beim Lesen der lokalen XML-Datei.</td></tr>";
+        }}
+      }});
+    }})();
+  </script>
+</body>
+</html>"""
+
+
 def _write_sample_fixtures(samples_files_dir: Path) -> list[dict[str, str]]:
     samples_files_dir.mkdir(parents=True, exist_ok=True)
     fixtures = [
@@ -1874,6 +2305,8 @@ def _write_llms_files(
 - [2026 EU-27 OSS VAT Rates & BZSt GR->EL Checker]({SITE_BASE_URL}/tools/eu-oss-vat-rates-2026/)
 - [Lemon Squeezy Shutdown PayPal MRR Risk Calculator]({SITE_BASE_URL}/tools/lemon-squeezy-shutdown-calculator/)
 - [DATEV BU-Schlüssel & EN 16931 BT-151 Lookup]({SITE_BASE_URL}/tools/datev-bu-schluessel-lookup/)
+- [XRechnung Online-Viewer DSGVO & DevTools-Test 2026]({SITE_BASE_URL}/tools/xrechnung-viewer-dsgvo-test-2026/)
+- [Kostenloses 0-Upload XRechnung Embed-Widget (<iframe>)]({SITE_BASE_URL}/embed/xrechnung-viewer/)
 
 ## Full Context
 - [llms-full.txt]({SITE_BASE_URL}/llms-full.txt)
@@ -1956,6 +2389,7 @@ def build_growth_assets(
         ("eu-oss-vat-rates-2026", _render_tool_eu_oss_rates, legal_footer_html),
         ("lemon-squeezy-shutdown-calculator", _render_tool_lemon_calc, legal_footer_html),
         ("datev-bu-schluessel-lookup", _render_tool_datev_bu_lookup, de_legal),
+        ("xrechnung-viewer-dsgvo-test-2026", _render_tool_xrechnung_privacy_2026, de_legal),
     ]
     for tslug, builder, t_legal in tool_builders:
         tdir = tools_dir / tslug
@@ -1984,6 +2418,11 @@ def build_growth_assets(
         encoding="utf-8",
     )
     sitemap_entries.append((f"{SITE_BASE_URL}/partners/", "0.8"))
+
+    embed_dir = docs_dir / "embed" / "xrechnung-viewer"
+    embed_dir.mkdir(parents=True, exist_ok=True)
+    (embed_dir / "index.html").write_text(_render_embed_xrechnung_viewer(), encoding="utf-8")
+    sitemap_entries.append((f"{SITE_BASE_URL}/embed/xrechnung-viewer/", "0.8"))
 
     # 6. GEO / AI-Search Index (llms.txt + llms-full.txt)
     _write_llms_files(products, docs_dir, bundle_checkout_url)

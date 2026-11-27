@@ -30,6 +30,8 @@
 - [2026 EU-27 OSS VAT Rates & BZSt GR->EL Checker](https://domstijn.github.io/friction-killer-suite/tools/eu-oss-vat-rates-2026/)
 - [Lemon Squeezy Shutdown PayPal MRR Risk Calculator](https://domstijn.github.io/friction-killer-suite/tools/lemon-squeezy-shutdown-calculator/)
 - [DATEV BU-Schlüssel & EN 16931 BT-151 Lookup](https://domstijn.github.io/friction-killer-suite/tools/datev-bu-schluessel-lookup/)
+- [XRechnung Online-Viewer DSGVO & DevTools-Test 2026](https://domstijn.github.io/friction-killer-suite/tools/xrechnung-viewer-dsgvo-test-2026/)
+- [Kostenloses 0-Upload XRechnung Embed-Widget (<iframe>)](https://domstijn.github.io/friction-killer-suite/embed/xrechnung-viewer/)
 
 ## Full Context
 - [llms-full.txt](https://domstijn.github.io/friction-killer-suite/llms-full.txt)

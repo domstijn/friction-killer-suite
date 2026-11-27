@@ -343,46 +343,161 @@ def verify_all() -> None:
         assert "Support &amp; Kontakt" in dt and "Fehlt ein Format" in dt, f"Missing German footer/feedback in {de_file}"
         assert "Missing a bank" not in dt and "14-Day Refund Policy" not in dt, f"English boilerplate leaked into {de_file}"
 
-    print("2. Verifying EInvoiceLocal cross-tab parity (Free & Pro)...")
+    print("2. Verifying EInvoiceLocal Zero-CDN, core parity, CreditNote, XSS & Value-First Free/Pro parity...")
+    core_src = (REPO_ROOT / "projects" / "e-invoice-xml-batch-converter" / "src" / "einvoice_core.js").read_text(encoding="utf-8").strip()
     einv_page = DOCS_DIR / "products" / "e-invoice-xml-batch-converter" / "index.html"
-    for mode, key, expected_gross, expected_rows in [
-        ("free", None, Decimal("585.00"), 3),
-        ("pro", ("fk_einvoice_pro_state", "cs_live_ValidEInvoiceProKey123456"), Decimal("918.00"), 4),
-    ]:
-        out = _run_page_js(
-            einv_page,
-            """
-            documentObj.getElementById("app-sample-btn").click();
-            const getTab = (name) => {
-              const btn = documentObj.querySelectorAll("[data-einv-tab]").find((b) => b.getAttribute("data-einv-tab") === name);
-              btn.click();
-              return documentObj.getElementById("app-output").textContent;
-            };
-            const datev = getTab("datev");
-            const xero = getTab("xero");
-            const qbo = getTab("qbo");
-            return {
-              net: documentObj.getElementById("stat-net").textContent,
-              vat: documentObj.getElementById("stat-vat").textContent,
-              gross: documentObj.getElementById("stat-gross").textContent,
-              valid: documentObj.getElementById("stat-valid").textContent,
-              tableHtml: documentObj.getElementById("app-table-body").children.map((c) => c._innerHTML),
-              datev, xero, qbo
-            };
-            """,
-            pro_storage=key,
-        )["result"]
-        assert Decimal(out["gross"].replace("€", "")) == expected_gross, f"EInvoice {mode} gross={out['gross']}"
-        d_rows = list(csv.DictReader(io.StringIO(out["datev"]), delimiter=";"))
-        x_rows = list(csv.DictReader(io.StringIO(out["xero"])))
-        q_rows = list(csv.DictReader(io.StringIO(out["qbo"])))
-        d_sum = sum(Decimal(r["Umsatz (ohne Soll/Haben-Kz)"].replace(",", ".")) for r in d_rows)
-        x_sum = sum(Decimal(r["*Quantity"]) * Decimal(r["*UnitAmount"]) + Decimal(r["TaxAmount"]) for r in x_rows)
-        q_sum = sum(Decimal(r["LineAmount"]) + Decimal(r["TaxAmount"]) for r in q_rows)
-        assert d_sum == x_sum == q_sum == expected_gross, f"EInvoice cross-tab drift: D={d_sum}, X={x_sum}, Q={q_sum}"
-        assert "400" not in {r["*AccountCode"] for r in x_rows}, "Hardcoded Xero AccountCode 400 still present!"
-        assert len({r["*InvoiceNumber"] for r in x_rows}) == expected_rows
-        assert "PEP-2026-3003" in out["xero"] and "Antwerp Logistics Systems BV" in out["xero"]
+    einv_de_page = DOCS_DIR / "de" / "xrechnung-zugferd-konverter" / "index.html"
+    einv_embed_page = DOCS_DIR / "embed" / "xrechnung-viewer" / "index.html"
+    einv_bench_page = DOCS_DIR / "tools" / "xrechnung-viewer-dsgvo-test-2026" / "index.html"
+
+    for zpath in (einv_page, einv_de_page, einv_embed_page, einv_bench_page):
+        zt = zpath.read_text(encoding="utf-8")
+        assert "cdn.tailwindcss.com" not in zt, f"Tailwind CDN leaked into Zero-CDN surface {zpath}"
+        assert "cloudflareinsights.com" not in zt, f"Cloudflare RUM leaked into Zero-CDN surface {zpath}"
+        if zpath != einv_embed_page:
+            assert "fk-funnel-beacon" in zt and "fk_ignore_telemetry" in zt, f"Missing disclosed funnel opt-out/privacy notice in {zpath}"
+    for app_path in (einv_page, einv_embed_page):
+        assert core_src in app_path.read_text(encoding="utf-8"), f"Canonical einvoice_core.js missing or drifted in {app_path}"
+
+    bench_txt = einv_bench_page.read_text(encoding="utf-8")
+    assert "rechnex.de/api/view-xrechnung" in bench_txt and "elster.de/eportal/e-rechnung" in bench_txt
+    assert "Support &amp; Kontakt" in bench_txt and "14-Day Refund Policy" not in bench_txt
+    assert "0 XML-Uploads" in einv_de_page.read_text(encoding="utf-8") and "0 Server-Uploads" not in einv_de_page.read_text(encoding="utf-8")
+
+    embed_txt = einv_embed_page.read_text(encoding="utf-8")
+    assert "fk-funnel-beacon" not in embed_txt, "Embed widget must not include funnel beacon telemetry"
+
+    free_out = _run_page_js(
+        einv_page,
+        """
+        documentObj.getElementById("app-sample-btn").click();
+        const getTab = (name) => {
+          const btn = documentObj.querySelectorAll("[data-einv-tab]").find((b) => b.getAttribute("data-einv-tab") === name);
+          btn.click();
+          return documentObj.getElementById("app-output").textContent;
+        };
+        const datev = getTab("datev");
+        const xero = getTab("xero");
+        const qbo = getTab("qbo");
+        return {
+          net: documentObj.getElementById("stat-net").textContent,
+          vat: documentObj.getElementById("stat-vat").textContent,
+          gross: documentObj.getElementById("stat-gross").textContent,
+          valid: documentObj.getElementById("stat-valid").textContent,
+          bannerHidden: documentObj.getElementById("pro-unlock-banner").classList.contains("hidden"),
+          bannerTitle: documentObj.getElementById("pro-banner-title").textContent,
+          stampDisplay: documentObj.getElementById("a4-free-stamp").style.display,
+          tableRows: documentObj.getElementById("app-table-body").children.length,
+          datev, xero, qbo
+        };
+        """,
+    )["result"]
+    assert free_out["valid"] == "4 / 4", free_out
+    assert Decimal(free_out["gross"].replace("€", "")) == Decimal("918.00"), free_out
+    assert Decimal(free_out["net"].replace("€", "")) == Decimal("840.00"), free_out
+    assert Decimal(free_out["vat"].replace("€", "")) == Decimal("78.00"), free_out
+    assert free_out["tableRows"] == 4, free_out
+    assert free_out["bannerHidden"] is False and "€918.00" in free_out["bannerTitle"], free_out
+    assert free_out["stampDisplay"] != "none", free_out
+    for label, txt in (("datev", free_out["datev"]), ("xero", free_out["xero"]), ("qbo", free_out["qbo"])):
+        lines = txt.splitlines()
+        assert len(lines) == 4 and lines[3].startswith("# ... +"), f"Free Value-First preview mismatch for {label}: {lines}"
+
+    pro_res = _run_page_js(
+        einv_page,
+        """
+        documentObj.getElementById("app-sample-btn").click();
+        const getTab = (name) => {
+          const btn = documentObj.querySelectorAll("[data-einv-tab]").find((b) => b.getAttribute("data-einv-tab") === name);
+          btn.click();
+          return documentObj.getElementById("app-output").textContent;
+        };
+        const datev = getTab("datev");
+        const xero = getTab("xero");
+        const qbo = getTab("qbo");
+        const cnXml = `<?xml version="1.0" encoding="UTF-8"?>
+<CreditNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:ID>GS-XSS-1</cbc:ID><cbc:IssueDate>2026-11-22</cbc:IssueDate><cbc:DueDate>2026-12-22</cbc:DueDate><cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cac:AccountingSupplierParty><cac:Party><cac:PartyLegalEntity><cbc:RegistrationName>Evil; &lt;img src=x onerror=window.__xss=1&gt; GmbH</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty><cac:Party><cac:PartyLegalEntity><cbc:RegistrationName>Buyer GmbH</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingCustomerParty>
+  <cac:TaxTotal><cbc:TaxAmount currencyID="EUR">19.00</cbc:TaxAmount></cac:TaxTotal>
+  <cac:LegalMonetaryTotal><cbc:TaxExclusiveAmount currencyID="EUR">100.00</cbc:TaxExclusiveAmount><cbc:PayableAmount currencyID="EUR">119.00</cbc:PayableAmount></cac:LegalMonetaryTotal>
+  <cac:CreditNoteLine><cbc:ID>1</cbc:ID><cbc:CreditedQuantity>1</cbc:CreditedQuantity><cbc:LineExtensionAmount>100.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>Refund; &lt;script&gt;x&lt;/script&gt;</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>19.00</cbc:Percent></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount>100.00</cbc:PriceAmount></cac:Price></cac:CreditNoteLine>
+</CreditNote>`;
+        const parsedCn = ctx.EInvoiceCore.parseXmlInvoice(cnXml, "cn.xml", ctx.DOMParser);
+        const cnExports = ctx.EInvoiceCore.buildExports([parsedCn]);
+        return {
+          gross: documentObj.getElementById("stat-gross").textContent,
+          bannerHidden: documentObj.getElementById("pro-unlock-banner").classList.contains("hidden"),
+          stampDisplay: documentObj.getElementById("a4-free-stamp").style.display,
+          tableHtml: documentObj.getElementById("app-table-body").children.map((c) => c._innerHTML),
+          datev, xero, qbo,
+          parsedCn, cnExports,
+          escSeller: ctx.EInvoiceCore.escHtml(parsedCn.seller)
+        };
+        """,
+        pro_storage=("fk_einvoice_pro_state", "cs_live_ValidEInvoiceProKey123456"),
+    )["result"]
+    assert Decimal(pro_res["gross"].replace("€", "")) == Decimal("918.00"), pro_res
+    assert pro_res["bannerHidden"] is True and pro_res["stampDisplay"] == "none", pro_res
+    d_rows = list(csv.DictReader(io.StringIO(pro_res["datev"]), delimiter=";"))
+    x_rows = list(csv.DictReader(io.StringIO(pro_res["xero"])))
+    q_rows = list(csv.DictReader(io.StringIO(pro_res["qbo"])))
+    d_sum = sum(Decimal(r["Umsatz (ohne Soll/Haben-Kz)"].replace(",", ".")) for r in d_rows)
+    x_sum = sum(Decimal(r["*Quantity"]) * Decimal(r["*UnitAmount"]) + Decimal(r["TaxAmount"]) for r in x_rows)
+    q_sum = sum(Decimal(r["LineAmount"]) + Decimal(r["TaxAmount"]) for r in q_rows)
+    assert d_sum == x_sum == q_sum == Decimal("918.00"), f"EInvoice Pro cross-tab drift: D={d_sum}, X={x_sum}, Q={q_sum}"
+    assert "400" not in {r["*AccountCode"] for r in x_rows}, "Hardcoded Xero AccountCode 400 still present!"
+    assert len({r["*InvoiceNumber"] for r in x_rows}) == 4
+    assert "PEP-2026-3003" in pro_res["xero"] and "Antwerp Logistics Systems BV" in pro_res["xero"]
+
+    # Verify exact parity with Python addon.py engine
+    sys.path.insert(0, str(REPO_ROOT / "projects" / "e-invoice-xml-batch-converter" / "src"))
+    import addon as einv_py  # noqa: E402
+    py_batch = einv_py.compile_einvoice_batch(
+        [
+            ("a.xml", einv_py.SAMPLE_UBL_PEPPOL_XML),
+            ("b.xml", einv_py.SAMPLE_CII_ZUGFERD_XML),
+            ("c.xml", einv_py.SAMPLE_PEPPOL_BIS3_XML),
+            ("d.xml", einv_py.SAMPLE_CII_MIXED_XML),
+        ],
+        pro_unlocked=True,
+    )
+    assert einv_py.render_datev_extf_csv(py_batch) == pro_res["datev"], "JS/Python DATEV parity mismatch!"
+    assert einv_py.render_xero_bills_csv(py_batch) == pro_res["xero"], "JS/Python Xero parity mismatch!"
+    assert einv_py.render_qbo_bills_csv(py_batch) == pro_res["qbo"], "JS/Python QBO parity mismatch!"
+
+    # CreditNote H flag, signed Xero/QBO, CSV semicolon/formula escaping, fractional VAT & Decimal rounding parity
+    assert pro_res["parsedCn"]["isCreditNote"] is True and pro_res["parsedCn"]["valid"] is True
+    assert ";H;EUR;3400;70000;9;2211;GS-XSS-1;" in pro_res["cnExports"]["datev"]
+    assert "<img" not in pro_res["escSeller"] and "&lt;img" in pro_res["escSeller"]
+    cn_py = einv_py.compile_einvoice_batch([("cn.xml", """<?xml version="1.0" encoding="UTF-8"?>
+<CreditNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:ID>GS-XSS-1</cbc:ID><cbc:IssueDate>2026-11-22</cbc:IssueDate><cbc:DueDate>2026-12-22</cbc:DueDate><cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cac:AccountingSupplierParty><cac:Party><cac:PartyLegalEntity><cbc:RegistrationName>Evil; &lt;img src=x onerror=window.__xss=1&gt; GmbH</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty><cac:Party><cac:PartyLegalEntity><cbc:RegistrationName>Buyer GmbH</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingCustomerParty>
+  <cac:TaxTotal><cbc:TaxAmount currencyID="EUR">19.00</cbc:TaxAmount></cac:TaxTotal>
+  <cac:LegalMonetaryTotal><cbc:TaxExclusiveAmount currencyID="EUR">100.00</cbc:TaxExclusiveAmount><cbc:PayableAmount currencyID="EUR">119.00</cbc:PayableAmount></cac:LegalMonetaryTotal>
+  <cac:CreditNoteLine><cbc:ID>1</cbc:ID><cbc:CreditedQuantity>1</cbc:CreditedQuantity><cbc:LineExtensionAmount>100.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>Refund; &lt;script&gt;x&lt;/script&gt;</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>19.00</cbc:Percent></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount>100.00</cbc:PriceAmount></cac:Price></cac:CreditNoteLine>
+</CreditNote>""")], pro_unlocked=True)
+    assert einv_py.render_datev_extf_csv(cn_py) == pro_res["cnExports"]["datev"]
+    assert einv_py.render_xero_bills_csv(cn_py) == pro_res["cnExports"]["xero"]
+    assert einv_py.render_qbo_bills_csv(cn_py) == pro_res["cnExports"]["qbo"]
+
+    emb_run = _run_page_js(
+        einv_embed_page,
+        """
+        documentObj.getElementById("embed-sample").click();
+        return {
+          id: documentObj.getElementById("emb-id").textContent,
+          gross: documentObj.getElementById("emb-gross").textContent,
+          pill: documentObj.getElementById("emb-pill").textContent,
+          datev: documentObj.getElementById("emb-datev").textContent
+        };
+        """,
+    )
+    assert emb_run["fetchCalled"] is False, "Air-gapped embed widget must never call fetch()"
+    assert emb_run["result"]["gross"] == "238.00 EUR" and emb_run["result"]["pill"] == "EN 16931 PASS", emb_run["result"]
 
     print("3. Verifying StripePayoutBridge, AmzSettlementBridge, OssVatBridge, LemonExitBridge, BankFeedBridge...")
     sp_out = _run_page_js(
@@ -464,7 +579,7 @@ def verify_all() -> None:
     hub_out = _run_page_js(
         DOCS_DIR / "index.html",
         """
-        return {
+        const out0 = {
           wf: documentObj.getElementById("pg-wf-output").textContent,
           pb: documentObj.getElementById("pg-pb-output").textContent,
           oss: documentObj.getElementById("pg-ossvat-output").textContent,
@@ -472,12 +587,26 @@ def verify_all() -> None:
           einv: documentObj.getElementById("pg-einv-output").textContent,
           bf: documentObj.getElementById("pg-bankfeed-output").textContent,
         };
+        const exEl = documentObj.getElementById("pg-einv-xml");
+        exEl.value = `<?xml version="1.0" encoding="UTF-8"?>
+<CreditNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:ID>CN-PG-1</cbc:ID><cbc:IssueDate>2026-11-22</cbc:IssueDate><cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cac:AccountingSupplierParty><cac:Party><cac:PartyLegalEntity><cbc:RegistrationName>Exempt Supplier GmbH</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty><cac:Party><cac:PartyLegalEntity><cbc:RegistrationName>Buyer GmbH</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingCustomerParty>
+  <cac:TaxTotal><cbc:TaxAmount currencyID="EUR">0.00</cbc:TaxAmount></cac:TaxTotal>
+  <cac:LegalMonetaryTotal><cbc:TaxExclusiveAmount currencyID="EUR">50.00</cbc:TaxExclusiveAmount><cbc:PayableAmount currencyID="EUR">50.00</cbc:PayableAmount></cac:LegalMonetaryTotal>
+  <cac:CreditNoteLine><cbc:ID>1</cbc:ID><cbc:CreditedQuantity>1</cbc:CreditedQuantity><cbc:LineExtensionAmount>50.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>Exempt Service</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>E</cbc:ID></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount>50.00</cbc:PriceAmount></cac:Price></cac:CreditNoteLine>
+</CreditNote>`;
+        exEl.dispatchEvent({ type: "input" });
+        out0.einvCn = documentObj.getElementById("pg-einv-output").textContent;
+        return out0;
         """,
     )["result"]
     assert "Debits €352.50 == Credits €352.50" in hub_out["pb"], hub_out["pb"]
     assert "BOP_OSS_V1;EL;SERVICES;STANDARD;" in hub_out["oss"], hub_out["oss"]
     assert "NONE," in hub_out["amz"], hub_out["amz"]
     assert "-420.00,CloudHost BV" in hub_out["bf"] and "-234.50,Stripe Processing Fee" in hub_out["bf"], hub_out["bf"]
+    assert "50,00;H;EUR;3200;70000;0;2211;CN-PG-1;" in hub_out["einvCn"], hub_out["einvCn"]
 
     bu_out = _run_page_js(
         DOCS_DIR / "tools" / "datev-bu-schluessel-lookup" / "index.html",
